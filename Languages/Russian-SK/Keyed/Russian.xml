@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<!-- MainMenu.cs -->
+	<OCity_LAN_btn>Сетевая игра</OCity_LAN_btn>
+	
+	<!-- CaravanArrivalAction_VisitOnline.cs -->
+	<OCity_Caravan_GoTrade>Идем обмениваться товарами c {0}</OCity_Caravan_GoTrade>
+	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
+	<OCity_Caravan_LOGNoData>Нет данных сервера об объекте торговли</OCity_Caravan_LOGNoData>
+	<OCity_Caravan_LOGSwap>Караван обмен: selectAllCaravan</OCity_Caravan_LOGSwap>
+	
+	<!-- OnlineCity_CaravanOnline.cs -->
+	<OCity_Caravan_Player>{0} игрока {1}</OCity_Caravan_Player>
+	<OCity_Caravan_PriceThing>Ценность вещей: {2}</OCity_Caravan_PriceThing>
+	<OCity_Caravan_PriceAnimalsPeople>Ценность людей и животных: {3}</OCity_Caravan_PriceAnimalsPeople>
+	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
+	<OCity_Caravan_FreeWeight>Оставшаяся грузоподъемность: </OCity_Caravan_FreeWeight>
+	<OCity_Caravan_Trade>Обмен товарами c {0}</OCity_Caravan_Trade>
+	
+	<!-- DevelopTest.cs -->
+	<OCity_DevTest_Test>Тест</OCity_DevTest_Test>
+	<OCity_DevTest_NameTestPlayer>ИмяТестовогоИгрока</OCity_DevTest_NameTestPlayer>
+	
+	<!-- GameStarter.cs -->
+	<OCity_Starter_CityNotBuild>Место уже занято другим игроком</OCity_Starter_CityNotBuild>
+	
+	<!-- StorageTest.cs -->
+	<OCity_StorageTest_CreateGrass>Сажать траву весной (фикс)</OCity_StorageTest_CreateGrass>
+	<OCity_StorageTest_CreateGrassDescrip>Один раз в год на каждой карте, когда температура поднимается больше 5 градусов на каждой не занятой, пригодной для роста клетке на расстоянии 10 от травы будет посажена новая.</OCity_StorageTest_CreateGrassDescrip>
+	<OCity_StorageTest_LastIP>Предлагаемый IP</OCity_StorageTest_LastIP>
+	
+	<!-- OnlineCity_ClientData.cs -->
+	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
+	<OCity_ClientData_Chat>Чат </OCity_ClientData_Chat>
+	
+	<!-- Dialog_MainOnlineCity.cs -->
+	<OCity_Dialog_HelloLAN>Добро пожаловать в сетевую игру!</OCity_Dialog_HelloLAN>
+	<OCity_Dialog_ListChat>Чат</OCity_Dialog_ListChat>
+	<OCity_Dialog_ListInfo>Информация</OCity_Dialog_ListInfo>
+	<OCity_Dialog_ListAbout>О моде</OCity_Dialog_ListAbout>
+	<OCity_Dialog_Connecting>Соединение...</OCity_Dialog_Connecting>
+	<OCity_Dialog_Login>Логин: </OCity_Dialog_Login>
+	<OCity_Dialog_Players>Игроки: </OCity_Dialog_Players>
+	<OCity_Dialog_ChennelOwn> Создатель канала</OCity_Dialog_ChennelOwn>
+	<OCity_Dialog_ChennelUser> Участник</OCity_Dialog_ChennelUser>
+	<OCity_Dialog_ChennelCreate>Создать канал</OCity_Dialog_ChennelCreate>
+	<OCity_Dialog_ChennelClose>Закрыть канал</OCity_Dialog_ChennelClose>
+	<OCity_Dialog_OthersFunctions>Другие функции</OCity_Dialog_OthersFunctions>
+	<OCity_Dialog_ChennelCreate2>Создать канал</OCity_Dialog_ChennelCreate2>
+	<OCity_Dialog_ChennelLeave>Выйти из канала</OCity_Dialog_ChennelLeave>
+	<OCity_Dialog_ChennelRen>Переименовать</OCity_Dialog_ChennelRen>
+	<OCity_Dialog_ChennelCreating>Создание канала</OCity_Dialog_ChennelCreating>
+	<OCity_Dialog_ChennelCreateName>Введите название канала</OCity_Dialog_ChennelCreateName>
+	<OCity_Dialog_ChennelQuit>Выход из канала</OCity_Dialog_ChennelQuit>
+	<OCity_Dialog_ChennelQuitCheck>Вы действительно хотите покинуть канал?</OCity_Dialog_ChennelQuitCheck>
+	<OCity_Dialog_ChennelRen>Переименование канала</OCity_Dialog_ChennelRen>
+	<OCity_Dialog_ChennelNewName>Введите новое название канала </OCity_Dialog_ChennelNewName>
+	<OCity_Dialog_PrivateMessage>Личное сообщение</OCity_Dialog_PrivateMessage>
+	<OCity_Dialog_ChennelAddUser>Добавить участника</OCity_Dialog_ChennelAddUser>
+	<OCity_Dialog_ChennelPlayerInfo>Информация</OCity_Dialog_ChennelPlayerInfo>
+	<OCity_Dialog_ChennelPlayerInfoTitle>Информация о </OCity_Dialog_ChennelPlayerInfoTitle>
+	<OCity_Dialog_AboutMode>О моде OnlineCity</OCity_Dialog_AboutMode>
+	<OCity_Dialog_AutorPage>Страница автора</OCity_Dialog_AutorPage>
+	<OCity_Dialog_Regame>Начать заново</OCity_Dialog_Regame>
+	<OCity_Dialog_DeleteData>Удаление всех игровых данных</OCity_Dialog_DeleteData>
+	<OCity_Dialog_DeleteDataCheck>Вы действительно хотите полностью удалить игру и начать заново?</OCity_Dialog_DeleteDataCheck>
+	<OCity_Dialog_DeletedData>Игра удалена. Войдите снова, чтобы создать новую.</OCity_Dialog_DeletedData>
+	
+	<!-- OnlineCity_Dialog_CreateWorld.cs -->
+	<OCity_Dialog_CreateWorld_Create>Создать мир</OCity_Dialog_CreateWorld_Create>
+	<OCity_Dialog_CreateWorld_BtnOk>OK</OCity_Dialog_CreateWorld_BtnOk>
+	<OCity_Dialog_CreateWorld_BtnCancel>Отмена</OCity_Dialog_CreateWorld_BtnCancel>
+	<OCity_Dialog_CreateWorld_Seed>Зерно</OCity_Dialog_CreateWorld_Seed>
+	<OCity_Dialog_CreateWorld_Difficulty>Сложность. Целое от 0 (очень просто) до 2 (тяжело)</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_MapSize>Размер карты местности (200 - малая, 400 - огромная)</OCity_Dialog_CreateWorld_MapSize>
+	<OCity_Dialog_CreateWorld_PercentWorld>Процент генерации поверхности планеты (от 5 до 100)</OCity_Dialog_CreateWorld_PercentWorld>
+	
+	<!-- Dialog_LoginForm.cs -->
+	<OCity_LoginForm_BtnEnter>Вход</OCity_LoginForm_BtnEnter>
+	<OCity_LoginForm_Register>Регистрация</OCity_LoginForm_Register>
+	<OCity_LoginForm_Close>Закрыть</OCity_LoginForm_Close>
+	<OCity_LoginForm_LabelEnter>Вход</OCity_LoginForm_LabelEnter>
+	<OCity_LoginForm_Server>Сервер:</OCity_LoginForm_Server>
+	<OCity_LoginForm_Login>Логин:</OCity_LoginForm_Login>
+	<OCity_LoginForm_Pass>Пароль:</OCity_LoginForm_Pass>
+	
+	<!-- SessionClientController.cs -->
+	<OCity_SessionCC_ConnectionFailTitle>Соединение не установлено</OCity_SessionCC_ConnectionFailTitle>
+	<OCity_SessionCC_LoginFailTitle>Ошибка входа</OCity_SessionCC_LoginFailTitle>
+	<OCity_SessionCC_RegFailTitle>Ошибка регистрации</OCity_SessionCC_RegFailTitle>
+	<OCity_SessionCC_MsgCanceledCreateW>Отменено</OCity_SessionCC_MsgCanceledCreateW>
+	<OCity_SessionCC_MsgCreateWorlErr>Произошла ошибка, попробуйте ещё раз.</OCity_SessionCC_MsgCreateWorlErr>
+	<OCity_SessionCC_MsgCreateWorlGood>Ура! Мир на сервере создан!</OCity_SessionCC_MsgCreateWorlGood>
+	<OCity_SessionCC_MsgCreatingServer>Создание сервера</OCity_SessionCC_MsgCreatingServer>
+	<!-- <OCity_SessionCC_Disconnected>Ошибка соединения.</OCity_SessionCC_Disconnected> -->
+	<OCity_SessionCC_Disconnect>Игра прервана</OCity_SessionCC_Disconnect>
+	
+	<!-- UpdateWorldController.cs -->
+	<OCity_UpdateWorld_Trade>Передача</OCity_UpdateWorld_Trade>
+	<OCity_UpdateWorld_TradeDetails>От игрока {0} в {1} переданы предметы: {2}</OCity_UpdateWorld_TradeDetails>
+	
+	<!-- Dialog_Input.cs -->
+	<OCity_DialogInput_Ok>OK</OCity_DialogInput_Ok>
+	<OCity_DialogInput_Cancele>Отмена</OCity_DialogInput_Cancele>
+	
+	<!-- Dialog_Registration.cs -->
+	<OCity_Dialog_Registration_Close>Закрыть</OCity_Dialog_Registration_Close>
+	<OCity_Dialog_Registration_BtnReg>Регистрация</OCity_Dialog_Registration_BtnReg>
+	<OCity_Dialog_Registration_LabelReg>Регистрация</OCity_Dialog_Registration_LabelReg>
+	<OCity_Dialog_Registration_Server>Сервер:</OCity_Dialog_Registration_Server>
+	<OCity_Dialog_Registration_Login>Логин:</OCity_Dialog_Registration_Login>
+	<OCity_Dialog_Registration_Pass>Пароль:</OCity_Dialog_Registration_Pass>
+	<OCity_Dialog_Registration_Check>Подтверждение:</OCity_Dialog_Registration_Check>
+	
+	<!-- Dialog_TradeOnline.cs -->
+	<OCity_Dialog_TradeOnline_Trade>Передача товаров</OCity_Dialog_TradeOnline_Trade>
+	
+	<!-- GrassFix.cs -->
+	<OCity_GrassFix_Plant>Посажено </OCity_GrassFix_Plant>
+	<OCity_GrassFix_Grass> травы</OCity_GrassFix_Grass>
+	
+	<!-- PlayerClient.cs -->
+	<OCity_PlayerClient_LastTick>Играет всего лет: {0}, дней: {1}.</OCity_PlayerClient_LastTick>
+	<OCity_PlayerClient_LastSaveTime>Был в игре: {2}</OCity_PlayerClient_LastSaveTime>
+	<OCity_PlayerClient_baseCount>Поселений: {3}</OCity_PlayerClient_baseCount>
+	<OCity_PlayerClient_caravanCount>Караванов: {4}</OCity_PlayerClient_caravanCount>
+	<OCity_PlayerClient_marketValue>Ценность вещей: {5}</OCity_PlayerClient_marketValue>
+	<OCity_PlayerClient_marketValuePawn>Ценность людей и животных: {6}</OCity_PlayerClient_marketValuePawn>
+	<OCity_PlayerClient_LastSaveTimeNon>не участвовал</OCity_PlayerClient_LastSaveTimeNon>
+	
+	<!-- SCC.cs -->
+	<!-- <OCity_SCC_Disconnected>Ошибка соединения.</OCity_SCC_Disconnected>
+	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
+	
+	<!-- Dialog_MainOnlineCity.cs -->
+	<OCity_InfoTabText>Полезно знать: 
+
+* Пока сетевая игра ориентирована только на взаимопомощь в выживании. 
+
+* Цвет домов и караванов других игроков – синий. С ними можно взаимодействовать, выделив свой караван и нажав на них правой кнопкой мыши. 
+
+* При передаче товаров учитывайте грузоподъемность караванов. При перегрузе караван не сможет передвигаться. Выделив караван, можно узнать сколько груза он ещё может принять. 
+
+* Чтобы товары, полученные от сделок с другими игроками, складировались в определенном месте вашего поселения, переименуйте нужный склад так, чтобы он содержал символы ""торг"" или ""trad"".
+
+* В общем чате можно общаться со всеми игроками, которые находятся онлайн. Так же можно создать приватный канал для общения с одним игроком лично. 
+
+* По щелчку любой кнопки мыши на никнейме игрока происходит добавление игрока в активный чат, открытие приватного канала чата, либо просмотр общей информации об игроке на выбор. 
+	</OCity_InfoTabText>
+	<OCity_AboutTabText> Автор Василий Иванов aka Aant. 
+
+Данный мод позволяет играть на одной планете нескольким игрокам в режиме онлайн. На данный момент доступны только дружественные взаимодействия. Игроки могут следить за развитием друг друга, за движением караванов. Так же могут создавать свои караваны для торговли друг с другом. 
+
+Синхронизация с сервером происходит каждые 5 секунд, полноценное сохранение – раз в минуту или при выходе из игры посредством меню. 
+Не рекомендуется закрывать игру нажатием на крестик! Это может привести к потере прогресса игры за последнюю минуту. 
+
+Полезно знать: 
+
+* Пока сетевая игра ориентирована только на взаимопомощь в выживании. 
+
+* Цвет домов и караванов других игроков – синий. С ними можно взаимодействовать, выделив свой караван и нажав на них правой кнопкой мыши. 
+
+* При передаче товаров учитывайте грузоподъемность караванов. При перегрузе караван не сможет передвигаться. Выделив караван, можно узнать сколько груза он ещё может принять. 
+
+* Чтобы товары, полученные от сделок с другими игроками, складировались в определенном месте вашего поселения, переименуйте нужный склад так, чтобы он содержал символы ""торг"" или ""trad"".
+
+* В общем чате можно общаться со всеми игроками, которые находятся онлайн. Так же можно создать приватный канал для общения с одним игроком лично. 
+
+* По щелчку любой кнопки мыши на никнейме игрока происходит добавление игрока в активный чат, открытие приватного канала чата, либо просмотр общей информации об игроке на выбор. 
+
+</OCity_AboutTabText>
+	
+</LanguageData>

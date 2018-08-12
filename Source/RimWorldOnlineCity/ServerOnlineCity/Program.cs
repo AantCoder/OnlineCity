@@ -1,0 +1,33 @@
+﻿using OCServer;
+using OCUnion;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Util;
+
+namespace ServerOnlineCity
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var workPort = args == null || args.Length < 1 ? 0 : int.Parse(args[0]);
+            var workPath = @"C:\World" + (workPort == 0 ? "" : "\\" + workPort.ToString());
+
+            Directory.CreateDirectory(workPath);
+            File.Delete(workPath + @"\Log.txt");
+
+            Loger.PathLog = workPath;
+            Loger.IsServer = true;
+            var serverManader = new ServerManader();
+            serverManader.LogMessage += (msg) => Console.WriteLine(msg);
+            Loger.Log("Server Console Start!");
+            if (workPort == 0)
+                serverManader.Start(workPath);
+            else
+                serverManader.Start(workPath, workPort);
+        }
+    }
+}

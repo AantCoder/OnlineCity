@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <WorldObjectDef>
+    <defName>CaravanOnline</defName>
+    <label>other player's caravan</label>
+    <description>Other online player's caravan</description>
+    <worldObjectClass>RimWorldOnlineCity.CaravanOnline</worldObjectClass>
+    <texture>World/WorldObjects/CaravanOnline</texture>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/WorldObjects/CaravanOnlineExpanding</expandingIconTexture>
+    <expandingIconPriority>95</expandingIconPriority>
+  </WorldObjectDef>
+  
+- <WorldObjectDef>
+    <defName>BaseOnline</defName> 
+    <label>other player's base</label> 
+    <description>Other online player's base</description> 
+    <worldObjectClass>RimWorldOnlineCity.BaseOnline</worldObjectClass> 
+    <expandingIcon>true</expandingIcon> 
+    <expandingIconPriority>11</expandingIconPriority> 
+    <comps>
+      <li Class="WorldObjectCompProperties_CaravanRequest" /> 
+    </comps>
+  </WorldObjectDef>
+  
+</Defs>
