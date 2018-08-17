@@ -93,7 +93,7 @@
 	<OCity_SessionCC_MsgCreateWorlErr>Произошла ошибка, попробуйте ещё раз.</OCity_SessionCC_MsgCreateWorlErr>
 	<OCity_SessionCC_MsgCreateWorlGood>Ура! Мир на сервере создан!</OCity_SessionCC_MsgCreateWorlGood>
 	<OCity_SessionCC_MsgCreatingServer>Создание сервера</OCity_SessionCC_MsgCreatingServer>
-	<!-- <OCity_SessionCC_Disconnected>Ошибка соединения.</OCity_SessionCC_Disconnected> -->
+	<OCity_SessionCC_Disconnected>Ошибка соединения.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Игра прервана</OCity_SessionCC_Disconnect>
 	
 	<!-- UpdateWorldController.cs -->

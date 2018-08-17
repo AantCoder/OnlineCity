@@ -3,6 +3,7 @@ using OCUnion;
 using RimWorldOnlineCity;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -21,11 +22,16 @@ namespace Chat
         public static void Init()
         {
             //MainHelper.DebugMode = true;
-            if (MainHelper.DebugMode)
+            //if (MainHelper.DebugMode)
+            try
             {
-                var workPath = @"C:\World";
+                var workPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+                    , @"..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity");
+                Directory.CreateDirectory(workPath);
                 Loger.PathLog = workPath;
             }
+            catch { }
 
             Loger.Log("Chat Init");
             ClientData.UIInteraction = false;

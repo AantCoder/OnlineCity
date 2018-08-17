@@ -39,7 +39,7 @@ namespace RimWorldOnlineCity
             {
                 Current.Game.InitData.startingPawns.Add(PawnGenerateRandom());
             }
-            if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + @"SrvTest.txt", DevelopTest.TextObj(Current.Game.InitData.startingPawns, true), Encoding.UTF8);
+            //if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + @"SrvTest.txt", DevelopTest.TextObj(Current.Game.InitData.startingPawns, true), Encoding.UTF8);
             for (int i = 0; i < pawnsCount; i++)
             {
                 StartingPawnUtility.RandomizeInPlace(Current.Game.InitData.startingPawns[i]);

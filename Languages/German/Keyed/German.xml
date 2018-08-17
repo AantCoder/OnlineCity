@@ -93,7 +93,7 @@
 	<OCity_SessionCC_MsgCreateWorlErr>Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</OCity_SessionCC_MsgCreateWorlErr>
 	<OCity_SessionCC_MsgCreateWorlGood>Hurra! Die Welt auf dem Server Ist geschaffen!</OCity_SessionCC_MsgCreateWorlGood>
 	<OCity_SessionCC_MsgCreatingServer>Server erstellen</OCity_SessionCC_MsgCreatingServer>
-	<!-- <OCity_SessionCC_Disconnected>Vereinigung Fehler</OCity_SessionCC_Disconnected -->
+	<OCity_SessionCC_Disconnected>Vereinigung Fehler</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Spiel abgebrochen</OCity_SessionCC_Disconnect>
 
 	<!-- UpdateWorldController.cs -->

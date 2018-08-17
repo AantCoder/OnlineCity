@@ -93,7 +93,7 @@
 	<OCity_SessionCC_MsgCreateWorlErr>There was an error, please try again.</OCity_SessionCC_MsgCreateWorlErr>
 	<OCity_SessionCC_MsgCreateWorlGood>Hooray! The world on the server is created!</OCity_SessionCC_MsgCreateWorlGood>
 	<OCity_SessionCC_MsgCreatingServer>Creating a server</OCity_SessionCC_MsgCreatingServer>
-	<!-- <OCity_SessionCC_Disconnected>Disconnected.</OCity_SessionCC_Disconnected> -->
+	<OCity_SessionCC_Disconnected>Disconnected.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Disconnect</OCity_SessionCC_Disconnect>
 	
 	<!-- UpdateWorldController.cs -->

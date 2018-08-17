@@ -58,11 +58,16 @@ namespace RimWorldOnlineCity
         /// </summary>
         public static void Init()
         {
-            if (MainHelper.DebugMode)
+            //if (MainHelper.DebugMode) 
+            try
             {
-                var workPath = @"C:\World";
+                var workPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+                    , @"..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity");
+                Directory.CreateDirectory(workPath);
                 Loger.PathLog = workPath;
             }
+            catch { }
 
             Loger.Log("Client Init");
         }
@@ -190,7 +195,7 @@ namespace RimWorldOnlineCity
                 {
                     //Loger.Log("Client UpdateChats f2");
                     Data.LastServerConnectFail = true;
-                    if (!Data.ServerConnected) Disconnected();
+                    if (!Data.ServerConnected) Disconnected("OCity_SessionCC_Disconnected".Translate());
                 }
                 //todo Сделать сброс крутяшки после обновления чата (см. Dialog_MainOnlineCity)
             });
@@ -532,7 +537,7 @@ namespace RimWorldOnlineCity
             });
         }
 
-        public static void Disconnected(string msg = "Ошибка соединения.")
+        public static void Disconnected(string msg)
         {
             Loger.Log("Client Disconected :( ");
             GameExit.BeforeExit = null;
