@@ -538,7 +538,10 @@ namespace RimWorldOnlineCity
             GameExit.BeforeExit = null;
             TimersStop();
             SessionClient.Get.Disconnect();
-            Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_Disconnect".Translate(), msg, null, () =>
+            if (msg == null)
+                GenScene.GoToMainMenu();
+            else
+                Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_Disconnect".Translate(), msg, null, () =>
             {
                 GenScene.GoToMainMenu();
             }));

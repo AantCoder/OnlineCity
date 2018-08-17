@@ -74,13 +74,13 @@ namespace OCServer
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
                 //Loger.Log("Server " + Loger.Bytes(rec2));
                 //Loger.Log("Server Loop3");
-                var recObj = (ModelContainer)GZip.Deserialize(rec2);
+                var recObj = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
                 //Loger.Log("Server Loop4");
 
                 var sendObj = Service(recObj);
 
                 //Loger.Log("Server Loop5");
-                var ob = GZip.Serialize(sendObj);
+                var ob = GZip.ZipObjByte(sendObj); //Serialize
                 //Loger.Log("Server Loop6");
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
                 //Loger.Log("Server Loop7");

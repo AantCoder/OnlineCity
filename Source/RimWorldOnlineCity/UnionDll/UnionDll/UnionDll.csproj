@@ -34,6 +34,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +49,7 @@
     <Compile Include="ExceptionUtil.cs" />
     <Compile Include="GameXMLUtils.cs" />
     <Compile Include="Loger.cs" />
+    <Compile Include="Transfer\GZip.SharpZipLib.cs" />
     <Compile Include="Transfer\Model\Chat.cs" />
     <Compile Include="Transfer\Model\ChatPost.cs" />
     <Compile Include="Transfer\Model\Playser.cs" />
@@ -71,7 +76,9 @@
     <Compile Include="Transfer\SessionClient.cs" />
     <Compile Include="WorkTimer.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

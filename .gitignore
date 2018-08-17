@@ -17,3 +17,5 @@
 /Source/RimWorldOnlineCity/ServerOnlineCity/obj
 /Source/RimWorldOnlineCity/ServerDll/bin
 /Source/RimWorldOnlineCity/ServerDll/obj
+/Source/RimWorldOnlineCity/packages
+/Assemblies/ICSharpCode.SharpZipLib.dll

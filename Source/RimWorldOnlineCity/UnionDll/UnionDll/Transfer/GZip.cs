@@ -6,7 +6,7 @@ using System.IO.Compression;
 
 namespace Util
 {
-    public static class GZip
+    public static partial class GZip
     {
 
         [ThreadStatic]
@@ -66,14 +66,8 @@ namespace Util
 
         public static byte[] ZipStreamByte(Stream msi)
         {
-            using (var mso = new MemoryStream())
+            using (var mso = CreateToStream(msi, "data"))
             {
-                using (var gs = new GZipStream(mso, CompressionMode.Compress))
-                {
-                    //msi.CopyTo(gs);
-                    CopyTo(msi, gs);
-                }
-
                 return mso.ToArray();
             }
         }
@@ -114,13 +108,8 @@ namespace Util
         public static object UnzipObjByte(byte[] bytes)
         {
             using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
+            using (var mso = UnpackFromStream(msi))
             {
-                using (var gs = new GZipStream(msi, CompressionMode.Decompress))
-                {
-                    //gs.CopyTo(mso);
-                    CopyTo(gs, mso);
-                }
                 mso.Seek(0, SeekOrigin.Begin);
                 if (formatter == null) formatter = new BinaryFormatter();
                 return formatter.Deserialize(mso);
@@ -129,14 +118,8 @@ namespace Util
 
         public static byte[] UnzipStreamByte(Stream msi)
         {
-            using (var mso = new MemoryStream())
+            using (var mso = UnpackFromStream(msi))
             {
-                using (var gs = new GZipStream(msi, CompressionMode.Decompress))
-                {
-                    //gs.CopyTo(mso);
-                    CopyTo(gs, mso);
-                }
-
                 return mso.ToArray();
             }
         }

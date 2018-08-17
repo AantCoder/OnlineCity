@@ -64,6 +64,44 @@ namespace RimWorldOnlineCity
                     }, null);
                     optList.Insert(0, item);
                 }
+                else
+                {
+                    if (SessionClient.Get.IsLogined)
+                    {
+                        for (int i = 0; i < optList.Count; i++)
+                        {
+                            if (optList[i].label == "Save".Translate()
+                                || optList[i].label == "LoadGame".Translate()
+                                || optList[i].label == "ReviewScenario".Translate()
+                                || optList[i].label == "SaveAndQuitToMainMenu".Translate()
+                                || optList[i].label == "SaveAndQuitToOS".Translate()
+                                || optList[i].label == "ConfirmQuit".Translate()
+                                || optList[i].label == "QuitToMainMenu".Translate()
+                                || optList[i].label == "QuitToOS".Translate())
+                            {
+                                optList.RemoveAt(i--);
+                            }
+                        }
+                        var item = new ListableOption("QuitToMainMenu".Translate(), delegate
+                        {
+                            if (GameExit.BeforeExit != null)
+                            {
+                                GameExit.BeforeExit();
+                            }
+                            GenScene.GoToMainMenu();
+                        }, null);
+                        optList.Add(item);
+                        item = new ListableOption("QuitToOS".Translate(), delegate
+                        {
+                            if (GameExit.BeforeExit != null)
+                            {
+                                GameExit.BeforeExit();
+                            }
+                            Root.Shutdown();
+                        }, null);
+                        optList.Add(item);
+                    }
+                }
             }
 
             if (Inited) return;

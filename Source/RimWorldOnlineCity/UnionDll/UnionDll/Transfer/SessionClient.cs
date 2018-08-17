@@ -93,7 +93,7 @@ namespace Transfer
             lock (this)
             {
                 //Loger.Log("Client T1");
-                var ob = GZip.Serialize(sendObj);
+                var ob = GZip.ZipObjByte(sendObj); //Serialize
                 //Loger.Log("Client Push " + Loger.Bytes(ob));
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
                 //Loger.Log("Client Send");
@@ -103,7 +103,7 @@ namespace Transfer
                 //Loger.Log("Client Received");
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
                 //Loger.Log("Client Pop " + Loger.Bytes(rec2));
-                return (ModelContainer)GZip.Deserialize(rec2);
+                return (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
             }
         }
         

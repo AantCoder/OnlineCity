@@ -4,3 +4,4 @@ Licensed under the Apache License, Version 2.0
 List of components used in OnlineCity:
 * Harmony library made by Andreas Pardeike (MIT license) https://github.com/pardeike/Harmony
 * HugsLib https://github.com/UnlimitedHugs/RimworldHugsLib
+* SharpZipLib made by ICSharpCode (MIT license)  https://github.com/icsharpcode/SharpZipLib 
