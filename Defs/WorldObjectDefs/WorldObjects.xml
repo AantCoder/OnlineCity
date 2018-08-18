@@ -3,7 +3,7 @@
 
   <WorldObjectDef>
     <defName>CaravanOnline</defName>
-    <label>other player's caravan</label>
+    <label>Other player's caravan</label>
     <description>Other online player's caravan</description>
     <worldObjectClass>RimWorldOnlineCity.CaravanOnline</worldObjectClass>
     <texture>World/WorldObjects/CaravanOnline</texture>

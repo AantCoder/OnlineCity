@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <MainButtonDef>
+        <defName>MainButtonOnline</defName>
+        <label>Online</label>
+        <description>Online functions</description>
+		<workerClass>RimWorldOnlineCity.MainButtonWorker_OC</workerClass>
+        <tabWindowClass>RimWorldOnlineCity.MainTabWindow_OC</tabWindowClass>
+        <order>20</order>
+  </MainButtonDef>
+  
+</Defs>

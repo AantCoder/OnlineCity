@@ -394,7 +394,7 @@ namespace RimWorldOnlineCity
         private void CannalRename()
         {
             var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
-            var form = new Dialog_Input("OCity_Dialog_ChennelRen".Translate(), "OCity_Dialog_ChennelNewName".Translate() + selectCannal.Name, "");
+            var form = new Dialog_Input("OCity_Dialog_ChennelRenLabel".Translate(), "OCity_Dialog_ChennelNewName".Translate() + selectCannal.Name, "");
             form.PostCloseAction = () =>
             {
                 if (form.ResultOK && form.InputText != null)

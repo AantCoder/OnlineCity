@@ -54,7 +54,7 @@
 	<OCity_Dialog_ChennelCreateName>Gib einen Titel ein Kanal</OCity_Dialog_ChennelCreateName>
 	<OCity_Dialog_ChennelQuit>Den Kanal verlassen</OCity_Dialog_ChennelQuit>
 	<OCity_Dialog_ChennelQuitCheck>Der Kanal wirklich verlassen?</OCity_Dialog_ChennelQuitCheck>
-	<OCity_Dialog_ChennelRen>Einen Kanal umbenennen</OCity_Dialog_ChennelRen>
+	<OCity_Dialog_ChennelRenLabel>Einen Kanal umbenennen</OCity_Dialog_ChennelRenLabel>
 	<OCity_Dialog_ChennelNewName>Neuen Kanalname eingeben</OCity_Dialog_ChennelNewName>
 	<OCity_Dialog_PrivateMessage>Private Nachricht</OCity_Dialog_PrivateMessage>
 	<OCity_Dialog_ChennelAddUser>Mitglied hinzufügen</OCity_Dialog_ChennelAddUser>
@@ -70,6 +70,8 @@
 	<!-- OnlineCity_Dialog_CreateWorld.cs -->
 	<OCity_Dialog_CreateWorld_Create>Erschaffe eine Welt</OCity_Dialog_CreateWorld_Create>
 	<OCity_Dialog_CreateWorld_BtnOk>OK</OCity_Dialog_CreateWorld_BtnOk>
+	<OCity_Dialog_CreateWorld_Err>Fehler</OCity_Dialog_CreateWorld_Err>
+	<OCity_Dialog_CreateWorld_Err2>Ungültige Parameter</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Abbrechen</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Korn</OCity_Dialog_CreateWorld_Seed>
 	<OCity_Dialog_CreateWorld_Difficulty>Spiel Schwierigkeitsgrad von 0 (sehr einfach) bis 2 (schwer)</OCity_Dialog_CreateWorld_Difficulty>

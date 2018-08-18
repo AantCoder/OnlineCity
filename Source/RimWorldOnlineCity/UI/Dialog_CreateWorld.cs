@@ -81,7 +81,7 @@ namespace RimWorldOnlineCity
                     || !int.TryParse(InputPlanetCoverage, out ii) || ii < 5 || ii > 100
                     )
                 {
-                    Find.WindowStack.Add(new Dialog_Message("Ошибка".Translate(), "Неверно заполнены параметры".Translate(), null, null));
+                    Find.WindowStack.Add(new Dialog_Message("OCity_Dialog_CreateWorld_Err".Translate(), "OCity_Dialog_CreateWorld_Err2".Translate(), null, null));
                 }
                 else
                 {

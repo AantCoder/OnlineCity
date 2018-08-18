@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+ <CaravanOnline.label>уараван гравця</CaravanOnline.label>
+ <CaravanOnline.description>Караван іншого гравця</CaravanOnline.description>
+
+ <BaseOnline.label>поселення гравця</BaseOnline.label>
+ <BaseOnline.description>Поселення іншого гравця</BaseOnline.description>
+
+</LanguageData>

@@ -54,7 +54,7 @@
 	<OCity_Dialog_ChennelCreateName>Enter a name for the channel</OCity_Dialog_ChennelCreateName>
 	<OCity_Dialog_ChennelQuit>Exiting the channel</OCity_Dialog_ChennelQuit>
 	<OCity_Dialog_ChennelQuitCheck>Are you sure you want to leave the channel?</OCity_Dialog_ChennelQuitCheck>
-	<OCity_Dialog_ChennelRen>Renaming a channel</OCity_Dialog_ChennelRen>
+	<OCity_Dialog_ChennelRenLabel>Renaming a channel</OCity_Dialog_ChennelRenLabel>
 	<OCity_Dialog_ChennelNewName>Enter a new channel name </OCity_Dialog_ChennelNewName>
 	<OCity_Dialog_PrivateMessage>Private message</OCity_Dialog_PrivateMessage>
 	<OCity_Dialog_ChennelAddUser>Add member</OCity_Dialog_ChennelAddUser>
@@ -70,6 +70,8 @@
 	<!-- OnlineCity_Dialog_CreateWorld.cs -->
 	<OCity_Dialog_CreateWorld_Create>Create a world</OCity_Dialog_CreateWorld_Create>
 	<OCity_Dialog_CreateWorld_BtnOk>OK</OCity_Dialog_CreateWorld_BtnOk>
+	<OCity_Dialog_CreateWorld_Err>Error</OCity_Dialog_CreateWorld_Err>
+	<OCity_Dialog_CreateWorld_Err2>Invalid parameters</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Cancel</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Seed</OCity_Dialog_CreateWorld_Seed>
 	<OCity_Dialog_CreateWorld_Difficulty>Difficulty. Integer from 0 (very simple) to 2 (difficult)</OCity_Dialog_CreateWorld_Difficulty>

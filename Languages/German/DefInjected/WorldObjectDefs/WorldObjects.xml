@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+ <CaravanOnline.label>spieler karawane</CaravanOnline.label>
+ <CaravanOnline.description>Karawane anderen Spielers </CaravanOnline.description>
+
+ <BaseOnline.label>spieler siedlung </BaseOnline.label>
+ <BaseOnline.description>Siedlung anderen Spielers</BaseOnline.description>
+
+</LanguageData>

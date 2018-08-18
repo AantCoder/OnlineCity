@@ -54,7 +54,7 @@
 	<OCity_Dialog_ChennelCreateName>Введите название канала</OCity_Dialog_ChennelCreateName>
 	<OCity_Dialog_ChennelQuit>Выход из канала</OCity_Dialog_ChennelQuit>
 	<OCity_Dialog_ChennelQuitCheck>Вы действительно хотите покинуть канал?</OCity_Dialog_ChennelQuitCheck>
-	<OCity_Dialog_ChennelRen>Переименование канала</OCity_Dialog_ChennelRen>
+	<OCity_Dialog_ChennelRenLabel>Переименование канала</OCity_Dialog_ChennelRenLabel>
 	<OCity_Dialog_ChennelNewName>Введите новое название канала </OCity_Dialog_ChennelNewName>
 	<OCity_Dialog_PrivateMessage>Личное сообщение</OCity_Dialog_PrivateMessage>
 	<OCity_Dialog_ChennelAddUser>Добавить участника</OCity_Dialog_ChennelAddUser>
@@ -70,6 +70,8 @@
 	<!-- OnlineCity_Dialog_CreateWorld.cs -->
 	<OCity_Dialog_CreateWorld_Create>Создать мир</OCity_Dialog_CreateWorld_Create>
 	<OCity_Dialog_CreateWorld_BtnOk>OK</OCity_Dialog_CreateWorld_BtnOk>
+	<OCity_Dialog_CreateWorld_Err>Ошибка</OCity_Dialog_CreateWorld_Err>
+	<OCity_Dialog_CreateWorld_Err2>Неверно заполнены параметры</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Отмена</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Зерно</OCity_Dialog_CreateWorld_Seed>
 	<OCity_Dialog_CreateWorld_Difficulty>Сложность. Целое от 0 (очень просто) до 2 (тяжело)</OCity_Dialog_CreateWorld_Difficulty>
