@@ -6,6 +6,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using HugsLib.Utils;
 
 namespace RimWorldOnlineCity
 {
@@ -74,8 +75,19 @@ namespace RimWorldOnlineCity
             if (Widgets.ButtonText(new Rect(0, buttonYStart, btnSize.x, btnSize.y), "OCity_Dialog_CreateWorld_BtnOk".Translate())
                 || ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
             {
-                ResultOK = true;
-                Close();
+                int ii;
+                if (string.IsNullOrEmpty(InputSeed)
+                    || !int.TryParse(InputDifficulty, out ii) || ii < 0 || ii > 2
+                    || !int.TryParse(InputPlanetCoverage, out ii) || ii < 5 || ii > 100
+                    )
+                {
+                    Find.WindowStack.Add(new Dialog_Message("Ошибка".Translate(), "Неверно заполнены параметры".Translate(), null, null));
+                }
+                else
+                {
+                    ResultOK = true;
+                    Close();
+                }
             }
 
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x, buttonYStart, btnSize.x, btnSize.y), "OCity_Dialog_CreateWorld_BtnCancel".Translate()))
@@ -120,11 +132,11 @@ namespace RimWorldOnlineCity
             InputDifficulty = GUI.TextField(rect, InputDifficulty, 1);
             rect.y += textEditSize.y;
 
-            //todo Проверить, возможно это уже не надо, каждый выбирает при старте
-            Widgets.Label(rect, "OCity_Dialog_CreateWorld_MapSize".Translate());  
-            rect.y += textEditSize.y;
-            InputMapSize = GUI.TextField(rect, InputMapSize, 3);
-            rect.y += textEditSize.y;
+            //это уже не надо, каждый выбирает при старте
+            //Widgets.Label(rect, "OCity_Dialog_CreateWorld_MapSize".Translate());  
+            //rect.y += textEditSize.y;
+            //InputMapSize = GUI.TextField(rect, InputMapSize, 3);
+            //rect.y += textEditSize.y;
 
             Widgets.Label(rect, "OCity_Dialog_CreateWorld_PercentWorld".Translate());
             rect.y += textEditSize.y;

@@ -12,7 +12,7 @@ namespace OCUnion
 
         public static CultureInfo Culture = CultureInfo.GetCultureInfo("ru-RU");
 
-        public static string VersionInfo = "Версия 0.02.4a от 2018.08.17";
+        public static string VersionInfo = "Версия 0.02.5a от 2018.08.18";
 
         public static string ToGoodString(this DateTime that)
         {

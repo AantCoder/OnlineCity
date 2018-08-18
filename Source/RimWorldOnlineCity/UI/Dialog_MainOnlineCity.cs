@@ -360,7 +360,7 @@ namespace RimWorldOnlineCity
             var form = new Dialog_Input("OCity_Dialog_ChennelCreating".Translate(), "OCity_Dialog_ChennelCreateName".Translate(), "");
             form.PostCloseAction = () =>
             {
-                if (form.ResultOK && form.InputText != null)
+                if (form.ResultOK && !string.IsNullOrEmpty(form.InputText) && form.InputText.Replace(" ", "") != "")
                 {
                     var mainCannal = SessionClientController.Data.Chats[0];
                     SessionClientController.Command((connect) =>
@@ -420,7 +420,7 @@ namespace RimWorldOnlineCity
                 {
                     var privateChat = String.Compare(myLogin, item.Login) < 0
                         ? myLogin + " · " + item.Login
-                        : myLogin + " · " + item.Login;
+                        : item.Login + " · " + myLogin;
                     var index = lbCannals.DataSource.IndexOf(privateChat);
                     if (index >= 0)
                     {
