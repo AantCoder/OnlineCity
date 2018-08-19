@@ -26,6 +26,8 @@ namespace RimWorldOnlineCity
         public Dialog_LoginForm()
         {
             InputAddr = StorageData.GlobalData.LastIP.Value;
+            InputLogin = StorageData.GlobalData.LastLoginName.Value;
+            
             if (string.IsNullOrEmpty(InputAddr) && MainHelper.DebugMode)
             {
                 InputAddr = "localhost";
@@ -70,6 +72,7 @@ namespace RimWorldOnlineCity
                 if (msgError == null)
                 {
                     StorageData.GlobalData.LastIP.Value = InputAddr;
+                    StorageData.GlobalData.LastLoginName.Value = InputLogin;
                     HugsLibController.SettingsManager.SaveChanges();
                     //Loger.Log("login " + StorageData.GlobalData.LastIP.Value);
                     Close();
@@ -101,8 +104,7 @@ namespace RimWorldOnlineCity
 
             TextInput(mainListing, "OCity_LoginForm_Server".Translate(),
                 (sub, rect) =>
-                {
-                    GUI.SetNextControlName("StartTextField");
+                {                    
                     InputAddr = GUI.TextField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputAddr, 100);
                 });
 
@@ -115,7 +117,9 @@ namespace RimWorldOnlineCity
             TextInput(mainListing, "OCity_LoginForm_Pass".Translate(),
                 (sub, rect) =>
                 {
+                    GUI.SetNextControlName("StartTextField");
                     InputPassword = GUI.PasswordField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputPassword, "*"[0], 100);
+
                 });
             
             if (NeedFockus)

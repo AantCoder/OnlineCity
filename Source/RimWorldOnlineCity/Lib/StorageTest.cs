@@ -59,7 +59,7 @@ namespace RimWorldOnlineCity
         
         public SettingHandle<bool> GrassFixOn;
         public SettingHandle<string> LastIP;
-
+        public SettingHandle<string> LastLoginName;
         public override void DefsLoaded()
         {
             GrassFixOn = Settings.GetHandle<bool>("ocGrassFixOn"
@@ -70,6 +70,10 @@ namespace RimWorldOnlineCity
                 , "OCity_StorageTest_LastIP".Translate()
                 , null
                 , "");
+            LastLoginName = Settings.GetHandle<string>("ocLastLoginName"
+               , "OCity_StorageTest_LoginName".Translate()
+               , null
+               , "");
             LastIP.NeverVisible = true;
             LastIP.Unsaved = false;
 
