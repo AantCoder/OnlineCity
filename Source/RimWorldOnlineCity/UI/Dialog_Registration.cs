@@ -77,6 +77,7 @@ namespace RimWorldOnlineCity
                 if (msgError == null)
                 {
                     StorageData.GlobalData.LastIP.Value = InputAddr;
+                    StorageData.GlobalData.LastLoginName.Value = InputLogin;
                     HugsLibController.SettingsManager.SaveChanges();
                     Close();
                 }
