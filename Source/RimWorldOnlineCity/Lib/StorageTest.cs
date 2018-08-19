@@ -70,12 +70,14 @@ namespace RimWorldOnlineCity
                 , "OCity_StorageTest_LastIP".Translate()
                 , null
                 , "");
+            LastIP.NeverVisible = true;
+            LastIP.Unsaved = false;
             LastLoginName = Settings.GetHandle<string>("ocLastLoginName"
                , "OCity_StorageTest_LoginName".Translate()
                , null
                , "");
-            LastIP.NeverVisible = true;
-            LastIP.Unsaved = false;
+            LastLoginName.NeverVisible = true;
+            LastLoginName.Unsaved = false;
 
         }
     }

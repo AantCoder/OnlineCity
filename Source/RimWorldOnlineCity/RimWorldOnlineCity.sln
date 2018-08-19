@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "..\Test\Test.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat", "..\Chat\Chat.csproj", "{648325A2-044D-499C-86E6-7BEFFAE568AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converter", "..\Converter\Converter.csproj", "{FF65F157-9528-4680-ADB3-4770A8738370}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{648325A2-044D-499C-86E6-7BEFFAE568AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{648325A2-044D-499C-86E6-7BEFFAE568AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{648325A2-044D-499C-86E6-7BEFFAE568AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF65F157-9528-4680-ADB3-4770A8738370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF65F157-9528-4680-ADB3-4770A8738370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF65F157-9528-4680-ADB3-4770A8738370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF65F157-9528-4680-ADB3-4770A8738370}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

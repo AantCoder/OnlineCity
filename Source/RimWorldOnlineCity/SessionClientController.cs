@@ -70,6 +70,7 @@ namespace RimWorldOnlineCity
             catch { }
 
             Loger.Log("Client Init");
+            Loger.Log("Client Language: " + Prefs.LangFolderName);
         }
 
         private static object UpdatingWorld = new Object();
