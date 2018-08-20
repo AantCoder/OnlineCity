@@ -54,6 +54,10 @@
       <Project>{BB85A737-6A0A-4D84-BC94-D8657897D46A}</Project>
       <Name>ServerDll</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll\UnionDll.csproj">
+      <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
+      <Name>UnionDll</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

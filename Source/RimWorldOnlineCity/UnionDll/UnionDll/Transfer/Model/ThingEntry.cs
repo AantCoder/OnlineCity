@@ -55,6 +55,9 @@ namespace Model
         public bool WornByCorpse { get; set; }
         */
 
+        private ThingEntry()
+        { }
+
         public ThingEntry(Thing thing, int count)
         {
             Name = thing.LabelCapNoCount;

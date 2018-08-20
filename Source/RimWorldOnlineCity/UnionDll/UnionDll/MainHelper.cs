@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Verse;
 
 namespace OCUnion
 {
@@ -10,9 +11,30 @@ namespace OCUnion
     {
         public static bool DebugMode = false;
 
-        public static CultureInfo Culture = CultureInfo.GetCultureInfo("ru-RU");
+        public static string VersionInfo = "Версия 0.02.11a от 2018.08.20";
 
-        public static string VersionInfo = "Версия 0.02.9a от 2018.08.19";
+        private static CultureInfo CultureValue = null;
+        public static CultureInfo Culture
+        {
+            get
+            {
+                if (CultureValue == null)
+                {
+                    try
+                    {
+                        if ((Prefs.LangFolderName ?? "").StartsWith("Russian"))
+                            CultureValue = CultureInfo.GetCultureInfo("ru-RU");
+                        else
+                            CultureValue = CultureInfo.InvariantCulture;
+                    }
+                    catch
+                    {
+                        CultureValue = CultureInfo.InvariantCulture;
+                    }
+                }
+                return CultureValue;
+            }
+        }
 
         public static string ToGoodString(this DateTime that)
         {

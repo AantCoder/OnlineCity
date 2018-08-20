@@ -31,6 +31,9 @@ namespace OCServer.Model
 
         public List<ModelMailTrade> Mails = new List<ModelMailTrade>();
 
+        private PlayerServer()
+        { }
+
         public PlayerServer(string login)
         {
             Public = new Player()
