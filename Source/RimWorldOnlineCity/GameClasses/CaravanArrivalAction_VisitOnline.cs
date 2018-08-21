@@ -30,6 +30,7 @@ namespace RimWorldOnlineCity
         {
             get
             {
+                if (сaravanOnline == null) return "";
                 return (mode == "exchangeOfGoods" ? "OCity_Caravan_GoTrade".Translate() : "OCity_Caravan_GoTrade2".Translate())
                     .Translate(new object[]
                     {
