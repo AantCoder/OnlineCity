@@ -558,40 +558,51 @@ namespace RimWorldOnlineCity
         /// </summary>
         public static void InitGame()
         {
-            Loger.Log("Client InitGame()");
-            //Data.ChatsTime = DateTime.UtcNow + ServerTimeDelta; //без этого указания будут получены все сообщения с каналов
-
-            MainButtonWorker_OC.ShowOnStart();
-            UpdateWorldController.ClearWorld();
-            UpdateWorldController.InitGame();
-            Data.UpdateTime = DateTime.MinValue;
-            UpdateWorld(true);
-
-            Data.LastServerConnect = DateTime.MinValue;
-
-            Timers.Add(500, UpdateChats);
-            Timers.Add(5000, () => UpdateWorld(false));
-            Timers.Add(60000 * 15, BackgroundSaveGame);
-
-            //устанавливаем событие на выход из игры
-            GameExit.BeforeExit = () =>
+            try
             {
-                GameExit.BeforeExit = null;
-                if (Current.Game == null) return;
+                Loger.Log("Client InitGame()");
+                //Data.ChatsTime = DateTime.UtcNow + ServerTimeDelta; //без этого указания будут получены все сообщения с каналов
 
-                TimersStop();
-                Loger.Log("Client SaveGameBeforeExit " + SaveFullName);
-                GameDataSaveLoader.SaveGame(SaveName);
-                var content = File.ReadAllBytes(SaveFullName);
-                if (content.Length > 1024)
+                MainButtonWorker_OC.ShowOnStart();
+                UpdateWorldController.ClearWorld();
+                UpdateWorldController.InitGame();
+                Data.UpdateTime = DateTime.MinValue;
+                UpdateWorld(true);
+
+                Data.LastServerConnect = DateTime.MinValue;
+
+                Timers.Add(500, UpdateChats);
+                Timers.Add(5000, () => UpdateWorld(false));
+                Timers.Add(60000 * 15, BackgroundSaveGame);
+
+                //устанавливаем событие на выход из игры
+                GameExit.BeforeExit = () =>
                 {
-                    Data.SaveFileData = content;
-                    UpdateWorld(false);
+                    GameExit.BeforeExit = null;
+                    TimersStop();
+                    if (Current.Game == null) return;
 
-                    Loger.Log("Client SaveGameBeforeExit OK");
-                }
+                    Loger.Log("Client SaveGameBeforeExit " + SaveFullName);
+                    GameDataSaveLoader.SaveGame(SaveName);
+                    var content = File.ReadAllBytes(SaveFullName);
+                    if (content.Length > 1024)
+                    {
+                        Data.SaveFileData = content;
+                        UpdateWorld(false);
+
+                        Loger.Log("Client SaveGameBeforeExit OK");
+                    }
+                    SessionClient.Get.Disconnect();
+                };
+            }
+            catch(Exception e)
+            {
+                ExceptionUtil.ExceptionLog(e, "Client InitGame Error");
+                GameExit.BeforeExit = null;
+                TimersStop();
+                if (Current.Game == null) return;
                 SessionClient.Get.Disconnect();
-            };
+            }
         }
 
     }
