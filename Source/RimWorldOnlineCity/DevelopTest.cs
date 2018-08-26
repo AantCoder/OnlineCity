@@ -9,6 +9,8 @@ using Verse.AI;
 using RimWorld;
 using RimWorld.Planet;
 using Model;
+using RimWorldOnlineCity.UI;
+using HugsLib.Utils;
 
 namespace RimWorldOnlineCity
 {
@@ -53,7 +55,15 @@ namespace RimWorldOnlineCity
 
         public bool Run()
         {
-            return false;
+            var formm = new Dialog_SelectThingDef();
+            formm.ClearFilter();
+            formm.PostCloseAction = () =>
+            {
+                Find.WindowStack.Add(new Dialog_Message(formm.SelectThingDef?.defName, formm.SelectHitPointsPercents.ToString() + " " + formm.SelectQualities.ToString(), null, null));
+            };
+            Find.WindowStack.Add(formm);
+            return true;
+            //return false;
             /*
             var lll = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef);
 

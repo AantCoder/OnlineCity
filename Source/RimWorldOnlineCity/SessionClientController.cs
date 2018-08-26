@@ -578,6 +578,7 @@ namespace RimWorldOnlineCity
                 //устанавливаем событие на выход из игры
                 GameExit.BeforeExit = () =>
                 {
+                    Loger.Log("Client BeforeExit ");
                     GameExit.BeforeExit = null;
                     TimersStop();
                     if (Current.Game == null) return;
