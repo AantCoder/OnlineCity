@@ -55,12 +55,13 @@ namespace RimWorldOnlineCity
 
         public bool Run()
         {
-            var formm = new Dialog_SelectThingDef();
-            formm.ClearFilter();
+            var formm = new Dialog_Exchenge();
+            /*formm.ClearFilter();
             formm.PostCloseAction = () =>
             {
                 Find.WindowStack.Add(new Dialog_Message(formm.SelectThingDef?.defName, formm.SelectHitPointsPercents.ToString() + " " + formm.SelectQualities.ToString(), null, null));
             };
+            */
             Find.WindowStack.Add(formm);
             return true;
             //return false;

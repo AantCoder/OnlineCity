@@ -18,7 +18,7 @@ namespace RimWorldOnlineCity.UI
             {
                 if (TextHeight_value == 0)
                 {
-                    TextHeight_value = Text.CalcSize("HWDOA/|").y * 0.9f;
+                    TextHeight_value = Text.CalcSize("HWDOA/|").y;
                 }
                 return TextHeight_value;
             }
