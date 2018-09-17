@@ -35,6 +35,15 @@ namespace OCUnion
                 return CultureValue;
             }
         }
+        
+        public static string NeedTranslate(this string text)
+        {
+            return text;
+        }
+        public static string NeedTranslate(this string text, params object[] args)
+        {
+            return string.Format(text, args);
+        }
 
         public static string ToGoodString(this DateTime that)
         {

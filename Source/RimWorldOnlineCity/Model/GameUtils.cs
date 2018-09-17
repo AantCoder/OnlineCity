@@ -10,6 +10,7 @@ using System.Xml;
 using HugsLib.Utils;
 using OCUnion;
 using RimWorld.Planet;
+using UnityEngine;
 
 namespace RimWorldOnlineCity
 {
@@ -30,6 +31,119 @@ namespace RimWorldOnlineCity
     }
     static class GameUtils
     {
+        public static void DravLineThing(Rect rect, ThingTrade thing, bool withInfo)
+        {
+            Widgets.ThingIcon(rect, thing.Def);
+            if (string.IsNullOrEmpty(thing.StuffName))
+            {
+                TooltipHandler.TipRegion(rect, thing.Def.LabelCap);
+                if (withInfo) Widgets.InfoCardButton(rect.x + 24f, rect.y, thing.Def);
+            }
+            else
+            {
+                TooltipHandler.TipRegion(rect, thing.Def.LabelCap + " из ".NeedTranslate() + thing.StuffDef.LabelAsStuff);
+                if (withInfo) Widgets.InfoCardButton(rect.x + 24f, rect.y, thing.Def, thing.StuffDef);
+            }
+            // GenLabel.ThingLabel(this.Def, this.StuffDef, 1)
+        }
+
+        public static void DravLineThing(Rect rectLine, ThingDef thing, Color labelColor)
+        {
+            //Rect rect = new Rect(-1f, -1f, 27f, 27f);
+            Rect rect = new Rect(0f, 0f, 24f, 24f);
+
+            Widgets.ThingIcon(rect, thing);
+            Widgets.InfoCardButton(30f, 0f, thing);
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Rect rect2 = new Rect(55f, 0f, rectLine.width - 55f, rectLine.height);
+            Text.WordWrap = false;
+            GUI.color = labelColor;
+            Widgets.Label(rect2, thing.LabelCap);
+            GUI.color = Color.white;
+            Text.WordWrap = true;
+        }
+
+        public static void DravLineThing(Rect rectLine, Thing thing, Color labelColor)
+        {
+            //Rect rect = new Rect(-1f, -1f, 27f, 27f);
+            Rect rect = new Rect(0f, 0f, 24f, 24f);
+
+            Widgets.ThingIcon(rect, thing, 1f);
+
+            Widgets.InfoCardButton(30f, 0f, thing);
+
+            Text.Anchor = TextAnchor.MiddleLeft;
+            Text.Font = GameFont.Tiny;
+            Rect rect2 = new Rect(55f, 0f, rectLine.width - 55f, rectLine.height);
+            Text.WordWrap = false;
+            GUI.color = labelColor;
+            Widgets.Label(rect2, thing.LabelCapNoCount);
+            Text.WordWrap = true;
+            GenUI.ResetLabelAlign();
+            GUI.color = Color.white;
+
+            var localThing = thing;
+            TooltipHandler.TipRegion(rectLine, new TipSignal(delegate
+            {
+                string text = localThing.LabelCapNoCount;
+                string tipDescription = localThing.GetDescription();
+                if (!tipDescription.NullOrEmpty())
+                {
+                    text = text + ": " + tipDescription;
+                }
+                return text;
+            }, localThing.GetHashCode()));
+        }
+
+        /// <summary>
+        /// Объединяет одинаковые вещи в список внутри одного контейнера TransferableOneWay
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public static List<TransferableOneWay> DistinctThings(IEnumerable<Thing> things)
+        {
+            var transferables = new List<TransferableOneWay>();
+            foreach (var item in things)
+            {
+                TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(item, transferables);
+                if (transferableOneWay == null)
+                {
+                    transferableOneWay = new TransferableOneWay();
+                    transferables.Add(transferableOneWay);
+                }
+                transferableOneWay.things.Add(item);
+            }
+            return transferables;
+        }
+
+        public static List<TransferableOneWay> ChechToTrade(IEnumerable<ThingTrade> targets, IEnumerable<Thing> allThings)
+        {
+            var select = new List<TransferableOneWay>();
+            foreach (var target in targets)
+            {
+                //todo
+            }
+            return select;
+        }
+
+        public static List<Thing> GetAllThings(Caravan caravan)
+        {
+            var goods = CaravanInventoryUtility.AllInventoryItems(caravan).ToList().Concat(
+                caravan.PawnsListForReading
+                .Cast<Thing>()
+                ).ToList();
+            return goods;
+        }
+
+        public static List<Thing> GetAllThings(Map map)
+        {
+            var goods = CaravanFormingUtility.AllReachableColonyItems(map).ToList().Concat(
+                map.mapPawns.AllPawnsSpawned
+                .Cast<Thing>()
+                ).ToList();
+            return goods;
+        }
+
         public static string PlayerTextInfo(Player player)
         {
             //todo

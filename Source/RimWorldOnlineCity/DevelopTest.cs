@@ -14,6 +14,7 @@ using HugsLib.Utils;
 
 namespace RimWorldOnlineCity
 {
+
     public class DevelopTest
     {
         private static HashSet<string> ExcludeTypes = new HashSet<string>()
@@ -55,15 +56,12 @@ namespace RimWorldOnlineCity
 
         public bool Run()
         {
-            var formm = new Dialog_Exchenge();
-            /*formm.ClearFilter();
-            formm.PostCloseAction = () =>
-            {
-                Find.WindowStack.Add(new Dialog_Message(formm.SelectThingDef?.defName, formm.SelectHitPointsPercents.ToString() + " " + formm.SelectQualities.ToString(), null, null));
-            };
-            */
+            return false;
+            /*
+            var formm = new Dialog_Exchenge(Find.Maps[0]);
             Find.WindowStack.Add(formm);
             return true;
+            // */
             //return false;
             /*
             var lll = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef);
@@ -127,7 +125,7 @@ namespace RimWorldOnlineCity
                     Thing thin = null;
                     var thins = select.Select(p =>
                      {
-                         return new ThingEntry(thin = p.Key, p.Value);
+                         return ThingEntry.CreateEntry(thin = p.Key, p.Value);
                      }).ToList();
                     var outText = TextObj(thins, true);
                     File.WriteAllText(Loger.PathLog + @"Car.txt", outText, Encoding.UTF8);

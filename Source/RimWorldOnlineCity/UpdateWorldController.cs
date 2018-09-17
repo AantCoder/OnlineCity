@@ -237,6 +237,17 @@ namespace RimWorldOnlineCity
             return worldObjectEntry;
         }
 
+        public static WorldObjectEntry GetServerInfo(WorldObject myWorldObject)
+        {
+            WorldObjectEntry storeWO;
+            if (MyWorldObjectEntry == null 
+                || !MyWorldObjectEntry.TryGetValue(myWorldObject.ID, out storeWO))
+            {
+                return null;
+            }
+            return storeWO;
+        }
+
 
         #region Вычисление массы, сдернуто с Dialog_SplitCaravan
 

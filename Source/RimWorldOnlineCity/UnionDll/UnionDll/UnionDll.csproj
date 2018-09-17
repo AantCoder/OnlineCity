@@ -50,10 +50,13 @@
     <Compile Include="GameXMLUtils.cs" />
     <Compile Include="Loger.cs" />
     <Compile Include="Transfer\GZip.SharpZipLib.cs" />
+    <Compile Include="Transfer\ModelOrderTrade.cs" />
     <Compile Include="Transfer\Model\Chat.cs" />
     <Compile Include="Transfer\Model\ChatPost.cs" />
+    <Compile Include="Transfer\Model\Place.cs" />
     <Compile Include="Transfer\Model\Playser.cs" />
     <Compile Include="Transfer\Model\ThingEntry.cs" />
+    <Compile Include="Transfer\Model\ThingTrade.cs" />
     <Compile Include="Transfer\WorldObjectEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MainHelper.cs" />

@@ -54,10 +54,7 @@ namespace RimWorldOnlineCity
                     return;
                 }
 
-                var goods = CaravanInventoryUtility.AllInventoryItems(caravan).ToList().Concat(
-                    caravan.PawnsListForReading
-                    .Cast<Thing>()
-                    ).ToList();
+                var goods = GameUtils.GetAllThings(caravan);
                 
                 form = new Dialog_TradeOnline(goods
                     , сaravanOnline.OnlinePlayerLogin
@@ -98,7 +95,7 @@ namespace RimWorldOnlineCity
                                     p.inventory.innerContainer.TryAdd(thin, true);
                             }
                         }
-                        sendThings.Add(new ThingEntry(thing, numToTake));
+                        sendThings.Add(ThingEntry.CreateEntry(thing, numToTake));
                     }
                     SessionClientController.Command((connect) =>
                     {

@@ -185,22 +185,7 @@ namespace RimWorldOnlineCity
             }
             GUI.EndGroup();
         }
-
-        private void AddToTransferables(Thing t, bool setToTransferMax = false)
-        {
-            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(t, this.transferables);
-            if (transferableOneWay == null)
-            {
-                transferableOneWay = new TransferableOneWay();
-                this.transferables.Add(transferableOneWay);
-            }
-            transferableOneWay.things.Add(t);
-            if (setToTransferMax)
-            {
-                transferableOneWay.AdjustTo(transferableOneWay.MaxCount);
-            }
-        }
-
+        
         private void DrawMassAndFoodInfo(Rect rect)
         {
             //TransferableUIUtility.DrawMassInfo(rect, this.SourceMassUsage, this.SourceMassCapacity, "SplitCaravanMassUsageTooltip".Translate(), -9999f, false);
@@ -241,8 +226,7 @@ namespace RimWorldOnlineCity
 
         private void CalculateAndRecacheTransferables()
         {
-            this.transferables = new List<TransferableOneWay>();
-            this.AddItemsToTransferables();
+            this.transferables = GameUtils.DistinctThings(AllItem);
                 // Faction.OfPlayer.Name; - "Поселение"
                 // WorldObjectDefOf.Caravan.LabelCap - "Караван"
             CreateCaravanTransferableWidgets(this.transferables
@@ -263,15 +247,7 @@ namespace RimWorldOnlineCity
                                                          //where x.ThingDef.category != ThingCategory.Pawn
                                                          select x, sourceLabel, destLabel, thingCountTip, true, ignorePawnInventoryMass, false, availableMassGetter, 24f, ignoreCorpsesGearAndInventoryMass, true);
         }
-
-        private void AddItemsToTransferables()
-        {
-            foreach(var item in AllItem)
-            {
-                this.AddToTransferables(item, false);
-            }
-        }
-
+        
         private void CountToTransferChanged()
         {
             this.massUsageDirty = true;

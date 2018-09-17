@@ -9,6 +9,9 @@ using Verse;
 
 namespace Model
 {
+    /// <summary>
+    /// Модель хранящая игровой объект с для сериализации и восстановления.
+    /// </summary>
     [Serializable]
     public class ThingEntry
     {
@@ -28,60 +31,27 @@ namespace Model
         /// Оригинальный ID
         /// </summary>
         public int OriginalID { get; set; }
-        /*
-        /// <summary>
-        /// Тип вещи
-        /// </summary>
-        public string DefName { get; set; }
-        /// <summary>
-        /// Материал из чего изготовлено
-        /// </summary>
-        public string StuffName { get; set; }
-        /// <summary>
-        /// Текущая прочность, если 0 считается мсксимальной
-        /// </summary>
-        public int HitPoints { get; set; }
-        /// <summary>
-        /// Максимальная прочность (только информационно)
-        /// </summary>
-        public int MaxHitPoints { get; set; }
-        /// <summary>
-        /// Качество изготовления
-        /// </summary>
-        public int Quality { get; set; }
-        /// <summary>
-        /// Снято с трупа, применимо только к одежде
-        /// </summary>
-        public bool WornByCorpse { get; set; }
-        */
 
-        private ThingEntry()
+        protected ThingEntry()
         { }
 
-        public ThingEntry(Thing thing, int count)
+        public static ThingEntry CreateEntry(Thing thing, int count)
+        {
+            var that = new ThingEntry();
+            that.SetBaseInfo(thing, count);
+            var gx = new GameXMLUtils();
+            that.Data = gx.ToXml(thing);            
+            return that;
+        }
+
+        protected void SetBaseInfo(Thing thing, int count)
         {
             Name = thing.LabelCapNoCount;
             Count = count;
             OriginalID = thing.thingIDNumber;
-
-            var gx = new GameXMLUtils();
-            Data = gx.ToXml(thing);
-
-            /*
-            DefName = thing.def.defName;
-            StuffName = thing.Stuff == null ? null : thing.Stuff.defName;
-            HitPoints = thing.HitPoints;
-            MaxHitPoints = thing.MaxHitPoints;
-            
-            QualityCategory qq;
-            if (QualityUtility.TryGetQuality(thing, out qq)) Quality = (int)qq - 3;
-
-            Apparel thingA = thing as Apparel;
-            if (thingA != null) WornByCorpse = thingA.WornByCorpse;
-            */
         }
 
-        public Thing CreateThing(bool useOriginalID, int stackCount = 0)
+        public virtual Thing CreateThing(bool useOriginalID, int stackCount = 0)
         {
             var gx = new GameXMLUtils();
             Thing thing = gx.FromXml<Thing>(Data);
@@ -105,7 +75,7 @@ namespace Model
             CompQuality compQuality = thing.TryGetComp<CompQuality>();
             if (compQuality != null)
             {
-                compQuality.SetQuality((QualityCategory)(Quality + 3), ArtGenerationContext.Outsider);
+                compQuality.SetQuality((QualityCategory)Quality, ArtGenerationContext.Outsider);
             }
 
             if (WornByCorpse)
