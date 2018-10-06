@@ -49,8 +49,11 @@
     <Compile Include="ExceptionUtil.cs" />
     <Compile Include="GameXMLUtils.cs" />
     <Compile Include="Loger.cs" />
+    <Compile Include="Transfer\ConnectSaver.cs" />
+    <Compile Include="Transfer\ModelOrderBuy.cs" />
     <Compile Include="Transfer\GZip.SharpZipLib.cs" />
-    <Compile Include="Transfer\ModelOrderTrade.cs" />
+    <Compile Include="Transfer\ModelOrderLoad.cs" />
+    <Compile Include="Transfer\Model\OrderTrade.cs" />
     <Compile Include="Transfer\Model\Chat.cs" />
     <Compile Include="Transfer\Model\ChatPost.cs" />
     <Compile Include="Transfer\Model\Place.cs" />

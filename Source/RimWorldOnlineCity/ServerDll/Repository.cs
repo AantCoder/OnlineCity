@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using Transfer;
 
 namespace OCServer
 {
@@ -48,6 +49,10 @@ namespace OCServer
                         + Data.PlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
                         );
                     PlayerServer.PublicPosts = Data.PlayersAll[0].PublicChat.Posts;
+
+                    //
+                    if (Data.Orders == null) Data.Orders = new List<OrderTrade>();
+
                     /*
                     try ////////////////////////////////
                     {

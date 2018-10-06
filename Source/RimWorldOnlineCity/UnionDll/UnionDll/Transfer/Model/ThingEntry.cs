@@ -38,9 +38,7 @@ namespace Model
         public static ThingEntry CreateEntry(Thing thing, int count)
         {
             var that = new ThingEntry();
-            that.SetBaseInfo(thing, count);
-            var gx = new GameXMLUtils();
-            that.Data = gx.ToXml(thing);            
+            that.SetBaseInfo(thing, count);         
             return that;
         }
 
@@ -49,6 +47,9 @@ namespace Model
             Name = thing.LabelCapNoCount;
             Count = count;
             OriginalID = thing.thingIDNumber;
+
+            var gx = new GameXMLUtils();
+            Data = gx.ToXml(thing);
         }
 
         public virtual Thing CreateThing(bool useOriginalID, int stackCount = 0)

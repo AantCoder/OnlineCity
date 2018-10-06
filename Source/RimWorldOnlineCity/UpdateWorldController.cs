@@ -395,11 +395,11 @@ namespace RimWorldOnlineCity
                     }
                 }
             }
-            Loger.Log("DeleteWorldObject " + DevelopTest.TextObj(worldObjectEntry) + " " + existId + " " 
-                + (worldObject == null ? "null" : worldObject.ID.ToString()));
 
             if (worldObject != null)
             {
+                Loger.Log("DeleteWorldObject " + DevelopTest.TextObj(worldObjectEntry) + " " + existId + " " 
+                    + (worldObject == null ? "null" : worldObject.ID.ToString()));
                 Find.WorldObjects.Remove(worldObject);
             }
         }

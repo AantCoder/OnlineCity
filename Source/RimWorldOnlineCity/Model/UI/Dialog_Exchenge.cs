@@ -46,12 +46,12 @@ namespace RimWorldOnlineCity.UI
         /// <summary>
         /// Список открытых ордеров
         /// </summary>
-        public List<ModelOrderTrade> Orders;
+        public List<OrderTrade> Orders;
 
         /// <summary>
         /// Рассматриваемый подробно ордер
         /// </summary>
-        public ModelOrderTrade EditOrder { get; private set; }
+        public OrderTrade EditOrder { get; private set; }
 
         public float SizeOrders_Heigth;
 
@@ -64,7 +64,7 @@ namespace RimWorldOnlineCity.UI
 
         private GridBox<TransferableOneWay> AddThingGrid;
 
-        private GridBox<ModelOrderTrade> OrdersGrid;
+        private GridBox<OrderTrade> OrdersGrid;
 
         private string EditOrderTitle = "";
 
@@ -142,10 +142,10 @@ namespace RimWorldOnlineCity.UI
 
         private void Init()
         {
-            Transferables = GameUtils.DistinctThings(AllThings);
+            UpdateOrders();
         }
 
-        private void SetEditOrder(ModelOrderTrade order)
+        private void SetEditOrder(OrderTrade order)
         {
             EditOrder = order;
             EditOrderEditBuffer = new Dictionary<long, string>();
@@ -154,7 +154,18 @@ namespace RimWorldOnlineCity.UI
 
         private void EditOrderChange()
         {
-            EditOrderToTrade = true;
+            if (EditOrder == null) return;
+            int k;
+            EditOrderToTrade = GameUtils.ChechToTrade(
+                EditOrderIsMy ? EditOrder.SellThings : EditOrder.BuyThings
+                , AllThings
+                , out k) != null && k > 0;
+            if (EditOrderIsMy)
+            {
+                EditOrder.CountReady = EditOrderToTrade
+                    ? k < EditOrder.CountBeginMax - EditOrder.CountFnished ? k : EditOrder.CountBeginMax - EditOrder.CountFnished
+                    : 0;
+            }
         }
 
         public override void PostClose()
@@ -187,9 +198,9 @@ namespace RimWorldOnlineCity.UI
             //область сверху - ордера
             var regionRectOut = new Rect(inRect.x, inRect.y + btnSize.y + margin, inRect.width, SizeOrders_Heigth);
 
-            Widgets.DrawMenuSection(regionRectOut);
+            //Widgets.DrawMenuSection(regionRectOut);
 
-            var regionRect = regionRectOut.ContractedBy(margin * 2f);
+            var regionRect = new Rect(regionRectOut);
             GUI.BeginGroup(regionRect);
             var regionRectIn = regionRect.AtZero();
             DoWindowOrders(regionRectIn);
@@ -225,7 +236,10 @@ namespace RimWorldOnlineCity.UI
             regionRectIn = regionRect.AtZero();
             DoWindowEditOrder(regionRectIn);
             GUI.EndGroup();
+            Text.Anchor = TextAnchor.UpperLeft;
         }
+
+        private Dictionary<Rect, string> OrdersMenu;
 
         /// <summary>
         /// область сверху - ордера
@@ -236,18 +250,25 @@ namespace RimWorldOnlineCity.UI
             if (OrdersGrid == null && Orders != null && Orders.Count > 0)
             {
                 //инициализация
-                OrdersGrid = new GridBox<ModelOrderTrade>();
-                var dicMaxCount = Transferables.ToDictionary(t => t, t => t.MaxCount);
+                OrdersGrid = new GridBox<OrderTrade>();
+                //Transferables = GameUtils.DistinctThings(AllThings);
+                //var dicMaxCount = Transferables.ToDictionary(t => t, t => t.MaxCount);
                 OrdersGrid.DataSource = Orders;
                 OrdersGrid.LineHeight = 24f;
                 OrdersGrid.ShowSelected = true;
                 OrdersGrid.Tooltip = null;
-                OrdersGrid.OnClick += (int line, ModelOrderTrade item) =>
+                OrdersGrid.OnClick += (int line, OrderTrade item) =>
                 {
                     SetEditOrder(item);
+                    if (EditOrderIsMy)
+                        EditOrderTitle = "Редактировать".NeedTranslate();
+                    else
+                        EditOrderTitle = "Просмотр ордера ".NeedTranslate() + item.Owner.Login;
                 };
-                OrdersGrid.OnDrawLine = (int line, ModelOrderTrade item, Rect rectLine) =>
+                OrdersMenu = null;
+                OrdersGrid.OnDrawLine = (int line, OrderTrade item, Rect rectLine) =>
                 {
+                    bool showTop = line == 0; //при выводе таблицы, рисуем с первой же строкой
                     Text.WordWrap = false;
                     Text.Anchor = TextAnchor.MiddleLeft;
                     try
@@ -255,7 +276,7 @@ namespace RimWorldOnlineCity.UI
                         float currentWidth = rectLine.width;
 
                         //Галочка частное
-                        var rect2 = new Rect(rectLine.width - 24f, 0f, 24f, rectLine.height);
+                        var rect2 = new Rect(rectLine.x + rectLine.width - 24f, rectLine.y, 24f, rectLine.height);
                         currentWidth -= 24f;
                         var flag = item.PrivatPlayers == null || item.PrivatPlayers.Count == 0;
                         TooltipHandler.TipRegion(rect2, flag
@@ -264,13 +285,24 @@ namespace RimWorldOnlineCity.UI
                         Widgets.Checkbox(rect2.position, ref flag, 24f, false);
 
                         //Ник продавца
-                        rect2 = new Rect(currentWidth - 200f, 0f, 200f, rectLine.height);
+                        rect2 = new Rect(rectLine.x + currentWidth - 200f, rectLine.y, 200f, rectLine.height);
+                        if (showTop)
+                        {
+                            OrdersMenu = new Dictionary<Rect, string>();
+                            var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
+                            OrdersMenu.Add(rect2t, "Продавец".NeedTranslate());
+                        }
                         currentWidth -= 200f;
                         TooltipHandler.TipRegion(rect2, item.Owner.Login + Environment.NewLine + "был в сети ".NeedTranslate() + item.Owner.LastSaveTime.ToGoodUtcString());
                         Widgets.Label(rect2, item.Owner.Login);
 
                         //Расстояние где торгуют (todo), название места
-                        rect2 = new Rect(currentWidth - 200f, 0f, 200f, rectLine.height);
+                        rect2 = new Rect(rectLine.x + currentWidth - 200f, rectLine.y, 200f, rectLine.height);
+                        if (showTop)
+                        {
+                            var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
+                            OrdersMenu.Add(rect2t, "Место".NeedTranslate());
+                        }
                         currentWidth -= 200f;
                         var text = (item.Place.DayPath > 0 ? item.Place.DayPath.ToStringDecimalIfSmall() + " дней".NeedTranslate() : "")
                             + " в ".NeedTranslate() + item.Place.Name;
@@ -278,14 +310,24 @@ namespace RimWorldOnlineCity.UI
                         Widgets.Label(rect2, text);
 
                         //Кол-во повторов
-                        rect2 = new Rect(currentWidth - 60f, 0f, 60f, rectLine.height);
+                        rect2 = new Rect(rectLine.x + currentWidth - 60f, rectLine.y, 60f, rectLine.height);
+                        if (showTop)
+                        {
+                            var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
+                            OrdersMenu.Add(rect2t, "Кол-во".NeedTranslate());
+                        }
                         currentWidth -= 60f;
                         text = item.CountReady.ToString();
                         TooltipHandler.TipRegion(rect2, "Максимум повоторов реализации сделки:".NeedTranslate() + Environment.NewLine + text);
                         Widgets.Label(rect2, text);
 
                         //Иконки и перечень (описание в подсказке) 
-                        rect2 = new Rect(0f, 0f, currentWidth / 2f, rectLine.height); //от 0 до половины остатка
+                        rect2 = new Rect(rectLine.x, rectLine.y, currentWidth / 2f, rectLine.height); //от 0 до половины остатка
+                        if (showTop)
+                        {
+                            var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
+                            OrdersMenu.Add(rect2t, "Приобрести".NeedTranslate());
+                        }
                         var rect3 = new Rect(rect2.x, rect2.y, rectLine.height, rectLine.height);
                         for (int i = 0; i < item.SellThings.Count; i++)
                         {
@@ -295,11 +337,16 @@ namespace RimWorldOnlineCity.UI
                             var textCntW = Text.CalcSize(textCnt).x;
                             Widgets.Label(new Rect(rect3.xMax, rect3.y, textCntW, rect3.height), textCnt);
                             TooltipHandler.TipRegion(new Rect(rect3.x, rect3.y, rect3.width + textCntW, rect3.height), th.LabelText);
-                            rect3.xMin += rectLine.height + textCntW + 2f;
+                            rect3.x += rectLine.height + textCntW + 2f;
                         }
 
                         //"-" Иконки и перечень что просят
-                        rect2 = new Rect(rect2.width, 0f, currentWidth - rect2.width, rectLine.height); //от конца прошлого до остатка
+                        rect2 = new Rect(rectLine.x + rect2.width, rectLine.y, currentWidth - rect2.width, rectLine.height); //от конца прошлого до остатка
+                        if (showTop)
+                        {
+                            var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
+                            OrdersMenu.Add(rect2t, "Отдать".NeedTranslate());
+                        }
                         //Дальше отличается от блока выше только SellThings -> BuyThings
                         rect3 = new Rect(rect2.x, rect2.y, rectLine.height, rectLine.height);
                         for (int i = 0; i < item.BuyThings.Count; i++)
@@ -310,7 +357,7 @@ namespace RimWorldOnlineCity.UI
                             var textCntW = Text.CalcSize(textCnt).x;
                             Widgets.Label(new Rect(rect3.xMax, rect3.y, textCntW, rect3.height), textCnt);
                             TooltipHandler.TipRegion(new Rect(rect3.x, rect3.y, rect3.width + textCntW, rect3.height), th.LabelText);
-                            rect3.xMin += rectLine.height + textCntW + 2f;
+                            rect3.x += rectLine.height + textCntW + 2f;
                         }
                     }
                     catch (Exception e)
@@ -318,39 +365,67 @@ namespace RimWorldOnlineCity.UI
                         Log.Error(e.ToString());
                     }
                     Text.WordWrap = true;
-
                 };
             }
 
             //заголовок
-            Rect rect = new Rect(0f, 0f, inRect.width, 24);
+            Rect rect = new Rect(inRect.x, inRect.y, inRect.width, 24f);
             inRect.yMin += rect.height;
             Text.Font = GameFont.Tiny; // высота Tiny 18
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(rect, (Orders == null || Orders.Count == 0) ? "Ордеров нет".NeedTranslate() : "Активных ордеров {0}".NeedTranslate(Orders.Count.ToString()));
 
             //кнопка "Выбрать"
-            rect.xMin += inRect.width - 150f;
+            rect.xMin += inRect.width - 140f;
             Text.Anchor = TextAnchor.MiddleCenter;
             if (Widgets.ButtonText(rect.ContractedBy(1f), "Обновить".NeedTranslate(), true, false, true))
             {
                 SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
 
-                OrdersGrid = null;
-
-                Orders = ExchengeUtils.OrdersUpdate();
+                UpdateOrders();
                 return;
             }
 
+            //заголовок таблицы
+            var rectTop = new Rect(inRect.x, inRect.y, inRect.width, 18f);
+            inRect.yMin += rectTop.height;
+            if (OrdersMenu != null)
+            {
+                Text.Anchor = TextAnchor.MiddleCenter;
+                foreach (var om in OrdersMenu)
+                {
+                    var rect2t = new Rect(om.Key.x, rectTop.y, om.Key.width, rectTop.height);
+                    Widgets.Label(rect2t, om.Value);
+                }
+            }
+
+            //всё что ниже это грид
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleLeft;
+            Widgets.DrawMenuSection(inRect);
 
             if (OrdersGrid == null) return;
 
-            OrdersGrid.Area = inRect;
+            OrdersGrid.Area = inRect.ContractedBy(5f);
             OrdersGrid.Drow();
         }
 
+        private void UpdateOrders()
+        {
+            OrdersGrid = null;
+
+            SessionClientController.Command((connect) =>
+            {
+                connect.ErrorMessage = null;
+
+                Orders = connect.ExchengeLoad();
+
+                if (!string.IsNullOrEmpty(connect.ErrorMessage))
+                {
+                    Loger.Log("Client ExchengeLoad error: " + connect.ErrorMessage);
+                }
+            });
+        }
 
         /// <summary>
         /// область снизу слева - добавляемые в ордер вещи
@@ -364,6 +439,7 @@ namespace RimWorldOnlineCity.UI
             {
                 //инициализация
                 AddThingGrid = new GridBox<TransferableOneWay>();
+                Transferables = GameUtils.DistinctThings(AllThings);
                 var dicMaxCount = Transferables.ToDictionary(t => t, t => t.MaxCount);
                 AddThingGrid.DataSource = Transferables;
                 AddThingGrid.LineHeight = 24f;
@@ -495,7 +571,7 @@ namespace RimWorldOnlineCity.UI
             {
                 //Действие не выбрано: по умолчанию настраиваем панельна создание нового ордера
                 EditOrderTitle = "Создать новый ордер".NeedTranslate();
-                var editOrder = new ModelOrderTrade();
+                var editOrder = new OrderTrade();
                 editOrder.Owner = SessionClientController.My;
                 editOrder.Place = PlaceCurrent;
                 editOrder.CountBeginMax = 1;
@@ -511,7 +587,7 @@ namespace RimWorldOnlineCity.UI
                 SetEditOrder(editOrder);
             }
 
-            bool existInServer = EditOrder.Created != DateTime.MinValue;
+            bool existInServer = EditOrder.Id != 0;
 
             //заголовок
             Rect rect = new Rect(0f, 0f, inRect.width, 18);
@@ -519,6 +595,9 @@ namespace RimWorldOnlineCity.UI
             Text.Font = GameFont.Tiny; // высота Tiny 18
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(rect, EditOrderTitle);
+
+            ///todo
+            ///полоску проскрутки
 
             //кнопка в углу
             rect = new Rect(inRect.width - 150f, 20f, 150f, 24);
@@ -535,15 +614,29 @@ namespace RimWorldOnlineCity.UI
 
                 if (!EditOrderIsMy)
                 {
-                    //todo
-                }
-                else if (existInServer)
-                {
+                    //торговать
                     //todo
                 }
                 else
                 {
-                    //todo
+                    //создать или отредактировать
+                    SessionClientController.Command((connect) =>
+                    {
+                        SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+
+                        if (!connect.ExchengeEdit(EditOrder))
+                        {
+                            Loger.Log("Client ExchengeEdit error: " + connect.ErrorMessage);
+                            Find.WindowStack.Add(new Dialog_Message("Действие не выполнено".NeedTranslate(), connect.ErrorMessage));
+                        }
+                        else
+                        {
+                            SetEditOrder(null);
+                        }
+
+                        UpdateOrders();
+                    });
+                    return;
                 }
 
                 EditOrderChange();
@@ -566,7 +659,7 @@ namespace RimWorldOnlineCity.UI
                     return;
                 }
             }
-            if (EditOrderIsMy && existInServer)
+            if (EditOrderIsMy && existInServer && EditOrder.Id != 0)
             {
                 rect = new Rect(160f, 20f, 100f, 24);
                 if (Widgets.ButtonText(rect.ContractedBy(1f)
@@ -575,7 +668,24 @@ namespace RimWorldOnlineCity.UI
                 {
                     SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
 
-                    //todo
+                    SessionClientController.Command((connect) =>
+                    {
+                        SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+
+                        EditOrder.Id = -EditOrder.Id;
+                        if (!connect.ExchengeEdit(EditOrder))
+                        {
+                            EditOrder.Id = -EditOrder.Id;
+                            Loger.Log("Client ExchengeEdit error: " + connect.ErrorMessage);
+                            Find.WindowStack.Add(new Dialog_Message("Действие не выполнено".NeedTranslate(), connect.ErrorMessage));
+                        }
+                        else
+                        {
+                            SetEditOrder(null);
+                        }
+
+                        UpdateOrders();
+                    });
 
                     return;
                 }
@@ -595,8 +705,6 @@ namespace RimWorldOnlineCity.UI
 
             inRect.yMin += rect.height;
 
-            //todo
-
             rect = new Rect(0f, 44f, inRect.width, 24f);
             Text.Anchor = TextAnchor.MiddleLeft;
 
@@ -610,13 +718,16 @@ namespace RimWorldOnlineCity.UI
                 if (!EditOrderEditBuffer.TryGetValue(EditOrder.GetHashCode(), out editBuffer)) EditOrderEditBuffer.Add(EditOrder.GetHashCode(), editBuffer = countToTransfer.ToString());
                 Widgets.TextFieldNumeric<int>(rect2.ContractedBy(2f), ref countToTransfer, ref editBuffer, 1f, 999999999f);
                 EditOrderEditBuffer[EditOrder.GetHashCode()] = editBuffer;
-                if (countToTransfer > 0) EditOrder.CountBeginMax = countToTransfer;
+                if (countToTransfer > 0)
+                {
+                    EditOrder.CountBeginMax = countToTransfer;
+                    EditOrderChange();
+                }
 
                 rect.y += 24f;
             }
-
-            //todo поменять на CountReady
-            Widgets.Label(rect, "Кол-во ещё доступно для обмена: ".NeedTranslate() + EditOrder.CountBeginMax.ToString());
+            
+            Widgets.Label(rect, "Кол-во ещё доступно для обмена: ".NeedTranslate() + EditOrder.CountReady.ToString());
             if (EditOrderIsMy)
             {
                 rect.xMin += 250;
@@ -708,13 +819,15 @@ namespace RimWorldOnlineCity.UI
                 //иконка
                 var rect3 = new Rect(rect.x, rect.y, 24f, 24f);
                 xl = rect.x + 24f * 2f;
-                GameUtils.DravLineThing(rect3, th, true);
+                GameUtils.DravLineThing(rect3, th.DataThing, true);
 
                 //"x" перед кол-во
-                var textCntW = Text.CalcSize("x").x;
+                var textCntW = Text.CalcSize("* x").x;
                 rect3 = new Rect(xl, rect.y, textCntW, 24f);
                 xl += textCntW;
+                Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(rect3, "x");
+                Text.Anchor = TextAnchor.MiddleLeft;
 
                 //кол-во Count
                 rect3 = new Rect(xl, rect.y, 50f, 24f);
@@ -737,6 +850,17 @@ namespace RimWorldOnlineCity.UI
                     Widgets.Label(rect3, th.Count.ToString());
                 }
 
+                //множитель кол-во повторов
+                textCntW = 40f;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                rect3 = new Rect(xl, rect.y, textCntW, 15f);
+                GUI.color = Color.gray;
+                Widgets.Label(rect3, "*" + EditOrder.CountReady.ToString());
+                rect3 = new Rect(xl, rect.y + 12f, textCntW, 15f);
+                GUI.color = Color.white;
+                Widgets.Label(rect3, "="+ (EditOrder.CountReady * th.Count).ToString());
+                xl += textCntW;
+
                 //далее всё в обратном порядке справа-налево
 
                 //крестик убрать строку
@@ -748,29 +872,8 @@ namespace RimWorldOnlineCity.UI
                     EditOrderChange();
                 }
 
-                //с трупа WornByCorpse
-                xr -= 24f;
-                rect3 = new Rect(xr, rect.y, textCntW, 24f);
-                if (th.WornByCorpse)
-                {
-                    TooltipHandler.TipRegion(rect3, "Снято с трупа".NeedTranslate());
-                    Widgets.DrawTextureFitted(rect3, IconSkull, 1f);
-                }
-
-                //прочность HitPoints из MaxHitPoints
-                textCntW = Text.CalcSize("888/888 ").x;
-                xr -= textCntW;
-                rect3 = new Rect(xr, rect.y, textCntW, 24f);
-                TooltipHandler.TipRegion(rect3, "Цело на {0} из {1} ({2}%)".NeedTranslate(th.HitPoints, th.MaxHitPoints
-                    , (th.HitPoints * 100 / th.MaxHitPoints).ToString()));
-                Widgets.Label(rect3, th.HitPoints + "/" + th.MaxHitPoints);
-
-                //качество Quality
-                textCntW = EditOrderQualityWidth + 10f;
-                xr -= textCntW;
-                rect3 = new Rect(xr, rect.y, textCntW, 24f);
-                TooltipHandler.TipRegion(rect3, "Качество ".NeedTranslate() + ((QualityCategory)th.Quality).GetLabel());
-                Widgets.Label(rect3, ((QualityCategory)th.Quality).GetLabelShort() + "+");
+                //с трупа WornByCorpse, прочность HitPoints из MaxHitPoints и качество Quality
+                EditOrderShowHitAndQ(ref rect, ref xr, th);
 
                 //название
                 rect3 = new Rect(xl, rect.y, xr - xl, 24f);
@@ -794,13 +897,20 @@ namespace RimWorldOnlineCity.UI
                 //иконка
                 var rect3 = new Rect(rect.x, rect.y, 24f, 24f);
                 xl = rect.x + 24f * 2f;
-                GameUtils.DravLineThing(rect3, th, true);
+                if (th.Concrete)
+                    GameUtils.DravLineThing(rect3, th.DataThing, true);
+                else
+                    GameUtils.DravLineThing(rect3, th, true, Color.gray);
 
                 //"x" перед кол-во
-                var textCntW = Text.CalcSize("x").x;
+                var textCntW = Text.CalcSize("* x").x;
                 rect3 = new Rect(xl, rect.y, textCntW, 24f);
                 xl += textCntW;
-                Widgets.Label(rect3, "x");
+                Text.Anchor = TextAnchor.MiddleRight;
+                Widgets.Label(rect3, th.Concrete ? "* x" : "x");
+                Text.Anchor = TextAnchor.MiddleLeft;
+                if (th.Concrete)
+                    TooltipHandler.TipRegion(rect3, "Задан конкретный объект".NeedTranslate());
 
                 //кол-во Count
                 rect3 = new Rect(xl, rect.y, 50f, 24f);
@@ -812,12 +922,27 @@ namespace RimWorldOnlineCity.UI
                     if (!EditOrderEditBuffer.TryGetValue(th.GetHashCode(), out editBuffer)) EditOrderEditBuffer.Add(th.GetHashCode(), editBuffer = countToTransfer.ToString());
                     Widgets.TextFieldNumeric<int>(rect3.ContractedBy(2f), ref countToTransfer, ref editBuffer, 0f, 999999999f);
                     EditOrderEditBuffer[th.GetHashCode()] = editBuffer;
-                    if (countToTransfer > 0) th.Count = countToTransfer;
+                    if (countToTransfer > 0 && th.Count != countToTransfer)
+                    {
+                        th.Count = countToTransfer;
+                        EditOrderChange();
+                    }
                 }
                 else
                 {
                     Widgets.Label(rect3, th.Count.ToString());
                 }
+                
+                //множитель кол-во повторов
+                textCntW = 40f;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                rect3 = new Rect(xl, rect.y, textCntW, 15f);
+                GUI.color = Color.gray;
+                Widgets.Label(rect3, "*" + EditOrder.CountReady.ToString());
+                rect3 = new Rect(xl, rect.y + 12f, textCntW, 15f);
+                GUI.color = Color.white;
+                Widgets.Label(rect3, "=" + (EditOrder.CountReady * th.Count).ToString());
+                xl += textCntW;
 
                 //далее всё в обратном порядке справа-налево
 
@@ -829,31 +954,84 @@ namespace RimWorldOnlineCity.UI
                     EditOrder.BuyThings.RemoveAt(i--);
                 }
 
-                //с трупа WornByCorpse
-                xr -= 24f;
-                rect3 = new Rect(xr, rect.y, 24f, 24f);
-                if (th.WornByCorpse)
-                {
-                    TooltipHandler.TipRegion(rect3, "Для одежды допустимо быть снятой с трупа".NeedTranslate());
-                    if (!EditOrderIsMy) Widgets.DrawTextureFitted(rect3, IconSkull, 1f);
-                    else
-                        if (Widgets.ButtonImage(rect3, IconSkull, Color.green)) th.WornByCorpse = false;
-                }
-                else
-                {
-                    TooltipHandler.TipRegion(rect3, "Для одежды НЕ допустимо быть снятой с трупа.".NeedTranslate());
-                    if (EditOrderIsMy && Widgets.ButtonImage(rect3, IconSkull, Color.gray)) th.WornByCorpse = true;
-                }
-                GUI.color = Color.white;
+                //с трупа WornByCorpse, прочность HitPoints из MaxHitPoints и качество Quality
+                EditOrderShowHitAndQ(ref rect, ref xr, th);
+                
+                //название
+                rect3 = new Rect(xl, rect.y, xr - xl, 24f);
+                Widgets.Label(rect3, th.Name);
 
+                rect.y += 24f;
+            }
+            if (EditOrderIsMy)
+            {
+                var rect4 = new Rect(rect);
+                rect4.width = 150f;
+                if (Widgets.ButtonText(rect4.ContractedBy(1f)
+                    , "+ добавить".NeedTranslate()
+                    , true, false, true))
+                {
+                    SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+
+                    var formm = new Dialog_SelectThingDef();
+                    formm.ClearFilter();
+                    formm.PostCloseAction = () =>
+                    {
+                        if (formm.SelectThingDef == null) return;
+                        var th = ThingTrade.CreateTrade(formm.SelectThingDef, formm.SelectHitPointsPercents.min, formm.SelectQualities.min, 1);
+                        EditOrder.BuyThings.Add(th);
+                        EditOrderChange();
+                    };
+                    Find.WindowStack.Add(formm);
+
+                    return;
+                }
+                rect.y += 24f;
+            }
+        }
+
+        private void EditOrderShowHitAndQ(ref Rect rect, ref float xr, ThingTrade th)
+        {
+            //с трупа WornByCorpse
+            xr -= 24f;
+            var rect3 = new Rect(xr, rect.y, 24f, 24f);
+            if (th.WornByCorpse)
+            {
+                TooltipHandler.TipRegion(rect3, (th.Concrete ? "Снята с трупа" : "Для одежды допустимо быть снятой с трупа").NeedTranslate());
+                if (EditOrderIsMy && !th.Concrete)
+                    if (Widgets.ButtonImage(rect3, IconSkull, Color.green)) th.WornByCorpse = false;
+                else
+                    Widgets.DrawTextureFitted(rect3, IconSkull, 1f);
+            }
+            else
+            {
+                TooltipHandler.TipRegion(rect3, (th.Concrete ? "НЕ с трупа" : "Для одежды НЕ допустимо быть снятой с трупа.").NeedTranslate());
+                if (EditOrderIsMy && !th.Concrete)
+                    if (Widgets.ButtonImage(rect3, IconSkull, Color.gray)) th.WornByCorpse = true;
+            }
+            GUI.color = Color.white;
+
+            if (th.Concrete)
+            {
                 //прочность HitPoints из MaxHitPoints
-                /*
-                textCntW = Text.CalcSize("888/888 ").x;
+                var textCntW = Text.CalcSize("888/888 ").x;
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
+                TooltipHandler.TipRegion(rect3, "Цело на {0} из {1} ({2}%)".NeedTranslate(th.HitPoints, th.MaxHitPoints
+                    , (th.HitPoints * 100 / th.MaxHitPoints).ToString()));
                 Widgets.Label(rect3, th.HitPoints + "/" + th.MaxHitPoints);
-                */
-                textCntW = Text.CalcSize("188% ").x;
+
+                //качество Quality
+                textCntW = EditOrderQualityWidth + 10f;
+                xr -= textCntW;
+                rect3 = new Rect(xr, rect.y, textCntW, 24f);
+                TooltipHandler.TipRegion(rect3, "Качество ".NeedTranslate() + ((QualityCategory)th.Quality).GetLabel());
+                Widgets.Label(rect3, ((QualityCategory)th.Quality).GetLabelShort() + "+");
+            }
+            else
+            {
+                //прочность HitPoints из MaxHitPoints
+                var textCntW = Text.CalcSize("188% ").x;
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
                 TooltipHandler.TipRegion(rect3, "Цело не меньше чем ".NeedTranslate() + (th.HitPoints * 100 / th.MaxHitPoints).ToString() + "%");
@@ -864,37 +1042,13 @@ namespace RimWorldOnlineCity.UI
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
                 TooltipHandler.TipRegion(rect3, "Качество не меньше чем ".NeedTranslate() + ((QualityCategory)th.Quality).GetLabel());
-                Widgets.Label(rect3, ((QualityCategory)th.Quality).GetLabelShort() + "+");
-
-                //название
-                rect3 = new Rect(xl, rect.y, xr - xl, 24f);
-                Widgets.Label(rect3, th.Name);
-
-                rect.y += 24f;
+                Widgets.Label(rect3, th.Quality == 0
+                    ? "все".NeedTranslate()
+                    : ((QualityCategory)th.Quality).GetLabelShort() + "+"
+                    );
             }
-            var rect4 = new Rect(rect);
-            rect4.width = 150f;
-            if (Widgets.ButtonText(rect4.ContractedBy(1f)
-                , "+ добавить".NeedTranslate()
-                , true, false, true))
-            {
-                SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
-
-                var formm = new Dialog_SelectThingDef();
-                formm.ClearFilter();
-                formm.PostCloseAction = () =>
-                {
-                    if (formm.SelectThingDef == null) return;
-                    var th = ThingTrade.CreateTrade(formm.SelectThingDef, formm.SelectHitPointsPercents.min, formm.SelectQualities.min, 1);
-                    EditOrder.BuyThings.Add(th);
-                    EditOrderChange();
-                };
-                Find.WindowStack.Add(formm);
-
-                return;
-            }
-            rect.y += 24f;
         }
+
 
 
     }

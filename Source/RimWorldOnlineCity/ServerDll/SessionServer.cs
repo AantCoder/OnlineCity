@@ -18,6 +18,7 @@ namespace OCServer
         private static Encoding KeyEncoding = Encoding.GetEncoding(1252);
         private CryptoProvider cryptoHash = new CryptoProvider();
         private Service Worker;
+        private DateTime ServiceCheckTime;
 
         public void Dispose()
         {
@@ -70,6 +71,23 @@ namespace OCServer
             {
                 //Loger.Log("Server Loop1");
                 var rec = Client.ReceiveBytes();
+
+                //отдельно обрабатываем пинг
+                if (rec.Length == 1)
+                {
+                    if (rec[0] == 0x00)
+                    {
+                        Client.SendMessage(new byte[1] { 0x00 });
+                    }
+                    //отдельно обрабатываем запрос на обновление (ответ 0 - нет ничего, 1 - что-то есть) 
+                    else if (rec[0] == 0x01)
+                    {
+                        var exists = ServiceCheck();
+                        Client.SendMessage(new byte[1] { exists ? (byte)0x01 : (byte)0x00 });
+                    }
+                    continue;
+                }
+
                 //Loger.Log("Server Loop2");
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
                 //Loger.Log("Server " + Loger.Bytes(rec2));
@@ -86,6 +104,23 @@ namespace OCServer
                 //Loger.Log("Server Loop7");
                 Client.SendMessage(send);
             }
+        }
+
+        /// <summary>
+        /// Есть ли изменеия. Сейчас используется только для чата
+        /// </summary>
+        /// <returns></returns>
+        private bool ServiceCheck()
+        {
+            if (ServiceCheckTime == DateTime.MinValue)
+            {
+                ServiceCheckTime = DateTime.UtcNow;
+                return true;
+            }
+            //На данный момен только проверка чата
+            var res = Worker.CheckChat(ServiceCheckTime);
+            ServiceCheckTime = DateTime.UtcNow;
+            return res;
         }
 
         private ModelContainer Service(ModelContainer recObj)
@@ -131,6 +166,21 @@ namespace OCServer
                     send.TypePacket = 20;
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " PostingChat");
                     send.Packet = Worker.PostingChat((ModelPostingChat)recObj.Packet);
+                    break;
+                case 21:
+                    send.TypePacket = 22;
+                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " ExchengeEdit");
+                    send.Packet = Worker.ExchengeEdit((OrderTrade)recObj.Packet);
+                    break;
+                case 23:
+                    send.TypePacket = 24;
+                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " ExchengeBuy");
+                    send.Packet = Worker.ExchengeBuy((ModelOrderBuy)recObj.Packet);
+                    break;
+                case 25:
+                    send.TypePacket = 26;
+                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " ExchengeLoad");
+                    send.Packet = Worker.ExchengeLoad();
                     break;
                 default:
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Error0");

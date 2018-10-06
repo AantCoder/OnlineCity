@@ -19,7 +19,7 @@ namespace Model
         /// <summary>
         /// Содержиться информация о конкретном объекте
         /// </summary>
-        public bool Concrete;
+        public bool Concrete { get; set; }
 
         /// <summary>
         /// Тип вещи
@@ -51,9 +51,26 @@ namespace Model
         /// <summary>
         /// У нас этого нет, невозможно продать. Вычисляется функцией ExchengeUtils.ChechToSell
         /// </summary>
-        /// 
         [NonSerialized]
         public bool NotTrade;
+
+        [NonSerialized]
+        public Thing DataThing_p;
+        /// <summary>
+        /// Объект соответствующий Data, для показа информации
+        /// </summary>
+        public Thing DataThing
+        {
+            get
+            {
+                if (DataThing_p == null && Data != null)
+                {
+                    DataThing_p = CreateThing(false);
+                }
+                return DataThing_p;
+            }
+            set { DataThing_p = value; }
+        }
 
         [NonSerialized]
         private ThingDef Def_p;
@@ -106,31 +123,71 @@ namespace Model
         public bool MatchesThing(Thing thing)
         {
             //быстрая проверка
-            if (thing == null) return false;
-            if (DefName != thing.def.defName) return false;
+            if (thing == null)
+            {
+                //Log.Message(" ? thing == null");
+                return false;
+            }
+            if (DefName != thing.def.defName)
+            {
+                //Log.Message(" ? DefName != thing.def.defName" + (DefName ?? "null") + " " + (thing.def.defName ?? "null"));
+                return false;
+            }
 
             var testThing = CreateTrade(thing, 1);
 
             //общая проверка
             if (testThing.StuffName != StuffName
-                || testThing.Quality < Quality
-                || testThing.WornByCorpse && !WornByCorpse
-                ) return false;
+                )
+            {
+                //Log.Message(" ? testThing.StuffName != StuffName " + (StuffName ?? "null") + " " + (testThing.StuffName ?? "null"));
+                return false;
+            }
+            if (testThing.Quality < Quality
+                )
+            {
+                //Log.Message(" ? testThing.Quality < Quality " + Quality + " " + testThing.Quality);
+                return false;
+            }
+            if (testThing.WornByCorpse && !WornByCorpse
+                )
+            {
+                //Log.Message(" ? testThing.WornByCorpse && !WornByCorpse " + WornByCorpse + " " + testThing.WornByCorpse);
+                return false;
+            }
 
             //в зависимости от Concrete
             int hitPrecent = (testThing.HitPoints + 1) * 100 / testThing.MaxHitPoints;
             if (Concrete)
-                return hitPrecent >= HitPoints * 100 / MaxHitPoints;
+            {
+                if (hitPrecent < HitPoints * 100 / MaxHitPoints)
+                {
+                    //Log.Message(" ? hitPrecent < HitPoints * 100 / MaxHitPoints");
+                    return false;
+                }
+            }
             else
-                return hitPrecent >= HitPoints;
+                if (hitPrecent < HitPoints)
+                {
+                    //Log.Message(" ? hitPrecent < HitPoints");
+                    return false;
+                }
 
-            //todo Проверка схожести средствами игры, для надёжности и идентификации индивидуальности пешек
+            //Проверка схожести средствами игры, для надёжности и идентификации индивидуальности пешек
+            if (Concrete)
+            {
+                //Log.Message(DataThing.def.defName + " ? " + thing.def.defName + " " + TransferableUtility.TransferAsOne(thing, DataThing).ToString());
+                return TransferableUtility.TransferAsOne(thing, DataThing);
+            }
+            else
+                return true;
         }
 
         public static ThingTrade CreateTrade(Thing thing, int count)
         {
             var that = new ThingTrade();
-            that.SetBaseInfo(thing, count);
+            that.SetBaseInfo(thing, count); //Data заполняется!
+            that.DataThing = thing;
             that.Concrete = true;
 
             that.DefName = thing.def.defName;
@@ -143,10 +200,7 @@ namespace Model
 
             Apparel thingA = thing as Apparel;
             if (thingA != null) that.WornByCorpse = thingA.WornByCorpse;
-
-            // Не заполняются:
-            //Data
-
+            
             return that;
         }
 

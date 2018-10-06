@@ -124,7 +124,7 @@ namespace Chat
                 {
                     //Loger.Log("Chat UpdateChats f1");
                     Data.LastServerConnectFail = false;
-                    Data.LastServerConnect = DateTime.Now;
+                    Data.LastServerConnect = DateTime.UtcNow;
                     /*
                     Loger.Log("Chat UpdateChats: " + dc.Chats.Count.ToString() + " - "
                         + (Data.ChatsTime.Ticks / 1000000000m).ToString() + " - "

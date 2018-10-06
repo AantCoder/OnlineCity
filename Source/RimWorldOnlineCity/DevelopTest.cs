@@ -56,13 +56,12 @@ namespace RimWorldOnlineCity
 
         public bool Run()
         {
-            return false;
             /*
             var formm = new Dialog_Exchenge(Find.Maps[0]);
             Find.WindowStack.Add(formm);
             return true;
             // */
-            //return false;
+            return false;
             /*
             var lll = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef);
 

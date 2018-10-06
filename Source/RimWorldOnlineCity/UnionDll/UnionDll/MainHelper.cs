@@ -9,9 +9,9 @@ namespace OCUnion
 {
     public static class MainHelper
     {
-        public static bool DebugMode = false;
+        public static bool DebugMode = true;
 
-        public static string VersionInfo = "Версия 0.02.15a от 2018.08.26";
+        public static string VersionInfo = "Версия 0.02.16a от 2018.10.06";
 
         private static CultureInfo CultureValue = null;
         public static CultureInfo Culture

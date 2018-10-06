@@ -20,8 +20,7 @@ namespace Transfer
 
         public bool IsLogined = false;
 
-
-        private ConnectClient Client;
+        public ConnectClient Client;
         private byte[] Key;
         public string ErrorMessage;
 
@@ -74,6 +73,16 @@ namespace Transfer
 
                 //Loger.Log("Client Connect5");
                 //Обмен по протоколу ниже: Передаем серверу Сессия(Логин - Пароль или запрос на создание)
+
+                //Запускаем таймер фоново поддерживающий открытое соединение при простое
+                ConnectSaver.AddClient(Client, (cl) =>
+                {
+                    lock (this)
+                    {
+                        cl.SendMessage(new byte[1] { 0x00 });
+                        cl.ReceiveBytes();
+                    }
+                });
                 return true;
             }
             catch (Exception e)
@@ -84,7 +93,33 @@ namespace Transfer
                 return false;
             }
         }
-        
+
+        /// <summary>
+        /// Проверка есть ли новое на сервере, используется только для чата 
+        /// </summary>
+        /// <returns></returns>
+        public bool? ServiceCheck()
+        {
+            try
+            {
+                lock (this)
+                {
+                    Client.SendMessage(new byte[1] { 0x01 });
+
+                    var rec = Client.ReceiveBytes();
+
+                    return rec.Length == 1 && rec[0] == 0x01;
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message
+                    + (e.InnerException == null ? "" : " -> " + e.InnerException.Message);
+                ExceptionUtil.ExceptionLog(e, "Client ServiceCheck ");
+                return null;
+            }
+        }
+
         /// <summary>
         /// Передаем и принимаем объект ModelContainer
         /// </summary>
@@ -175,6 +210,12 @@ namespace Transfer
 18 - данные чата
 19 - написать в чат (id канала, сообщение) //здесь же командами создать канал, добавить в канал и прочее
 20 - ответ (успешно, сообщение)
+21 - команды работы с биржей
+22 - ответ 
+23 - команды работы с биржей
+24 - ответ 
+25 - команды работы с биржей
+26 - ответ 
         */
 
         public bool Registration(string login, string pass)
@@ -248,6 +289,7 @@ namespace Transfer
 
         public ModelUpdateChat UpdateChat(DateTime time)
         {
+            Loger.Log("Client UpdateChat " + time.ToGoodUtcString());
             var packet = new ModelUpdateTime() { Time = time };
             var stat = TransObject<ModelUpdateChat>(packet, 17, 18);
             return stat;
@@ -286,6 +328,45 @@ namespace Transfer
                 return false;
             }
             return stat != null;
+        }
+
+        public bool ExchengeEdit(OrderTrade order)
+        {
+            Loger.Log("Client ExchengeEdit " + order.ToString());
+            var stat = TransObject<ModelStatus>(order, 21, 22);
+
+            if (stat != null && stat.Status != 0)
+            {
+                ErrorMessage = stat.Message;
+                return false;
+            }
+            return stat != null;
+        }
+
+        public bool ExchengeBuy(ModelOrderBuy buy)
+        {
+            Loger.Log("Client ExchengeBuy id=" + buy.OrderId.ToString() + " count=" + buy.Count.ToString());
+            var stat = TransObject<ModelStatus>(buy, 23, 24);
+
+            if (stat != null && stat.Status != 0)
+            {
+                ErrorMessage = stat.Message;
+                return false;
+            }
+            return stat != null;
+        }
+
+        public List<OrderTrade> ExchengeLoad()
+        {
+            Loger.Log("Client ExchengeLoad");
+            var stat = TransObject<ModelOrderLoad>(new ModelStatus(), 25, 26);
+
+            if (stat != null && stat.Status != 0)
+            {
+                ErrorMessage = stat.Message;
+                return null;
+            }
+            return stat.Orders;
         }
     }
 }

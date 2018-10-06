@@ -17,7 +17,7 @@ namespace ServerOnlineCity
             var workPath = @"C:\World" + (workPort == 0 ? "" : "\\" + workPort.ToString());
 
             Directory.CreateDirectory(workPath);
-            File.Delete(workPath + @"\Log.txt");
+            //File.Delete(workPath + @"\Log.txt");
 
             Loger.PathLog = workPath;
             Loger.IsServer = true;

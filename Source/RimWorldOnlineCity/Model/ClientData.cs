@@ -28,15 +28,16 @@ namespace RimWorldOnlineCity
             {
                 return SessionClient.Get.IsLogined
                     && (LastServerConnect == DateTime.MinValue
-                        || (DateTime.Now - LastServerConnect).Seconds < 8);
+                        || (DateTime.UtcNow - LastServerConnect).Seconds < 8);
             }
         }
 
         public DateTime LastServerConnect = DateTime.MinValue;
         public bool LastServerConnectFail = false;
+        public int ChatCountSkipUpdate = 0;
         public static bool UIInteraction = true;
 
-        public void ApplyChats(ModelUpdateChat updateDate)
+        public bool ApplyChats(ModelUpdateChat updateDate)
         {
             ChatsTime = updateDate.Time;
             int newPost = 0;
@@ -62,6 +63,7 @@ namespace RimWorldOnlineCity
                 if (newStr.Length > 50) newStr = newStr.Substring(0, 49) + "OCity_ClientData_ChatDot".Translate();
                 Messages.Message("OCity_ClientData_Chat".Translate() + newStr, MessageTypeDefOf.NeutralEvent);
             }
+            return newPost > 0;
         }
     }
 }

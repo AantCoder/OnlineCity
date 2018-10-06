@@ -367,7 +367,7 @@ namespace RimWorldOnlineCity
                     {
                         connect.PostingChat(mainCannal.Id, "/createChat '" + form.InputText.Replace("'", "''") + "'");
                     });
-                    //todo Сделать старт крутяшки до обновления чата
+                    //to do Сделать старт крутяшки до обновления чата
                 }
             };
             Find.WindowStack.Add(form);
@@ -385,7 +385,7 @@ namespace RimWorldOnlineCity
                     {
                         connect.PostingChat(selectCannal.Id, "/exitChat");
                     });
-                    //todo Сделать старт крутяшки до обновления чата
+                    //to do Сделать старт крутяшки до обновления чата
                 }
             };
             Find.WindowStack.Add(form);
@@ -403,7 +403,7 @@ namespace RimWorldOnlineCity
                     {
                         connect.PostingChat(selectCannal.Id, "/renameChat '" + form.InputText.Replace("'", "''") + "'");
                     });
-                    //todo Сделать старт крутяшки до обновления чата
+                    //to do Сделать старт крутяшки до обновления чата
                 }
             };
             Find.WindowStack.Add(form);

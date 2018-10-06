@@ -178,19 +178,34 @@ namespace RimWorldOnlineCity
             //Loger.Log("Client UpdateChating...");
             Command((connect) =>
             {
-                //Loger.Log("Client T4");
-                ModelUpdateChat dc;
-                //Loger.Log("Client UpdateChats f0");
-                dc = connect.UpdateChat(Data.ChatsTime);
-                if (dc != null)
-                { 
-                    //Loger.Log("Client UpdateChats f1");
-                    Data.LastServerConnectFail = false;
-                    Data.LastServerConnect = DateTime.Now;
+                var test = connect.ServiceCheck();
 
-                    //Loger.Log("Client UpdateChats: " + dc.Chats.Count.ToString() + " - " + dc.Time.Ticks //dc.Time.ToString(Loger.Culture)
-                    //    + "   " + (dc.Chats.Count == 0 ? "" : dc.Chats[0].Posts.Count.ToString()));
-                    Data.ApplyChats(dc);
+                if (test != null)
+                {
+                    Data.LastServerConnectFail = false;
+                    Data.LastServerConnect = DateTime.UtcNow;
+                    
+                    if (test.Value || Data.ChatCountSkipUpdate > 60) // 60 * 500ms = принудительно раз в пол минуты
+                    {                        
+                        //Loger.Log("Client T4");
+                        ModelUpdateChat dc;
+                        Loger.Log("Client UpdateChats f0");
+                        dc = connect.UpdateChat(Data.ChatsTime);
+                        if (dc != null)
+                        {
+                            Loger.Log("Client UpdateChats: " + dc.Chats.Count.ToString() + " - " + dc.Time.Ticks //dc.Time.ToString(Loger.Culture)
+                                + "   " + (dc.Chats.Count == 0 ? "" : dc.Chats[0].Posts.Count.ToString()));
+
+                            if (Data.ApplyChats(dc) && !test.Value)
+                            {
+                                Loger.Log("Client UpdateChats: ServiceCheck fail ");
+                            }
+                        }
+
+                        Data.ChatCountSkipUpdate = 0;
+                    }
+                    else
+                        Data.ChatCountSkipUpdate++;
                 }
                 else
                 {

@@ -143,6 +143,7 @@ namespace OCServer
                 data.WorldPlanetCoverage = packet.PlanetCoverage;
                 data.WorldObjects = packet.WObjects ?? new List<WorldObjectEntry>();
                 data.WorldObjectsDeleted = new List<WorldObjectEntry>();
+                data.Orders = new List<OrderTrade>();
                 Repository.Get.ChangeData = true;
             }
 
@@ -337,6 +338,12 @@ namespace OCServer
                 ? Repository.GetData.PlayersAll.Select(p => p.Public.Login).ToList()
                 : Player.Chats[0].PartyLogin;
             return ps;
+        }
+
+        public bool CheckChat(DateTime time)
+        {
+            if (Player == null) return false;
+            return Player.Chats.Any(ct => ct.Posts.Any(p => p.Time > time));
         }
 
         public ModelUpdateChat UpdateChat(ModelUpdateTime time)
@@ -646,6 +653,168 @@ namespace OCServer
             }
 
             return argsM;
+        }
+
+
+        public ModelStatus ExchengeEdit(OrderTrade order)
+        {
+            if (Player == null) return null;
+            lock (Player)
+            {
+                var timeNow = DateTime.UtcNow;
+
+                var data = Repository.GetData;
+
+                if (Player.Public.Login != order.Owner.Login)
+                {
+                    return new ModelStatus()
+                    {
+                        Status = 1,
+                        Message = "Ошибка. Ордер другого игрока"
+                    };
+                }
+
+                if (order.Id == 0)
+                {
+                    //создать новый
+
+                    //актуализируем
+                    order.Created = timeNow;
+
+                    order.Owner = Player.Public;
+
+                    if (order.PrivatPlayers == null) order.PrivatPlayers = new List<Player>();
+                    order.PrivatPlayers = order.PrivatPlayers
+                        .Select(pp => data.PlayersAll.FirstOrDefault(p => p.Public.Login == pp.Login)?.Public)
+                        .ToList();
+                    if (order.PrivatPlayers.Any(pp => pp == null))
+                    {
+                        return new ModelStatus()
+                        {
+                            Status = 2,
+                            Message = "Ошибка. Указан несуществующий игрок"
+                        };
+                    }
+
+                    order.Id = Repository.GetData.GetChatId();
+
+                    lock (data)
+                    {
+                        data.Orders.Add(order);
+                    }
+                }
+                else
+                {
+                    //проверяем на существование
+                    lock (data)
+                    {
+                        var id = order.Id > 0 ? order.Id : -order.Id;
+                        var dataOrder = data.Orders.FirstOrDefault(o => o.Id == id);
+                        if (dataOrder == null
+                            || Player.Public.Login != dataOrder.Owner.Login)
+                        {
+                            return new ModelStatus()
+                            {
+                                Status = 3,
+                                Message = "Ошибка. Ордер не найден"
+                            };
+                        }
+
+                        if (order.Id > 0)
+                        {
+                            //редактирование 
+
+                            //актуализируем
+                            order.Created = timeNow;
+
+                            order.Owner = Player.Public;
+
+                            if (order.PrivatPlayers == null) order.PrivatPlayers = new List<Player>();
+                            order.PrivatPlayers = order.PrivatPlayers
+                                .Select(pp => data.PlayersAll.FirstOrDefault(p => p.Public.Login == pp.Login)?.Public)
+                                .ToList();
+                            if (order.PrivatPlayers.Any(pp => pp == null))
+                            {
+                                return new ModelStatus()
+                                {
+                                    Status = 4,
+                                    Message = "Ошибка. Указан несуществующий игрок"
+                                };
+                            }
+
+                            Loger.Log("Server ExchengeEdit " + Player.Public.Login + " Edit Id = " + order.Id.ToString());
+                            data.Orders[data.Orders.IndexOf(dataOrder)] = order;
+                        }
+                        else
+                        {
+                            //Удаление
+                            Loger.Log("Server ExchengeEdit " + Player.Public.Login + " Delete Id = " + order.Id.ToString());
+                            data.Orders.Remove(dataOrder);
+                        }
+                    }
+                }
+                Repository.Get.ChangeData = true;
+
+                return new ModelStatus()
+                {
+                    Status = 0,
+                    Message = null
+                };
+            }
+        }
+
+        public ModelStatus ExchengeBuy(ModelOrderBuy buy)
+        {
+            if (Player == null) return null;
+            return null;
+            ///проверям в одной ли точке находятся
+            ///остальные проверки похоже бессмысленны
+            ///формируем письмо в обе стороны
+            ///когда приходит обратное письмо, то вещи изымаются и стартует автосейв
+            ///todo: если при приеме письма возникли ошибки (красные надписи в логе, мои ошибки или для письма-изьятия нет вещей),
+            /// то пытаемся удалить, то что уже успели добавить и в пиьме меняем адресата на противоположного, 
+            /// чтобы вернуть вещи (особый статус без проверки tile)
+            /* todo
+            lock (Player)
+            {
+                var timeNow = DateTime.UtcNow;
+                if (string.IsNullOrEmpty(pc.Message))
+                    return new ModelStatus()
+                    {
+                        Status = 0,
+                        Message = null
+                    };
+            }
+            */
+        }
+
+        public ModelOrderLoad ExchengeLoad()
+        {
+            if (Player == null) return null;
+
+            lock (Player)
+            {
+                var timeNow = DateTime.UtcNow;
+                var res = new ModelOrderLoad()
+                {
+                    Status = 0,
+                    Message = null
+                };
+
+                //Список игроков кого видим
+                var ps = PartyLoginSee();
+
+                var data = Repository.GetData;
+                res.Orders = (data.Orders ?? new List<OrderTrade>())
+                    .Where(o => Player.Public.Login == o.Owner.Login
+                        || ps.Any(p => p == o.Owner.Login)
+                            && (o.PrivatPlayers.Count == 0 || o.PrivatPlayers.Any(p => p.Login == Player.Public.Login)))
+                    .ToList();
+
+                            
+
+                return res;
+            }
         }
 
         private const string ChatHelpText = @"Available commands: 

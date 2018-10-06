@@ -10,21 +10,23 @@ namespace Transfer
 {
     public class ConnectClient : IDisposable
     {
-        protected TcpClient Client;
+        public TcpClient Client;
         protected NetworkStream ClientStream;
         public readonly Encoding MessageEncoding = Encoding.UTF8;
         protected const int DefaultTimeout = 600000; //10 мин
+        public DateTime LastSend;
 
         public ConnectClient(string addr, int port)
             : this(new TcpClient(addr, port))
         { }
-
+        
         public ConnectClient(TcpClient client)
         {
             Client = client;
             Client.SendTimeout = DefaultTimeout;
             Client.ReceiveTimeout = DefaultTimeout;
             ClientStream = Client.GetStream();
+            LastSend = DateTime.UtcNow;
         }
 
         public void Dispose()
@@ -37,6 +39,7 @@ namespace Transfer
             byte[] packlength = BitConverter.GetBytes(message.Length);
             ClientStream.Write(packlength, 0, packlength.Length);
             ClientStream.Write(message, 0, message.Length);
+            LastSend = DateTime.UtcNow;
         }
 
         public byte[] ReceiveBytes()

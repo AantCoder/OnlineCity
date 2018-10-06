@@ -23,6 +23,7 @@ namespace OCServer.Model
         public long MaxIdChat { get; set; }
         public List<WorldObjectEntry> WorldObjects { get; set; }
         public List<WorldObjectEntry> WorldObjectsDeleted { get; set; }
+        public List<OrderTrade> Orders { get; set; }
 
         public BaseContainer()
         {
@@ -32,6 +33,7 @@ namespace OCServer.Model
             };
             WorldObjects = new List<WorldObjectEntry>();
             WorldObjectsDeleted = new List<WorldObjectEntry>();
+            Orders = new List<OrderTrade>();
             MaxIdChat = 1; //Id = 1 Занят на общий чат
         }
 

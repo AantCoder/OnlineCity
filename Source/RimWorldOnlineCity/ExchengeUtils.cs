@@ -10,12 +10,14 @@ namespace RimWorldOnlineCity
 {
     public class ExchengeUtils
     {
-        public static List<ModelOrderTrade> OrdersUpdate()
+        
+        /*
+        public static List<OrderTrade> OrdersUpdate()
         {
             //todo
-            var Orders = new List<ModelOrderTrade>();
+            var Orders = new List<OrderTrade>();
             return Orders;
         }
-
+        */
     }
 }
