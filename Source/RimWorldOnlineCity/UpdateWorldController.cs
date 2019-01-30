@@ -78,7 +78,7 @@ namespace RimWorldOnlineCity
                         if (placeId == 0)
                         {
                             //если нет, и какой-то сбой, посылаем в первый поселек
-                            place = Find.WorldObjects.FactionBases
+                            place = Find.WorldObjects.Settlements
                                 .FirstOrDefault(f => f.Faction == Faction.OfPlayer);
                         }
                         else
@@ -110,15 +110,15 @@ namespace RimWorldOnlineCity
         private static void DropToWorldObject(WorldObject place, List<ThingEntry> things, string from)
         {
             GlobalTargetInfo ti = new GlobalTargetInfo(place);
-            if (place is FactionBase && ((FactionBase)place).Map != null)
+            if (place is Settlement && ((Settlement)place).Map != null)
             {
-                var cell = GameUtils.GetTradeCell(((FactionBase)place).Map);
-                ti = new GlobalTargetInfo(cell, ((FactionBase)place).Map);
+                var cell = GameUtils.GetTradeCell(((Settlement)place).Map);
+                ti = new GlobalTargetInfo(cell, ((Settlement)place).Map);
                 Thing thinXZ;
                 foreach (var thing in things)
                 {
                     var thin = thing.CreateThing(false);
-                    var map = ((FactionBase)place).Map;
+                    var map = ((Settlement)place).Map;
                     if (thin is Pawn)
                         GenSpawn.Spawn((Pawn)thin, cell, map);
                     else
@@ -181,12 +181,12 @@ namespace RimWorldOnlineCity
             {
                 var transferables = CalculateTransferables(caravan);
 
-                List<ThingStackPart> stackParts = new List<ThingStackPart>();
+                List<ThingCount> stackParts = new List<ThingCount>();
                 for (int i = 0; i < transferables.Count; i++)
                 {
                     TransferableUtility.TransferNoSplit(transferables[i].things, transferables[i].MaxCount/*CountToTransfer*/, delegate (Thing originalThing, int toTake)
                     {
-                        stackParts.Add(new ThingStackPart(originalThing, toTake));
+                        stackParts.Add(new ThingCount(originalThing, toTake));
                     }, false, false);
                 }
                 worldObjectEntry.FreeWeight = CollectionsMassCalculator.Capacity(stackParts)
@@ -211,9 +211,9 @@ namespace RimWorldOnlineCity
                     }
                 }
             }
-            else if (worldObject is FactionBase)
+            else if (worldObject is Settlement)
             {
-                var map = (worldObject as FactionBase).Map;
+                var map = (worldObject as Settlement).Map;
                 if (map != null)
                 {
                     worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
@@ -279,7 +279,7 @@ namespace RimWorldOnlineCity
 
         private static void AddToTransferables(Thing t, List<TransferableOneWay> transferables)
         {
-            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(t, transferables);
+            TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(t, transferables, TransferAsOneMode.Normal);
             if (transferableOneWay == null)
             {
                 transferableOneWay = new TransferableOneWay();
@@ -310,7 +310,7 @@ namespace RimWorldOnlineCity
                     if (!MyWorldObjectEntry.ContainsKey(allWorldObjects[i].ID)
                         && allWorldObjects[i].Tile == worldObjectEntry.Tile 
                         && (allWorldObjects[i] is Caravan && worldObjectEntry.Type == WorldObjectEntryType.Caravan
-                            || allWorldObjects[i] is FactionBase && worldObjectEntry.Type == WorldObjectEntryType.Base))
+                            || allWorldObjects[i] is Settlement && worldObjectEntry.Type == WorldObjectEntryType.Base))
                     {
                         Loger.Log("SetMyID " + allWorldObjects[i].ID + " ServerId " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
                         MyWorldObjectEntry.Add(allWorldObjects[i].ID, worldObjectEntry);

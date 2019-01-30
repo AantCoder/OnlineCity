@@ -30,35 +30,35 @@ namespace RimWorldOnlineCity
             }
             else
             {
-                oldPawns = Current.Game.InitData.startingPawns.ToList();
+                oldPawns = Current.Game.InitData.startingAndOptionalPawns.ToList();
             }
 
             //тяп-ляп и новые пешки
-            Current.Game.InitData.startingPawns.Clear();
+            Current.Game.InitData.startingAndOptionalPawns.Clear();
             for (int i = 0; i < pawnsCount; i++)
             {
-                Current.Game.InitData.startingPawns.Add(PawnGenerateRandom());
+                Current.Game.InitData.startingAndOptionalPawns.Add(PawnGenerateRandom());
             }
             //if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + @"SrvTest.txt", DevelopTest.TextObj(Current.Game.InitData.startingPawns, true), Encoding.UTF8);
             for (int i = 0; i < pawnsCount; i++)
             {
-                StartingPawnUtility.RandomizeInPlace(Current.Game.InitData.startingPawns[i]);
+                StartingPawnUtility.RandomizeInPlace(Current.Game.InitData.startingAndOptionalPawns[i]);
             }
             
             //запускаем форму редактирования
             var form = new Page_ConfigureStartingPawns();
             form.nextAct = () =>
             {
-                var pawns = Current.Game.InitData.startingPawns.ToList();
+                var pawns = Current.Game.InitData.startingAndOptionalPawns.ToList();
 
                 //восстанавливаем значеня
                 if (gameIsNull) Current.Game = null;
                 else
                 {
-                    Current.Game.InitData.startingPawns.Clear();
+                    Current.Game.InitData.startingAndOptionalPawns.Clear();
                     for (int i = 0; i < oldPawns.Count; i++)
                     {
-                        Current.Game.InitData.startingPawns.Add(oldPawns[i]);
+                        Current.Game.InitData.startingAndOptionalPawns.Add(oldPawns[i]);
                     }
                 }
 

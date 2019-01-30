@@ -27,7 +27,8 @@ namespace RimWorldOnlineCity
 
         public Dialog_Input()
         {
-            closeOnEscapeKey = true;
+            closeOnCancel = false;
+            closeOnAccept = false;
             doCloseButton = false;
             doCloseX = true;
             forcePause = true;

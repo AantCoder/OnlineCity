@@ -14,6 +14,7 @@ using Model;
 
 namespace RimWorldOnlineCity
 {
+    [StaticConstructorOnStartup]
     public class Dialog_MainOnlineCity : Window
     {
         public string ScenarioToGen;
@@ -43,8 +44,13 @@ namespace RimWorldOnlineCity
 
         private string InfoTabTitle = "OCity_Dialog_HelloLAN".Translate();
 
-        private string AboutTabText = MainHelper.VersionInfo + "OCity_AboutTabText".Translate();
-        public static readonly Texture2D IconForums = ContentFinder<Texture2D>.Get("UI/HeroArt/WebIcons/Forums", true);
+        public static string AboutGeneralText = MainHelper.VersionInfo + " "
+            + "OCity_AboutTabText".Translate() + Environment.NewLine + Environment.NewLine
+            + "OCity_AboutGeneralText".Translate();
+
+        public static string AboutTabText = AboutGeneralText;
+
+        public static readonly Texture2D IconForums;
 
         public class ListBoxPlayerItem
         {
@@ -63,9 +69,18 @@ namespace RimWorldOnlineCity
             get { return new Vector2(600f, 500f); }
         }
 
+        static Dialog_MainOnlineCity()
+        {
+            IconAddTex = ContentFinder<Texture2D>.Get("OCAdd");
+            IconDelTex = ContentFinder<Texture2D>.Get("OCDel");
+            IconSubMenuTex = ContentFinder<Texture2D>.Get("OCSubMenu");
+            IconForums = ContentFinder<Texture2D>.Get("UI/HeroArt/WebIcons/Forums", true);
+        }
+
         public Dialog_MainOnlineCity()
         {
-            closeOnEscapeKey = true;
+            closeOnCancel = false;
+            closeOnAccept = false;
             doCloseButton = false;
             doCloseX = true;
             resizeable = true;
@@ -77,9 +92,6 @@ namespace RimWorldOnlineCity
             base.PreOpen();
             //EnsureSettingsHaveValidFiles(ClientController.Settings);
             windowRect.Set(0, 0, windowRect.width, windowRect.height);
-            IconAddTex = ContentFinder<Texture2D>.Get("OCAdd");
-            IconDelTex = ContentFinder<Texture2D>.Get("OCDel");
-            IconSubMenuTex = ContentFinder<Texture2D>.Get("OCSubMenu");
         }
 
         public override void PostClose()
@@ -540,7 +552,7 @@ namespace RimWorldOnlineCity
                         var mainCannal = SessionClientController.Data.Chats[0];
                         SessionClientController.Command((connect) =>
                         {
-                            if (connect.PostingChat(mainCannal.Id, "/killmyallpleace"))
+                            if (connect.PostingChat(mainCannal.Id, "/killmyallplease"))
                             {
                                 SessionClientController.Disconnected("OCity_Dialog_DeletedData".Translate());
                             }

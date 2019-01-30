@@ -12,7 +12,7 @@ namespace RimWorldOnlineCity
     {
         public static Action BeforeExit = null;
     }
-
+    
     [HarmonyPatch(typeof(MemoryUtility))]
     [HarmonyPatch("ClearAllMapsAndWorld")]
     internal class MemoryUtility_ClearAllMapsAndWorld_Patch
@@ -67,4 +67,5 @@ namespace RimWorldOnlineCity
             if (GameExit.BeforeExit != null) GameExit.BeforeExit();
         }
     }
+    
 }

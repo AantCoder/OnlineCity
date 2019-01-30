@@ -503,8 +503,8 @@ namespace OCServer
                             if (argsM.Count < 1) PostCommandPrivatPostActivChat(chat, "Player name is empty");
                             else PostCommandAddPlayer(chat, argsM[0]);
                             break;
-                        case "/killmyallpleace":
-                            Loger.Log("Server killmyallpleace OwnerMaker=" + (chat.OwnerMaker ? "1" : "0"));
+                        case "/killmyallplease":
+                            Loger.Log("Server killmyallplease OwnerMaker=" + (chat.OwnerMaker ? "1" : "0"));
                             if (chat.OwnerMaker) PostCommandPrivatPostActivChat(chat, "Operation only for the shared channel");
                             else
                             {
@@ -529,9 +529,48 @@ namespace OCServer
                                 }
                                 Player.Public.ExistMap = false;
                                 Player.SaveDataPacket = null;
-                                Loger.Log("Server killmyallpleace " + Player.Public.Login);
+                                Loger.Log("Server killmyallplease " + Player.Public.Login);
                                 Player = null;
                                 Repository.Get.ChangeData = true;
+                            }
+                            break;
+                        case "/killhimplease":
+                            Loger.Log("Server killhimplease OwnerMaker=" + (chat.OwnerMaker ? "1" : "0"));
+                            if (!Player.IsAdmin) PostCommandPrivatPostActivChat(chat, "Command only for admin");
+                            else
+                            if (argsM.Count < 1) PostCommandPrivatPostActivChat(chat, "Player name is empty");
+                            else
+                            {
+                                var killPlayer = Repository.GetData.PlayersAll
+                                    .FirstOrDefault(p => p.Public.Login == argsM[0]);
+                                if (killPlayer == null)
+                                    PostCommandPrivatPostActivChat(chat, "User " + argsM[0] + " not found");
+                                else
+                                {
+                                    chat.Posts.Add(new ChatPost()
+                                    {
+                                        Time = DateTime.UtcNow,
+                                        Message = "User " + killPlayer.Public.Login + " deleted settlements.",
+                                        OwnerLogin = "system"
+                                    });
+                                    var data = Repository.GetData;
+                                    lock (data)
+                                    {
+                                        for (int i = 0; i < data.WorldObjects.Count; i++)
+                                        {
+                                            var item = data.WorldObjects[i];
+                                            if (item.LoginOwner != killPlayer.Public.Login) continue;
+                                            //удаление из базы
+                                            item.UpdateTime = timeNow;
+                                            data.WorldObjects.Remove(item);
+                                            data.WorldObjectsDeleted.Add(item);
+                                        }
+                                    }
+                                    killPlayer.Public.ExistMap = false;
+                                    killPlayer.SaveDataPacket = null;
+                                    Repository.Get.ChangeData = true;
+                                    Loger.Log("Server killhimplease " + killPlayer.Public.Login);
+                                }
                             }
                             break;
                         default:

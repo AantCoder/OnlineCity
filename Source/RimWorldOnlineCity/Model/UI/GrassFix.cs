@@ -9,7 +9,7 @@ using Verse;
 
 namespace RimWorldOnlineCity
 {
-
+    /*
     [HarmonyPatch(typeof(Map))]
     [HarmonyPatch("MapPreTick")]
     public class GrassFix
@@ -72,7 +72,7 @@ namespace RimWorldOnlineCity
                         if (map.fertilityGrid.FertilityAt(pos) > 0f)
                         {
                             var ths = map.thingGrid.ThingsAt(pos);
-                            if (map.thingGrid.ThingsAt(pos).Any(t => t.def == ThingDefOf.PlantGrass /*t is Plant*/)) goodPlaceNum = 0;
+                            if (map.thingGrid.ThingsAt(pos).Any(t => t.def == ThingDefOf.Plant_Grass)) goodPlaceNum = 0;
                             else if (map.thingGrid.ThingsAt(pos).Count() == 0)
                             {
                                 goodPlaceNum++;
@@ -80,7 +80,7 @@ namespace RimWorldOnlineCity
                                 {
                                     placed++;
                                     goodPlaceNum = 0;
-                                    Plant plant = (Plant)ThingMaker.MakeThing(ThingDefOf.PlantGrass, null);
+                                    Plant plant = (Plant)ThingMaker.MakeThing(ThingDefOf.Plant_Grass, null);
                                     plant.Growth = 0.07f; //Rand.Range(0.07f, 1f);
                                     plant.Age = 0;
                                     GenSpawn.Spawn(plant, pos, map);
@@ -97,4 +97,5 @@ namespace RimWorldOnlineCity
             }
         }
     }
+    */
 }

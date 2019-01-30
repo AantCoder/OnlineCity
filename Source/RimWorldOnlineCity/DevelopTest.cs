@@ -79,7 +79,7 @@ namespace RimWorldOnlineCity
                 //Fedon,Huntsman,Ally,Lilith,Tater,Jesse,Kentucky
                 //Log.Message(string.Join(",", pawns.Select(p => p.NameStringShort).ToArray()));
 
-                var pawn = pawns.Where(p => p.NameStringShort == "Huntsman").FirstOrDefault();
+                var pawn = pawns.Where(p => p.Name.ToStringShort == "Huntsman").FirstOrDefault();
                 File.WriteAllText(Loger.PathLog + @"Huntsman.txt", TextObj(pawn), Encoding.UTF8);
 
                 var msg = "";
@@ -164,7 +164,7 @@ namespace RimWorldOnlineCity
                 Find.WindowStack.Add(form);
                 return true;
                 
-                pawn = pawns.Where(p => p.NameStringShort == "Jesse").FirstOrDefault();
+                pawn = pawns.Where(p => p.Name.ToStringShort == "Jesse").FirstOrDefault();
 
                 //msg += Find.Maps.Count.ToString() + Environment.NewLine;
 
@@ -191,7 +191,7 @@ namespace RimWorldOnlineCity
             }
             catch(Exception e)
             {
-                Log.Notify_Exception(e);
+                Log.Error(e.ToString());
             }
             return true;
         }

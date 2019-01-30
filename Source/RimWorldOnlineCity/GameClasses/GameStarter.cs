@@ -68,7 +68,7 @@ namespace RimWorldOnlineCity
     }
 
     /// ////////////////////////////////////////////////////////////
-
+    
     //Дополняем проверку на место для нового поселения
     [HarmonyPatch(typeof(TileFinder))]
     [HarmonyPatch("IsValidTileForNewSettlement")]
@@ -127,7 +127,7 @@ namespace RimWorldOnlineCity
             //устанавливаем пешки
             if (GameStarter.SetPawns != null)
             {
-                Current.Game.InitData.startingPawns = GameStarter.SetPawns;
+                Current.Game.InitData.startingAndOptionalPawns = GameStarter.SetPawns;
             }
         }
     }
@@ -212,4 +212,5 @@ namespace RimWorldOnlineCity
             }
         }
     }
+        
 }

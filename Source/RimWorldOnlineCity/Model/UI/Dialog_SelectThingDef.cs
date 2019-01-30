@@ -82,7 +82,7 @@ namespace RimWorldOnlineCity.UI
             //выше кнопок
             Rect workRect = new Rect(inRect.x, inRect.y, inRect.width, buttonYStart - mainListingSpacing);
 
-            ThingFilterUI.DoThingFilterConfigWindow(workRect, ref this.scrollPosition, thingFilter, null, 8, null, null, null);
+            ThingFilterUI.DoThingFilterConfigWindow(workRect, ref this.scrollPosition, thingFilter, null, 8);
             
         }
 

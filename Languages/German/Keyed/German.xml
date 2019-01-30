@@ -35,7 +35,7 @@
 	<OCity_ClientData_Chat>Chat </OCity_ClientData_Chat>
 	
 	<!-- Dialog_MainOnlineCity.cs -->
-	<OCity_Dialog_HelloLAN>Willkommen im Multiplayer!</OCity_Dialog_HelloLAN>
+	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
 	<OCity_Dialog_ListChat>Chat</OCity_Dialog_ListChat>
 	<OCity_Dialog_ListInfo>Info</OCity_Dialog_ListInfo>
 	<OCity_Dialog_ListAbout>Mod info</OCity_Dialog_ListAbout>
@@ -136,77 +136,77 @@
 	<OCity_SCC_DisconnectedShow>Verbindung abgebrochen</OCity_SCC_DisconnectedShow> -->
 
 	<!-- Dialog_MainOnlineCity.cs -->
-	<OCity_InfoTabText>Gut zu wissen:
+	<OCity_InfoTabText></OCity_InfoTabText>
+	<OCity_AboutTabText> Autor Vasily Ivanov alias Aant.</OCity_AboutTabText>
+	<OCity_AboutGeneralText>Приветствую тебя, Колонизатор!
 
-* Während Multiplayer nur auf gegenseitige Unterstützung im Überleben konzentriert ist.
+OnlineCity - представляет из себя модуль сетевой игры для симулятора выживания RimWorld. Он позволяет нескольким игрокам играть на одной планете в режиме онлайн. 
 
-* Die Farbe der Häuser und Karawanen anderer Spieler ist blau. Sie können mit ihnen interagieren, indem Sie auswählen
+После регистрации, вы сможете создать свое поселение и начать развиваться бок о бок с другими участниками. Вам дается возможность наблюдать за прогрессом соседей, их поселениями и караванами, но самое главное вы сможете оказывать друг другу вполне материальную помощь, передавая еду, медикаменты, оружие или любые другие вещи, включая поселенцев. Для этого необходимо лишь по всем правилам игры собрать караван и добраться до них!
 
-Die Karawane und auf ihnen von der rechten Maustaste gedrückt.
+Цель мода – сделать возможной игру с друзьями, не нарушая баланса и не снижая уровень погружения в игру. На данный момент жизненный путь мода только начался, и в его функционал входит:
 
-* Berücksichtigen Sie beim Umladen die Tragfähigkeit der Karawanen. Bei der Überlastung die Karawane kann sich nicht
+* Игра на одной планете, с возможностью видеть поселения и караваны других игроков
 
-bewegen. Wenn Sie die Karawane ausgewählt haben, können Sie herausfinden, wie viel Ladung er noch aufnehmen kann.
+* Обмен предметами (в т.ч. добавленными модами)
 
-* Damit Waren, die aus Transaktionen mit anderen Spielern stammen, an einem bestimmten Ort in Ihrer Abrechnung gespeichert werden,
+* Передача поселенцев и животных между игроками
 
-benennen Sie das gewünschte Warenlager so um, dass es Symbole enthält
+* Общий/Приватный чат между игроками
 
-"Schnäppchen" oder "Trad".
+Технические особенности:
 
-* Im allgemeinen Chat kann man sich mit allen Spieler umgehen, die sich online befinden. Ebenso ist es möglich
+* Поддерживаются любые моды и наборы, но передавать и принимать предметы можно только игроку у которого есть моды меняющие данные предметы. Жесткого ограничения нет, соблюдайте осторожность
 
-Den privaten Kanal für den Verkehr mit einem Spieler persönlich zu schaffen.
+* Мод полностью отключается при обычной игре - если вы начинали не с кнопки Сетевая игра
 
-* Durch Klicken auf eine beliebige Maustaste auf den Spitznamen des Spielers fügt der Spieler den aktiven Chat hinzu,
+* При регистрации нового игрока иногда происходит подвисание на несколько минут, просто подождите
 
-öffnet einen privaten Chat-Kanal oder zeigt die allgemeinen Informationen über den Spieler an, aus denen er auswählen kann.
+* По техническим причинам сохранение не работает при выходе из игры не через меню. Помимо этого игра сохраняется на сервере раз в 15 минут
 
-</OCity_InfoTabText>
+* Пока сетевая игра ориентирована только на взаимопомощь в выживании. 
 
-<OCity_AboutTabText> Autor Vasily Ivanov alias Aant.
+* Режим разработчика на данный момент доступен, но, обычно, игроки относятся к его использованию крайне негативно (кроме случаев, когда это нужно для тестирования мода).
 
-Dieser Mod ermöglicht es dir, auf einem Planeten mehrere Spieler online zu spielen. Im Moment sind nur freundliche Interaktionen verfügbar.
+* Передача пешек с проектом HardcoreSK временно не работает
 
-Spieler können die Entwicklung von einander, die Bewegung von Karawanen verfolgen.
+* Передать товары и пешек можно и offline игроку
 
-Sie können auch ihre eigenen Karavan für den Handel miteinander erstellen.
+* Цвет домов и караванов других игроков – синий. С ними можно взаимодействовать, выделив свой караван и нажав на них правой кнопкой мыши. 
 
-Die Synchronisation mit dem Server erfolgt alle 5 Sekunden, vollständige Speicherung - einmal pro Minute oder wenn Sie das Spiel über
+* Передавать можно между поселениями и караванами, находящимися на одной клетки правой кнопкой мыши. Следите за совместимостью модов и перегрузом принимающей стороны
 
-das Menü verlassen.
+* При передаче товаров учитывайте грузоподъемность караванов. При перегрузе караван не сможет передвигаться. Выделив караван, можно узнать сколько груза он ещё может принять. 
 
-Es wird nicht empfohlen, das Spiel zu schließen, indem Sie auf das Kreuz klicken! Dies kann in der letzten Minute zu einem Verlust
+* По щелчку любой кнопки мыши на никнейме игрока происходит добавление игрока в активный чат, открытие приватного канала чата, либо просмотр общей информации об игроке на выбор. 
 
-des Spielfortschritts führen.
+* Чтобы товары, полученные от сделок с другими игроками, складировались в определенном месте вашего поселения, переименуйте нужный склад так, чтобы он содержал символы "торг" или "trad".
 
-Gut zu wissen:
+* При передаче последней пешки караван будет расформирован, а оставшиеся вещи и животные автоматически добавлены к передаче
 
-* Während das Netzwerkspiel nur auf gegenseitige Unterstützung im Überleben konzentriert ist.
+* Сценарий игры настроить нельзя, но рассказчика можно сменить сразу после старта через настройки
 
-* Die Farbe der Häuser und Wohnwagen anderer Spieler ist blau. Sie können mit ihnen interagieren,
+* Играть на одной карте нельзя, и, скорее всего, в будущем это не измениться
 
-indem Sie Ihren Karavanen auswählen und mit der rechten Maustaste darauf klicken.
+* Нельзя загрузить игру online. Но можно загрузить эту игру в offline режиме (перевести её в online также нельзя), для этого загрузите сохранение onlineCityTempLoad.
 
-* Berücksichtigen Sie beim Umladen die Tragfähigkeit der Caravans. Bei Überladung kann sich der Wohnwagen nicht bewegen.
+* Геймплей игры модом почти не меняется: появляется только возможность помогать друг другу обмениваясь товарами и пешками, по полноценным игровым правилам. Появляется ограничение на сохранение: только одно автоматическое на сервере. А также чувство плеча, когда вы смотрите на карту планеты и видите рядом поселения других игроков :)
 
-Wenn Sie den Wohnwagen ausgewählt haben, können Sie herausfinden, wie viel Ladung er noch aufnehmen kann.
+* Пример взаимодействия: в момент нападения можно запросить помощи у друга и поставить игру на паузу, он в это время подойдёт караваном и передаст своих поселенцев; после отбития атаки можно вернуть поселенцев таким же способом. Или, например, тот кто пришёл на помощь может передать всех пешек кроме одной, чтобы караван не был расформирован, тогда вернить поселенцев можно будет сразу же после отбития передав их в назад в караван.
 
-* Um Waren, die von Transaktionen mit anderen Spielern stammen, an einem bestimmten Ort in Ihrer Siedlung zu speichern,
+* Логи пишуться в: %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity (это можно вставить в проводник)
 
-benennen Sie das gewünschte Lager um, sodass es Symbole enthält
 
-"Schnäppchen" oder "Trad".
+Ссылки:
+Основной сервер для игры и тестирования:  rimworld.online  он же: 194.87.95.90
+Discord:  https://discord.gg/5DzWrnR
+Оф. группа мода ВК:  https://vk.com/rimworldonline
+Trello:  https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
+GitHub:  https://github.com/AantCoder/OnlineCity
 
-* In einem allgemeinen Chat kannst du mit allen Spielern kommunizieren, die online sind. Es ist auch möglich,
 
-einen privaten Kanal zu erstellen, um mit einem Spieler persönlich zu kommunizieren.
-
-* Durch Klicken einer beliebigen Maustaste auf den Spitznamen des Spielers wird der Spieler zum aktiven Chat hinzugefügt,
-
-öffnet einen privaten Chat-Kanal oder zeigt allgemeine Informationen über den Spieler an
-
-zur Auswahl.
-
-</OCity_AboutTabText>
+Пара слов о запуске сервера.
+Распаковать файлы сервера в любое удобное место. Запускаете, сервер создаёт (должен сам создать) папку C:\World. Там будут логи и файл данных. После запуска сервер сразу стартует на порту по умолчанию 19019. Первый кто зарегистрируется становиться админом и у него спрашиваются параметры мира. После создания мира его дисконнектет и он может заходить как обычно, создать себе поселение.
+Для пересоздания мира закрыть консоль сервера, удалить файл данных, запустить консоль
+</OCity_AboutGeneralText>
 </LanguageData>

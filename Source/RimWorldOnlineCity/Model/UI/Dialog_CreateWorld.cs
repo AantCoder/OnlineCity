@@ -31,16 +31,14 @@ namespace RimWorldOnlineCity
 
         public Dialog_CreateWorld()
         {
-            closeOnEscapeKey = true;
+            closeOnCancel = false;
+            closeOnAccept = false;
             doCloseButton = false;
             doCloseX = true;
             forcePause = true;
             absorbInputAroundWindow = true;
             layer = WindowLayer.SubSuper;
             /*
-            closeOnEscapeKey = true;
-            doCloseButton = false;
-            doCloseX = true;
             resizeable = false;
             draggable = true;
             */

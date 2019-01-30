@@ -93,12 +93,12 @@ namespace RimWorldOnlineCity
             var result = new Dictionary<Thing, int>();
             if (IsCancel) return result;
 
-            List<ThingStackPart> stackParts = new List<ThingStackPart>();
+            List<ThingCount> stackParts = new List<ThingCount>();
             for (int i = 0; i < transferables.Count; i++)
             {
                 TransferableUtility.TransferNoSplit(transferables[i].things, transferables[i].CountToTransfer, delegate (Thing originalThing, int toTake)
                 {
-                    stackParts.Add(new ThingStackPart(originalThing, toTake));
+                    stackParts.Add(new ThingCount(originalThing, toTake));
                 }, false, false);
             }
             
@@ -126,9 +126,10 @@ namespace RimWorldOnlineCity
             AllItem = allItem;
             WhoName = who;
             FreeWeight = freeWeight;
+            closeOnCancel = false;
+            closeOnAccept = false;
             this.onClosed = onClosed;
             this.showEstTimeToDestinationButton = showEstTimeToDestinationButton;
-            this.closeOnEscapeKey = true;
             this.forcePause = true;
             this.absorbInputAroundWindow = true;
         }
@@ -188,11 +189,48 @@ namespace RimWorldOnlineCity
         
         private void DrawMassAndFoodInfo(Rect rect)
         {
+            //метод из Dialog_SplitCaravan с удалением лишнего
             //TransferableUIUtility.DrawMassInfo(rect, this.SourceMassUsage, this.SourceMassCapacity, "SplitCaravanMassUsageTooltip".Translate(), -9999f, false);
             //CaravanUIUtility.DrawDaysWorthOfFoodInfo(new Rect(rect.x, rect.y + 19f, rect.width, rect.height), this.SourceDaysWorthOfFood.First, this.SourceDaysWorthOfFood.Second, this.EnvironmentAllowsEatingVirtualPlantsNow, false, 3.40282347E+38f);
-            TransferableUIUtility.DrawMassInfo(rect, this.MassUsage, MassCapacity, "SplitCaravanMassUsageTooltip".Translate(), -9999f, true);
+            /*TransferableUIUtility.*/DrawMassInfo(rect, this.MassUsage, MassCapacity, "SplitCaravanMassUsageTooltip".Translate(), -9999f, true);
             //CaravanUIUtility.DrawDaysWorthOfFoodInfo(new Rect(rect.x, rect.y + 19f, rect.width, rect.height), this.DestDaysWorthOfFood.First, this.DestDaysWorthOfFood.Second, this.EnvironmentAllowsEatingVirtualPlantsNow, true, 3.40282347E+38f);
         }
+        
+        public static void DrawMassInfo(Rect rect, float usedMass, float availableMass, string tip, float lastMassFlashTime = -9999f, bool alignRight = false)
+        {
+            if (usedMass > availableMass)
+            {
+                GUI.color = Color.red;
+            }
+            else
+            {
+                GUI.color = Color.gray;
+            }
+            string text = "MassUsageInfo".Translate(new object[]
+            {
+                usedMass.ToString("0.##"),
+                availableMass.ToString("0.##")
+            });
+            Vector2 vector = Text.CalcSize(text);
+            Rect rect2;
+            if (alignRight)
+            {
+                rect2 = new Rect(rect.xMax - vector.x, rect.y, vector.x, vector.y);
+            }
+            else
+            {
+                rect2 = new Rect(rect.x, rect.y, vector.x, vector.y);
+            }
+            bool flag = Time.time - lastMassFlashTime < 1f;
+            if (flag)
+            {
+                GUI.DrawTexture(rect2, TransferableUIUtility.FlashTex);
+            }
+            Widgets.Label(rect2, text);
+            TooltipHandler.TipRegion(rect2, tip);
+            GUI.color = Color.white;
+        }
+
 
         private void DoBottomButtons(Rect rect)
         {
@@ -205,7 +243,7 @@ namespace RimWorldOnlineCity
                 var outText = DevelopTest.TextObj(cachedCurrencyTradeable, true);
                 File.WriteAllText(Loger.PathLog + @"Car.txt", outText, Encoding.UTF8);
                 */
-                SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
                 IsCancel = false;
                 this.Close(false);
@@ -213,7 +251,7 @@ namespace RimWorldOnlineCity
             Rect rect3 = new Rect(rect2.x - 10f - this.BottomButtonSize.x, rect2.y, this.BottomButtonSize.x, this.BottomButtonSize.y);
             if (Widgets.ButtonText(rect3, "ResetButton".Translate(), true, false, true))
             {
-                SoundDefOf.TickLow.PlayOneShotOnCamera(null);
+                SoundDefOf.Tick_Low.PlayOneShotOnCamera(null);
                 this.CalculateAndRecacheTransferables();
             }
             Rect rect4 = new Rect(rect2.xMax + 10f, rect2.y, this.BottomButtonSize.x, this.BottomButtonSize.y);
@@ -239,13 +277,15 @@ namespace RimWorldOnlineCity
                 , false);
             this.CountToTransferChanged();
         }
-
+        
         public static void CreateCaravanTransferableWidgets(List<TransferableOneWay> transferables
-            , out TransferableOneWayWidget itemsTransfer, string sourceLabel, string destLabel, string thingCountTip, IgnorePawnsInventoryMode ignorePawnInventoryMass, Func<float> availableMassGetter, bool ignoreCorpsesGearAndInventoryMass)
+            , out TransferableOneWayWidget itemsTransfer, string sourceLabel, string destLabel, string thingCountTip
+            , IgnorePawnsInventoryMode ignorePawnInventoryMass, Func<float> availableMassGetter, bool ignoreCorpsesGearAndInventoryMass)
         {
+            //метод из CaravanUIUtility с удалением лишнего
             itemsTransfer = new TransferableOneWayWidget(from x in transferables
                                                          //where x.ThingDef.category != ThingCategory.Pawn
-                                                         select x, sourceLabel, destLabel, thingCountTip, true, ignorePawnInventoryMass, false, availableMassGetter, 24f, ignoreCorpsesGearAndInventoryMass, true);
+                                                         select x, sourceLabel, destLabel, thingCountTip, true, ignorePawnInventoryMass, false, availableMassGetter, 24f, ignoreCorpsesGearAndInventoryMass);
         }
         
         private void CountToTransferChanged()

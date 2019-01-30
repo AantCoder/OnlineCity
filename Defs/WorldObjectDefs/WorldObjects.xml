@@ -19,9 +19,9 @@
     <worldObjectClass>RimWorldOnlineCity.BaseOnline</worldObjectClass> 
     <expandingIcon>true</expandingIcon> 
     <expandingIconPriority>11</expandingIconPriority> 
-    <comps>
+    <!--comps>
       <li Class="WorldObjectCompProperties_CaravanRequest" /> 
-    </comps>
+    </comps-->
   </WorldObjectDef>
   
 </Defs>

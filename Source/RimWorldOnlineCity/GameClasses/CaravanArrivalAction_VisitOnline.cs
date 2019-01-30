@@ -26,6 +26,21 @@ namespace RimWorldOnlineCity
             this.mode = mode;
         }
 
+        //Пример: посетить
+        public override string Label
+        {
+            get
+            {
+                if (сaravanOnline == null) return "";
+                return (mode == "exchangeOfGoods" ? "OCity_Caravan_GoTrade".Translate() : "OCity_Caravan_GoTrade2".Translate())
+                    .Translate(new object[]
+                    {
+                        сaravanOnline.Label
+                    });
+            }
+        }
+
+        //Пример: посещает
         public override string ReportString
         {
             get
@@ -39,7 +54,7 @@ namespace RimWorldOnlineCity
             }
         }
 
-        public override bool ShouldFail { get { return false; } }
+        //public override bool ShouldFail { get { return false; } }
 
         public override void Arrived(Caravan caravan)
         {

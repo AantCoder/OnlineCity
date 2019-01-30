@@ -14,6 +14,7 @@ using Model;
 
 namespace RimWorldOnlineCity.UI
 {
+    [StaticConstructorOnStartup]
     public class Dialog_Exchenge : Window
     {
         public Action PostCloseAction;
@@ -103,12 +104,15 @@ namespace RimWorldOnlineCity.UI
             }
         }
 
+        static Dialog_Exchenge()
+        {
+            IconSkull = ContentFinder<Texture2D>.Get("Skull");
+            IconDelTex = ContentFinder<Texture2D>.Get("OCDel");
+        }
         public override void PreOpen()
         {
             base.PreOpen();
             //EnsureSettingsHaveValidFiles(ClientController.Settings);
-            if (IconSkull == null) IconSkull = ContentFinder<Texture2D>.Get("Skull");
-            if (IconDelTex == null) IconDelTex = ContentFinder<Texture2D>.Get("OCDel");
         }
 
         public override Vector2 InitialSize
@@ -123,6 +127,8 @@ namespace RimWorldOnlineCity.UI
         {
             SizeOrders_Heigth = (int)(InitialSize.y / 2f);
             SizeAddThingList_Width = (int)(InitialSize.x / 2f);
+            closeOnCancel = false;
+            closeOnAccept = false;
         }
         public Dialog_Exchenge(Caravan caravan)
             : this()
@@ -380,7 +386,7 @@ namespace RimWorldOnlineCity.UI
             Text.Anchor = TextAnchor.MiddleCenter;
             if (Widgets.ButtonText(rect.ContractedBy(1f), "Обновить".NeedTranslate(), true, false, true))
             {
-                SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
                 UpdateOrders();
                 return;
@@ -461,7 +467,7 @@ namespace RimWorldOnlineCity.UI
                             if (Widgets.ButtonText(rect4, "<", true, false, true))
                             {
                                 item.AdjustBy(-1 * num2);
-                                SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                                SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
                             }
                         }
                         int countToTransfer = item.CountToTransfer;
@@ -475,7 +481,7 @@ namespace RimWorldOnlineCity.UI
                             if (Widgets.ButtonText(rect4, ">", true, false, true))
                             {
                                 item.AdjustBy(1 * num2);
-                                SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                                SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
                             }
                         }
 
@@ -516,7 +522,7 @@ namespace RimWorldOnlineCity.UI
             Text.Anchor = TextAnchor.MiddleCenter;
             if (Widgets.ButtonText(rect.ContractedBy(1f), "Выбрать".NeedTranslate(), true, false, true))
             {
-                SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
                 AddThingListApply();
                 return;
             }
@@ -609,7 +615,7 @@ namespace RimWorldOnlineCity.UI
                 , true, false, true))
             {
                 GUI.color = Color.white;
-                SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
                 if (!EditOrderToTrade) return;
 
                 if (!EditOrderIsMy)
@@ -622,7 +628,7 @@ namespace RimWorldOnlineCity.UI
                     //создать или отредактировать
                     SessionClientController.Command((connect) =>
                     {
-                        SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                        SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
                         if (!connect.ExchengeEdit(EditOrder))
                         {
@@ -652,7 +658,7 @@ namespace RimWorldOnlineCity.UI
                     , "Встречное предложение".NeedTranslate()
                     , true, false, true))
                 {
-                    SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                    SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
                     //todo
 
@@ -666,11 +672,11 @@ namespace RimWorldOnlineCity.UI
                     , "Удалить".NeedTranslate()
                     , true, false, true))
                 {
-                    SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                    SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
                     SessionClientController.Command((connect) =>
                     {
-                        SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                        SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
                         EditOrder.Id = -EditOrder.Id;
                         if (!connect.ExchengeEdit(EditOrder))
@@ -696,7 +702,7 @@ namespace RimWorldOnlineCity.UI
                 , "Новый ордер".NeedTranslate()
                 , true, false, true))
             {
-                SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
                 SetEditOrder(null);
 
@@ -786,7 +792,7 @@ namespace RimWorldOnlineCity.UI
                 , "+ добавить пользователя".NeedTranslate()
                 , true, false, true))
             {
-                SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
                 var editOrder = EditOrder;
                 var list = SessionClientController.Data.Players.Keys
@@ -971,7 +977,7 @@ namespace RimWorldOnlineCity.UI
                     , "+ добавить".NeedTranslate()
                     , true, false, true))
                 {
-                    SoundDefOf.TickHigh.PlayOneShotOnCamera(null);
+                    SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
                     var formm = new Dialog_SelectThingDef();
                     formm.ClearFilter();

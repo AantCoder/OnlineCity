@@ -35,7 +35,7 @@ namespace RimWorldOnlineCity
             var obj = UtilityWorldObjectManager.GetUtilityWorldObject<WorldDataStore>();
             //после загрузки мира
             GameData = obj;
-            GrassFix.SetMapTickOnPlaced(GameData.GrassFixData ?? "");
+            //GrassFix.SetMapTickOnPlaced(GameData.GrassFixData ?? "");
         }
         
         public class WorldDataStore : UtilityWorldObject

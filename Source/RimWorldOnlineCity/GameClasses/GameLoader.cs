@@ -12,9 +12,9 @@ namespace RimWorldOnlineCity
     {
         public static Action AfterLoad = null;
     }
-
-    [HarmonyPatch(typeof(SavedGameLoader))]
-    [HarmonyPatch("LoadGameFromSaveFile")]
+    
+    [HarmonyPatch(typeof(SavedGameLoaderNow))]
+    [HarmonyPatch("LoadGameFromSaveFileNow")]
     [HarmonyPatch(new[] { typeof(string) })]
     internal class SavedGameLoader_LoadGameFromSaveFile_Patch
     {
@@ -24,4 +24,5 @@ namespace RimWorldOnlineCity
             if (GameLoades.AfterLoad != null) GameLoades.AfterLoad();
         }
     }
+    
 }

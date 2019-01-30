@@ -29,11 +29,15 @@ namespace RimWorldOnlineCity
         public Dialog_Registration()
         {
             InputAddr = StorageData.GlobalData.LastIP.Value;
-            if (string.IsNullOrEmpty(InputAddr) && MainHelper.DebugMode)
+            if (string.IsNullOrEmpty(InputAddr))
             {
-                InputAddr = "localhost";
+                if (MainHelper.DebugMode)
+                    InputAddr = "localhost";
+                else
+                    InputAddr = "rimworld.online";
             }
-            closeOnEscapeKey = true;
+            closeOnCancel = false;
+            closeOnAccept = false;
             doCloseButton = false;
             doCloseX = true;
             resizeable = false;

@@ -397,9 +397,8 @@ namespace RimWorldOnlineCity
                 Current.Game.Scenario = GameStarter.SetScenario;
                 Current.Game.Scenario.PreConfigure();
                 Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
-                    , GameStarter.SetDifficulty == 2 ? DifficultyDefOf.Hard 
-                        : GameStarter.SetDifficulty == 1 ? DifficultyDefOf.Medium
-                        : DifficultyDefOf.VeryEasy);
+                    , GameStarter.SetDifficulty == 0 ? DifficultyDefOf.Easy
+                        : DifficultyDefOf.Rough);
 
                 Loger.Log("Client InitConnected() ExistMap2");
                 Current.Game.World = WorldGenerator.GenerateWorld(
@@ -473,10 +472,11 @@ namespace RimWorldOnlineCity
 
         public static Page GetFirstConfigPage()
         {
+            //скопированно из Scenario
             List<Page> list = new List<Page>();
             //list.Add(new Page_SelectStoryteller());
             //list.Add(new Page_CreateWorldParams());
-            list.Add(new Page_SelectLandingSite());
+            list.Add(new Page_SelectStartingSite());
             list.Add(new Page_ConfigureStartingPawns());
             Page page = PageUtility.StitchedPages(list);
             if (page != null)

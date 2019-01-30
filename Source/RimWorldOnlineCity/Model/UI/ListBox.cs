@@ -58,7 +58,7 @@ namespace RimWorldOnlineCity.UI
                 //светлый фон каждой второй строки
                 if (OddLineHighlight && i % 2 == 1)
                 {
-                    GUI.DrawTexture(rect, TradeUI.TradeAlternativeBGTex);
+                    Widgets.DrawAltRect(rect);
                 }
 
                 //отрисовка строки

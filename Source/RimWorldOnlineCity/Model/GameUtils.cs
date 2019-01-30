@@ -69,7 +69,7 @@ namespace RimWorldOnlineCity
             TooltipHandler.TipRegion(rect, new TipSignal(delegate
             {
                 string text = localThing.LabelCapNoCount;
-                string tipDescription = localThing.GetDescription();
+                string tipDescription = localThing.DescriptionFlavor;
                 if (!tipDescription.NullOrEmpty())
                 {
                     text = text + ": " + tipDescription;
@@ -129,7 +129,7 @@ namespace RimWorldOnlineCity
             TooltipHandler.TipRegion(rectLine, new TipSignal(delegate
             {
                 string text = localThing.LabelCapNoCount;
-                string tipDescription = localThing.GetDescription();
+                string tipDescription = localThing.DescriptionFlavor;
                 if (!tipDescription.NullOrEmpty())
                 {
                     text = text + ": " + tipDescription;
@@ -148,7 +148,7 @@ namespace RimWorldOnlineCity
             var transferables = new List<TransferableOneWay>();
             foreach (var item in things)
             {
-                TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(item, transferables);
+                TransferableOneWay transferableOneWay = TransferableUtility.TransferableMatching<TransferableOneWay>(item, transferables, TransferAsOneMode.Normal);
                 if (transferableOneWay == null)
                 {
                     transferableOneWay = new TransferableOneWay();
@@ -291,7 +291,7 @@ namespace RimWorldOnlineCity
             Current.Game.InitData = new GameInitData();
             Current.Game.Scenario = ScenarioDefOf.Crashlanded.scenario;
             Find.Scenario.PreConfigure();
-            Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra, DifficultyDefOf.Hard);
+            Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra, DifficultyDefOf.Rough);
             Current.Game.World = WorldGenerator.GenerateWorld(0.05f, GenText.RandomSeedString(), OverallRainfall.Normal, OverallTemperature.Normal);
         }
 

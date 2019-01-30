@@ -28,12 +28,16 @@ namespace RimWorldOnlineCity
             InputAddr = StorageData.GlobalData.LastIP.Value;
             InputLogin = StorageData.GlobalData.LastLoginName.Value;
             
-            if (string.IsNullOrEmpty(InputAddr) && MainHelper.DebugMode)
+            if (string.IsNullOrEmpty(InputAddr))
             {
-                InputAddr = "localhost";
+                if (MainHelper.DebugMode)
+                    InputAddr = "localhost";
+                else
+                    InputAddr = "rimworld.online";
             }
             //Loger.Log("login/beg " + StorageData.GlobalData.LastIP.Value);
-            closeOnEscapeKey = true;
+            closeOnCancel = false;
+            closeOnAccept = false;
             doCloseButton = false;
             doCloseX = true;
             resizeable = false;
@@ -64,6 +68,8 @@ namespace RimWorldOnlineCity
             var btnSize = new Vector2(140f, 40f);
             var buttonYStart = inRect.height - btnSize.y;
 
+
+            //кнопки
             var ev = Event.current;
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 3, buttonYStart, btnSize.x, btnSize.y), "OCity_LoginForm_BtnEnter".Translate())
                 || ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
@@ -90,6 +96,7 @@ namespace RimWorldOnlineCity
                 Close();
             }
 
+            //заголовок
             var mainListing = new Listing_Standard();
             mainListing.verticalSpacing = mainListingSpacing;
             mainListing.Begin(inRect);
@@ -99,7 +106,18 @@ namespace RimWorldOnlineCity
             Text.Font = GameFont.Small;
             mainListing.GapLine();
             mainListing.Gap();
+            
+            var iresct = mainListing.GetRect(20f);
 
+            //что к чему
+            ListableOption item = new ListableOption_WebLink("Что к чему".NeedTranslate(), () => 
+            {
+                var textForm = new Dialog_TextOut(Dialog_MainOnlineCity.AboutGeneralText);
+                Find.WindowStack.Add(textForm);
+            }, Dialog_MainOnlineCity.IconForums);
+            item.DrawOption(new Vector2(iresct.x, iresct.y), iresct.width);
+
+            //поля ввода
             var textEditSize = new Vector2(150f, 25f);
 
             TextInput(mainListing, "OCity_LoginForm_Server".Translate(),
