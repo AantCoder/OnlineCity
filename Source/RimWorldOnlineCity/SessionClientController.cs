@@ -173,12 +173,27 @@ namespace RimWorldOnlineCity
             });
         }
 
+        private static void PingServer()
+        {
+            try
+            {
+                Command((connect) =>
+                {
+                    connect.ServicePing();
+                });
+            }
+            catch
+            { }
+        }
+
         private static void UpdateChats()
         {
             //Loger.Log("Client UpdateChating...");
             Command((connect) =>
             {
+                var timeFrom = DateTime.UtcNow;
                 var test = connect.ServiceCheck();
+                Data.Ping = DateTime.UtcNow - timeFrom;
 
                 if (test != null)
                 {
@@ -193,6 +208,7 @@ namespace RimWorldOnlineCity
                         dc = connect.UpdateChat(Data.ChatsTime);
                         if (dc != null)
                         {
+                            Data.ServetTimeDelta = dc.Time - DateTime.UtcNow;
                             Loger.Log("Client UpdateChats: " + dc.Chats.Count.ToString() + " - " + dc.Time.Ticks //dc.Time.ToString(Loger.Culture)
                                 + "   " + (dc.Chats.Count == 0 ? "" : dc.Chats[0].Posts.Count.ToString()));
 
@@ -391,6 +407,7 @@ namespace RimWorldOnlineCity
                 
                 //выбор места на планете. Код из события завершения выбора параметров планеты Page_CreateWorldParams
                 Loger.Log("Client InitConnected() ExistMap1");
+                
 
                 Current.Game = new Game();
                 Current.Game.InitData = new GameInitData();
@@ -411,6 +428,8 @@ namespace RimWorldOnlineCity
                 //после создания мира запускаем его обработку, загружаем поселения др. игроков
                 UpdateWorldController.InitGame();
                 UpdateWorld(true);
+
+                Timers.Add(20000, PingServer);
 
                 Loger.Log("Client InitConnected() ExistMap4");
                 var form = GetFirstConfigPage();
@@ -576,7 +595,7 @@ namespace RimWorldOnlineCity
             try
             {
                 Loger.Log("Client InitGame()");
-                //Data.ChatsTime = DateTime.UtcNow + ServerTimeDelta; //без этого указания будут получены все сообщения с каналов
+                Data.ChatsTime = (DateTime.UtcNow + ServerTimeDelta).AddDays(-1); //без этого указания будут получены все сообщения с каналов
 
                 MainButtonWorker_OC.ShowOnStart();
                 UpdateWorldController.ClearWorld();

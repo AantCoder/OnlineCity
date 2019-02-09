@@ -88,6 +88,7 @@
     <Compile Include="Model\UI\Dialog_MainOnlineCity.cs" />
     <Compile Include="Model\UI\Dialog_Registration.cs" />
     <Compile Include="Model\UI\ScrollPanel.cs" />
+    <Compile Include="Model\UI\TextBox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionClientController.cs" />
     <Compile Include="Lib\StorageTest.cs" />

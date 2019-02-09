@@ -48,7 +48,16 @@ namespace OCServer
         public ModelStatus Registration(ModelLogin packet)
         {
             if (Player != null) return null;
-            //Thread.Sleep(5000);
+            if (packet.Login.Trim().Length < 2
+                || packet.Pass.Length < 5)
+            {
+                return new ModelStatus()
+                {
+                    Status = 1,
+                    Message = "Incorrect login or password"
+                };
+            }
+            //Thread.Sleep(5000);1
             var player = Repository.GetData.PlayersAll
                 .FirstOrDefault(p => p.Public.Login == packet.Login);
             if (player != null)
@@ -435,7 +444,8 @@ namespace OCServer
                     switch (command)
                     {
                         case "/help":
-                            PostCommandPrivatPostActivChat(chat, ChatHelpText);
+                            PostCommandPrivatPostActivChat(chat, ChatHelpText
+                                + (Player.IsAdmin ? ChatHelpTextAdmin : "" ));
                             break;
                         case "/createchat":
                             Loger.Log("Server createChat");
@@ -587,11 +597,12 @@ namespace OCServer
                 else
                 {
                     Loger.Log("Server post " + Player.Public.Login /*+ " " + timeNow.Ticks*/ + ":" + pc.Message);
-
+                    var mmsg = pc.Message;
+                    if (mmsg.Length > 2048) mmsg = mmsg.Substring(0, 2048);
                     chat.Posts.Add(new ChatPost()
                     {
                         Time = timeNow,
-                        Message = pc.Message,
+                        Message = mmsg,
                         OwnerLogin = Player.Public.Login
                     });
                 }
@@ -862,6 +873,10 @@ namespace OCServer
 /exitChat
 /addPlayer
 /renameChat
+
+";
+        private const string ChatHelpTextAdmin = @"/killmyallplease
+/killhimplease
 
 ";
 

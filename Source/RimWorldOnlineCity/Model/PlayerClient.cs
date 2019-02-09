@@ -12,14 +12,32 @@ namespace RimWorldOnlineCity
     {
         public Player Public;
 
+        public bool Online =>
+            Public.LastOnlineTime == DateTime.MinValue ? Public.LastSaveTime > DateTime.UtcNow.AddMinutes(-17) :
+            Public.LastOnlineTime > (DateTime.UtcNow + SessionClientController.Data.ServetTimeDelta).AddSeconds(-10);
+
         public List<CaravanOnline> WObjects;
 
         public string GetTextInfo()
+        {
+            if (TextInfoTime < DateTime.UtcNow.AddSeconds(-30))
+            {
+                TextInfoTime = DateTime.UtcNow;
+                TextInfo = GetTextInfoCalc();
+            }
+            return TextInfo;
+        }
+
+        private string TextInfo = "";
+        private DateTime TextInfoTime = DateTime.MinValue;
+
+        private string GetTextInfoCalc()
         {
             float marketValue = 0;
             float marketValuePawn = 0;
             int baseCount = 0;
             int caravanCount = 0;
+            string listOut = "";
             if (WObjects != null)
             {
                 foreach (var wo in WObjects)
@@ -27,9 +45,12 @@ namespace RimWorldOnlineCity
                     marketValue += wo.OnlineWObject.MarketValue;
                     marketValuePawn += wo.OnlineWObject.MarketValuePawn;
                     if (wo is BaseOnline)
+                    {
                         baseCount++;
+                    }
                     else
                         caravanCount++;
+                    listOut += Environment.NewLine + Environment.NewLine + wo.GetInspectString();
                 }
             }
             var info = (
@@ -49,7 +70,7 @@ namespace RimWorldOnlineCity
                         , marketValue.ToStringMoney()
                         , marketValuePawn.ToStringMoney()
                     });
-            return info;
+            return info + listOut;
         }
     }
 }

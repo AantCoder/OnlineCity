@@ -39,7 +39,7 @@ namespace RimWorldOnlineCity
         
         public override void Activate()
         {
-            Find.WindowStack.Add(new Dialog_MainOnlineCity());
+            Dialog_MainOnlineCity.ShowHide();
         }
 
 

@@ -13,6 +13,14 @@ namespace RimWorldOnlineCity
     {
         public DateTime ChatsTime = DateTime.MinValue;
         public DateTime UpdateTime = DateTime.MinValue;
+        /// <summary>
+        /// Разница между UtcNow клиента и сервера + время передачи от сервера к клиенту (половина пинга)
+        /// </summary>
+        public TimeSpan ServetTimeDelta = new TimeSpan(0);
+        /// <summary>
+        /// Время обновления данных чата
+        /// </summary>
+        public TimeSpan Ping = new TimeSpan(0);
 
         public List<Chat> Chats;
 

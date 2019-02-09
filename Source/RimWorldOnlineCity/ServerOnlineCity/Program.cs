@@ -14,7 +14,8 @@ namespace ServerOnlineCity
         static void Main(string[] args)
         {
             var workPort = args == null || args.Length < 1 ? 0 : int.Parse(args[0]);
-            var workPath = @"C:\World" + (workPort == 0 ? "" : "\\" + workPort.ToString());
+            var defaultPath = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
+            var workPath = /*@"C:\World"*/ Path.Combine(defaultPath, "World" + (workPort == 0 ? "" : "\\" + workPort.ToString()));
 
             Directory.CreateDirectory(workPath);
             //File.Delete(workPath + @"\Log.txt");

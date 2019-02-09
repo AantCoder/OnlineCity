@@ -23,32 +23,39 @@ namespace RimWorldOnlineCity
         private static Texture2D IconSubMenuTex;
 
         private int TabIndex = 0;
-        private DateTime DataLastChatsTime;
+        private DateTime DataLastChatsTime; //время полученного пакета данных чата от сервера, которое выведено в интерфейс
+        private DateTime DataLastChatsTimeUpdateTime; //когда последний раз обновлялась информация в интерфейсе (перерисовывать раз в 5 сек)
         private ListBox<string> lbCannals;
         private int lbCannalsLastSelectedIndex;
         private float lbCannalsHeight = 0;
         private ListBox<ListBoxPlayerItem> lbPlayers;
-        private string ChatText = "";
-        private Vector2 ChatScrollPosition;
-        private Vector2 InfoScrollPosition;
-        private Vector2 AboutScrollPosition;
+
+        private TextBox ChatBox = new TextBox();
+        //private string ChatText = "";
+        //private Vector2 ChatScrollPosition;
+        private bool ChatScrollToDown = false;
+        private DateTime ChatLastPostTime;
         private string ChatInputText = "";
-        private long UpdateLogHash;
-        private string lbCannalsGoToChat; //как только появиться этот чат перейти к нему
-
-        //private string StatusTemp;
-        private Vector2 scrollPosition;
-        private bool NeedFockus = true;
-
-        private string InfoTabText = "OCity_InfoTabText".Translate();
 
         private string InfoTabTitle = "OCity_Dialog_HelloLAN".Translate();
+        private TextBox InfoBox = new TextBox()
+        {
+            Text = "OCity_InfoTabText".Translate()
+        };
+        //private Vector2 InfoScrollPosition;
+
+        private long UpdateLogHash;
+        private string lbCannalsGoToChat; //как только появиться этот чат перейти к нему
+        
+        private bool NeedFockus = true;
 
         public static string AboutGeneralText = MainHelper.VersionInfo + " "
             + "OCity_AboutTabText".Translate() + Environment.NewLine + Environment.NewLine
             + "OCity_AboutGeneralText".Translate();
-
-        public static string AboutTabText = AboutGeneralText;
+        private static TextBox AboutBox = new TextBox()
+        {
+            Text = AboutGeneralText
+        };
 
         public static readonly Texture2D IconForums;
 
@@ -58,6 +65,7 @@ namespace RimWorldOnlineCity
             public string Text;
             public string Tooltip;
             public bool InChat;
+            public bool GroupTitle;
             public override string ToString()
             {
                 return Text;
@@ -66,8 +74,12 @@ namespace RimWorldOnlineCity
 
         public override Vector2 InitialSize
         {
-            get { return new Vector2(600f, 500f); }
+            get { return LastInitialSize; }
         }
+
+        static Dialog_MainOnlineCity IsShow = null;
+        static Vector2 LastInitialSize = new Vector2(700f, 650f);
+        static Vector2 LastInitialPos = new Vector2(0f, 0f);
 
         static Dialog_MainOnlineCity()
         {
@@ -79,7 +91,7 @@ namespace RimWorldOnlineCity
 
         public Dialog_MainOnlineCity()
         {
-            closeOnCancel = false;
+            closeOnCancel = true;
             closeOnAccept = false;
             doCloseButton = false;
             doCloseX = true;
@@ -87,21 +99,36 @@ namespace RimWorldOnlineCity
             draggable = true;
         }
 
+        static public void ShowHide()
+        {
+            if (IsShow == null)
+                Find.WindowStack.Add(IsShow = new Dialog_MainOnlineCity());
+            else
+            {
+                IsShow.Close();
+                IsShow = null;
+            }
+        }
+
         public override void PreOpen()
         {
             base.PreOpen();
             //EnsureSettingsHaveValidFiles(ClientController.Settings);
-            windowRect.Set(0, 0, windowRect.width, windowRect.height);
+            windowRect.Set(LastInitialPos.x, LastInitialPos.y, windowRect.width, windowRect.height);
         }
 
         public override void PostClose()
         {
+            IsShow = null;
             //ClientController.SaveSettings();
         }
         
         private bool DevTest = false;
         public override void DoWindowContents(Rect inRect)
         {
+            LastInitialSize = new Vector2(windowRect.width, windowRect.height);
+            LastInitialPos = new Vector2(windowRect.x, windowRect.y);
+
             if (!DevTest && new DevelopTest().Run())
             {
                 DevTest = true;
@@ -132,12 +159,14 @@ namespace RimWorldOnlineCity
             else if (TabIndex == 2) DoTab2Contents(tabRect);
 
             Text.Font = GameFont.Small;
-            var loginRect = new Rect(inRect.width - 120f, -2f, 120f, 50f);
+            var loginRect = new Rect(inRect.width - 180f, -2f, 180f, 50f);
             Widgets.Label(loginRect, SessionClientController.Data.LastServerConnectFail
                 ? "OCity_Dialog_Connecting".Translate()
-                : "OCity_Dialog_Login".Translate() + SessionClientController.My.Login);
+                : "OCity_Dialog_Login".Translate() + SessionClientController.My.Login
+                    + " " + (int)SessionClientController.Data.Ping.TotalMilliseconds + "ms");
         }
 
+        private float DoTab0LastHeight = 0;
         public void DoTab0Contents(Rect inRect)
         {
             var iconWidth = 25f;
@@ -167,7 +196,7 @@ namespace RimWorldOnlineCity
                         , inRect.y + iconWidthSpase
                         , 100f
                         , lbCannalsHeight);
-                    //lbCannals.OnClick += (index, text) => StatusTemp = text;
+                    lbCannals.OnClick += (index, text) => DataLastChatsTime = DateTime.MinValue; /*StatusTemp = text;*/
                     lbCannals.SelectedIndex = 0;
                 }
                 
@@ -175,10 +204,12 @@ namespace RimWorldOnlineCity
                 {
                     //первый запуск
                     lbPlayers = new ListBox<ListBoxPlayerItem>();
+                    /*
                     lbPlayers.Area = new Rect(inRect.x
                         , inRect.y + iconWidthSpase + lbCannalsHeight + 22f
                         , 100f
                         , inRect.height - (iconWidthSpase + lbCannalsHeight + 22f));
+                    */
                     lbPlayers.OnClick += (index, item) =>
                     {
                         //убираем выделение
@@ -189,8 +220,19 @@ namespace RimWorldOnlineCity
 
                     lbPlayers.Tooltip = (item) => item.Tooltip;
                 }
-                if (DataLastChatsTime != SessionClientController.Data.ChatsTime)
+                if (DoTab0LastHeight != inRect.height)
                 {
+                    DoTab0LastHeight = inRect.height;
+                    lbPlayers.Area = new Rect(inRect.x
+                        , inRect.y + iconWidthSpase + lbCannalsHeight + 22f
+                        , 100f
+                        , inRect.height - (iconWidthSpase + lbCannalsHeight + 22f));
+                }
+                
+                if (DataLastChatsTime != SessionClientController.Data.ChatsTime
+                    || DataLastChatsTimeUpdateTime < DateTime.UtcNow.AddSeconds(-5))
+                {
+                    DataLastChatsTimeUpdateTime = DateTime.UtcNow;
                     //пишем в лог
                     var updateLogHash = SessionClientController.Data.Chats.Count * 1000000
                         + SessionClientController.Data.Chats.Sum(c => c.Posts.Count);
@@ -217,6 +259,104 @@ namespace RimWorldOnlineCity
                         }
                     }
 
+                    //Заполняем список игроков по группами {
+                    lbPlayers.DataSource = new List<ListBoxPlayerItem>();
+                    var allreadyLogin = new List<string>();
+                    Func<string, string, ListBoxPlayerItem> addPl = (login, text) =>
+                    {
+                        allreadyLogin.Add(login);
+                        var n = new ListBoxPlayerItem()
+                        {
+                            Login = login,
+                            Text = text,
+                            Tooltip = login
+                        };
+                        lbPlayers.DataSource.Add(n);
+                        return n;
+                    };
+                    Action<string> addTit = (text) =>
+                    {
+                        if (lbPlayers.DataSource.Count > 0) addPl(null, " ").GroupTitle = true;
+                        addPl(null, " <i>– " + text + " –</i> ").GroupTitle = true;
+                    };
+                    Func<string, bool> isOnline = (login) => login == SessionClientController.My.Login 
+                        || SessionClientController.Data.Players[login].Online;
+                    Func<bool, string, string> frameOnline = (online, txt) =>
+                        online
+                        ? "<b>" + txt + "</b>"
+                        : "<color=#888888ff>" + txt + "</color>";
+                    
+                    if (lbCannals.SelectedIndex > 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
+                    {
+                        var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
+
+                        // в чате создатель
+                        addTit("в чате".NeedTranslate());
+                        var n = addPl(selectCannal.OwnerLogin
+                            , frameOnline(isOnline(selectCannal.OwnerLogin), "★ " + selectCannal.OwnerLogin));
+                        n.Tooltip += "OCity_Dialog_ChennelOwn".Translate();
+                        n.InChat = true;
+
+                        // в чате 
+                        var offlinePartyLogin = new List<string>();
+                        for (int i = 0; i < selectCannal.PartyLogin.Count; i++)
+                        {
+                            var lo = selectCannal.PartyLogin[i];
+                            if (lo != "system" && lo != selectCannal.OwnerLogin)
+                            {
+                                if (isOnline(lo))
+                                {
+                                    n = addPl(lo, frameOnline(true, lo));
+                                    n.Tooltip += "OCity_Dialog_ChennelUser".Translate();
+                                    n.InChat = true;
+                                }
+                                else
+                                    offlinePartyLogin.Add(lo);
+                            }
+                        }
+
+                        // в чате оффлайн
+                        //addTit("оффлайн".NeedTranslate());
+                        for (int i = 0; i < offlinePartyLogin.Count; i++)
+                        {
+                            var lo = offlinePartyLogin[i];
+                            n = addPl(lo, frameOnline(false, lo));
+                            n.Tooltip += "OCity_Dialog_ChennelUser".Translate();
+                            n.InChat = true;
+                        }
+                    }
+
+                    var other = SessionClientController.Data.Chats[0].PartyLogin
+                        .Where(p => p != "" && p != "system" && !allreadyLogin.Any(al => al == p))
+                        .ToList();
+                    if (other.Count > 0)
+                    {
+                        // игроки
+                        addTit("игроки".NeedTranslate());
+                        var offlinePartyLogin = new List<string>();
+                        for (int i = 0; i < other.Count; i++)
+                        {
+                            var lo = other[i];
+                            if (isOnline(lo))
+                            {
+                                var n = addPl(lo, frameOnline(true, lo));
+                                //n.Tooltip += "OCity_Dialog_ChennelUser".Translate();
+                            }
+                            else
+                                offlinePartyLogin.Add(lo);
+                        }
+
+                        // игроки оффлайн
+                        //addTit("оффлайн".NeedTranslate());
+                        for (int i = 0; i < offlinePartyLogin.Count; i++)
+                        {
+                            var lo = offlinePartyLogin[i];
+                            var n = addPl(lo, frameOnline(false, lo));
+                            //n.Tooltip += "OCity_Dialog_ChennelUser".Translate();
+                        }
+
+                    }
+                    /*
                     var listPlayersInChat = new List<string>();
                     if (lbCannals.SelectedIndex >= 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                     {
@@ -251,10 +391,13 @@ namespace RimWorldOnlineCity
                             InChat = false
                         })
                         );
+                    */
                     
                     DataLastChatsTime = SessionClientController.Data.ChatsTime;
                     lbCannalsLastSelectedIndex = -1; //сброс для обновления содержимого окна
                 }
+                // }
+
                 lbCannals.Drow();
                 lbPlayers.Drow();
 
@@ -294,34 +437,32 @@ namespace RimWorldOnlineCity
                     lbCannalsLastSelectedIndex = lbCannals.SelectedIndex;
                     if (lbCannals.SelectedIndex >= 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                     {
-                        Func<ChatPost, string> getPost = (cp) => "[" + cp.OwnerLogin + "]: " + cp.Message;
-
                         var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
-                        ChatText = selectCannal.Posts
-                            .Aggregate("", (r, i) => (r == "" ? "" : r + Environment.NewLine) + getPost(i));
+                        var chatLastPostTime = selectCannal.Posts.Max(p => p.Time);
+                        if (ChatLastPostTime != chatLastPostTime)
+                        {
+                            ChatLastPostTime = chatLastPostTime;
+                            Func<ChatPost, string> getPost = (cp) => "[" + cp.Time.ToGoodUtcString("dd HH:mm ") + cp.OwnerLogin + "]: " + cp.Message;
+
+                            var totalLength = 0;
+                            ChatBox.Text = selectCannal.Posts
+                                .Reverse<ChatPost>()
+                                .Where(i => (totalLength += i.Message.Length) < 5000)
+                                .Aggregate("", (r, i) => getPost(i) + (r == "" ? "" : Environment.NewLine + r));
+                            ChatScrollToDown = true;
+                        }
                     }
                     else
-                        ChatText = "";
+                        ChatBox.Text = "";
                 }
 
                 if (lbCannals.SelectedIndex >= 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                 {
                     var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
-
-                    //var chatTextSize = Text.CalcSize(ChatText);
+                    
                     var chatAreaOuter = new Rect(inRect.x + 110f, inRect.y, inRect.width - 110f, inRect.height - 30f);
-                    var chatAreaInner = new Rect(0, 0
-                        , /*inRect.width - (inRect.x + 110f) */ chatAreaOuter.width - ListBox<string>.WidthScrollLine
-                        , 0/*chatTextSize.y*/);
-                    chatAreaInner.height = Text.CalcHeight(ChatText, chatAreaInner.width);
-
-                    ChatScrollPosition = GUI.BeginScrollView(chatAreaOuter, ChatScrollPosition, chatAreaInner);
-                    GUILayout.BeginArea(chatAreaInner);
-                    GUILayout.TextField(ChatText, "Label");
-                    GUILayout.EndArea();
-                    GUI.EndScrollView();
-
-                    ///
+                    ChatBox.Drow(chatAreaOuter, ChatScrollToDown);
+                    ChatScrollToDown = false;
 
                     if (ChatInputText != "")
                     {
@@ -423,6 +564,8 @@ namespace RimWorldOnlineCity
 
         private void PlayerItemMenu(ListBoxPlayerItem item)
         {
+            if (item.GroupTitle) return;
+
             var listMenu = new List<FloatMenuOption>();
             var myLogin = SessionClientController.My.Login;
             ///Личное сообщение
@@ -472,7 +615,7 @@ namespace RimWorldOnlineCity
                 {
                     var pl = SessionClientController.Data.Players[item.Login];
                     InfoTabTitle = "OCity_Dialog_ChennelPlayerInfoTitle".Translate() + item.Login;
-                    InfoTabText = pl.GetTextInfo();
+                    InfoBox.Text = pl.GetTextInfo();
                     TabIndex = 1;
                 }));
 
@@ -483,34 +626,19 @@ namespace RimWorldOnlineCity
 
         public void DoTab1Contents(Rect inRect)
         {
+            if (string.IsNullOrEmpty(InfoTabTitle) && string.IsNullOrEmpty(InfoBox.Text))
+            {
+                var pl = SessionClientController.Data.Players[SessionClientController.My.Login];
+                InfoTabTitle = "OCity_Dialog_ChennelPlayerInfoTitle".Translate() + SessionClientController.My.Login;
+                InfoBox.Text = pl.GetTextInfo();
+            }
+
             Text.Font = GameFont.Medium;
             Widgets.Label(inRect, InfoTabTitle);
             
             Text.Font = GameFont.Small;
-            //var chatTextSize = Text.CalcSize(InfoTabText);
             var chatAreaOuter = new Rect(inRect.x + 50f, inRect.y + 40f, inRect.width - 50f, inRect.height - 30f - 40f);
-            var chatAreaInner = new Rect(0, 0
-                , /*inRect.width - (inRect.x + 50f)*/ chatAreaOuter.width - ListBox<string>.WidthScrollLine
-                , 0/*chatTextSize.y*/);
-            chatAreaInner.height = Text.CalcHeight(InfoTabText, chatAreaInner.width);
-
-            InfoScrollPosition = GUI.BeginScrollView(chatAreaOuter, InfoScrollPosition, chatAreaInner);
-            GUILayout.BeginArea(chatAreaInner);
-            GUILayout.TextField(InfoTabText, "Label");
-            GUILayout.EndArea();
-            GUI.EndScrollView();
-
-
-            /*
-            Widgets.Label(inRect, "Вкладка 2");
-
-            scrollPosition = GUI.BeginScrollView(new Rect(10, 300, 100, 100), scrollPosition, new Rect(0, 0, 220, 200));
-            GUI.Button(new Rect(0, 0, 100, 20), "Top-left");
-            GUI.Button(new Rect(120, 0, 100, 20), "Top-right");
-            GUI.Button(new Rect(0, 180, 100, 20), "Bottom-left");
-            GUI.Button(new Rect(120, 180, 100, 20), "Bottom-right");
-            GUI.EndScrollView();
-            */
+            InfoBox.Drow(chatAreaOuter);
         }
 
         public void DoTab2Contents(Rect inRect)
@@ -519,18 +647,8 @@ namespace RimWorldOnlineCity
             Widgets.Label(inRect, "OCity_Dialog_AboutMode".Translate());
 
             Text.Font = GameFont.Small;
-            //var chatTextSize = Text.CalcSize(InfoTabText);
             var chatAreaOuter = new Rect(inRect.x + 150f, inRect.y + 40f, inRect.width - 150f, inRect.height - 30f - 40f);
-            var chatAreaInner = new Rect(0, 0
-                , /*inRect.width - (inRect.x + 50f)*/ chatAreaOuter.width - ListBox<string>.WidthScrollLine
-                , 0/*chatTextSize.y*/);
-            chatAreaInner.height = Text.CalcHeight(AboutTabText, chatAreaInner.width);
-
-            InfoScrollPosition = GUI.BeginScrollView(chatAreaOuter, InfoScrollPosition, chatAreaInner);
-            GUILayout.BeginArea(chatAreaInner);
-            GUILayout.TextField(AboutTabText, "Label");
-            GUILayout.EndArea();
-            GUI.EndScrollView();
+            AboutBox.Drow(chatAreaOuter);
 
             var rect2 = new Rect(inRect.x, inRect.y + inRect.height / 2f, 150f, inRect.height - 30f - 40f);
             Text.Font = GameFont.Small;

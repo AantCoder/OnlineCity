@@ -78,5 +78,39 @@ namespace OCUnion
             Scribe.loader.FinalizeLoading();
         }
 
+        public static string ReplaceByTag(string xml, string tagName, string newValue, string afterText = null)
+        {
+            int after = string.IsNullOrEmpty(afterText) ? 0 : xml.IndexOf(afterText);
+            if (after < 0) after = 0;
+
+            var tagNameB = "<" + tagName + ">";
+            int pos = xml.IndexOf(tagNameB, after);
+            if (pos < 0) return xml;
+            pos += tagNameB.Length;
+            
+            var tagNameE = "</" + tagName + ">";
+            int posE = xml.IndexOf(tagNameE, pos);
+            if (posE < 0) return xml;
+
+            return xml.Substring(0, pos) + newValue + xml.Substring(posE);
+        }
+
+        public static string ReplaceByTag(string xml, string tagName 
+            , Func<string, string> getNewValue)
+        {
+            var tagNameB = "<" + tagName + ">";
+            int pos = xml.IndexOf(tagNameB);
+            if (pos < 0) return xml;
+            pos += tagNameB.Length;
+
+            var tagNameE = "</" + tagName + ">";
+            int posE = xml.IndexOf(tagNameE, pos);
+            if (posE < 0) return xml;
+
+            var newValue = getNewValue(xml.Substring(pos, posE - pos));
+            if (newValue == null) return xml;
+
+            return xml.Substring(0, pos) + newValue + xml.Substring(posE);
+        }
     }
 }

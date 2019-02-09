@@ -77,13 +77,16 @@ namespace RimWorldOnlineCity
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 2, buttonYStart, btnSize.x, btnSize.y), "OCity_Dialog_Registration_BtnReg".Translate())
                 || ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
             {
-                var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword);
-                if (msgError == null)
+                if (InputAddr.Length > 2 && InputLogin.Length > 2 && InputPassword.Length > 2)
                 {
-                    StorageData.GlobalData.LastIP.Value = InputAddr;
-                    StorageData.GlobalData.LastLoginName.Value = InputLogin;
-                    HugsLibController.SettingsManager.SaveChanges();
-                    Close();
+                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword);
+                    if (msgError == null)
+                    {
+                        StorageData.GlobalData.LastIP.Value = InputAddr;
+                        StorageData.GlobalData.LastLoginName.Value = InputLogin;
+                        HugsLibController.SettingsManager.SaveChanges();
+                        Close();
+                    }
                 }
             }
 

@@ -6,10 +6,11 @@
     <label>Other player's caravan</label>
     <description>Other online player's caravan</description>
     <worldObjectClass>RimWorldOnlineCity.CaravanOnline</worldObjectClass>
-    <texture>World/WorldObjects/CaravanOnline</texture>
+    <!--texture>World/WorldObjects/CaravanOnline</texture>
+    <expandingIconTexture>World/WorldObjects/CaravanOnlineExpanding</expandingIconTexture-->
     <expandingIcon>true</expandingIcon>
-    <expandingIconTexture>World/WorldObjects/CaravanOnlineExpanding</expandingIconTexture>
     <expandingIconPriority>95</expandingIconPriority>
+	<saved>false</saved> 
   </WorldObjectDef>
   
 - <WorldObjectDef>
@@ -19,9 +20,7 @@
     <worldObjectClass>RimWorldOnlineCity.BaseOnline</worldObjectClass> 
     <expandingIcon>true</expandingIcon> 
     <expandingIconPriority>11</expandingIconPriority> 
-    <!--comps>
-      <li Class="WorldObjectCompProperties_CaravanRequest" /> 
-    </comps-->
+	<saved>false</saved> 
   </WorldObjectDef>
   
 </Defs>

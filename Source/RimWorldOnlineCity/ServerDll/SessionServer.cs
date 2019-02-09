@@ -72,6 +72,8 @@ namespace OCServer
                 //Loger.Log("Server Loop1");
                 var rec = Client.ReceiveBytes();
 
+                if (Worker.Player != null) Worker.Player.Public.LastOnlineTime = DateTime.UtcNow;
+
                 //отдельно обрабатываем пинг
                 if (rec.Length == 1)
                 {

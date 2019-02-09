@@ -82,7 +82,13 @@ namespace RimWorldOnlineCity
                                 optList.RemoveAt(i--);
                             }
                         }
-                        var item = new ListableOption("QuitToMainMenu".Translate(), delegate
+                        var item = new ListableOption("Онлайн".NeedTranslate(), delegate
+                        {
+                            Dialog_MainOnlineCity.ShowHide();
+                        }, null);
+                        optList.Add(item);
+                            
+                        item = new ListableOption("QuitToMainMenu".Translate(), delegate
                         {
                             if (GameExit.BeforeExit != null)
                             {
@@ -91,6 +97,7 @@ namespace RimWorldOnlineCity
                             GenScene.GoToMainMenu();
                         }, null);
                         optList.Add(item);
+
                         item = new ListableOption("QuitToOS".Translate(), delegate
                         {
                             if (GameExit.BeforeExit != null)
@@ -100,6 +107,8 @@ namespace RimWorldOnlineCity
                             Root.Shutdown();
                         }, null);
                         optList.Add(item);
+
+                        
                     }
                 }
             }

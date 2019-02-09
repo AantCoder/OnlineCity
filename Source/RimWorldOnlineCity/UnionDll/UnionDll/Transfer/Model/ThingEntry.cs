@@ -2,6 +2,7 @@
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -93,5 +94,47 @@ namespace Model
             */
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fractionColonist"></param>
+        /// <param name="fractionPirate"></param>
+        /// <returns>Истина, если это особый вид - пленник</returns>
+        public bool SetFaction(string fractionColonist, string fractionPirate)
+        {
+            if (string.IsNullOrEmpty(Data) || !Data.Contains(" Class=\"Pawn\"")) return false;
+            if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnB.xml", Data);
+
+            bool col = Data.Contains("<kindDef>Colonist</kindDef>");
+            string fraction = fractionColonist; //col ? fractionColonist : fractionPirate;
+            Data = GameXMLUtils.ReplaceByTag(Data, "faction", fraction);
+            Data = GameXMLUtils.ReplaceByTag(Data, "kindDef", "Colonist" /*"Pirate"*/);
+            //if (MainHelper.DebugMode) Loger.Log(" Replace faction=>" + fraction);
+
+            //если это гости, то убираем у них это свойство - оно должно выставиться потом
+
+            Data = GameXMLUtils.ReplaceByTag(Data, "guest", @"
+    <hostFaction>null</hostFaction>
+    <interactionMode>NoInteraction</interactionMode>
+    <spotToWaitInsteadOfEscaping>(-1000, -1000, -1000)</spotToWaitInsteadOfEscaping>
+    <lastPrisonBreakTicks>-1</lastPrisonBreakTicks>
+  ");
+            /*
+            Data = GameXMLUtils.ReplaceByTag(Data, "hostFaction", "null", "<guest>");
+            Data = GameXMLUtils.ReplaceByTag(Data, "prisoner", "False", "<guest>");*/
+
+            /* попытка передавать заключенных не получилась
+            Data = GameXMLUtils.ReplaceByTag(Data, "hostFaction", 
+                (val) =>
+                {
+                    if (MainHelper.DebugMode) Loger.Log(" Replace hostFaction "+ val + "=>" + fractionColonist);
+                    return val == "null" ? null : fractionColonist;
+
+                });
+                */
+
+            if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnA.xml", Data);
+            return !col;
+        }
     }
 }

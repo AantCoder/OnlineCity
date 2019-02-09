@@ -16,6 +16,8 @@ namespace Model
 
         public DateTime LastSaveTime { get; set; }
 
+        public DateTime LastOnlineTime { get; set; }
+
         public long LastTick { get; set; }
     }
 }

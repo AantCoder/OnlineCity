@@ -12,8 +12,7 @@ namespace RimWorldOnlineCity
 {
     public class Dialog_TextOut : Window
     {
-        private string PrintText;
-        private bool NeedFockus = true;
+        private TextBox PrintBox = new TextBox();
         private Vector2 ScrollPosition;
 
         public bool ResultOK = false;
@@ -31,7 +30,7 @@ namespace RimWorldOnlineCity
             forcePause = true;
             absorbInputAroundWindow = true;
             layer = WindowLayer.SubSuper;
-            PrintText = text;
+            PrintBox.Text = text;
         }
 
         public override void PreOpen()
@@ -48,20 +47,9 @@ namespace RimWorldOnlineCity
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium; 
-
-            //var chatTextSize = Text.CalcSize(ChatText);
-            var chatAreaOuter = new Rect(inRect.x + 20f, inRect.y, inRect.width - 20f, inRect.height - 20f);
-            var chatAreaInner = new Rect(0, 0
-                , /*inRect.width - (inRect.x + 110f) */ chatAreaOuter.width - ListBox<string>.WidthScrollLine
-                , 0/*chatTextSize.y*/);
-            chatAreaInner.height = Text.CalcHeight(PrintText, chatAreaInner.width);
-
-            ScrollPosition = GUI.BeginScrollView(chatAreaOuter, ScrollPosition, chatAreaInner);
-            GUILayout.BeginArea(chatAreaInner);
-            GUILayout.TextField(PrintText, "Label");
-            GUILayout.EndArea();
-            GUI.EndScrollView();
             
+            var chatAreaOuter = new Rect(inRect.x + 20f, inRect.y, inRect.width - 20f, inRect.height - 20f);
+            PrintBox.Drow(chatAreaOuter);
         }
         
     }

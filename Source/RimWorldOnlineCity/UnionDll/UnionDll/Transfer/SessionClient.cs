@@ -95,6 +95,32 @@ namespace Transfer
         }
 
         /// <summary>
+        /// Пинг
+        /// </summary>
+        /// <returns></returns>
+        public bool ServicePing()
+        {
+            try
+            {
+                lock (this)
+                {
+                    Client.SendMessage(new byte[1] { 0x00 });
+
+                    var rec = Client.ReceiveBytes();
+
+                    return rec.Length == 1 && rec[0] == 0x00;
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message
+                    + (e.InnerException == null ? "" : " -> " + e.InnerException.Message);
+                ExceptionUtil.ExceptionLog(e, "Client ServicePing ");
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Проверка есть ли новое на сервере, используется только для чата 
         /// </summary>
         /// <returns></returns>

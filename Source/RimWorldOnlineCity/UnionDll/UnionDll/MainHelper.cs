@@ -11,7 +11,7 @@ namespace OCUnion
     {
         public static bool DebugMode = false;
 
-        public static string VersionInfo = "Версия 0.02.20a от 2018.10.18";
+        public static string VersionInfo = "Версия 0.02.21a от 2019.02.09";
 
         private static CultureInfo CultureValue = null;
         public static CultureInfo Culture
@@ -53,6 +53,11 @@ namespace OCUnion
         {
             var nowUtc = DateTime.Now - DateTime.UtcNow;
             return (that + nowUtc).ToString(Culture);
+        }
+        public static string ToGoodUtcString(this DateTime that, string format)
+        {
+            var nowUtc = DateTime.Now - DateTime.UtcNow;
+            return (that + nowUtc).ToString(format, Culture);
         }
     }
 }

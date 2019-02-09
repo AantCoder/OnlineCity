@@ -5,12 +5,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 using Verse;
 
 namespace RimWorldOnlineCity
 {
+    [StaticConstructorOnStartup]
     public class CaravanOnline : WorldObject
     {
+
         public string OnlinePlayerLogin
         {
             get { return OnlineWObject == null ? null : OnlineWObject.LoginOwner; }
@@ -18,6 +21,21 @@ namespace RimWorldOnlineCity
         public string OnlineName
         {
             get { return OnlineWObject == null ? "" : OnlineWObject.Name; }
+        }
+
+        public PlayerClient Player
+        {
+            get
+            {
+                return SessionClientController.Data.Players.TryGetValue(OnlinePlayerLogin);
+            }
+        }
+        public bool IsOnline
+        {
+            get
+            {
+                return Player != null && Player.Online;
+            }
         }
 
         public WorldObjectEntry OnlineWObject;
@@ -50,6 +68,7 @@ namespace RimWorldOnlineCity
                         , OnlinePlayerLogin
                     });
             else
+            {
                 return ("OCity_Caravan_Player".Translate() + Environment.NewLine
                     + "OCity_Caravan_PriceThing".Translate() + Environment.NewLine
                     + "OCity_Caravan_PriceAnimalsPeople".Translate()
@@ -57,7 +76,7 @@ namespace RimWorldOnlineCity
                     ).Translate(new object[]
                     {
                         OnlineName
-                        , OnlinePlayerLogin + " (sId:" + OnlineWObject.ServerId +")"
+                        , OnlinePlayerLogin + (IsOnline ? " Online!" : "") + " (sId:" + OnlineWObject.ServerId +")"
                         , OnlineWObject.MarketValue.ToStringMoney()
                         , OnlineWObject.MarketValuePawn.ToStringMoney()
                         , OnlineWObject.FreeWeight > 0 && OnlineWObject.FreeWeight < 999999
@@ -65,8 +84,23 @@ namespace RimWorldOnlineCity
                             : ""
                         , "" //todo Environment.NewLine + GameUtils.PlayerTextInfo(OnlineWObject.)
                     });
+            }
         }
-        
+
+        public override string GetDescription()
+        {
+            var res = base.GetDescription();
+            res += Environment.NewLine
+                + Environment.NewLine
+                + GetInspectString()
+                + (Player == null ? "" :
+                    Environment.NewLine
+                    + Environment.NewLine
+                    + Player.GetTextInfo()
+                    );
+            return res;
+        }
+
         [DebuggerHidden]
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
         {
@@ -84,5 +118,60 @@ namespace RimWorldOnlineCity
             }, MenuOptionPriority.Default, null, null, 0f, null, this);
 
         }
+
+        #region Icons
+        private Material MatCaravanOn;
+
+        private Material MatCaravanOff;
+
+        private static Texture2D CaravanOn;
+
+        private static Texture2D CaravanOff;
+
+        private static Texture2D CaravanOnExpanding;
+
+        private static Texture2D CaravanOffExpanding;
+
+        static CaravanOnline()
+        {
+            CaravanOn = ContentFinder<Texture2D>.Get("CaravanOn");
+            CaravanOff = ContentFinder<Texture2D>.Get("CaravanOff");
+            CaravanOnExpanding = ContentFinder<Texture2D>.Get("CaravanOnExpanding");
+            CaravanOffExpanding = ContentFinder<Texture2D>.Get("CaravanOffExpanding");
+        }
+
+        public override Material Material
+        {
+            get
+            {
+                if (IsOnline)
+                {
+                    if (this.MatCaravanOn == null) this.MatCaravanOn = MaterialPool.MatFrom(CaravanOn
+                        , ShaderDatabase.WorldOverlayTransparentLit
+                        , Color.white
+                        , WorldMaterials.WorldObjectRenderQueue);
+                    //MaterialPool.MatFrom(CaravanOn);
+                    //MaterialPool.MatFrom(base.Faction.def.homeIconPath, ShaderDatabase.WorldOverlayTransparentLit, base.Faction.Color, WorldMaterials.WorldObjectRenderQueue);
+                    return this.MatCaravanOn;
+                }
+                else
+                {
+                    if (this.MatCaravanOff == null) this.MatCaravanOff = MaterialPool.MatFrom(CaravanOff
+                        , ShaderDatabase.WorldOverlayTransparentLit
+                        , Color.white
+                        , WorldMaterials.WorldObjectRenderQueue);
+                    return this.MatCaravanOff;
+                }
+            }
+        }
+
+        public override Texture2D ExpandingIcon
+        {
+            get
+            {
+                return IsOnline ? CaravanOnExpanding : CaravanOffExpanding;
+            }
+        }
+        #endregion
     }
 }

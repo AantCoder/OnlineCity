@@ -110,6 +110,13 @@ namespace RimWorldOnlineCity
         private static void DropToWorldObject(WorldObject place, List<ThingEntry> things, string from)
         {
             GlobalTargetInfo ti = new GlobalTargetInfo(place);
+            var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
+            var factionPirate = Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate")
+                ?? Find.FactionManager.OfAncientsHostile;
+            var factionPirateLoadID = factionPirate.GetUniqueLoadID();
+
+            if (MainHelper.DebugMode) Loger.Log("Mail================================================= {");
+
             if (place is Settlement && ((Settlement)place).Map != null)
             {
                 var cell = GameUtils.GetTradeCell(((Settlement)place).Map);
@@ -117,12 +124,36 @@ namespace RimWorldOnlineCity
                 Thing thinXZ;
                 foreach (var thing in things)
                 {
-                    var thin = thing.CreateThing(false);
+                    if (MainHelper.DebugMode) Loger.Log("Mail------------------------------------------------- {"  + Environment.NewLine
+                        + thing.Data + Environment.NewLine
+                        + "Mail------------------------------------------------- }" + Environment.NewLine);
+
+                    var prisoner = thing.SetFaction(factionColonistLoadID, factionPirateLoadID);
+                    Thing thin;
+                    thin = thing.CreateThing(false);
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...");
+                    if (thin.def.CanHaveFaction)
+                    {
+                        if (prisoner && thin is Pawn)
+                        {
+                            thin.SetFaction(factionPirate);
+                            var p = thin as Pawn;
+                            p.guest.SetGuestStatus(factionPirate, true);
+                        }
+                        else
+                            thin.SetFaction(Find.FactionManager.OfPlayer);
+                    }
+                    
+
+                    if (MainHelper.DebugMode) Loger.Log("Spawn...");
                     var map = ((Settlement)place).Map;
                     if (thin is Pawn)
+                    {
                         GenSpawn.Spawn((Pawn)thin, cell, map);
+                    }
                     else
                         GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
+                    if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
                 }
             }
             else if (place is Caravan)
@@ -130,6 +161,7 @@ namespace RimWorldOnlineCity
                 var pawns = (place as Caravan).PawnsListForReading;
                 foreach (var thing in things)
                 {
+                    thing.SetFaction(factionColonistLoadID, factionPirateLoadID);
                     var thin = thing.CreateThing(false);
                     if (thin is Pawn)
                     {
@@ -144,6 +176,9 @@ namespace RimWorldOnlineCity
                     }
                 }
             }
+
+            if (MainHelper.DebugMode) Loger.Log("Mail================================================= }");
+
             Find.LetterStack.ReceiveLetter("OCity_UpdateWorld_Trade".Translate()
                 , string.Format("OCity_UpdateWorld_TradeDetails".Translate()
                     , from
