@@ -25,8 +25,20 @@ namespace OCServer.Model
 
         public static List<ChatPost> PublicPosts = new List<ChatPost>();
 
-        public byte[] SaveDataPacket;
+        public DateTime SaveDataPacketTime;
 
+        public byte[] SaveDataPacket
+        {
+            get
+            {
+                return Repository.Get.LoadPlayerData(Public.Login);
+            }
+            set
+            {
+                Repository.Get.SavePlayerData(Public.Login, value);
+            }
+        }
+        
         public DateTime LastUpdateTime;
 
         public List<ModelMailTrade> Mails = new List<ModelMailTrade>();

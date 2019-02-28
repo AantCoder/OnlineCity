@@ -57,9 +57,10 @@ namespace OCServer
                     Message = "Incorrect login or password"
                 };
             }
-            //Thread.Sleep(5000);1
+            //Thread.Sleep(5000);
+            packet.Login = packet.Login.Trim();
             var player = Repository.GetData.PlayersAll
-                .FirstOrDefault(p => p.Public.Login == packet.Login);
+                .FirstOrDefault(p => Repository.NormalizeLogin(p.Public.Login) == Repository.NormalizeLogin(packet.Login));
             if (player != null)
             {
                 return new ModelStatus()
@@ -89,6 +90,7 @@ namespace OCServer
 
             lock (Player)
             {
+                var saveData = Player.SaveDataPacket;
                 if (packet.Value == 1)
                 {
                     //полная информация fullInfo = true
@@ -101,7 +103,7 @@ namespace OCServer
                         MapSize = data.WorldMapSize,
                         PlanetCoverage = data.WorldPlanetCoverage,
                         Difficulty = data.WorldDifficulty,
-                        NeedCreateWorld = Player.SaveDataPacket == null || Player.SaveDataPacket.Length == 0,
+                        NeedCreateWorld = saveData == null,
                         ServerTime = DateTime.UtcNow,
                     };
                     return result;
@@ -110,7 +112,6 @@ namespace OCServer
                 {
                     //передача файла игры, для загрузки WorldLoad();
                     var result = new ModelInfo();
-                    var saveData = GZip.UnzipByteByte(Player.SaveDataPacket);
                     result.SaveFileData = saveData;
                     return result;
                 }
@@ -185,8 +186,7 @@ namespace OCServer
                 }
                 if (packet.SaveFileData != null && packet.SaveFileData.Length > 0)
                 {
-                    Player.SaveDataPacket = GZip.ZipByteByte(packet.SaveFileData);
-                    Player.Public.ExistMap = true;
+                    Player.SaveDataPacket = packet.SaveFileData;
                     Player.Public.LastSaveTime = timeNow;
                     Repository.Get.ChangeData = true;
                 }
@@ -537,7 +537,6 @@ namespace OCServer
                                         data.WorldObjectsDeleted.Add(item);
                                     }
                                 }
-                                Player.Public.ExistMap = false;
                                 Player.SaveDataPacket = null;
                                 Loger.Log("Server killmyallplease " + Player.Public.Login);
                                 Player = null;
@@ -576,7 +575,6 @@ namespace OCServer
                                             data.WorldObjectsDeleted.Add(item);
                                         }
                                     }
-                                    killPlayer.Public.ExistMap = false;
                                     killPlayer.SaveDataPacket = null;
                                     Repository.Get.ChangeData = true;
                                     Loger.Log("Server killhimplease " + killPlayer.Public.Login);

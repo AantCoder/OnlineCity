@@ -11,6 +11,10 @@ namespace OCServer.Model
     [Serializable]
     public class BaseContainer
     {
+        public string Version { get; set; }
+
+        //public long VersionNum => long.Parse((Version ?? "0").Where(c => Char.IsDigit(c)).Aggregate("0", (r, i) => r + i));
+
         public List<PlayerServer> PlayersAll { get; set; }
         
         //public List<Playser> PlayersOnline;

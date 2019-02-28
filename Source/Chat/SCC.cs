@@ -159,7 +159,7 @@ namespace Chat
             My = serverInfo.My;
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
 
-            Loger.Log("Chat IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed + " ExistMap=" + My.ExistMap);
+            Loger.Log("Chat IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed /*+ " ExistMap=" + My.ExistMap*/);
 
             SessionClientController.My = My;
             SessionClientController.Data = Data;

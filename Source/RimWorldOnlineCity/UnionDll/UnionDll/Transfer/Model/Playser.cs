@@ -12,7 +12,7 @@ namespace Model
 
         public string ServerName { get; set; }
 
-        public bool ExistMap { get; set; }
+        //public bool ExistMap { get; set; }
 
         public DateTime LastSaveTime { get; set; }
 

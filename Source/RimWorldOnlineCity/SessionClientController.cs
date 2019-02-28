@@ -364,7 +364,7 @@ namespace RimWorldOnlineCity
             My = serverInfo.My;
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
 
-            Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed + " ExistMap=" + My.ExistMap);
+            Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed /*+ " ExistMap=" + My.ExistMap*/);
             //создаем мир, если мы админ
             if (serverInfo.IsAdmin && serverInfo.Seed == "")
             {
@@ -390,7 +390,7 @@ namespace RimWorldOnlineCity
                 return;
             }
 
-            if (!My.ExistMap)
+            if (serverInfo.NeedCreateWorld)
             {
                 Loger.Log("Client InitConnected() ExistMap");
 
