@@ -180,6 +180,8 @@ namespace RimWorldOnlineCity
             /// 
             if (SessionClientController.Data.Chats != null)
             {
+                if (SessionClientController.Data.ChatNotReadPost > 0) SessionClientController.Data.ChatNotReadPost = 0;
+
                 //Loger.Log("Client " + SessionClientController.Data.Chats.Count);
                 if (lbCannalsHeight == 0)
                 {
@@ -356,43 +358,6 @@ namespace RimWorldOnlineCity
                         }
 
                     }
-                    /*
-                    var listPlayersInChat = new List<string>();
-                    if (lbCannals.SelectedIndex >= 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
-                    {
-                        var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
-                        listPlayersInChat = selectCannal.PartyLogin;
-                        lbPlayers.DataSource = listPlayersInChat
-                            .Where(p => p != "system")
-                            .OrderBy(p => (selectCannal.OwnerLogin == p ? "1" : "2") + p)
-                            .Select(p => new ListBoxPlayerItem()
-                            {
-                                Login = p,
-                                Text = (selectCannal.OwnerLogin == p ? "<b>★ " + p + "</b>" : "<b>" + p + "</b>"),
-                                Tooltip = p 
-                                    + (selectCannal.OwnerLogin == p ? "OCity_Dialog_ChennelOwn".Translate() : "OCity_Dialog_ChennelUser".Translate()),
-                                InChat = true
-                            })
-                            .ToList();
-                    }
-                    else
-                    {
-                        lbPlayers.DataSource = new List<ListBoxPlayerItem>();
-                    }
-                    var mainCannal = SessionClientController.Data.Chats[0];
-                    lbPlayers.DataSource.AddRange(mainCannal.PartyLogin
-                        .Where(p => !listPlayersInChat.Any(sp => sp == p))
-                        .OrderBy(p => p)
-                        .Select(p => new ListBoxPlayerItem()
-                        {
-                            Login = p,
-                            Text = "<color=#888888ff>" + p + "</color>",
-                            Tooltip = p,
-                            InChat = false
-                        })
-                        );
-                    */
-                    
                     DataLastChatsTime = SessionClientController.Data.ChatsTime;
                     lbCannalsLastSelectedIndex = -1; //сброс для обновления содержимого окна
                 }
@@ -459,16 +424,30 @@ namespace RimWorldOnlineCity
                 if (lbCannals.SelectedIndex >= 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                 {
                     var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
-                    
                     var chatAreaOuter = new Rect(inRect.x + 110f, inRect.y, inRect.width - 110f, inRect.height - 30f);
                     ChatBox.Drow(chatAreaOuter, ChatScrollToDown);
                     ChatScrollToDown = false;
 
+                    var rrect = new Rect(inRect.x + inRect.width - 25f, inRect.y + inRect.height - 25f, 25f, 25f);
+                    Text.Font = GameFont.Medium;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Widgets.Label(rrect, "▶");
+                    Text.Font = GameFont.Small;
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    bool rrcklick = Widgets.ButtonInvisible(rrect);
+
                     if (ChatInputText != "")
                     {
-                        var ev = Event.current;
-                        if (ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
+                        if (Mouse.IsOver(rrect))
                         {
+                            Widgets.DrawHighlight(rrect);
+                        }
+
+                        var ev = Event.current;
+                        if (ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return
+                            || rrcklick)
+                        {
+                            SoundDefOf.RadioButtonClicked.PlayOneShotOnCamera();
                             SessionClientController.Command((connect) =>
                             {
                                 connect.PostingChat(selectCannal.Id, ChatInputText);
@@ -478,7 +457,7 @@ namespace RimWorldOnlineCity
                     }
 
                     GUI.SetNextControlName("StartTextField");
-                    ChatInputText = GUI.TextField(new Rect(inRect.x + 110f, inRect.y + inRect.height - 25f, inRect.width - 110f, 25f)
+                    ChatInputText = GUI.TextField(new Rect(inRect.x + 110f, inRect.y + inRect.height - 25f, inRect.width - 110f - 30f, 25f)
                         , ChatInputText, 10000);
 
                     if (NeedFockus)

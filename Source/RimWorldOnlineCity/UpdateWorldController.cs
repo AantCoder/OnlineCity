@@ -109,6 +109,28 @@ namespace RimWorldOnlineCity
 
         private static void DropToWorldObject(WorldObject place, List<ThingEntry> things, string from)
         {
+            var text = string.Format("OCity_UpdateWorld_TradeDetails".Translate()
+                    , from
+                    , place.LabelCap
+                    , things.Aggregate("", (r, i) => r + Environment.NewLine + i.Name + " x" + i.Count));
+            /*
+            GlobalTargetInfo ti = new GlobalTargetInfo(place);
+            if (place is Settlement && ((Settlement)place).Map != null)
+            {
+                var cell = GameUtils.GetTradeCell(((Settlement)place).Map);
+                ti = new GlobalTargetInfo(cell, ((Settlement)place).Map);
+            }
+            */
+            Find.TickManager.Pause();
+            GameUtils.ShowDialodOKCancel("OCity_UpdateWorld_Trade".Translate()
+                , text
+                , () => DropToWorldObjectDo(place, things, from, text)
+                , () => Log.Message("Drop Mail from " + from + ": " + text)
+            );
+        }
+
+        private static void DropToWorldObjectDo(WorldObject place, List<ThingEntry> things, string from, string text)
+        {
             GlobalTargetInfo ti = new GlobalTargetInfo(place);
             var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
             var factionPirate = Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate")
@@ -178,12 +200,9 @@ namespace RimWorldOnlineCity
             }
 
             if (MainHelper.DebugMode) Loger.Log("Mail================================================= }");
-
+            
             Find.LetterStack.ReceiveLetter("OCity_UpdateWorld_Trade".Translate()
-                , string.Format("OCity_UpdateWorld_TradeDetails".Translate()
-                    , from
-                    , place.LabelCap
-                    , things.Aggregate("", (r, i) => r + Environment.NewLine + i.Name + " x" + i.Count))
+                , text
                 , LetterDefOf.PositiveEvent
                 , ti
                 , null);

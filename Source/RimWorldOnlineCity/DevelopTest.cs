@@ -57,6 +57,13 @@ namespace RimWorldOnlineCity
         public bool Run()
         {
             /*
+            GameUtils.ShowDialodOKCancel("asdasda",
+                () => Log.Message("Test OK"),
+                () => Log.Message("Test Cancel")
+                );
+            return true;
+            */
+            /*
             var formm = new Dialog_Exchenge(Find.Maps[0]);
             Find.WindowStack.Add(formm);
             return true;

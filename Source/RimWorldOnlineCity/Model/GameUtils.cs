@@ -29,8 +29,12 @@ namespace RimWorldOnlineCity
             fieldInfo.SetValue(scribeSaver, writer);
         }
     }
+
+    [StaticConstructorOnStartup]
     static class GameUtils
     {
+        internal static readonly Texture2D CircleFill = ContentFinder<Texture2D>.Get("circle-fill");
+
         /// <summary>
         /// Иконка вещи, опционально "i". Запускается в произвольном Rect
         /// </summary>
@@ -381,6 +385,74 @@ namespace RimWorldOnlineCity
             res.x /= zone.Cells.Count;
             res.z /= zone.Cells.Count;
             return res;
+        }
+
+        public static void ShowDialodOKCancel(string title
+            , string text
+            , Action ActOK
+            , Action ActCancel
+            , GlobalTargetInfo? target = null)
+        {
+            DiaNode diaNode = new DiaNode(text);
+
+            if (target != null)
+            {
+                var diaOptionT = new DiaOption("JumpToLocation".Translate()); //"Перейти к месту"
+                diaOptionT.action = () =>
+                {
+                    CameraJumper.TryJumpAndSelect(target.Value);
+                };
+                diaNode.options.Add(diaOptionT);
+            }
+
+            DiaOption diaOption = new DiaOption("OK".NeedTranslate()); //OK -> Принять передачу
+            diaOption.action = ActOK;
+            /*{ спавн пешки бегущей "на помощь"
+                GenSpawn.Spawn(refugee, spawnSpot, map, WipeMode.Vanish);
+                refugee.SetFaction(Faction.OfPlayer, null);
+                CameraJumper.TryJump(refugee);
+                QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDefOf.RaidEnemy, null, raidParms), Find.TickManager.TicksGame + IncidentWorker_RefugeeChased.RaidDelay.RandomInRange, 0);
+                Find.Storyteller.incidentQueue.Add(qi);
+                
+            };*/
+            diaOption.resolveTree = true;
+            diaNode.options.Add(diaOption);
+
+            diaOption = new DiaOption("RejectLetter".Translate());
+            //RansomDemand_Reject это "Отказаться"
+            //RejectLetter это Отклонить
+            diaOption.action = ActCancel;
+            diaOption.resolveTree = true;
+            diaNode.options.Add(diaOption);
+
+            Find.WindowStack.Add(new Dialog_NodeTreeWithFactionInfo(diaNode, null, true, true, title));
+        }
+
+        /// <summary>
+        /// Рисуем кружок с цифрой. Код из мода ResearchTree (MIT license)
+        /// </summary>
+        /// <param name="canvas"></param>
+        /// <param name="main"></param>
+        /// <param name="background"></param>
+        /// <param name="label"></param>
+        public static void DrawLabel(Rect canvas, Color main, Color background, int label)
+        {
+            // draw coloured tag
+            GUI.color = main;
+            GUI.DrawTexture(canvas, CircleFill);
+
+            // if this is not first in line, grey out centre of tag
+            if (background != main)
+            {
+                GUI.color = background;
+                GUI.DrawTexture(canvas.ContractedBy(2f), CircleFill);
+            }
+
+            // draw queue number
+            GUI.color = Color.white;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label(canvas, label.ToString());
+            Text.Anchor = TextAnchor.UpperLeft;
         }
     }
 }

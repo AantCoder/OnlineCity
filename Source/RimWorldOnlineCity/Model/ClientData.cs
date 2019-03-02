@@ -24,6 +24,8 @@ namespace RimWorldOnlineCity
 
         public List<Chat> Chats;
 
+        public int ChatNotReadPost;
+
         public Dictionary<string, PlayerClient> Players = new Dictionary<string, PlayerClient>();
 
         public byte[] SaveFileData;
@@ -43,7 +45,7 @@ namespace RimWorldOnlineCity
         public DateTime LastServerConnect = DateTime.MinValue;
         public bool LastServerConnectFail = false;
         public int ChatCountSkipUpdate = 0;
-        public static bool UIInteraction = true;
+        public static bool UIInteraction = false; //говорят уведомления слева сверху мешают, поэтому выключено (можно сделать настройку если кому надо будет)
 
         public bool ApplyChats(ModelUpdateChat updateDate)
         {
@@ -71,6 +73,7 @@ namespace RimWorldOnlineCity
                 if (newStr.Length > 50) newStr = newStr.Substring(0, 49) + "OCity_ClientData_ChatDot".Translate();
                 Messages.Message("OCity_ClientData_Chat".Translate() + newStr, MessageTypeDefOf.NeutralEvent);
             }
+            ChatNotReadPost += newPost;
             return newPost > 0;
         }
     }

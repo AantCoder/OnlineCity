@@ -35,6 +35,21 @@ namespace RimWorldOnlineCity
             if (!MainHelper.DebugMode)
                 this.def.buttonVisible = SessionClient.Get.IsLogined;
             base.DoButton(rect);
+            try
+            {
+                if (SessionClientController.Data.ChatNotReadPost > 0)
+                {
+                    var queueRect = new Rect(
+                        rect.xMax - 20f - 6f,
+                        0f,
+                        20f,
+                        20f).CenteredOnYIn(rect);
+                    GameUtils.DrawLabel(queueRect, Color.white, Color.grey, SessionClientController.Data.ChatNotReadPost);
+                }
+            }
+            catch
+            {
+            }
         }
         
         public override void Activate()

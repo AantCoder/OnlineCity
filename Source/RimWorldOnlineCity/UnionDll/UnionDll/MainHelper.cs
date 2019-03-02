@@ -11,7 +11,7 @@ namespace OCUnion
     {
         public static bool DebugMode = false;
 
-        public static string VersionInfo = "Версия 0.02.26a от 2019.02.10";
+        public static string VersionInfo = "Версия 0.02.27a от 2019.03.02";
 
         private static CultureInfo CultureValue = null;
         public static CultureInfo Culture
