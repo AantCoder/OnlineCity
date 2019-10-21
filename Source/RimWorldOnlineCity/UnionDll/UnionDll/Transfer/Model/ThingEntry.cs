@@ -32,6 +32,10 @@ namespace Model
         /// Оригинальный ID
         /// </summary>
         public int OriginalID { get; set; }
+        /// <summary>
+        /// ID объекта до передачи
+        /// </summary>
+        public int TransportID { get; set; }
 
         protected ThingEntry()
         { }
@@ -39,7 +43,8 @@ namespace Model
         public static ThingEntry CreateEntry(Thing thing, int count)
         {
             var that = new ThingEntry();
-            that.SetBaseInfo(thing, count);         
+            that.SetBaseInfo(thing, count);
+            that.SetData(thing);
             return that;
         }
 
@@ -48,7 +53,10 @@ namespace Model
             Name = thing.LabelCapNoCount;
             Count = count;
             OriginalID = thing.thingIDNumber;
+        }
 
+        protected void SetData(Thing thing)
+        {
             var gx = new GameXMLUtils();
             Data = gx.ToXml(thing);
         }
@@ -66,34 +74,9 @@ namespace Model
             else
                 thing.thingIDNumber = OriginalID;
             return thing;
-            /*
-            var def = (ThingDef)GenDefDatabase.GetDef(typeof(ThingDef), DefName);
-            var stuffDef = !string.IsNullOrEmpty(StuffName) ? (ThingDef)GenDefDatabase.GetDef(typeof(ThingDef), StuffName) : GenStuff.DefaultStuffFor(def);
-            Thing thing = ThingMaker.MakeThing(def, stuffDef);
-            thing.stackCount = stackCount == 0 ? Count : stackCount;
-
-            if (HitPoints > 0) thing.HitPoints = HitPoints;
-            
-            CompQuality compQuality = thing.TryGetComp<CompQuality>();
-            if (compQuality != null)
-            {
-                compQuality.SetQuality((QualityCategory)Quality, ArtGenerationContext.Outsider);
-            }
-
-            if (WornByCorpse)
-            {
-                Apparel thingA = thing as Apparel;
-                if (thingA != null)
-                {
-                    typeof(Apparel)
-                       .GetField("wornByCorpseInt", BindingFlags.Instance | BindingFlags.NonPublic)
-                       .SetValue(thingA, true);
-                }
-            }
-            return thing;
-            */
         }
 
+        private static int nnnn = 0;
         /// <summary>
         /// 
         /// </summary>
@@ -103,14 +86,16 @@ namespace Model
         public bool SetFaction(string fractionColonist, string fractionPirate)
         {
             if (string.IsNullOrEmpty(Data) || !Data.Contains(" Class=\"Pawn\"")) return false;
-            if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnB.xml", Data);
+            if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnB" + (++nnnn).ToString() + ".xml", Data);
 
             bool col = Data.Contains("<kindDef>Colonist</kindDef>");
-            string fraction = fractionColonist; //col ? fractionColonist : fractionPirate;
-            Data = GameXMLUtils.ReplaceByTag(Data, "faction", fraction);
-            Data = GameXMLUtils.ReplaceByTag(Data, "kindDef", "Colonist" /*"Pirate"*/);
-            //if (MainHelper.DebugMode) Loger.Log(" Replace faction=>" + fraction);
-
+            if (!Data.Contains("<lastJobGiverThinkTree>Animal</lastJobGiverThinkTree>"))
+            {
+                string fraction = fractionColonist; //col ? fractionColonist : fractionPirate;
+                Data = GameXMLUtils.ReplaceByTag(Data, "faction", fraction);
+                Data = GameXMLUtils.ReplaceByTag(Data, "kindDef", "Colonist");//"Pirate"
+                //if (MainHelper.DebugMode) Loger.Log(" Replace faction=>" + fraction);
+            }
             //если это гости, то убираем у них это свойство - оно должно выставиться потом
 
             Data = GameXMLUtils.ReplaceByTag(Data, "guest", @"
@@ -133,7 +118,7 @@ namespace Model
                 });
                 */
 
-            if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnA.xml", Data);
+            if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnA" + nnnn.ToString() + ".xml", Data);
             return !col;
         }
     }

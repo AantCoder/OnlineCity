@@ -11,6 +11,7 @@ using HugsLib.Utils;
 using OCUnion;
 using RimWorld.Planet;
 using UnityEngine;
+using OCUnion.Transfer.Model;
 
 namespace RimWorldOnlineCity
 {
@@ -385,6 +386,148 @@ namespace RimWorldOnlineCity
             res.x /= zone.Cells.Count;
             res.z /= zone.Cells.Count;
             return res;
+        }
+
+        public static Func<IntVec3> GetAttackCells(Map map)
+        {
+            IntVec3 enterCell = FindNearEdgeCell(map, null);
+            return () => CellFinder.RandomSpawnCellForPawnNear(enterCell, map, 4);
+        }
+
+        /// <summary>
+        /// CaravanEnterMapUtility.FindNearEdgeCell
+        /// </summary>
+        private static IntVec3 FindNearEdgeCell(Map map, Predicate<IntVec3> extraCellValidator)
+        {
+            Predicate<IntVec3> baseValidator = (IntVec3 x) => x.Standable(map) && !x.Fogged(map);
+            Faction hostFaction = map.ParentFaction;
+            IntVec3 root;
+            if (CellFinder.TryFindRandomEdgeCellWith((IntVec3 x) => baseValidator(x) && (extraCellValidator == null || extraCellValidator(x)) && ((hostFaction != null && map.reachability.CanReachFactionBase(x, hostFaction)) || (hostFaction == null && map.reachability.CanReachBiggestMapEdgeRoom(x))), map, CellFinder.EdgeRoadChance_Neutral, out root))
+            {
+                return CellFinder.RandomClosewalkCellNear(root, map, 5, null);
+            }
+            if (extraCellValidator != null && CellFinder.TryFindRandomEdgeCellWith((IntVec3 x) => baseValidator(x) && extraCellValidator(x), map, CellFinder.EdgeRoadChance_Neutral, out root))
+            {
+                return CellFinder.RandomClosewalkCellNear(root, map, 5, null);
+            }
+            if (CellFinder.TryFindRandomEdgeCellWith(baseValidator, map, CellFinder.EdgeRoadChance_Neutral, out root))
+            {
+                return CellFinder.RandomClosewalkCellNear(root, map, 5, null);
+            }
+            Log.Warning("Could not find any valid edge cell.", false);
+            return CellFinder.RandomCell(map);
+        }
+
+        public static IntVec3 SpawnCaravanPirate(Map map, List<ThingEntry> pawns, Action<Pawn, ThingEntry> spawn = null)
+        {
+            var nextCell = GameUtils.GetAttackCells(map);
+            return SpawnList(map, pawns, true, (p) => true, spawn, (p) => nextCell());
+        }
+
+        public static IntVec3 SpawnList(Map map, List<ThingEntry> pawns, bool attackCell
+            , Func<ThingEntry, bool> getPirate
+            , Action<Pawn, ThingEntry> spawn = null
+            , Func<Thing, IntVec3> getCell = null)
+        {
+            if (MainHelper.DebugMode) Loger.Log("SpawnList...");
+
+            //на основе UpdateWorldController.DropToWorldObjectDo
+            var factionPirate = Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate")
+                    ?? Find.FactionManager.OfAncientsHostile; //SessionClientController.Data.FactionPirate;
+
+            IntVec3 ret = new IntVec3();
+            Thing thinXZ;
+            for (int i = 0; i < pawns.Count; i++)
+            {
+                var thing = pawns[i];
+                //GenSpawn.Spawn(pawn, cell, map, Rot4.Random, WipeMode.Vanish, false);
+
+                if (MainHelper.DebugMode) Loger.Log("Prepare...");
+                var thin = UpdateWorldController.PrepareSpawnThingEntry(thing, factionPirate, getPirate(thing));
+
+                var cell = getCell != null ? getCell(thin) : thin.Position;
+                if (i == 0) ret = cell;
+                
+                if (MainHelper.DebugMode) try { Loger.Log("Spawn... " + thin.Label); } catch { Loger.Log("Spawn... "); }
+                if (thin is Pawn)
+                {
+                    if (MainHelper.DebugMode) Loger.Log("Pawn... " + thin.Position.x + " " + thin.Position.y);
+                    GenSpawn.Spawn((Pawn)thin, cell, map);
+                    if (spawn != null) spawn((Pawn)thin, thing);
+                }
+                else
+                    GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
+                if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
+            }
+            return ret;
+        }
+
+        public static void ApplyState(Thing thing, AttackThingState state)
+        {
+            //полезное из игры: RecoverFromUnwalkablePositionOrKill
+            if (state.StackCount > 0 && thing.stackCount != state.StackCount)
+            {
+                thing.stackCount = state.StackCount;
+            }
+
+            if (thing.Position.x != state.Position.x || thing.Position.z != state.Position.z)
+            {
+                thing.Position = state.Position.Get();
+                if (thing is Pawn)
+                {
+                    var pawn = (Pawn)thing;
+                    try
+                    {
+                        pawn.Notify_Teleported(true, true);
+                    }
+                    catch (Exception ext)
+                    {
+                        Loger.Log("Client ApplyState Exception " + ext.ToString());
+                    }
+                    pawn.Drawer.DrawTrackerTick();
+                }
+            }
+
+            if (thing.def.useHitPoints)
+            {
+                thing.HitPoints = state.HitPoints;
+            }
+
+            if (thing is Pawn)
+            {
+                var pawn = thing as Pawn;
+                if ((int)pawn.health.State != (int)state.DownState)
+                {
+                    if (state.DownState == AttackThingState.PawnHealthState.Dead)
+                    {
+                        PawnKill(pawn);
+                    }
+                    else if (state.DownState == AttackThingState.PawnHealthState.Down)
+                    {
+                        //todo! Применяем наркоз?
+                    }
+                    else
+                    {
+                        //todo Если нужно встать её что, воскрешать? :)
+                        pawn.health.Notify_Resurrected();
+                    }
+                }
+            }
+            
+        }
+
+        public static void PawnKill(Pawn pawn)
+        {
+            DamageDef crush = DamageDefOf.Crush;
+            float amount = 99999f;
+            float armorPenetration = 999f;
+            BodyPartRecord brain = pawn.health.hediffSet.GetBrain();
+            DamageInfo damageInfo = new DamageInfo(crush, amount, armorPenetration, -1f, null, brain, null, DamageInfo.SourceCategory.Collapse, null);
+            pawn.TakeDamage(damageInfo);
+            if (!pawn.Dead)
+            {
+                pawn.Kill(new DamageInfo?(damageInfo), null);
+            }
         }
 
         public static void ShowDialodOKCancel(string title

@@ -15,5 +15,6 @@ namespace Transfer
         public List<WorldObjectEntry> WObjectsToDelete { get; set; }
         public List<ModelMailTrade> Mails { get; set; }
         public List<Player> PlayersInfo { get; set; }
+        public bool AreAttacking { get; set; }
     }
 }

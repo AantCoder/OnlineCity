@@ -30,10 +30,7 @@ namespace RimWorldOnlineCity
             
             if (string.IsNullOrEmpty(InputAddr))
             {
-                if (MainHelper.DebugMode)
-                    InputAddr = "localhost";
-                else
-                    InputAddr = "rimworld.online";
+                InputAddr = MainHelper.DefaultIP;
             }
             //Loger.Log("login/beg " + StorageData.GlobalData.LastIP.Value);
             closeOnCancel = false;

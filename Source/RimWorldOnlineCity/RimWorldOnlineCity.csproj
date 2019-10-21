@@ -62,23 +62,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExchengeUtils.cs" />
+    <Compile Include="GameAttackHost.cs" />
     <Compile Include="GameClasses\BaseOnline.cs" />
     <Compile Include="GameClasses\CaravanArrivalAction_VisitOnline.cs" />
     <Compile Include="GameClasses\CaravanOnline.cs" />
     <Compile Include="CommonUtils.cs" />
-    <Compile Include="DevelopTest.cs" />
-    <Compile Include="GameClasses\GameExit.cs" />
-    <Compile Include="GameClasses\GameLoader.cs" />
-    <Compile Include="GameClasses\GameStarter.cs" />
+    <Compile Include="Model\UI\DevelopTest.cs" />
+    <Compile Include="GameAttacker.cs" />
+    <Compile Include="GameClasses\Harmony\GameAttackTrigger.cs" />
+    <Compile Include="GameClasses\Harmony\GameExit.cs" />
+    <Compile Include="GameClasses\Harmony\GameLoader.cs" />
+    <Compile Include="GameClasses\Harmony\GameStarter.cs" />
     <Compile Include="GameStarterSelectPawns.cs" />
     <Compile Include="Model\GameUtils.cs" />
-    <Compile Include="GameClasses\MainMenu.cs" />
+    <Compile Include="GameClasses\Harmony\MainMenu.cs" />
     <Compile Include="GameClasses\ModDefOf.cs" />
     <Compile Include="GameClasses\StartPoint.cs" />
     <Compile Include="Model\UI\Dialog_Exchenge.cs" />
     <Compile Include="Model\UI\Dialog_TextOut.cs" />
     <Compile Include="Model\UI\Dialog_SelectThingDef.cs" />
-    <Compile Include="Model\UI\GrassFix.cs" />
+    <Compile Include="GameClasses\Harmony\GrassFix.cs" />
     <Compile Include="Model\ClientData.cs" />
     <Compile Include="Model\PlayerClient.cs" />
     <Compile Include="Model\UI\DialogControlBase.cs" />

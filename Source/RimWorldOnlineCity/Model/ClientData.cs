@@ -38,7 +38,7 @@ namespace RimWorldOnlineCity
             {
                 return SessionClient.Get.IsLogined
                     && (LastServerConnect == DateTime.MinValue
-                        || (DateTime.UtcNow - LastServerConnect).Seconds < 8);
+                        || (DateTime.UtcNow - LastServerConnect).TotalSeconds < 8);
             }
         }
 
@@ -46,6 +46,28 @@ namespace RimWorldOnlineCity
         public bool LastServerConnectFail = false;
         public int ChatCountSkipUpdate = 0;
         public static bool UIInteraction = false; //говорят уведомления слева сверху мешают, поэтому выключено (можно сделать настройку если кому надо будет)
+
+        /// <summary>
+        /// Если не null, значит сейчас режим атаки на другое поселение online
+        /// </summary>
+        public GameAttacker AttackModule = null;
+
+        /// <summary>
+        /// Если не null, значит сейчас режим атаки кого-то на наше поселение online
+        /// </summary>
+        public GameAttackHost AttackUsModule = null;
+
+        public Faction FactionPirate
+        {
+            get
+            {
+                if (FactionPirateData == null)
+                    FactionPirateData = Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate")
+                    ?? Find.FactionManager.OfAncientsHostile;
+                return FactionPirateData;
+            }
+        }
+        private Faction FactionPirateData = null;
 
         public bool ApplyChats(ModelUpdateChat updateDate)
         {

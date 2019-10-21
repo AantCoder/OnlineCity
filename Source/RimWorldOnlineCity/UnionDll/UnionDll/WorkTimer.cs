@@ -41,7 +41,7 @@ namespace OCUnion
             }
         }
 
-        public void Add(long interval, Action action)
+        public object Add(long interval, Action action)
         {
             var item = new WorkTimerData()
             {
@@ -52,7 +52,17 @@ namespace OCUnion
             lock (Timers)
             {
                 Timers.Add(item);
+            }
+            return item;
+        }
 
+        public void Remove(object obj)
+        {
+            var item = obj as WorkTimerData;
+            if (item == null) return;
+            lock (Timers)
+            {
+                Timers.Remove(item);
             }
         }
 

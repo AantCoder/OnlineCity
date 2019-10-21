@@ -12,6 +12,7 @@ namespace OCUnion
     {
         public StringBuilder OutXml;
         private string rootElementName = "data";
+        private object SuncObj = new Object();
 
         public GameXMLUtils()
         {
@@ -21,32 +22,38 @@ namespace OCUnion
 
         public string ToXml(IExposable t)
         {
-            return @"<?xml version=""1.0"" encoding=""utf-8""?>
+            lock (SuncObj)
+            {
+                return @"<?xml version=""1.0"" encoding=""utf-8""?>
 <" + rootElementName + @"> 
 "
-                + Scribe.saver.DebugOutputFor(t)
-                + @"
+                    + Scribe.saver.DebugOutputFor(t)
+                    + @"
 </" + rootElementName + ">";
+            }
         }
 
         public T FromXml<T>(string dataXML)
             where T : new()
         {
-            XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(dataXML);
-            Scribe.loader.curXmlParent = xmlDocument.DocumentElement;
-            Scribe.mode = LoadSaveMode.LoadingVars;
-            try
+            lock (SuncObj)
             {
-                Scribe.EnterNode(rootElementName);
-                var thing = new T();
-                Scribe_Deep.Look<T>(ref thing, "saveable", new object[0]);
-                return thing;
-            }
-            finally
-            {
-                //Finish()
-                Scribe.loader.FinalizeLoading();
+                XmlDocument xmlDocument = new XmlDocument();
+                xmlDocument.LoadXml(dataXML);
+                Scribe.loader.curXmlParent = xmlDocument.DocumentElement;
+                Scribe.mode = LoadSaveMode.LoadingVars;
+                try
+                {
+                    Scribe.EnterNode(rootElementName);
+                    var thing = new T();
+                    Scribe_Deep.Look<T>(ref thing, "saveable", new object[0]);
+                    return thing;
+                }
+                finally
+                {
+                    //Finish()
+                    Scribe.loader.FinalizeLoading();
+                }
             }
         }
 

@@ -99,6 +99,8 @@ namespace OCServer
                     {
                         My = Player.Public,
                         IsAdmin = Player.IsAdmin,
+                        VersionInfo = MainHelper.VersionInfo,
+                        VersionNum = MainHelper.VersionNum,
                         Seed = data.WorldSeed ?? "",
                         MapSize = data.WorldMapSize,
                         PlanetCoverage = data.WorldPlanetCoverage,
@@ -298,6 +300,9 @@ namespace OCServer
                 //прикрепляем письма
                 toClient.Mails = Player.Mails;
                 Player.Mails = new List<ModelMailTrade>();
+
+                //флаг, что на клиента кто-то напал и он должен запросить подробности
+                toClient.AreAttacking = Player.AttackData != null && Player.AttackData.Host == Player && Player.AttackData.State == 1;
 
                 return toClient;
             }
@@ -634,7 +639,7 @@ namespace OCServer
                     .FirstOrDefault(p => p.Public.Login == who);
                 if (newPlayer == null)
                     PostCommandPrivatPostActivChat(chat, "User " + who + " not found");
-                if (!Player.PublicChat.PartyLogin.Any(p => p == who))
+                else if (!Player.PublicChat.PartyLogin.Any(p => p == who))
                     PostCommandPrivatPostActivChat(chat, "Can not access " + who + " player");
                 else if (!chat.OwnerMaker)
                     PostCommandPrivatPostActivChat(chat, "People can not be added to a shared channel");
@@ -860,6 +865,85 @@ namespace OCServer
                     .ToList();
 
                             
+
+                return res;
+            }
+        }
+
+        public AttackInitiatorFromSrv AttackOnlineInitiator(AttackInitiatorToSrv fromClient)
+        {
+            if (Player == null) return null;
+
+            lock (Player)
+            {
+                var timeNow = DateTime.UtcNow;
+                var data = Repository.GetData;
+                var res = new AttackInitiatorFromSrv()
+                {
+                };
+
+                //инициализируем общий объект
+                if (fromClient.StartHostPlayer != null)
+                {
+                    if (Player.AttackData != null)
+                    {
+                        res.ErrorText = "There is an active attack";
+                        return res;
+                    }
+                    var hostPlayer = data.PlayersAll.FirstOrDefault(p => p.Public.Login == fromClient.StartHostPlayer);
+
+                    if (hostPlayer == null)
+                    {
+                        res.ErrorText = "Player not found";
+                        return res;
+                    }
+                    if (hostPlayer.AttackData != null)
+                    {
+                        res.ErrorText = "The player participates in the attack";
+                        return res;
+                    }
+
+                    var att = new AttackServer();
+                    var err = att.New(Player, hostPlayer, fromClient);
+                    if (err != null)
+                    {
+                        res.ErrorText = err;
+                        return res;
+                    }
+                }
+                if (Player.AttackData == null)
+                {
+                    res.ErrorText = "Unexpected error, no data";
+                    return res;
+                }
+
+                //передаем управление общему объекту
+                res = Player.AttackData.RequestInitiator(fromClient);
+
+                return res;
+            }
+        }
+
+        public AttackHostFromSrv AttackOnlineHost(AttackHostToSrv fromClient)
+        {
+            if (Player == null) return null;
+
+            lock (Player)
+            {
+                var timeNow = DateTime.UtcNow;
+                var data = Repository.GetData;
+                var res = new AttackHostFromSrv()
+                {
+                };
+
+                if (Player.AttackData == null)
+                {
+                    res.ErrorText = "Unexpected error, no data";
+                    return res;
+                }
+
+                //передаем управление общему объекту
+                res = Player.AttackData.RequestHost(fromClient);
 
                 return res;
             }

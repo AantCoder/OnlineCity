@@ -129,46 +129,80 @@ namespace RimWorldOnlineCity
             );
         }
 
+        /// <summary>
+        /// Создает игровой объект. 
+        /// Если это пешка не колонист, то делаем его пиратом заключённым.
+        /// Если freePirate=true, то делаем враждебными пиратами всех из фракции игрока.
+        /// revertPirate=true включает freePirate, если это бы не пират, и делает игроком, если был пиратом
+        /// </summary>
+        public static Thing PrepareSpawnThingEntry(ThingEntry thing, Faction factionPirate, bool freePirate = false/*, bool revertPirate = false*/)
+        {
+            var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
+            var factionPirateLoadID = factionPirate.GetUniqueLoadID();
+
+            var prisoner = thing.SetFaction(factionColonistLoadID, factionPirateLoadID);
+            Thing thin;
+            thin = thing.CreateThing(false);
+            if (MainHelper.DebugMode) Loger.Log("SetFaction...");
+            if (thin.def.CanHaveFaction)
+            {
+                if (MainHelper.DebugMode) Loger.Log("SetFaction...1");
+                /*
+                if (revertPirate)
+                {
+                    if (thin is Pawn && thin.Faction == Find.FactionManager.OfPlayer)
+                    {
+                        thin.SetFaction(factionPirate);
+                        var p = thin as Pawn;
+                        if (!freePirate) p.guest.SetGuestStatus(factionPirate, true);
+                    }
+                    else
+                        thin.SetFaction(Find.FactionManager.OfPlayer);
+                }
+                else*/
+                {
+                    if (thin is Pawn && (prisoner || freePirate && (/*((Pawn)thin).RaceProps.Humanlike ||*/ thin.Faction == Find.FactionManager.OfPlayer)))
+                    {
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...2");
+                        thin.SetFaction(factionPirate);
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...3");
+                        var p = thin as Pawn;
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...4");
+                        if (!freePirate && p.guest != null) p.guest.SetGuestStatus(factionPirate, true);
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...5");
+                    }
+                    else
+                    {
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...6");
+                        thin.SetFaction(Find.FactionManager.OfPlayer);
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...7");
+                    }
+                }
+            }
+            return thin;
+        }
+
         private static void DropToWorldObjectDo(WorldObject place, List<ThingEntry> things, string from, string text)
         {
             GlobalTargetInfo ti = new GlobalTargetInfo(place);
-            var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
-            var factionPirate = Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate")
-                ?? Find.FactionManager.OfAncientsHostile;
-            var factionPirateLoadID = factionPirate.GetUniqueLoadID();
+            var factionPirate = SessionClientController.Data.FactionPirate;
 
             if (MainHelper.DebugMode) Loger.Log("Mail================================================= {");
 
             if (place is Settlement && ((Settlement)place).Map != null)
             {
-                var cell = GameUtils.GetTradeCell(((Settlement)place).Map);
-                ti = new GlobalTargetInfo(cell, ((Settlement)place).Map);
+                var map = ((Settlement)place).Map;
+                var cell = GameUtils.GetTradeCell(map);
+                ti = new GlobalTargetInfo(cell, map);
                 Thing thinXZ;
                 foreach (var thing in things)
                 {
                     if (MainHelper.DebugMode) Loger.Log("Mail------------------------------------------------- {"  + Environment.NewLine
                         + thing.Data + Environment.NewLine
                         + "Mail------------------------------------------------- }" + Environment.NewLine);
-
-                    var prisoner = thing.SetFaction(factionColonistLoadID, factionPirateLoadID);
-                    Thing thin;
-                    thin = thing.CreateThing(false);
-                    if (MainHelper.DebugMode) Loger.Log("SetFaction...");
-                    if (thin.def.CanHaveFaction)
-                    {
-                        if (prisoner && thin is Pawn)
-                        {
-                            thin.SetFaction(factionPirate);
-                            var p = thin as Pawn;
-                            p.guest.SetGuestStatus(factionPirate, true);
-                        }
-                        else
-                            thin.SetFaction(Find.FactionManager.OfPlayer);
-                    }
+                    var thin = PrepareSpawnThingEntry(thing, factionPirate);
                     
-
                     if (MainHelper.DebugMode) Loger.Log("Spawn...");
-                    var map = ((Settlement)place).Map;
                     if (thin is Pawn)
                     {
                         GenSpawn.Spawn((Pawn)thin, cell, map);
@@ -183,8 +217,12 @@ namespace RimWorldOnlineCity
                 var pawns = (place as Caravan).PawnsListForReading;
                 foreach (var thing in things)
                 {
+                    /*
                     thing.SetFaction(factionColonistLoadID, factionPirateLoadID);
                     var thin = thing.CreateThing(false);
+                    */
+                    var thin = PrepareSpawnThingEntry(thing, factionPirate);
+
                     if (thin is Pawn)
                     {
                         (place as Caravan).AddPawn(thin as Pawn, true);
@@ -213,9 +251,100 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Для поиска объектов, уже созданных в прошлые разы
         /// </summary>
-        private static Dictionary<long, int> ConverterServerId;
-        private static Dictionary<int, WorldObjectEntry> MyWorldObjectEntry;
-        private static List<WorldObjectEntry> ToDelete;
+        private static Dictionary<long, int> ConverterServerId { get; set; }
+        private static Dictionary<int, WorldObjectEntry> MyWorldObjectEntry { get; set; }
+        private static List<WorldObjectEntry> ToDelete { get; set; }
+
+        public static string GetTestText()
+        {
+            var text = "ConverterServerId.";
+            foreach (var item in ConverterServerId)
+            {
+                text += Environment.NewLine + item.Key + ", " + item.Value;
+            }
+
+            text += Environment.NewLine + Environment.NewLine + "MyWorldObjectEntry.";
+            foreach (var item in MyWorldObjectEntry)
+            {
+                text += Environment.NewLine + item.Key + ", " + item.Value.ServerId + " " + item.Value.Name;
+            }
+
+            text += Environment.NewLine + Environment.NewLine + "ToDelete.";
+            foreach (var item in ToDelete)
+            {
+                text += Environment.NewLine + item.ServerId + " " + item.Name;
+            }
+            return text;
+        }
+
+        public static WorldObjectEntry GetMyByServerId(long serverId)
+        {
+            WorldObjectEntry storeWO;
+            int objId;
+            if (ConverterServerId == null
+                || !ConverterServerId.TryGetValue(serverId, out objId)
+                || MyWorldObjectEntry == null
+                || !MyWorldObjectEntry.TryGetValue(objId, out storeWO))
+            {
+                return null;
+            }
+            return storeWO;
+        }
+
+        public static CaravanOnline GetOtherByServerId(long serverId, List<WorldObject> allWorldObjects = null)
+        {
+            int objId;
+            if (ConverterServerId == null
+                || !ConverterServerId.TryGetValue(serverId, out objId))
+            {
+                return null;
+            }
+            
+            if (allWorldObjects == null) allWorldObjects = Find.WorldObjects.AllWorldObjects;
+
+            CaravanOnline worldObject = null;
+            for (int i = 0; i < allWorldObjects.Count; i++)
+            {
+                if (allWorldObjects[i].ID == objId && allWorldObjects[i] is CaravanOnline)
+                {
+                    worldObject = allWorldObjects[i] as CaravanOnline;
+                    break;
+                }
+            }
+            return worldObject;
+        }
+
+        public static WorldObject GetWOByServerId(long serverId, List<WorldObject> allWorldObjects = null)
+        {
+            int objId;
+            if (ConverterServerId == null
+                || !ConverterServerId.TryGetValue(serverId, out objId))
+            {
+                return null;
+            }
+
+            if (allWorldObjects == null) allWorldObjects = Find.WorldObjects.AllWorldObjects;
+            
+            for (int i = 0; i < allWorldObjects.Count; i++)
+            {
+                if (allWorldObjects[i].ID == objId)
+                {
+                    return allWorldObjects[i];
+                }
+            }
+            return null;
+        }
+
+        public static WorldObjectEntry GetServerInfo(WorldObject myWorldObject)
+        {
+            WorldObjectEntry storeWO;
+            if (MyWorldObjectEntry == null
+                || !MyWorldObjectEntry.TryGetValue(myWorldObject.ID, out storeWO))
+            {
+                return null;
+            }
+            return storeWO;
+        }
 
         /// <summary>
         /// Только для своих объетков
@@ -291,17 +420,6 @@ namespace RimWorldOnlineCity
             return worldObjectEntry;
         }
 
-        public static WorldObjectEntry GetServerInfo(WorldObject myWorldObject)
-        {
-            WorldObjectEntry storeWO;
-            if (MyWorldObjectEntry == null 
-                || !MyWorldObjectEntry.TryGetValue(myWorldObject.ID, out storeWO))
-            {
-                return null;
-            }
-            return storeWO;
-        }
-
 
         #region Вычисление массы, сдернуто с Dialog_SplitCaravan
 
@@ -366,8 +484,12 @@ namespace RimWorldOnlineCity
                         && (allWorldObjects[i] is Caravan && worldObjectEntry.Type == WorldObjectEntryType.Caravan
                             || allWorldObjects[i] is Settlement && worldObjectEntry.Type == WorldObjectEntryType.Base))
                     {
-                        Loger.Log("SetMyID " + allWorldObjects[i].ID + " ServerId " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
-                        MyWorldObjectEntry.Add(allWorldObjects[i].ID, worldObjectEntry);
+                        var id = allWorldObjects[i].ID;
+                        Loger.Log("SetMyID " + id + " ServerId " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
+                        MyWorldObjectEntry.Add(id, worldObjectEntry);
+
+                        if (!ConverterServerId.ContainsKey(worldObjectEntry.ServerId))
+                            ConverterServerId.Add(worldObjectEntry.ServerId, id);
                         return;
                     }
                 }
@@ -381,6 +503,7 @@ namespace RimWorldOnlineCity
             
             //поиск уже существующих
             CaravanOnline worldObject = null;
+            /*
             int existId;
             if (ConverterServerId.TryGetValue(worldObjectEntry.ServerId, out existId))
             {
@@ -393,6 +516,8 @@ namespace RimWorldOnlineCity
                     }
                 }
             }
+            */
+            worldObject = GetOtherByServerId(worldObjectEntry.ServerId, allWorldObjects);
 
             //если тут база другого игрока, то удаление всех кто занимает этот тайл, кроме караванов (удаление новых НПЦ и событий с занятых тайлов)
             if (worldObjectEntry.Type == WorldObjectEntryType.Base)
@@ -400,7 +525,8 @@ namespace RimWorldOnlineCity
                 for (int i = 0; i < allWorldObjects.Count; i++)
                 {
                     if (allWorldObjects[i].Tile == worldObjectEntry.Tile && allWorldObjects[i] != worldObject
-                        && !(allWorldObjects[i] is Caravan) && !(allWorldObjects[i] is CaravanOnline))
+                        && !(allWorldObjects[i] is Caravan) && !(allWorldObjects[i] is CaravanOnline)
+                        && !allWorldObjects[i].Faction.IsPlayer)
                     {
                         Loger.Log("Remove " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
                         Find.WorldObjects.Remove(allWorldObjects[i]);
@@ -437,6 +563,7 @@ namespace RimWorldOnlineCity
             
             //поиск уже существующих
             CaravanOnline worldObject = null;
+            /*
             int existId;
             if (ConverterServerId.TryGetValue(worldObjectEntry.ServerId, out existId))
             {
@@ -449,10 +576,12 @@ namespace RimWorldOnlineCity
                     }
                 }
             }
+            */
+            worldObject = GetOtherByServerId(worldObjectEntry.ServerId);
 
             if (worldObject != null)
             {
-                Loger.Log("DeleteWorldObject " + DevelopTest.TextObj(worldObjectEntry) + " " + existId + " " 
+                Loger.Log("DeleteWorldObject " + DevelopTest.TextObj(worldObjectEntry) + " " 
                     + (worldObject == null ? "null" : worldObject.ID.ToString()));
                 Find.WorldObjects.Remove(worldObject);
             }
