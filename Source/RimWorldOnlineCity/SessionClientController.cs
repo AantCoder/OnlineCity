@@ -69,7 +69,7 @@ namespace RimWorldOnlineCity
             }
             catch { }
 
-            Loger.Log("Client Init");
+            Loger.Log("Client Init " + MainHelper.VersionInfo);
             Loger.Log("Client Language: " + Prefs.LangFolderName);
         }
 
@@ -131,8 +131,8 @@ namespace RimWorldOnlineCity
                         }
                     }
                     var allWObjects = Find.WorldObjects.AllWorldObjects
-                        .Where(o => o is CaravanOnline)
                         .Select(o => o as CaravanOnline)
+                        .Where(o => o != null)
                         .ToList();
                     foreach (var pi in Data.Players)
                     {
@@ -140,7 +140,7 @@ namespace RimWorldOnlineCity
                     }
 
                     //обновляем планету
-                    UpdateWorldController.LoadFromServer(fromServ);
+                    UpdateWorldController.LoadFromServer(fromServ, firstRun);
 
                     //если на нас напали запускаем процесс
                     if (fromServ.AreAttacking && GameAttackHost.AttackMessage())

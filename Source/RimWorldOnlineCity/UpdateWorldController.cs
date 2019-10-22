@@ -36,8 +36,25 @@ namespace RimWorldOnlineCity
             toServ.WObjectsToDelete = ToDelete;
         }
 
-        public static void LoadFromServer(ModelPlayToClient fromServ)
+        public static void LoadFromServer(ModelPlayToClient fromServ, bool removeMissing)
         {
+            if (removeMissing)
+            {
+                //запускается только при первом получении данных от сервера после загрузки или создания карты
+                //удаляем все объекты других игроков (на всякий случай, т.к. в сейв они не сохраняются)
+
+                var missingWObjects = Find.WorldObjects.AllWorldObjects
+                    .Select(o => o as CaravanOnline)
+                    .Where(o => o != null)
+                    //.Where(o => !fromServ.WObjects.Any(wo => wo.ServerId == o.OnlineWObject.ServerId))
+                    .ToList();
+                for (int i = 0; i < missingWObjects.Count; i++)
+                {
+                    Find.WorldObjects.Remove(missingWObjects[i]);
+                }
+                Loger.Log("RemoveMissing " + missingWObjects.Count);
+            }
+
             //обновление всех объектов
             ToDelete = new List<WorldObjectEntry>();
             if (fromServ.WObjects != null && fromServ.WObjects.Count > 0)
