@@ -418,7 +418,7 @@ namespace RimWorldOnlineCity
             return CellFinder.RandomCell(map);
         }
 
-        public static IntVec3 SpawnCaravanPirate(Map map, List<ThingEntry> pawns, Action<Pawn, ThingEntry> spawn = null)
+        public static IntVec3 SpawnCaravanPirate(Map map, List<ThingEntry> pawns, Action<Thing, ThingEntry> spawn = null)
         {
             var nextCell = GameUtils.GetAttackCells(map);
             return SpawnList(map, pawns, true, (p) => true, spawn, (p) => nextCell());
@@ -426,7 +426,7 @@ namespace RimWorldOnlineCity
 
         public static IntVec3 SpawnList(Map map, List<ThingEntry> pawns, bool attackCell
             , Func<ThingEntry, bool> getPirate
-            , Action<Pawn, ThingEntry> spawn = null
+            , Action<Thing, ThingEntry> spawn = null
             , Func<Thing, IntVec3> getCell = null)
         {
             if (MainHelper.DebugMode) Loger.Log("SpawnList...");
@@ -453,10 +453,10 @@ namespace RimWorldOnlineCity
                 {
                     if (MainHelper.DebugMode) Loger.Log("Pawn... " + thin.Position.x + " " + thin.Position.y);
                     GenSpawn.Spawn((Pawn)thin, cell, map);
-                    if (spawn != null) spawn((Pawn)thin, thing);
                 }
                 else
                     GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
+                if (spawn != null) spawn(thin, thing);
                 if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
             }
             return ret;

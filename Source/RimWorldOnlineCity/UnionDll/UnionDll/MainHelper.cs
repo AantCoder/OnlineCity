@@ -9,14 +9,14 @@ namespace OCUnion
 {
     public static class MainHelper
     {
-        public static bool DebugMode = false;
+        public static bool DebugMode = true;
 
-        public static string VersionInfo = "Версия 0.02.29a от 2019.10.21";
+        public static string VersionInfo = "Версия 0.02.30a от 2019.10.22";
 
         /// <summary>
         /// Для автоматической проверки: версия клиента должна быть больше или равна версии сервера
         /// </summary>
-        public static long VersionNum = 20029;
+        public static long VersionNum = 20030;
 
         public static string DefaultIP = DebugMode ? "localhost" : "194.87.95.90"; // rimworld.online
         
