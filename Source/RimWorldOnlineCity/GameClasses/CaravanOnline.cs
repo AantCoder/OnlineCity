@@ -118,14 +118,17 @@ namespace RimWorldOnlineCity
                 caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
             }, MenuOptionPriority.Default, null, null, 0f, null, this);
 
-            if (this is BaseOnline && GameAttacker.CanStart)
+            if (MainHelper.DebugMode) //todo: убрать при релизи pvp
             {
-                yield return new FloatMenuOption(string.Format("Атаковать {0}".NeedTranslate()
-                    , OnlinePlayerLogin + " " + OnlineName
-                ), delegate
+                if (this is BaseOnline && GameAttacker.CanStart)
                 {
-                    caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "attack"), true);
-                }, MenuOptionPriority.Default, null, null, 0f, null, this);
+                    yield return new FloatMenuOption(string.Format("Атаковать {0}".NeedTranslate()
+                        , OnlinePlayerLogin + " " + OnlineName
+                    ), delegate
+                    {
+                        caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "attack"), true);
+                    }, MenuOptionPriority.Default, null, null, 0f, null, this);
+                }
             }
         }
 
