@@ -9,9 +9,9 @@ namespace OCUnion
 {
     public static class MainHelper
     {
-        public static bool DebugMode = true;
+        public static bool DebugMode = false;
 
-        public static string VersionInfo = "Версия 0.02.30a от 2019.10.22";
+        public static string VersionInfo = "Версия 0.02.30a от 2019.10.26";
 
         /// <summary>
         /// Для автоматической проверки: версия клиента должна быть больше или равна версии сервера
