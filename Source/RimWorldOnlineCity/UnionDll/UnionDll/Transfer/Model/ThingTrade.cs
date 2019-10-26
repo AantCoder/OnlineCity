@@ -177,7 +177,7 @@ namespace Model
             if (Concrete)
             {
                 //Log.Message(DataThing.def.defName + " ? " + thing.def.defName + " " + TransferableUtility.TransferAsOne(thing, DataThing).ToString());
-                return TransferableUtility.TransferAsOne(thing, DataThing);
+                return TransferableUtility.TransferAsOne(thing, DataThing, TransferAsOneMode.Normal);
             }
             else
                 return true;

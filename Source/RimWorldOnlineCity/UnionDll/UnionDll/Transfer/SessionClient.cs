@@ -14,7 +14,7 @@ namespace Transfer
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
 #region
-        private static SessionClient Single = new SessionClient();
+        private static readonly SessionClient Single = new SessionClient();
 
         public static SessionClient Get { get { return Single; } }
 
@@ -36,7 +36,6 @@ namespace Transfer
             }
             Client = null;
         }
-
 
         public bool Connect(string addr, int port = 0)
         {

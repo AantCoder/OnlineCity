@@ -37,7 +37,6 @@ namespace Chat
             ClientData.UIInteraction = false;
         }
 
-
         public static string Login(string addr, string login, string password)
         {
             var msgError = Connect(addr);
@@ -164,6 +163,5 @@ namespace Chat
             SessionClientController.My = My;
             SessionClientController.Data = Data;
         }
-
     }
 }
