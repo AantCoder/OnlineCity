@@ -10,7 +10,7 @@ namespace RimWorldOnlineCity.UI
     {
         public const float WidthScrollLine = 18f;
         
-        private float TextHeight_value;
+        private float TextHeight_value = 0;
 
         public float TextHeight
         {

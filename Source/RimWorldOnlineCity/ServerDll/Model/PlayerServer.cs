@@ -43,6 +43,9 @@ namespace OCServer.Model
 
         public List<ModelMailTrade> Mails = new List<ModelMailTrade>();
 
+        [NonSerialized]
+        public AttackServer AttackData;
+
         private PlayerServer()
         { }
 

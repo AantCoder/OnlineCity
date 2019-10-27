@@ -31,10 +31,7 @@ namespace RimWorldOnlineCity
             InputAddr = StorageData.GlobalData.LastIP.Value;
             if (string.IsNullOrEmpty(InputAddr))
             {
-                if (MainHelper.DebugMode)
-                    InputAddr = "localhost";
-                else
-                    InputAddr = "rimworld.online";
+                InputAddr = MainHelper.DefaultIP;
             }
             closeOnCancel = false;
             closeOnAccept = false;

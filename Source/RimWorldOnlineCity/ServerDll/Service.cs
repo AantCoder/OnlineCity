@@ -99,6 +99,8 @@ namespace OCServer
                     {
                         My = Player.Public,
                         IsAdmin = Player.IsAdmin,
+                        VersionInfo = MainHelper.VersionInfo,
+                        VersionNum = MainHelper.VersionNum,
                         Seed = data.WorldSeed ?? "",
                         MapSize = data.WorldMapSize,
                         PlanetCoverage = data.WorldPlanetCoverage,
@@ -261,6 +263,10 @@ namespace OCServer
                                 WO.Tile = pWOs[i].Tile;
                             }
                         }
+                        else
+                        {
+                            Loger.Log("PlayInfo find error add WO: " + pWOs[i].Name + " sid=" + sid);
+                        }
                     }
 
                     //передаем объекты других игроков + при первом обращении first
@@ -271,33 +277,37 @@ namespace OCServer
                         outWO.Add(data.WorldObjects[i]);
                     }
 
-                    //передаем удаленные объекты других игроков
-                    for (int i = 0; i < data.WorldObjectsDeleted.Count; i++)
+                    //передаем удаленные объекты других игроков (не для первого запроса)
+                    if (packet.UpdateTime > DateTime.MinValue)
                     {
-                        if (data.WorldObjectsDeleted[i].UpdateTime < packet.UpdateTime) continue;
-                        if (data.WorldObjectsDeleted[i].LoginOwner == pLogin) continue;
-                        outWOD.Add(data.WorldObjectsDeleted[i]);
+                        for (int i = 0; i < data.WorldObjectsDeleted.Count; i++)
+                        {
+                            if (data.WorldObjectsDeleted[i].UpdateTime < packet.UpdateTime)
+                            {
+                                //Удаляем все записи сроком старше 2х минут (их нужно хранить время между тем как игрок у которого удалился караван зальёт это на сервер, и все другие онлайн игроки получат эту инфу, а обновление идет раз в 5 сек)
+                                if ((timeNow - data.WorldObjectsDeleted[i].UpdateTime).TotalSeconds > 120000)
+                                {
+                                    data.WorldObjectsDeleted.RemoveAt(i--);
+                                }
+                                continue;
+                            }
+                            if (data.WorldObjectsDeleted[i].LoginOwner == pLogin) continue;
+                            outWOD.Add(data.WorldObjectsDeleted[i]);
+                        }
                     }
 
                     //завершили сбор информации клиенту
                     toClient.WObjects = outWO;
                     toClient.WObjectsToDelete = outWOD;
                     Player.LastUpdateTime = timeNow;
-
-                    //обслуживание data.WorldObjectsDeleted
-                    for (int i = 0; i < data.WorldObjectsDeleted.Count; i++)
-                    {
-                        var delTime = data.WorldObjectsDeleted[i].UpdateTime;
-                        if (data.PlayersAll.All(p => p.LastUpdateTime > delTime))
-                        {
-                            data.WorldObjectsDeleted.RemoveAt(i--);
-                        }
-                    }
                 }
                 
                 //прикрепляем письма
                 toClient.Mails = Player.Mails;
                 Player.Mails = new List<ModelMailTrade>();
+
+                //флаг, что на клиента кто-то напал и он должен запросить подробности
+                toClient.AreAttacking = Player.AttackData != null && Player.AttackData.Host == Player && Player.AttackData.State == 1;
 
                 return toClient;
             }
@@ -634,7 +644,7 @@ namespace OCServer
                     .FirstOrDefault(p => p.Public.Login == who);
                 if (newPlayer == null)
                     PostCommandPrivatPostActivChat(chat, "User " + who + " not found");
-                if (!Player.PublicChat.PartyLogin.Any(p => p == who))
+                else if (!Player.PublicChat.PartyLogin.Any(p => p == who))
                     PostCommandPrivatPostActivChat(chat, "Can not access " + who + " player");
                 else if (!chat.OwnerMaker)
                     PostCommandPrivatPostActivChat(chat, "People can not be added to a shared channel");
@@ -860,6 +870,85 @@ namespace OCServer
                     .ToList();
 
                             
+
+                return res;
+            }
+        }
+
+        public AttackInitiatorFromSrv AttackOnlineInitiator(AttackInitiatorToSrv fromClient)
+        {
+            if (Player == null) return null;
+
+            lock (Player)
+            {
+                var timeNow = DateTime.UtcNow;
+                var data = Repository.GetData;
+                var res = new AttackInitiatorFromSrv()
+                {
+                };
+
+                //инициализируем общий объект
+                if (fromClient.StartHostPlayer != null)
+                {
+                    if (Player.AttackData != null)
+                    {
+                        res.ErrorText = "There is an active attack";
+                        return res;
+                    }
+                    var hostPlayer = data.PlayersAll.FirstOrDefault(p => p.Public.Login == fromClient.StartHostPlayer);
+
+                    if (hostPlayer == null)
+                    {
+                        res.ErrorText = "Player not found";
+                        return res;
+                    }
+                    if (hostPlayer.AttackData != null)
+                    {
+                        res.ErrorText = "The player participates in the attack";
+                        return res;
+                    }
+
+                    var att = new AttackServer();
+                    var err = att.New(Player, hostPlayer, fromClient);
+                    if (err != null)
+                    {
+                        res.ErrorText = err;
+                        return res;
+                    }
+                }
+                if (Player.AttackData == null)
+                {
+                    res.ErrorText = "Unexpected error, no data";
+                    return res;
+                }
+
+                //передаем управление общему объекту
+                res = Player.AttackData.RequestInitiator(fromClient);
+
+                return res;
+            }
+        }
+
+        public AttackHostFromSrv AttackOnlineHost(AttackHostToSrv fromClient)
+        {
+            if (Player == null) return null;
+
+            lock (Player)
+            {
+                var timeNow = DateTime.UtcNow;
+                var data = Repository.GetData;
+                var res = new AttackHostFromSrv()
+                {
+                };
+
+                if (Player.AttackData == null)
+                {
+                    res.ErrorText = "Unexpected error, no data";
+                    return res;
+                }
+
+                //передаем управление общему объекту
+                res = Player.AttackData.RequestHost(fromClient);
 
                 return res;
             }
