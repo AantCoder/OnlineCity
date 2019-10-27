@@ -83,7 +83,7 @@ namespace RimWorldOnlineCity
                 //Loger.Log("Client UpdateWorld 2 ");
                 Command((connect) =>
                 {
-                    Loger.Log("Client Init " + MainHelper.VersionInfo);
+                    //Loger.Log("Client Init " + MainHelper.VersionInfo);
                     //собираем пакет на сервер
                     var toServ = new ModelPlayToServer()
                     {

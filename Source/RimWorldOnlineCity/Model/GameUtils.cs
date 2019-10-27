@@ -467,6 +467,7 @@ namespace RimWorldOnlineCity
             //полезное из игры: RecoverFromUnwalkablePositionOrKill
             if (state.StackCount > 0 && thing.stackCount != state.StackCount)
             {
+                Loger.Log("Client ApplyState Set StackCount " + thing.stackCount.ToString() + " -> " + state.StackCount.ToString());
                 thing.stackCount = state.StackCount;
             }
 
@@ -490,6 +491,7 @@ namespace RimWorldOnlineCity
 
             if (thing.def.useHitPoints)
             {
+                Loger.Log("Client ApplyState Set HitPoints " + thing.HitPoints.ToString() + " -> " + state.HitPoints.ToString());
                 thing.HitPoints = state.HitPoints;
             }
 

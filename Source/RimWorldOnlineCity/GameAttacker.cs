@@ -134,7 +134,7 @@ namespace RimWorldOnlineCity
                         return;
                     }
                     if (response.State >= 4) break;
-                    if ((DateTime.UtcNow - s1Time).Seconds > 60)
+                    if ((DateTime.UtcNow - s1Time).TotalSeconds > 60)
                     {
                         ErrorBreak("Timeout");
                         return;
@@ -290,7 +290,7 @@ namespace RimWorldOnlineCity
                                         Loger.Log("Client AttackUpdate 4 Err3 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
                                         continue;
                                     }
-                                    if (!(thing is Pawn)) Loger.Log("Client AttackUpdate 4 Apply " + toClient.UpdateState[i].ToString() + " thing=" + thing.Label);
+                                    if (!(thing is Pawn)) Loger.Log("Client AttackUpdate 4 Apply " + toClient.UpdateState[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
                                     GameUtils.ApplyState(thing, toClient.UpdateState[i]);
                                 }
                             }
