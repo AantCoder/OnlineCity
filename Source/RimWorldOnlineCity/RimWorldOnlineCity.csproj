@@ -36,15 +36,17 @@
       <HintPath>Lib\$HugsLibChecker.dll</HintPath>
     </Reference>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\HugsLib\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>$(RimWorldFolder)Mods\HugsLib\Assemblies\HugsLib\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>$(SteamWorkShopFolder)818773962\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HugsLib">
-      <HintPath>..\..\..\HugsLib\Assemblies\HugsLib.dll</HintPath>
+      <HintPath>$(RimWorldFolder)Mods\HugsLib\Assemblies\HugsLib\Assemblies\HugsLib.dll</HintPath>
+      <HintPath>$(SteamWorkShopFolder)818773962\Assemblies\HugsLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -55,7 +57,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
