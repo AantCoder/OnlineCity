@@ -1,4 +1,5 @@
 ﻿using Model;
+using OCUnion;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
@@ -117,6 +118,15 @@ namespace RimWorldOnlineCity
                 caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
             }, MenuOptionPriority.Default, null, null, 0f, null, this);
 
+            if (this is BaseOnline && GameAttacker.CanStart)
+            {
+                yield return new FloatMenuOption(string.Format("Атаковать {0}".NeedTranslate()
+                    , OnlinePlayerLogin + " " + OnlineName
+                ), delegate
+                {
+                    caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "attack"), true);
+                }, MenuOptionPriority.Default, null, null, 0f, null, this);
+            }
         }
 
         #region Icons

@@ -49,10 +49,12 @@ namespace Util
 
         public void GenerateKeys()
         {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(KeyBitSize);
-            OpenKey = rsa.ToXmlString(false);
-            PrivateKey = rsa.ToXmlString(true);
-            rsa.Clear();
+            using (var rsa = new RSACryptoServiceProvider(KeyBitSize))
+            {
+                OpenKey = rsa.ToXmlString(false);
+                PrivateKey = rsa.ToXmlString(true);
+                rsa.Clear();
+            }
         }
 
         /// <summary>

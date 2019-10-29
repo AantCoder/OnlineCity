@@ -35,9 +35,17 @@ namespace RimWorldOnlineCity
         public static void GameGeneration(bool withStart = true)
         {
             var quickStarterType = typeof(Root).Assembly.GetType("Verse.QuickStarter");
-            if (quickStarterType == null) Loger.Log("Client Verse.QuickStarter type not found");
+            if (quickStarterType == null)
+            {
+                Loger.Log("Client Verse.QuickStarter type not found");
+                return;
+            }
             var quickStartedField = AccessTools.Field(quickStarterType, "quickStarted");
-            if (quickStartedField == null) Loger.Log("Client QuickStarter.quickStarted field not found");
+            if (quickStartedField == null)
+            {
+                Loger.Log("Client QuickStarter.quickStarted field not found");
+                return;
+            }
 
             quickStartedField.SetValue(null, true);
 
@@ -75,10 +83,12 @@ namespace RimWorldOnlineCity
     [HarmonyPatch(typeof(bool), new[] { typeof(int), typeof(StringBuilder) })]
     internal class TileFinder_IsValidTileForNewSettlement_Patch
     {
+        public static bool Off = false;
 
         [HarmonyPostfix]
         public static void Postfix(ref bool __result, int tile, StringBuilder reason)
         {
+            if (Off) return;
             if (!__result) return;
             WorldGrid worldGrid = Find.WorldGrid;
             var listWO = Find.WorldObjects.AllWorldObjects;

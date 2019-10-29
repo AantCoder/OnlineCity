@@ -1005,7 +1005,9 @@ namespace RimWorldOnlineCity.UI
             {
                 TooltipHandler.TipRegion(rect3, (th.Concrete ? "Снята с трупа" : "Для одежды допустимо быть снятой с трупа").NeedTranslate());
                 if (EditOrderIsMy && !th.Concrete)
+                {
                     if (Widgets.ButtonImage(rect3, IconSkull, Color.green)) th.WornByCorpse = false;
+                }
                 else
                     Widgets.DrawTextureFitted(rect3, IconSkull, 1f);
             }

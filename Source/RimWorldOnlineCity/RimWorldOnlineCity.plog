@@ -1,0 +1,812 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="Solution_Path">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SolutionPath" type="xs:string" minOccurs="0" />
+                <xs:element name="SolutionVersion" type="xs:string" minOccurs="0" />
+                <xs:element name="PlogVersion" type="xs:unsignedInt" minOccurs="0" />
+                <xs:element name="ModificationDate" msdata:DateTimeMode="Utc" type="xs:dateTime" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="PVS-Studio_Analysis_Log">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FavIcon" type="xs:boolean" minOccurs="0" msdata:Ordinal="0" />
+                <xs:element name="Level" type="xs:unsignedInt" minOccurs="0" msdata:Ordinal="1" />
+                <xs:element name="DefaultOrder" type="xs:int" minOccurs="0" msdata:Ordinal="2" />
+                <xs:element name="ErrorCode" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
+                <xs:element name="Message" type="xs:string" msdata:Ordinal="4" />
+                <xs:element name="Project" type="xs:string" minOccurs="0" msdata:Ordinal="5" />
+                <xs:element name="ShortFile" type="xs:string" minOccurs="0" msdata:Ordinal="6" />
+                <xs:element name="Line" type="xs:int" msdata:Ordinal="7" />
+                <xs:element name="FalseAlarm" type="xs:boolean" minOccurs="0" msdata:Ordinal="8" />
+                <xs:element name="File" type="xs:string" msdata:Ordinal="9" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" minOccurs="0" msdata:Ordinal="10" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" minOccurs="0" msdata:Ordinal="11" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" minOccurs="0" msdata:Ordinal="12" />
+                <xs:element name="TrialMessage" type="xs:boolean" minOccurs="0" msdata:Ordinal="13" />
+                <xs:element name="Analyzer" type="xs:int" minOccurs="0" msdata:Ordinal="14" />
+                <xs:element name="LineExtension" type="xs:string" minOccurs="0" msdata:Ordinal="15" />
+                <xs:element name="Retired" type="xs:boolean" default="false" minOccurs="0" msdata:Ordinal="16" />
+                <xs:element name="AnalyzedSourceFiles" type="xs:string" minOccurs="0" msdata:Ordinal="17" />
+                <xs:element name="CWECode" type="xs:string" minOccurs="0" msdata:Ordinal="18" />
+                <xs:element name="MISRA" type="xs:string" minOccurs="0" msdata:Ordinal="19" />
+              </xs:sequence>
+              <xs:attribute name="ErrorCodeNumeric" msdata:ReadOnly="true" msdata:Expression="IIF(LEN(ErrorCode) &lt; 2 OR (SUBSTRING(ErrorCode, 1, 1) &lt;&gt; 'V'), 0, CONVERT(SUBSTRING(ErrorCode, 2, LEN(ErrorCode) - 1), 'System.UInt32'))" type="xs:unsignedInt" use="prohibited" />
+              <xs:attribute name="CWECodeNumeric" msdata:ReadOnly="true" msdata:Expression="ISNULL(IIF(LEN(CWECode) &lt; 4 + 1 OR (SUBSTRING(CWECode, 1, 4) &lt;&gt; 'CWE-'), 4294967295, CONVERT(SUBSTRING(CWECode, 4 + 1, LEN(CWECode) - 4), 'System.UInt32')), 4294967295)" type="xs:unsignedInt" use="prohibited" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//PVS-Studio_Analysis_Log" />
+        <xs:field xpath="Line" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="File" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <Solution_Path>
+    <SolutionPath>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\RimWorldOnlineCity.sln</SolutionPath>
+    <SolutionVersion>14.0</SolutionVersion>
+    <PlogVersion>5</PlogVersion>
+    <ModificationDate>2019-09-29T12:31:45.8753403Z</ModificationDate>
+  </Solution_Path>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>1</Level>
+    <DefaultOrder>1</DefaultOrder>
+    <ErrorCode>Renew</ErrorCode>
+    <Message>Your license will expire in 8 days. Click 'Renew' to learn more or contact us at support@viva64.com. This is an information message. You can continue using the analyzer with your current license.</Message>
+    <Project />
+    <ShortFile />
+    <Line>0</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File />
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>0</CodeCurrent>
+    <CodeNext>0</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>0</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>2</DefaultOrder>
+    <ErrorCode>V3039</ErrorCode>
+    <Message>Consider inspecting the 'WriteAllText' method call. Defining an absolute path to the file or directory is considered a poor style.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>DevelopTest.cs</ShortFile>
+    <Line>129</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\UI\DevelopTest.cs</File>
+    <CodePrev>258653279</CodePrev>
+    <CodeCurrent>2342823066</CodeCurrent>
+    <CodeNext>0</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-39</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>3</DefaultOrder>
+    <ErrorCode>V3142</ErrorCode>
+    <Message>Unreacheble code detected. It is possible that an error is present.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>DevelopTest.cs</ShortFile>
+    <Line>99</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\UI\DevelopTest.cs</File>
+    <CodePrev>447</CodePrev>
+    <CodeCurrent>176909</CodeCurrent>
+    <CodeNext>116</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-561</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>4</DefaultOrder>
+    <ErrorCode>V3080</ErrorCode>
+    <Message>Possible null dereference. Consider inspecting 'tolient'.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>GameAttackHost.cs</ShortFile>
+    <Line>105</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\GameAttackHost.cs</File>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3077748311</CodeCurrent>
+    <CodeNext>3578004779</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-476</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>1</Level>
+    <DefaultOrder>5</DefaultOrder>
+    <ErrorCode>V3022</ErrorCode>
+    <Message>Expression '!string.IsNullOrEmpty(connect0.ErrorMessage)' is always false.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>GameAttackHost.cs</ShortFile>
+    <Line>196</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\GameAttackHost.cs</File>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>3969931644</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-570</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>6</DefaultOrder>
+    <ErrorCode>V3118</ErrorCode>
+    <Message>Seconds component of TimeSpan is used, which does not represent full time interval. Possibly 'TotalSeconds' value was intended instead.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>GameAttackHost.cs</ShortFile>
+    <Line>190</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\GameAttackHost.cs</File>
+    <CodePrev>404506165</CodePrev>
+    <CodeCurrent>371414792</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>7</DefaultOrder>
+    <ErrorCode>V3051</ErrorCode>
+    <Message>An excessive type cast. The object is already of the 'Pawn' type.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>GameAttackHost.cs</ShortFile>
+    <Line>375</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\GameAttackHost.cs</File>
+    <CodePrev>2967708180</CodePrev>
+    <CodeCurrent>4056850172</CodeCurrent>
+    <CodeNext>741097</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-704</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>8</DefaultOrder>
+    <ErrorCode>V3022</ErrorCode>
+    <Message>Expression '!inTimerEvent' is always true.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>GameAttackHost.cs</ShortFile>
+    <Line>467</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\GameAttackHost.cs</File>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>52954585</CodeCurrent>
+    <CodeNext>125</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-571</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>9</DefaultOrder>
+    <ErrorCode>V3118</ErrorCode>
+    <Message>Seconds component of TimeSpan is used, which does not represent full time interval. Possibly 'TotalSeconds' value was intended instead.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>GameAttacker.cs</ShortFile>
+    <Line>102</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\GameAttacker.cs</File>
+    <CodePrev>383400289</CodePrev>
+    <CodeCurrent>371414792</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension>102,137</LineExtension>
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>1</Level>
+    <DefaultOrder>10</DefaultOrder>
+    <ErrorCode>V3022</ErrorCode>
+    <Message>Expression 'job == null' is always false.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>GameAttacker.cs</ShortFile>
+    <Line>423</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\GameAttacker.cs</File>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>426865789</CodeCurrent>
+    <CodeNext>3067395587</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-570</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>11</DefaultOrder>
+    <ErrorCode>V3125</ErrorCode>
+    <Message>The 'quickStartedField' object was used after it was verified against null. Check lines: 42, 40.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>GameStarter.cs</ShortFile>
+    <Line>42</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\GameClasses\Harmony\GameStarter.cs</File>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>963720173</CodeCurrent>
+    <CodeNext>0</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension>42,40</LineExtension>
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-476</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>12</DefaultOrder>
+    <ErrorCode>V3118</ErrorCode>
+    <Message>Seconds component of TimeSpan is used, which does not represent full time interval. Possibly 'TotalSeconds' value was intended instead.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>ClientData.cs</ShortFile>
+    <Line>41</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\ClientData.cs</File>
+    <CodePrev>3428598490</CodePrev>
+    <CodeCurrent>4151618411</CodeCurrent>
+    <CodeNext>125</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>13</DefaultOrder>
+    <ErrorCode>V3024</ErrorCode>
+    <Message>An odd precise comparison: TextHeight_value == 0. Consider using a comparison with defined precision: Math.Abs(A - B) &lt; Epsilon.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>DialogControlBase.cs</ShortFile>
+    <Line>19</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\UI\DialogControlBase.cs</File>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>394553893</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-682</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>1</Level>
+    <DefaultOrder>14</DefaultOrder>
+    <ErrorCode>V3033</ErrorCode>
+    <Message>It is possible that this 'else' branch must apply to the previous 'if' statement.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>Dialog_Exchenge.cs</ShortFile>
+    <Line>1009</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\UI\Dialog_Exchenge.cs</File>
+    <CodePrev>3406488226</CodePrev>
+    <CodeCurrent>539</CodeCurrent>
+    <CodeNext>971505194</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-670</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>15</DefaultOrder>
+    <ErrorCode>V3063</ErrorCode>
+    <Message>A part of conditional expression is always true if it is evaluated: new DevelopTest().Run().</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>Dialog_MainOnlineCity.cs</ShortFile>
+    <Line>132</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\UI\Dialog_MainOnlineCity.cs</File>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3930699560</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-571</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>16</DefaultOrder>
+    <ErrorCode>V3024</ErrorCode>
+    <Message>An odd precise comparison: DoTab0LastHeight != inRect.height. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>Dialog_MainOnlineCity.cs</ShortFile>
+    <Line>225</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\UI\Dialog_MainOnlineCity.cs</File>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>1354215967</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-682</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>1</Level>
+    <DefaultOrder>17</DefaultOrder>
+    <ErrorCode>V3022</ErrorCode>
+    <Message>Expression 'listMenu.Count == 0' is always false.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>Dialog_MainOnlineCity.cs</ShortFile>
+    <Line>485</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\UI\Dialog_MainOnlineCity.cs</File>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3430227813</CodeCurrent>
+    <CodeNext>3637481641</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-570</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>18</DefaultOrder>
+    <ErrorCode>V3008</ErrorCode>
+    <Message>The 'num' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: 662, 637.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>Dialog_MainOnlineCity.cs</ShortFile>
+    <Line>662</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\UI\Dialog_MainOnlineCity.cs</File>
+    <CodePrev>4799833</CodePrev>
+    <CodeCurrent>1128485528</CodeCurrent>
+    <CodeNext>0</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension>662,637</LineExtension>
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-563</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>19</DefaultOrder>
+    <ErrorCode>V3083</ErrorCode>
+    <Message>Unsafe invocation of event 'OnClick', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>ListBox.cs</ShortFile>
+    <Line>92</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\Model\UI\ListBox.cs</File>
+    <CodePrev>3751949</CodePrev>
+    <CodeCurrent>3008568779</CodeCurrent>
+    <CodeNext>125</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-367</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>20</DefaultOrder>
+    <ErrorCode>V3080</ErrorCode>
+    <Message>Possible null dereference. Consider inspecting 'serverInfo'.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>SessionClientController.cs</ShortFile>
+    <Line>371</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\SessionClientController.cs</File>
+    <CodePrev>2920037106</CodePrev>
+    <CodeCurrent>7615933</CodeCurrent>
+    <CodeNext>2442313692</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-476</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>21</DefaultOrder>
+    <ErrorCode>V3080</ErrorCode>
+    <Message>Possible null dereference. Consider inspecting 'worldData'.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>SessionClientController.cs</ShortFile>
+    <Line>461</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\SessionClientController.cs</File>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2725114011</CodeCurrent>
+    <CodeNext>209751451</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-476</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>22</DefaultOrder>
+    <ErrorCode>V3114</ErrorCode>
+    <Message>IDisposable object 'rsa' is not disposed before method returns.</Message>
+    <Project>UnionDll</Project>
+    <ShortFile>Crypto.cs</ShortFile>
+    <Line>52</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\UnionDll\UnionDll\Transfer\Crypto.cs</File>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>3990445487</CodeCurrent>
+    <CodeNext>1978935836</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-404</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>23</DefaultOrder>
+    <ErrorCode>V3125</ErrorCode>
+    <Message>The 'stat' object was used after it was verified against null. Check lines: 399, 394.</Message>
+    <Project>UnionDll</Project>
+    <ShortFile>SessionClient.cs</ShortFile>
+    <Line>399</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\UnionDll\UnionDll\Transfer\SessionClient.cs</File>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>11276541</CodeCurrent>
+    <CodeNext>125</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension>399,394</LineExtension>
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-476</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>24</DefaultOrder>
+    <ErrorCode>V3090</ErrorCode>
+    <Message>Unsafe locking on 'this' instance in class 'SessionClient'.</Message>
+    <Project>UnionDll</Project>
+    <ShortFile>SessionClient.cs</ShortFile>
+    <Line>12</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\UnionDll\UnionDll\Transfer\SessionClient.cs</File>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>764107732</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension>12,80,105,131,154</LineExtension>
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-833</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>25</DefaultOrder>
+    <ErrorCode>V3083</ErrorCode>
+    <Message>Unsafe invocation of event 'LogMessage', NullReferenceException is possible. Consider assigning event to a local variable before invoking it.</Message>
+    <Project>ServerDll</Project>
+    <ShortFile>ServerManader.cs</ShortFile>
+    <Line>43</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\ServerDll\ServerManader.cs</File>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3014932645</CodeCurrent>
+    <CodeNext>0</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension>43,128,141</LineExtension>
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-367</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>1</Level>
+    <DefaultOrder>26</DefaultOrder>
+    <ErrorCode>V3095</ErrorCode>
+    <Message>The 'mail.From' object was used before it was verified against null. Check lines: 74, 92.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>UpdateWorldController.cs</ShortFile>
+    <Line>74</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\UpdateWorldController.cs</File>
+    <CodePrev>2762093467</CodePrev>
+    <CodeCurrent>3254704024</CodeCurrent>
+    <CodeNext>3628012968</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension>74,92</LineExtension>
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-476</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>27</DefaultOrder>
+    <ErrorCode>V3130</ErrorCode>
+    <Message>Priority of the '&amp;&amp;' operator is higher than that of the '||' operator. Possible missing parentheses.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>UpdateWorldController.cs</ShortFile>
+    <Line>164</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\UpdateWorldController.cs</File>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1401281605</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>1</Level>
+    <DefaultOrder>28</DefaultOrder>
+    <ErrorCode>V3022</ErrorCode>
+    <Message>Expression 'worldObject == null' is always false.</Message>
+    <Project>RimWorldOnlineCity</Project>
+    <ShortFile>UpdateWorldController.cs</ShortFile>
+    <Line>584</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\UpdateWorldController.cs</File>
+    <CodePrev>2148499694</CodePrev>
+    <CodeCurrent>1342124308</CodeCurrent>
+    <CodeNext>2727544361</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-570</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>29</DefaultOrder>
+    <ErrorCode>V3024</ErrorCode>
+    <Message>An odd precise comparison: WO.FreeWeight != pWOs[i].FreeWeight. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</Message>
+    <Project>ServerDll</Project>
+    <ShortFile>Service.cs</ShortFile>
+    <Line>243</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\ServerDll\Service.cs</File>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>1660842948</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-682</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>30</DefaultOrder>
+    <ErrorCode>V3024</ErrorCode>
+    <Message>An odd precise comparison: WO.MarketValue != pWOs[i].MarketValue. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</Message>
+    <Project>ServerDll</Project>
+    <ShortFile>Service.cs</ShortFile>
+    <Line>248</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\ServerDll\Service.cs</File>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>1077728695</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-682</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>31</DefaultOrder>
+    <ErrorCode>V3024</ErrorCode>
+    <Message>An odd precise comparison. Consider using a comparison with defined precision: Math.Abs(A - B) &gt; Epsilon.</Message>
+    <Project>ServerDll</Project>
+    <ShortFile>Service.cs</ShortFile>
+    <Line>253</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\ServerDll\Service.cs</File>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>2413532554</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-682</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>32</DefaultOrder>
+    <ErrorCode>V3125</ErrorCode>
+    <Message>The 'newPlayer' object was used after it was verified against null. Check lines: 651, 638.</Message>
+    <Project>ServerDll</Project>
+    <ShortFile>Service.cs</ShortFile>
+    <Line>651</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\ServerDll\Service.cs</File>
+    <CodePrev>125444862</CodePrev>
+    <CodeCurrent>1687640013</CodeCurrent>
+    <CodeNext>27200028</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension>651,638</LineExtension>
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-476</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>33</DefaultOrder>
+    <ErrorCode>V3009</ErrorCode>
+    <Message>It's odd that this method always returns one and the same value of 'null'.</Message>
+    <Project>ServerDll</Project>
+    <ShortFile>Service.cs</ShortFile>
+    <Line>817</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\ServerDll\Service.cs</File>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2906500021</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-393</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>1</Level>
+    <DefaultOrder>34</DefaultOrder>
+    <ErrorCode>V3022</ErrorCode>
+    <Message>Expression 'err != null' is always false.</Message>
+    <Project>ServerDll</Project>
+    <ShortFile>Service.cs</ShortFile>
+    <Line>906</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\ServerDll\Service.cs</File>
+    <CodePrev>279387847</CodePrev>
+    <CodeCurrent>363241</CodeCurrent>
+    <CodeNext>123</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-570</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>3</Level>
+    <DefaultOrder>35</DefaultOrder>
+    <ErrorCode>V3090</ErrorCode>
+    <Message>Unsafe locking on public member 'Player' in class 'Service'.</Message>
+    <Project>ServerDll</Project>
+    <ShortFile>Service.cs</ShortFile>
+    <Line>16</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\RimWorldOnlineCity\ServerDll\Service.cs</File>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1541274899</CodeCurrent>
+    <CodeNext>0</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension>16,91,131,171,315</LineExtension>
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-833</CWECode>
+  </PVS-Studio_Analysis_Log>
+  <PVS-Studio_Analysis_Log>
+    <FavIcon>false</FavIcon>
+    <Level>2</Level>
+    <DefaultOrder>36</DefaultOrder>
+    <ErrorCode>V3080</ErrorCode>
+    <Message>Possible null dereference. Consider inspecting 'serverInfo'.</Message>
+    <Project>Chat</Project>
+    <ShortFile>SCC.cs</ShortFile>
+    <Line>159</Line>
+    <FalseAlarm>false</FalseAlarm>
+    <File>E:\SteamLibrary\steamapps\common\RimWorld\Mods\OnlineCity\Source\Chat\SCC.cs</File>
+    <CodePrev>2920037106</CodePrev>
+    <CodeCurrent>7615933</CodeCurrent>
+    <CodeNext>2442313692</CodeNext>
+    <TrialMessage>false</TrialMessage>
+    <Analyzer>4</Analyzer>
+    <LineExtension />
+    <Retired>false</Retired>
+    <AnalyzedSourceFiles />
+    <CWECode>CWE-476</CWECode>
+  </PVS-Studio_Analysis_Log>
+</NewDataSet>

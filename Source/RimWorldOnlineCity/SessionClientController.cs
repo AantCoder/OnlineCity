@@ -69,7 +69,7 @@ namespace RimWorldOnlineCity
             }
             catch { }
 
-            Loger.Log("Client Init");
+            Loger.Log("Client Init " + MainHelper.VersionInfo);
             Loger.Log("Client Language: " + Prefs.LangFolderName);
         }
 
@@ -105,13 +105,14 @@ namespace RimWorldOnlineCity
                     //отправляем на сервер, получаем ответ
                     ModelPlayToClient fromServ = connect.PlayInfo(toServ);
                     Loger.Log("Client " + My.Login + " UpdateWorld "
-                        + string.Format("Отпр. свои {0}, своиDel {1}{5}. Пришло {2}, del {3}, посылок {4}"
+                        + string.Format("Отпр. свои {0}, своиDel {1}{5}. Пришло {2}, del {3}, посылок {4}{6}"
                             , toServ.WObjects == null ? 0 : toServ.WObjects.Count
                             , toServ.WObjectsToDelete == null ? 0 : toServ.WObjectsToDelete.Count
                             , fromServ.WObjects == null ? 0 : fromServ.WObjects.Count
                             , fromServ.WObjectsToDelete == null ? 0 : fromServ.WObjectsToDelete.Count
                             , fromServ.Mails == null ? 0 : fromServ.Mails.Count
                             , toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : ", сейв"
+                            , fromServ.AreAttacking ? " Атакуют!":""
                             ));
 
                     //сохраняем время актуальности данных
@@ -130,8 +131,8 @@ namespace RimWorldOnlineCity
                         }
                     }
                     var allWObjects = Find.WorldObjects.AllWorldObjects
-                        .Where(o => o is CaravanOnline)
                         .Select(o => o as CaravanOnline)
+                        .Where(o => o != null)
                         .ToList();
                     foreach (var pi in Data.Players)
                     {
@@ -139,8 +140,14 @@ namespace RimWorldOnlineCity
                     }
 
                     //обновляем планету
-                    UpdateWorldController.LoadFromServer(fromServ);
-                    
+                    UpdateWorldController.LoadFromServer(fromServ, firstRun);
+
+                    //если на нас напали запускаем процесс
+                    if (fromServ.AreAttacking && GameAttackHost.AttackMessage())
+                    {
+                        GameAttackHost.Get.Start(connect);
+                    }
+
                 });
             }
         }
@@ -364,7 +371,15 @@ namespace RimWorldOnlineCity
             My = serverInfo.My;
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
 
-            Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed /*+ " ExistMap=" + My.ExistMap*/);
+            Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
+            Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed + " NeedCreateWorld=" + serverInfo.NeedCreateWorld);
+
+            if (MainHelper.VersionNum < serverInfo.VersionNum)
+            {
+                Disconnected("Обновите клиент! Версия для данного сервера: ".NeedTranslate() + serverInfo.VersionInfo);
+                return;
+            }
+
             //создаем мир, если мы админ
             if (serverInfo.IsAdmin && serverInfo.Seed == "")
             {

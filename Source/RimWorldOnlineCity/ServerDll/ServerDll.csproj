@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\AttackServer.cs" />
     <Compile Include="Model\BaseContainer.cs" />
     <Compile Include="Model\PlayerServer.cs" />
     <Compile Include="Repository.cs" />
