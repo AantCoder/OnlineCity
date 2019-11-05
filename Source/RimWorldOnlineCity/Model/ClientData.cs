@@ -92,11 +92,16 @@ namespace RimWorldOnlineCity
             Chats = updateDate.Chats;
             if (UIInteraction && newPost > 0)
             {
-                if (newStr.Length > 50) newStr = newStr.Substring(0, 49) + "OCity_ClientData_ChatDot".Translate();
-                Messages.Message("OCity_ClientData_Chat".Translate() + newStr, MessageTypeDefOf.NeutralEvent);
+                GameMessage(newStr);
             }
             ChatNotReadPost += newPost;
             return newPost > 0;
+        }
+
+        private void GameMessage(string newStr)
+        { 
+            if (newStr.Length > 50) newStr = newStr.Substring(0, 49) + "OCity_ClientData_ChatDot".Translate();
+            Messages.Message("OCity_ClientData_Chat".Translate() + newStr, MessageTypeDefOf.NeutralEvent);
         }
     }
 }
