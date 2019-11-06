@@ -134,7 +134,7 @@ namespace RimWorldOnlineCity
                         return;
                     }
                     if (response.State >= 4) break;
-                    if ((DateTime.UtcNow - s1Time).Seconds > 60)
+                    if ((DateTime.UtcNow - s1Time).TotalSeconds > 60)
                     {
                         ErrorBreak("Timeout");
                         return;
@@ -267,33 +267,55 @@ namespace RimWorldOnlineCity
                         {
                             Loger.Log("Client AttackUpdate 4. UpdateState=" + toClient.UpdateState.Count);
 
-                            //Применение изменения местоположения и пр. по ID хоста 
-                            if (toClient.UpdateState.Count > 0)
+                            //Применение изменения местоположения и пр. по ID хоста
+                            for (int i = 0; i < toClient.UpdateState.Count; i++)
                             {
-                                for (int i = 0; i < toClient.UpdateState.Count; i++)
+                                int id;
+                                if (!ThingsIDDicRev.TryGetValue(toClient.UpdateState[i].HostThingID, out id))
                                 {
-                                    int id;
-                                    if (!ThingsIDDicRev.TryGetValue(toClient.UpdateState[i].HostThingID, out id))
-                                    {
-                                        Loger.Log("Client AttackUpdate 4 Err1 " + toClient.UpdateState[i].ToString());
-                                        continue;
-                                    }
-
-                                    Thing thing;
-                                    if (!ThingsObjDic.TryGetValue(id, out thing))
-                                    {
-                                        Loger.Log("Client AttackUpdate 4 Err2 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
-                                        continue;
-                                    }
-                                    if (thing == null)
-                                    {
-                                        Loger.Log("Client AttackUpdate 4 Err3 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
-                                        continue;
-                                    }
-                                    if (!(thing is Pawn)) Loger.Log("Client AttackUpdate 4 Apply " + toClient.UpdateState[i].ToString() + " thing=" + thing.Label);
-                                    GameUtils.ApplyState(thing, toClient.UpdateState[i]);
+                                    Loger.Log("Client AttackUpdate 4 Err1 " + toClient.UpdateState[i].ToString());
+                                    continue;
                                 }
+
+                                Thing thing;
+                                if (!ThingsObjDic.TryGetValue(id, out thing))
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err2 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
+                                    continue;
+                                }
+                                if (thing == null)
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err3 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
+                                    continue;
+                                }
+                                if (!(thing is Pawn)) Loger.Log("Client AttackUpdate 4 Apply " + toClient.UpdateState[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                GameUtils.ApplyState(thing, toClient.UpdateState[i]);
                             }
+
+                            for (int i = 0; i < toClient.Delete.Count; i++)
+                            {
+                                int id;
+                                if (!ThingsIDDicRev.TryGetValue(toClient.Delete[i], out id))
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err4 " + toClient.Delete[i].ToString());
+                                    continue;
+                                }
+
+                                Thing thing;
+                                if (!ThingsObjDic.TryGetValue(id, out thing))
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err5 " + toClient.Delete[i].ToString() + " id=" + id.ToString());
+                                    continue;
+                                }
+                                if (thing == null)
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err6 " + toClient.Delete[i].ToString() + " id=" + id.ToString());
+                                    continue;
+                                }
+                                Loger.Log("Client AttackUpdate 4 Destroy " + toClient.Delete[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                thing.Destroy();
+                            }
+                            
                         };
 
                         if (toClient.NewPawns.Count > 0 || toClient.NewThings.Count > 0)
