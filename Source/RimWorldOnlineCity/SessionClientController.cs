@@ -27,37 +27,18 @@ namespace RimWorldOnlineCity
         public static Player My { get; set; }
         public static TimeSpan ServerTimeDelta { get; set; }
 
-        private static Scenario ScenarioDefaultMem = null;
-        public static Scenario ScenarioDefault
-        {
-            get
-            {
-                if (ScenarioDefaultMem != null) return ScenarioDefaultMem;
-
-                var listS = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef);
-
-                ScenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
-                if (ScenarioDefaultMem == null)
-                    ScenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Классика");
-                if (ScenarioDefaultMem == null)
-                    ScenarioDefaultMem = listS.FirstOrDefault();
-
-                return ScenarioDefaultMem;
-            }
-        }
 
         private const string SaveName = "onlineCityTempLoad";
 
-        private static string SaveFullName
-        {
-            get { return GenFilePaths.FilePathForSavedGame(SaveName); }
-        }
+        private static string SaveFullName { get; set; }
         
         /// <summary>
         /// Инициализация при старте игры. Как можно раньше
         /// </summary>
         public static void Init()
         {
+            SaveFullName = GenFilePaths.FilePathForSavedGame(SaveName);
+            MainHelper.CultureFromGame = Prefs.LangFolderName ?? "";
             //if (MainHelper.DebugMode) 
             try
             {
@@ -83,7 +64,7 @@ namespace RimWorldOnlineCity
                 //Loger.Log("Client UpdateWorld 2 ");
                 Command((connect) =>
                 {
-                    Loger.Log("Client Init " + MainHelper.VersionInfo);
+                    //Loger.Log("Client Init " + MainHelper.VersionInfo);
                     //собираем пакет на сервер
                     var toServ = new ModelPlayToServer()
                     {
@@ -363,6 +344,19 @@ namespace RimWorldOnlineCity
             Timers = null;
         }
 
+        public static Scenario GetScenarioDefault()
+        {
+            var listS = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef);
+
+            var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
+            if (scenarioDefaultMem == null)
+                scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Классика");
+            if (scenarioDefaultMem == null)
+                scenarioDefaultMem = listS.FirstOrDefault();
+
+            return scenarioDefaultMem;
+        }
+
         /// <summary>
         /// После успешной регистрации или входа
         /// </summary>
@@ -404,7 +398,7 @@ namespace RimWorldOnlineCity
                     GameStarter.SetPlanetCoverage = float.Parse(form.InputPlanetCoverage) / 100f;
                     GameStarter.SetSeed = form.InputSeed;
                     GameStarter.SetDifficulty = int.Parse(form.InputDifficulty);
-                    GameStarter.SetScenario = ScenarioDefault;
+                    GameStarter.SetScenario = GetScenarioDefault();
 
                     GameStarter.AfterStart = CreatingWorld;
                     GameStarter.GameGeneration();
@@ -422,7 +416,7 @@ namespace RimWorldOnlineCity
                 GameStarter.SetPlanetCoverage = serverInfo.PlanetCoverage;
                 GameStarter.SetSeed = serverInfo.Seed;
                 GameStarter.SetDifficulty = serverInfo.Difficulty;
-                GameStarter.SetScenario = ScenarioDefault;
+                GameStarter.SetScenario = GetScenarioDefault();
 
                 GameStarter.AfterStart = CreatePlayerMap;
 

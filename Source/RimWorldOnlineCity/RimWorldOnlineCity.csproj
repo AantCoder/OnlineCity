@@ -36,8 +36,8 @@
       <HintPath>Lib\$HugsLibChecker.dll</HintPath>
     </Reference>
     <Reference Include="0Harmony">
-      <HintPath>$(RimWorldFolder)Mods\HugsLib\Assemblies\HugsLib\Assemblies\0Harmony.dll</HintPath>
-      <HintPath>$(SteamWorkShopFolder)818773962\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>$(RimWorldFolder)Mods\HugsLib\Assemblies\0Harmony.dll</HintPath>
+      <!--HintPath>$(SteamWorkShopFolder)818773962\Assemblies\0Harmony.dll</HintPath-->
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -45,8 +45,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="HugsLib">
-      <HintPath>$(RimWorldFolder)Mods\HugsLib\Assemblies\HugsLib\Assemblies\HugsLib.dll</HintPath>
-      <HintPath>$(SteamWorkShopFolder)818773962\Assemblies\HugsLib.dll</HintPath>
+      <HintPath>$(RimWorldFolder)Mods\HugsLib\Assemblies\HugsLib.dll</HintPath>
+      <!--HintPath>$(SteamWorkShopFolder)818773962\Assemblies\HugsLib.dll</HintPath-->
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />

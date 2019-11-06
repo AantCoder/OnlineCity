@@ -85,6 +85,21 @@ namespace RimWorldOnlineCity
 
         private Map GameMap { get; set; }
 
+        /// <summary>
+        /// Пешка, которая начала Job связанный с вещью. Пешка - Вещь
+        /// </summary>
+        private Dictionary<int, Thing> ThingPrepareChange2 = new Dictionary<int, Thing>();
+
+        /// <summary>
+        /// Job связанный с вещью был завершен, она готова к следующей отправке
+        /// </summary>
+        private HashSet<Thing> ThingPrepareChange1 = new HashSet<Thing>();
+
+        /// <summary>
+        /// Job связанный с вещью был завершен, она готова к отправке
+        /// </summary>
+        private HashSet<Thing> ThingPrepareChange0 = new HashSet<Thing>();
+
         public static GameAttackHost Get
         {
             get { return SessionClientController.Data.AttackUsModule; }
@@ -419,6 +434,18 @@ namespace RimWorldOnlineCity
                                 toSendState.Add(new AttackThingState(mp));
                             }
 
+                            //обновляем поколения вещей учавствующих в Job и отправляем нужные
+                            foreach(var mp in ThingPrepareChange0)
+                            {
+                                var mpID = mp.thingIDNumber;
+                                if (ToSendDeleteId.Contains(mpID)) continue;
+
+                                toSendState.Add(new AttackThingState(mp));
+                            }
+                            Loger.Log("HostAttackUpdate UpdateCommand FromJob Count=" + ThingPrepareChange0.Count.ToString());
+                            ThingPrepareChange0 = ThingPrepareChange1;
+                            ThingPrepareChange1 = new HashSet<Thing>();
+
                             //Loger.Log("Client HostAttackUpdate 3");
                             toClient = connect.AttackOnlineHost(new AttackHostToSrv()
                             {
@@ -598,9 +625,27 @@ namespace RimWorldOnlineCity
             try
             {
                 if (UIEventNewJobDisable) return;
+                var pawnId = pawn.thingIDNumber;
+
+                //помимо главной обработки события изменения задания помечаем цель задачи для обновления её состояния позже, когда задача пешки завершиться
+                //это всё для того, чтобы поймать, что кол-во какой-то вещи изменилось
+                //добавляем тут намерение пешки взять вещь в новый словарь если Job не null, 
+                //а если null (когда джоб завершился) помещаем в предварительный массив к отправке
+                //в момент отправки из предварительного массива данные переносятся в массив к отправке, а те что там были отправляются атакующиму с их текущим количеством стака
+                Thing jobThing;
+                if (ThingPrepareChange2.TryGetValue(pawnId, out jobThing) && !ThingPrepareChange1.Contains(jobThing))
+                {
+                    Loger.Log("HostAttackUpdate UIEventNewJob AddFromJob " + jobThing.Label);
+                    ThingPrepareChange1.Add(jobThing);
+                    ThingPrepareChange2.Remove(pawnId);
+                }
+                if (job != null && job.targetA.HasThing && !(job.targetA.Thing is Pawn))
+                {
+                    ThingPrepareChange2[pawnId] = job.targetA.Thing;
+                }
 
                 //у атакующих отменяем все команды и повторяем те, которые были переданы нам последний раз
-                if (!AttackingPawnDic.ContainsKey(pawn.thingIDNumber))
+                if (!AttackingPawnDic.ContainsKey(pawnId))
                 {
                     if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("HostAttackUpdate UIEventNewJob StartJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore");
                     return;
