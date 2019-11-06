@@ -1,11 +1,7 @@
 ﻿using Model;
 using OCUnion;
-using RimWorldOnlineCity;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Transfer;
 using Util;
@@ -34,7 +30,6 @@ namespace Chat
             catch { }
 
             Loger.Log("Chat Init");
-            ClientData.UIInteraction = false;
         }
 
         public static string Login(string addr, string login, string password)
@@ -103,7 +98,7 @@ namespace Chat
         public static void Disconnected(string msg = "Ошибка соединения.")
         {
             Loger.Log("Chat Disconected :( ");
-            GameExit.BeforeExit = null;
+            //GameExit.BeforeExit = null;
             //TimersStop();
             SessionClient.Get.Disconnect();
             MessageBox.Show(msg, "Соединение прервано");
@@ -130,7 +125,8 @@ namespace Chat
                         + (dc.Time.Ticks / 1000000000m).ToString() //dc.Time.ToString(Loger.Culture)
                         + "   " + (dc.Chats.Count == 0 ? "" : dc.Chats[0].Posts.Count.ToString()));
                     */
-                    Data.ApplyChats(dc);
+                    var lastMessage = string.Empty;
+                    Data.ApplyChats(dc, ref lastMessage);
                 }
                 else
                 {
@@ -149,19 +145,20 @@ namespace Chat
         public static void InitConnected()
         {
             Loger.Log("Chat InitConnected()");
-            Data = new ClientData();
-            //TimersStop();
-            //Timers = new WorkTimer();
-            
             var connect = SessionClient.Get;
             var serverInfo = connect.GetInfo(true);
             My = serverInfo.My;
+            Data = new ClientData(My.Login);
+            //TimersStop();
+            //Timers = new WorkTimer();            
+           
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
 
             Loger.Log("Chat IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed /*+ " ExistMap=" + My.ExistMap*/);
 
-            SessionClientController.My = My;
-            SessionClientController.Data = Data;
+            // Убрать этот код, если будет работать без него
+            // SessionClientController.My = My;
+            // SessionClientController.Data = Data;
         }
     }
 }

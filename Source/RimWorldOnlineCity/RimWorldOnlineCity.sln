@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\Directory.Build.props = ..\Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordChatBotServer", "..\DiscordChatBotServer\DiscordChatBotServer.csproj", "{07F790B0-CD03-468F-A8EB-A6E469FEEBF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{FF65F157-9528-4680-ADB3-4770A8738370}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF65F157-9528-4680-ADB3-4770A8738370}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF65F157-9528-4680-ADB3-4770A8738370}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07F790B0-CD03-468F-A8EB-A6E469FEEBF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07F790B0-CD03-468F-A8EB-A6E469FEEBF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07F790B0-CD03-468F-A8EB-A6E469FEEBF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07F790B0-CD03-468F-A8EB-A6E469FEEBF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

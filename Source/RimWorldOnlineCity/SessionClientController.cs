@@ -362,7 +362,7 @@ namespace RimWorldOnlineCity
         public static void InitConnected()
         {
             Loger.Log("Client InitConnected()");
-            Data = new ClientData();
+            Data = new ClientData(SessionClientController.My.Login);
             TimersStop();
             Timers = new WorkTimer();
             

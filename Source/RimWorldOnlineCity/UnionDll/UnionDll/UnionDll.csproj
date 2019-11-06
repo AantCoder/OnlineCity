@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientData.cs" />
     <Compile Include="ExceptionUtil.cs" />
     <Compile Include="GameXMLUtils.cs" />
     <Compile Include="Loger.cs" />
