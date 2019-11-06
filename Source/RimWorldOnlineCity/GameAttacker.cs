@@ -296,7 +296,7 @@ namespace RimWorldOnlineCity
                             }
                         };
 
-                        if (toClient.NewPawns.Count > 0)
+                        if (toClient.NewPawns.Count > 0 || toClient.NewThings.Count > 0)
                         {
                             LongEventHandler.QueueLongEvent(delegate
                             {
@@ -310,7 +310,8 @@ namespace RimWorldOnlineCity
                                             , (p) => p.TransportID == 0 //если без нашего ID, то у нас как пират
                                             , (th, te) =>
                                             {
-                                                //Loger.Log("Client AttackUpdate 3. NewPawn " + (th.IsColonist ? "IsColonist" : "NotColonist"));
+                                                var p = th as Pawn;
+                                                //Loger.Log("Client AttackUpdate 3. NewPawn " + (p.IsColonist ? "IsColonist" : "NotColonist"));
                                                 //Дополнить словарь сопоставления ID (их из OriginalID, наш ID, а TransportID уже никому не нужен, т.к. пешки дропнуты и переозданы)
                                                 if (te.OriginalID != 0 && th.thingIDNumber != 0)
                                                 {
@@ -320,10 +321,10 @@ namespace RimWorldOnlineCity
                                                     //Наши пешки сохраняем отдельно
                                                     if (te.TransportID != 0)
                                                     {
-                                                        AttackerPawns[th] = te.OriginalID;
+                                                        AttackerPawns[p] = te.OriginalID;
                                                         
-                                                        th.playerSettings.hostilityResponse = HostilityResponseMode.Ignore;
-                                                        th.jobs.StartJob(new Job(JobDefOf.Wait_Combat)
+                                                        p.playerSettings.hostilityResponse = HostilityResponseMode.Ignore;
+                                                        p.jobs.StartJob(new Job(JobDefOf.Wait_Combat)
                                                         {
                                                             playerForced = true,
                                                             expiryInterval = int.MaxValue,
@@ -335,15 +336,34 @@ namespace RimWorldOnlineCity
                                             });
                                     }
 
+                                    Loger.Log("Client AttackUpdate 3. NewThings=" + toClient.NewThings.Count);
+
+                                    if (toClient.NewThings.Count > 0)
+                                    {
+                                        GameUtils.SpawnList(GameMap, toClient.NewThings, false, (p) => false
+                                            , (th, te) =>
+                                            {
+                                                var p = th as Pawn;
+                                                //Loger.Log("Client AttackUpdate 3. NewPawn " + (p.IsColonist ? "IsColonist" : "NotColonist"));
+                                                //Дополнить словарь сопоставления ID (их из OriginalID, наш ID, а TransportID уже никому не нужен, т.к. пешки дропнуты и переозданы)
+                                                if (te.OriginalID != 0 && th.thingIDNumber != 0)
+                                                {
+                                                    ThingsIDDicRev[te.OriginalID] = th.thingIDNumber;
+                                                    ThingsIDDic[th.thingIDNumber] = te.OriginalID;
+                                                    ThingsObjDic[th.thingIDNumber] = th;
+                                                }
+                                            });
+                                    }
+
                                     actUpdateState();
 
                                     Loger.Log("Client AttackUpdate 5");
 
-                                    //проверка обзора
+                                    //после первого массового спавна всех пешек
                                     if (AttackUpdateTick == 1)
                                     {
+                                        //проверка обзора и переключение на карту
                                         FloodFillerFog.DebugRefogMap(GameMap);
-                                        //CameraJumper.TryJump(cellRect.CenterCell, map);
                                         CameraJumper.TryJump(GameMap.Center, GameMap);
                                         GameAttackTrigger_Patch.ActiveAttacker.Add(GameMap, this);
                                     }
@@ -460,6 +480,7 @@ namespace RimWorldOnlineCity
                     mapParent.Tile = tile;
                     Loger.Log("Client CreateClearMap 3");
                     Find.WorldObjects.Add(mapParent);
+                    mapParent.SetFaction(Find.FactionManager.OfPlayer);
                     Loger.Log("Client CreateClearMap 4");
                     var map = MapGenerator.GenerateMap(mapSize, mapParent, mapParent.MapGeneratorDef, null, null);
                     Loger.Log("Client CreateClearMap 5");

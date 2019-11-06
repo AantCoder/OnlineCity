@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Model;
-using Verse;
 using OCUnion.Transfer.Model;
 
 namespace OCServer.Model
@@ -40,6 +39,8 @@ namespace OCServer.Model
 
         public List<ThingEntry> NewPawns { get; set; }
         public List<int> NewPawnsId { get; set; }
+        public List<ThingEntry> NewThings { get; set; }
+        public List<int> NewThingsId { get; set; }
         public List<int> Delete { get; set; }
         public Dictionary<int, AttackThingState> UpdateState { get; set; }
         public Dictionary<int, AttackPawnCommand> UpdateCommand { get; set; }
@@ -57,6 +58,8 @@ namespace OCServer.Model
 
             NewPawns = new List<ThingEntry>();
             NewPawnsId = new List<int>();
+            NewThings = new List<ThingEntry>();
+            NewThingsId = new List<int>();
             Delete = new List<int>();
             UpdateState = new Dictionary<int, AttackThingState>();
             UpdateCommand = new Dictionary<int, AttackPawnCommand>();
@@ -114,12 +117,18 @@ namespace OCServer.Model
                 if (fromClient.State == 10)
                 {
                     State = 10;
-                    //todo
 
-                    if (fromClient.NewPawnsId.Count > 0 || fromClient.Delete.Count > 0)
+                    if (fromClient.NewPawnsId.Count > 0
+                        || fromClient.NewThingsId.Count > 0
+                        || fromClient.Delete.Count > 0)
                     {
                         //удаляем из Delete если сейчас команда добавитьс таким id
                         foreach (var n in fromClient.NewPawnsId)
+                        {
+                            var index = Delete.IndexOf(n);
+                            if (index >= 0) Delete.RemoveAt(index);
+                        }
+                        foreach (var n in fromClient.NewThingsId)
                         {
                             var index = Delete.IndexOf(n);
                             if (index >= 0) Delete.RemoveAt(index);
@@ -131,6 +140,12 @@ namespace OCServer.Model
                             if (NewPawnsId.Contains(fromClient.NewPawnsId[i])) continue;
                             NewPawnsId.Add(fromClient.NewPawnsId[i]);
                             NewPawns.Add(fromClient.NewPawns[i]);
+                        }
+                        for (int i = 0; i < fromClient.NewThingsId.Count; i++)
+                        {
+                            if (NewThingsId.Contains(fromClient.NewThingsId[i])) continue;
+                            NewThingsId.Add(fromClient.NewThingsId[i]);
+                            NewThings.Add(fromClient.NewThings[i]);
                         }
                         for (int i = 0; i < fromClient.Delete.Count; i++)
                         {
@@ -146,6 +161,12 @@ namespace OCServer.Model
                             {
                                 NewPawnsId.RemoveAt(index);
                                 NewPawns.RemoveAt(index);
+                            }
+                            index = NewThingsId.IndexOf(n);
+                            if (index >= 0)
+                            {
+                                NewThingsId.RemoveAt(index);
+                                NewThings.RemoveAt(index);
                             }
                         }
                     }
@@ -243,11 +264,15 @@ namespace OCServer.Model
                         State = State,
                         NewPawns = NewPawns,
                         NewPawnsId = NewPawnsId,
+                        NewThings = NewThings,
+                        NewThingsId = NewThingsId,
                         Delete = Delete,
                         UpdateState = UpdateState.Values.ToList()
                     };
                     NewPawns = new List<ThingEntry>();
                     NewPawnsId = new List<int>();
+                    NewThings = new List<ThingEntry>();
+                    NewThingsId = new List<int>();
                     Delete = new List<int>();
                     UpdateState = new Dictionary<int, AttackThingState>();
                     return res;

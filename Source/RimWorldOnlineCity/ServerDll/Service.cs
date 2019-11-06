@@ -285,7 +285,7 @@ namespace OCServer
                             if (data.WorldObjectsDeleted[i].UpdateTime < packet.UpdateTime)
                             {
                                 //Удаляем все записи сроком старше 2х минут (их нужно хранить время между тем как игрок у которого удалился караван зальёт это на сервер, и все другие онлайн игроки получат эту инфу, а обновление идет раз в 5 сек)
-                                if ((timeNow - data.WorldObjectsDeleted[i].UpdateTime).TotalSeconds > 60000)
+                                if ((timeNow - data.WorldObjectsDeleted[i].UpdateTime).TotalSeconds > 120000)
                                 {
                                     data.WorldObjectsDeleted.RemoveAt(i--);
                                 }
