@@ -32,7 +32,7 @@ namespace Transfer
 
         private static void WorkerDo()
         {
-            while(Clients.Count > 0)
+            while (Clients.Count > 0)
             {
                 Thread.Sleep(60000);
                 var now = DateTime.UtcNow.AddMinutes(5);
@@ -49,8 +49,8 @@ namespace Transfer
                         Clients[client](client);
                     }
                 }
-
             }
+
             Worker = null;
         }
     }

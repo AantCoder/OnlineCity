@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Verse;
 
@@ -10,13 +11,13 @@ namespace OCUnion
     public static class MainHelper
     {
         public static bool DebugMode = false;
-
-        public static string VersionInfo = "Версия 0.02.32a от 2019.11.05";
+        
+        public static string VersionInfo = $"Version {Assembly.GetExecutingAssembly().FullName} from 2019.11.05";
 
         /// <summary>
         /// Для автоматической проверки: версия клиента должна быть больше или равна версии сервера
         /// </summary>
-        public static long VersionNum = 20032;
+        public static readonly long  VersionNum = Assembly.GetExecutingAssembly().GetName().Version.Revision;
 
         public static string DefaultIP = DebugMode ? "localhost" : "194.87.95.90"; // rimworld.online
         
@@ -48,6 +49,7 @@ namespace OCUnion
         {
             return text;
         }
+
         public static string NeedTranslate(this string text, params object[] args)
         {
             return string.Format(text, args);
@@ -57,11 +59,13 @@ namespace OCUnion
         {
             return that.ToString(Culture);
         }
+
         public static string ToGoodUtcString(this DateTime that)
         {
             var nowUtc = DateTime.Now - DateTime.UtcNow;
             return (that + nowUtc).ToString(Culture);
         }
+
         public static string ToGoodUtcString(this DateTime that, string format)
         {
             var nowUtc = DateTime.Now - DateTime.UtcNow;

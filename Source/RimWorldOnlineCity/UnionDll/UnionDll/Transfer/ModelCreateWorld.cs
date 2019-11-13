@@ -13,7 +13,6 @@ namespace Transfer
         public int Difficulty { get; set; }
         public int MapSize { get; set; }
         public float PlanetCoverage { get; set; }
-
         public List<WorldObjectEntry> WObjects { get; set; }
     }
 }

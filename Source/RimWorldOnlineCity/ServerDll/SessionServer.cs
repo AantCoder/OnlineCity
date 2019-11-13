@@ -53,7 +53,10 @@ namespace OCServer
             //Строго первый пакет: Передаем серверу КОткр
             var rc = Client.ReceiveBytes();
             var crypto = new CryptoProvider();
-            if (SessionClient.UseCryptoKeys) crypto.OpenKey = Encoding.UTF8.GetString(rc);
+            if (SessionClient.UseCryptoKeys)
+            {
+                crypto.OpenKey = Encoding.UTF8.GetString(rc);
+            }
 
             //Строго первый ответ: Передаем клиенту КОткр(Сессия)
             SetKey();
@@ -110,7 +113,7 @@ namespace OCServer
         }
 
         /// <summary>
-        /// Есть ли изменеия. Сейчас используется только для чата
+        /// Есть ли изменения. Сейчас используется только для чата
         /// </summary>
         /// <returns></returns>
         private bool ServiceCheck()

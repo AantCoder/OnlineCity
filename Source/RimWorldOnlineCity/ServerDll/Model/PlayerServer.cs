@@ -55,6 +55,7 @@ namespace OCServer.Model
             {
                 Login = login
             };
+
             var publicChat = new Chat()
             {
                 Id = 1,
@@ -64,8 +65,8 @@ namespace OCServer.Model
                 PartyLogin = new List<string>() { login, "system" },
                 Posts = PublicPosts
             };
+
             Chats = new List<Chat>() { publicChat };
         }
-        
     }
 }

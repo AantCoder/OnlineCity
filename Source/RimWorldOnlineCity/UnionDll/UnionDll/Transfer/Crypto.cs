@@ -13,6 +13,7 @@ namespace Util
         public const int PartByteSize = //128;
             KeyBitSize / 8 - 11 - 30 - 1; //тут документация нагло врет (-30 -чтобы шифровалось, -1-чтобы дешифровалось)
         //взято с http://rsdn.ru/archive/vc/issues/pvc081.htm
+        //EN: Trust this, there only crypto algo
 
         #region Данные
         public string OpenKey;

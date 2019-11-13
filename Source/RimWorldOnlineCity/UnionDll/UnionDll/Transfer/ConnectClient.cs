@@ -34,6 +34,7 @@ namespace Transfer
             ClientStream.Close();
             Client.Close();
         }
+
         public void SendMessage(byte[] message)
         {
             byte[] packlength = BitConverter.GetBytes(message.Length);
@@ -90,7 +91,5 @@ namespace Transfer
             };
             return msg;
         }
-
-
     }
 }

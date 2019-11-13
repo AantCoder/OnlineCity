@@ -22,13 +22,15 @@ namespace OCServer
 
             if (packet.Login == "system") return null;
             //Loger.Log("1111 " + Repository.GetData.PlayersAll.Count);
-            var player = Repository.GetData.PlayersAll
+            var player = Repository.GetData
+                .PlayersAll
                 .FirstOrDefault(p => p.Public.Login == packet.Login);
             if (player != null)
             {
                 if (player.Pass != packet.Pass) //todo
                     player = null;
             }
+
             if (player == null)
             {
                 return new ModelStatus()
@@ -37,6 +39,7 @@ namespace OCServer
                     Message = "User or password incorrect"
                 };
             }
+
             Player = player;
             return new ModelStatus()
             {
@@ -61,6 +64,7 @@ namespace OCServer
             packet.Login = packet.Login.Trim();
             var player = Repository.GetData.PlayersAll
                 .FirstOrDefault(p => Repository.NormalizeLogin(p.Public.Login) == Repository.NormalizeLogin(packet.Login));
+
             if (player != null)
             {
                 return new ModelStatus()
@@ -72,8 +76,9 @@ namespace OCServer
             player = new PlayerServer(packet.Login)
             {
                 Pass = packet.Pass,
-                IsAdmin = Repository.GetData.PlayersAll.Count == 1
+                IsAdmin = new List<PlayerServer>(Repository.GetData.PlayersAll.Where(p => Repository.DISCORD != p.Public.Login)).Count == 1
             };
+
             Repository.GetData.PlayersAll.Add(player);
             Repository.Get.ChangeData = true;
             Player = player;
@@ -108,6 +113,7 @@ namespace OCServer
                         NeedCreateWorld = saveData == null,
                         ServerTime = DateTime.UtcNow,
                     };
+
                     return result;
                 }
                 else if (packet.Value == 3)
@@ -148,6 +154,7 @@ namespace OCServer
                         Message = "The world is already created"
                     };
                 }
+
                 var data = Repository.GetData;
                 data.WorldSeed = packet.Seed;
                 data.WorldDifficulty = packet.Difficulty;
@@ -636,8 +643,10 @@ namespace OCServer
 
         private void PostCommandAddPlayer(Chat chat, string who)
         {
-            if (chat.PartyLogin.Any(p => p == who))
+            if (chat.PartyLogin.Any(p => p == who)) 
+            {
                 PostCommandPrivatPostActivChat(chat, "The player is already here");
+            }
             else
             {
                 var newPlayer = Repository.GetData.PlayersAll
@@ -712,7 +721,6 @@ namespace OCServer
 
             return argsM;
         }
-
 
         public ModelStatus ExchengeEdit(OrderTrade order)
         {
@@ -868,8 +876,6 @@ namespace OCServer
                         || ps.Any(p => p == o.Owner.Login)
                             && (o.PrivatPlayers.Count == 0 || o.PrivatPlayers.Any(p => p.Login == Player.Public.Login)))
                     .ToList();
-
-                            
 
                 return res;
             }

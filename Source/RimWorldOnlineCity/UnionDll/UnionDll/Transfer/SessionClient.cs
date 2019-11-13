@@ -83,6 +83,7 @@ namespace Transfer
                         cl.ReceiveBytes();
                     }
                 });
+
                 return true;
             }
             catch (Exception e)
@@ -357,6 +358,7 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return false;
             }
+
             return stat != null;
         }
 
@@ -370,6 +372,7 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return false;
             }
+
             return stat != null;
         }
 
@@ -383,6 +386,7 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return false;
             }
+
             return stat != null;
         }
 
@@ -396,6 +400,7 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return null;
             }
+
             return stat.Orders;
         }
         

@@ -19,5 +19,10 @@ namespace Model
         /// Например ответ на /help напишет здесь имя игрока, а в OwnerLogin слово system
         /// </summary>
         public string OnlyForPlayerLogin { get; set; }
+
+        /// <summary>
+        /// Служебное поле. Если оно !=0 значит сообщение пришло из Discord и его не надо отправлять туда обратно :-)
+        /// </summary>
+        public int DiscordUniqIdMessage { get; set; }
     }
 }

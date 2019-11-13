@@ -43,8 +43,25 @@ namespace OCServer
             if (LogMessage != null) LogMessage("Start server in port " + port.ToString());
 
             Connect = new ConnectServer();
+            CheckDiscrordUser();
             Connect.ConnectionAccepted = ConnectionAccepted;
             Connect.Start(null, port);
+        }
+
+        /// <summary>
+        /// check and create if it is necessary DiscrordUser
+        /// </summary>
+        private void CheckDiscrordUser()
+        {
+            var isDiscordBotUser = Repository.GetData.PlayersAll.Any(p => Repository.DISCORD == p.Public.Login);
+            if (!isDiscordBotUser) 
+            {
+                var player = new PlayerServer(Repository.DISCORD)
+                {
+                    Pass = Guid.NewGuid().ToString(),
+                    IsAdmin = true // возможно по умолчанию запретить ?
+                };
+            }
         }
 
         /// <summary>
@@ -75,7 +92,7 @@ namespace OCServer
                 }
                 else
                 {
-                    ///оперделяем кого видят остальные 
+                    ///определяем кого видят остальные 
                     //админов
                     var plNeed = Repository.GetData.PlayersAll
                         .Where(p => p.IsAdmin)
@@ -111,9 +128,11 @@ namespace OCServer
         {
             if (ActiveClientCount > MaxActiveClientCount)
             {
+                // To do Здесь надо сообщить причину дисконнекта, а то получается сбрасываем коннект и всё
                 client.Dispose();
                 return;
             }
+
             Interlocked.Increment(ref _ActiveClientCount);
             ActiveClientCount++;
             var thread = new Thread(() => DoClient(client));

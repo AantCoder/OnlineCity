@@ -17,6 +17,8 @@ namespace OCServer
         private static Repository Current = new Repository();
         public static Repository Get { get { return Current; } }
 
+        public const string DISCORD = "Discord";
+
         public static BaseContainer GetData {  get { return Get.Data; } }
 
         public BaseContainer Data;
@@ -27,7 +29,7 @@ namespace OCServer
         public string SaveFileName;
         public string SaveFolderDataPlayers => Path.Combine(Path.GetDirectoryName(SaveFileName), "DataPlayers");
 
-        public Repository()
+        private Repository()
         {
             Timer = new WorkTimer();
         }
@@ -36,7 +38,10 @@ namespace OCServer
         {
             bool needResave = false;
             if (!Directory.Exists(SaveFolderDataPlayers))
+            {
                 Directory.CreateDirectory(SaveFolderDataPlayers);
+            }
+
             if (!File.Exists(SaveFileName))
             {
                 Data = new BaseContainer();
@@ -127,6 +132,7 @@ namespace OCServer
                     if (File.Exists(SaveFileName + ".bak")) File.Delete(SaveFileName + ".bak");
                     File.Move(SaveFileName, SaveFileName + ".bak");
                 }
+
                 using (var fs = File.OpenWrite(SaveFileName))
                 {
                     var bf = new BinaryFormatter();
@@ -166,6 +172,5 @@ namespace OCServer
             foreach (var c in invalidFileChars) if (login.Contains(c)) login = login.Replace(c, '_');
             return login.ToLowerInvariant();
         }
-        
     }
 }

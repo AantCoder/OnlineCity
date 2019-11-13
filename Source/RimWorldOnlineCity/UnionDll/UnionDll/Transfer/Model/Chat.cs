@@ -27,6 +27,5 @@ namespace Model
         public Chat()
         {
         }
-        
     }
 }
