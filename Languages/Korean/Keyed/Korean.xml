@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<!-- MainMenu.cs -->
+	<OCity_LAN_btn>멀티플레이어</OCity_LAN_btn>
+	
+	<!-- CaravanArrivalAction_VisitOnline.cs -->
+	<OCity_Caravan_GoTrade>우리는 {0}와 거래를 할것입니다.</OCity_Caravan_GoTrade>
+	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
+	<OCity_Caravan_LOGNoData>거래 내용에 대한 서버 데이터가 없습니다.</OCity_Caravan_LOGNoData>
+	<OCity_Caravan_LOGSwap>Caravan exchange: 모든 카라반 선택</OCity_Caravan_LOGSwap>
+	
+	<!-- OnlineCity_CaravanOnline.cs -->
+	<OCity_Caravan_Player>{0} 플레이어: {1}</OCity_Caravan_Player>
+	<OCity_Caravan_PriceThing>물건들의 가치: {2}</OCity_Caravan_PriceThing>
+	<OCity_Caravan_PriceAnimalsPeople>사람과 동물의 가치: {3}</OCity_Caravan_PriceAnimalsPeople>
+	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
+	<OCity_Caravan_FreeWeight>남은 용량: </OCity_Caravan_FreeWeight>
+	<OCity_Caravan_Trade>{0}이랑 거래하기.</OCity_Caravan_Trade>
+	
+	<!-- DevelopTest.cs -->
+	<OCity_DevTest_Test>테스트</OCity_DevTest_Test>
+	<OCity_DevTest_NameTestPlayer>NameTestPlayer</OCity_DevTest_NameTestPlayer>
+	
+	<!-- GameStarter.cs -->
+	<OCity_Starter_CityNotBuild>이곳은 다른 플레이어에게 점령됬습니다.</OCity_Starter_CityNotBuild>
+	
+	<!-- StorageTest.cs -->
+	<OCity_StorageTest_CreateGrass>봄에 풀심기 (fix)</OCity_StorageTest_CreateGrass>
+	<OCity_StorageTest_CreateGrassDescrip>1 년에 한 번, 각 카드에서 온도가 5도 이상으로 올라가면 비어있는 각 셀에 새 셀이 심어 잔디에서 10 분 거리에 셀이 자랍니다.</OCity_StorageTest_CreateGrassDescrip>
+	<OCity_StorageTest_LastIP>최근 IP</OCity_StorageTest_LastIP>
+	
+	<!-- OnlineCity_ClientData.cs -->
+	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
+	<OCity_ClientData_Chat>채팅 </OCity_ClientData_Chat>
+	
+	<!-- Dialog_MainOnlineCity.cs -->
+	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
+	<OCity_Dialog_ListChat>채팅</OCity_Dialog_ListChat>
+	<OCity_Dialog_ListInfo>도움말</OCity_Dialog_ListInfo>
+	<OCity_Dialog_ListAbout>모드에 대해</OCity_Dialog_ListAbout>
+	<OCity_Dialog_Connecting>접속중..</OCity_Dialog_Connecting>
+	<OCity_Dialog_Login>로그인 ID: </OCity_Dialog_Login>
+	<OCity_Dialog_Players>유저수: </OCity_Dialog_Players>
+	<OCity_Dialog_ChennelOwn> 채널 재작기</OCity_Dialog_ChennelOwn>
+	<OCity_Dialog_ChennelUser> 맴버</OCity_Dialog_ChennelUser>
+	<OCity_Dialog_ChennelCreate>채널 만들기</OCity_Dialog_ChennelCreate>
+	<OCity_Dialog_ChennelClose>채널 닫기</OCity_Dialog_ChennelClose>
+	<OCity_Dialog_OthersFunctions>다른 기능</OCity_Dialog_OthersFunctions>
+	<OCity_Dialog_ChennelCreate2>채널 만들기</OCity_Dialog_ChennelCreate2>
+	<OCity_Dialog_ChennelLeave>채널 나가기</OCity_Dialog_ChennelLeave>
+	<OCity_Dialog_ChennelRen>이름 바꾸기</OCity_Dialog_ChennelRen>
+	<OCity_Dialog_ChennelCreating>채널 만들기</OCity_Dialog_ChennelCreating>
+	<OCity_Dialog_ChennelCreateName>채널 이름 입력</OCity_Dialog_ChennelCreateName>
+	<OCity_Dialog_ChennelQuit>채널 나가는 중..</OCity_Dialog_ChennelQuit>
+	<OCity_Dialog_ChennelQuitCheck>정말로 채널을 나가시겠습니까?</OCity_Dialog_ChennelQuitCheck>
+	<OCity_Dialog_ChennelRenLabel>채널에 남기</OCity_Dialog_ChennelRenLabel>
+	<OCity_Dialog_ChennelNewName>새로운 채널 이름 입력 </OCity_Dialog_ChennelNewName>
+	<OCity_Dialog_PrivateMessage>개인 메세지</OCity_Dialog_PrivateMessage>
+	<OCity_Dialog_ChennelAddUser>맴버 추가</OCity_Dialog_ChennelAddUser>
+	<OCity_Dialog_ChennelPlayerInfo>정보</OCity_Dialog_ChennelPlayerInfo>
+	<OCity_Dialog_ChennelPlayerInfoTitle>정보 </OCity_Dialog_ChennelPlayerInfoTitle>
+	<OCity_Dialog_AboutMode>온라인 시티에 대하여</OCity_Dialog_AboutMode>
+	<OCity_Dialog_AutorPage>제작자의 페이지:</OCity_Dialog_AutorPage>
+	<OCity_Dialog_Regame>처음부터</OCity_Dialog_Regame>
+	<OCity_Dialog_DeleteData>개임 데이터 삭제</OCity_Dialog_DeleteData>
+	<OCity_Dialog_DeleteDataCheck>Do you really want to completely remove the game and start over?</OCity_Dialog_DeleteDataCheck>
+	<OCity_Dialog_DeletedData>The game has been deleted. Sign in again to create a new one.</OCity_Dialog_DeletedData>
+	
+	<!-- OnlineCity_Dialog_CreateWorld.cs -->
+	<OCity_Dialog_CreateWorld_Create>월드 만들기</OCity_Dialog_CreateWorld_Create>
+	<OCity_Dialog_CreateWorld_BtnOk>OK</OCity_Dialog_CreateWorld_BtnOk>
+	<OCity_Dialog_CreateWorld_Err>오류</OCity_Dialog_CreateWorld_Err>
+	<OCity_Dialog_CreateWorld_Err2>잘못된 매개 변수</OCity_Dialog_CreateWorld_Err2>
+	<OCity_Dialog_CreateWorld_BtnCancel>취소</OCity_Dialog_CreateWorld_BtnCancel>
+	<OCity_Dialog_CreateWorld_Seed>시드</OCity_Dialog_CreateWorld_Seed>
+	<OCity_Dialog_CreateWorld_Difficulty>난이도 0~2 중 입력</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_MapSize>맵 크기 입력 200~400</OCity_Dialog_CreateWorld_MapSize>
+	<OCity_Dialog_CreateWorld_PercentWorld>지구 표면 생성 비율 (5~100)</OCity_Dialog_CreateWorld_PercentWorld>
+	
+	<!-- Dialog_LoginForm.cs -->
+	<OCity_LoginForm_BtnEnter>로그인</OCity_LoginForm_BtnEnter>
+	<OCity_LoginForm_Register></OCity_LoginForm_Register>
+	<OCity_LoginForm_Close>닫기</OCity_LoginForm_Close>
+	<OCity_LoginForm_LabelEnter>로그인</OCity_LoginForm_LabelEnter>
+	<OCity_LoginForm_Server>서버:</OCity_LoginForm_Server>
+	<OCity_LoginForm_Login>로그인 ID:</OCity_LoginForm_Login>
+	<OCity_LoginForm_Pass>비밀번호:</OCity_LoginForm_Pass>
+	
+	<!-- SessionClientController.cs -->
+	<OCity_SessionCC_ConnectionFailTitle>접속 실패</OCity_SessionCC_ConnectionFailTitle>
+	<OCity_SessionCC_LoginFailTitle>로그인 실패</OCity_SessionCC_LoginFailTitle>
+	<OCity_SessionCC_RegFailTitle>인증 실패</OCity_SessionCC_RegFailTitle>
+	<OCity_SessionCC_MsgCanceledCreateW>취소됨</OCity_SessionCC_MsgCanceledCreateW>
+	<OCity_SessionCC_MsgCreateWorlErr>에러가 났습니다. 다시 시도해 주십시오.</OCity_SessionCC_MsgCreateWorlErr>
+	<OCity_SessionCC_MsgCreateWorlGood>월드가 생성되었습니다!</OCity_SessionCC_MsgCreateWorlGood>
+	<OCity_SessionCC_MsgCreatingServer>서버를 만드는 중..</OCity_SessionCC_MsgCreatingServer>
+	<OCity_SessionCC_Disconnected>접속을 종료하였습니다.</OCity_SessionCC_Disconnected>
+	<OCity_SessionCC_Disconnect>접속 종료</OCity_SessionCC_Disconnect>
+	
+	<!-- UpdateWorldController.cs -->
+	<OCity_UpdateWorld_Trade>거래</OCity_UpdateWorld_Trade>
+	<OCity_UpdateWorld_TradeDetails>플레이어 {0} 이 {1} 에게 아이템을 전달하였습니다. 전달한 아이템: {2}</OCity_UpdateWorld_TradeDetails>
+	
+	<!-- Dialog_Input.cs -->
+	<OCity_DialogInput_Ok>확인</OCity_DialogInput_Ok>
+	<OCity_DialogInput_Cancele>취소</OCity_DialogInput_Cancele>
+	
+	<!-- Dialog_Registration.cs -->
+	<OCity_Dialog_Registration_Close>닫기</OCity_Dialog_Registration_Close>
+	<OCity_Dialog_Registration_BtnReg>회원가입</OCity_Dialog_Registration_BtnReg>
+	<OCity_Dialog_Registration_LabelReg>회원가입</OCity_Dialog_Registration_LabelReg>
+	<OCity_Dialog_Registration_Server>서버:</OCity_Dialog_Registration_Server>
+	<OCity_Dialog_Registration_Login>로그인 ID:</OCity_Dialog_Registration_Login>
+	<OCity_Dialog_Registration_Pass>비밀번호:</OCity_Dialog_Registration_Pass>
+	<OCity_Dialog_Registration_Check>비밀번호 확인:</OCity_Dialog_Registration_Check>
+	
+	<!-- Dialog_TradeOnline.cs -->
+	<OCity_Dialog_TradeOnline_Trade>거래하기</OCity_Dialog_TradeOnline_Trade>
+	
+	<!-- GrassFix.cs -->
+	<OCity_GrassFix_Plant>Planted </OCity_GrassFix_Plant>
+	<OCity_GrassFix_Grass> grass</OCity_GrassFix_Grass>
+	
+	<!-- PlayerClient.cs -->
+	<OCity_PlayerClient_LastTick>{0}년 {1}일 동안 플레이중.</OCity_PlayerClient_LastTick>
+	<OCity_PlayerClient_LastSaveTime>{2}동안 게임에 있었음</OCity_PlayerClient_LastSaveTime>
+	<OCity_PlayerClient_baseCount>기지의 개수:{3}</OCity_PlayerClient_baseCount>
+	<OCity_PlayerClient_caravanCount>카라반 개수: {4}</OCity_PlayerClient_caravanCount>
+	<OCity_PlayerClient_marketValue>물건들의 가치: {5}</OCity_PlayerClient_marketValue>
+	<OCity_PlayerClient_marketValuePawn>사람과 동물의 가치: {6}</OCity_PlayerClient_marketValuePawn>
+	<OCity_PlayerClient_LastSaveTimeNon>did not participate</OCity_PlayerClient_LastSaveTimeNon>
+	
+	<!-- SCC.cs -->
+	<!-- <OCity_SCC_Disconnected>연결 실패.</OCity_SCC_Disconnected>
+	<OCity_SCC_DisconnectedShow>연결이 중단되었습니다</OCity_SCC_DisconnectedShow> -->
+	
+	<!-- Dialog_MainOnlineCity.cs -->
+	<OCity_InfoTabText></OCity_InfoTabText>
+	<OCity_AboutTabText> Author Vasily Ivanov aka Aant.</OCity_AboutTabText>
+	<OCity_AboutGeneralText>
+
+OnlineCity-RimWorld는 생존 시뮬레이터를위한 네트워크 게임 모듈입니다. 여러 플레이어가 같은 행성에서 온라인으로 플레이 할 수 있습니다.
+
+등록 후, 당신은 당신의 자신의 정착을 만들고 다른 참가자들과 함께 개발을 시작할 수 있습니다. 이웃, 정착촌 및 카라반의 진행 상황을 모니터링 할 수있는 기회가 주어 지지만, 가장 중요한 것은 식량, 약, 무기 또는 정착민을 포함한 다른 것들을 양도함으로써 서로에게 실질적인 도움을 제공 할 수 있다는 것입니다. 이렇게하려면 캐러밴을 모아서 가져 가려면 게임의 모든 규칙 만 있으면됩니다!
+
+모드의 목적은 균형을 방해하지 않고 게임에 몰입되는 수준을 줄이지 않고 친구들과 놀 수있게하는 것입니다. 현재 모드의 수명 경로가 시작되었으며 기능에는 다음이 포함됩니다.
+
+* 한 행성에서 다른 플레이어의 정착지와 캐러밴을 볼 수있는 게임
+
+* 아이템 교환 (추가 모드 포함)
+
+* 플레이어간에 정착민과 동물을 이동
+
+* 플레이어 간 일반 / 개인 채팅
+
+기술적 특징 :
+
+* 모든 모드와 세트가 지원되지만 이러한 아이템을 변경 한 모드를 가진 플레이어 만이 아이템을주고받을 수 있습니다. 제한이 없습니다. 조심하세요
+
+* 일반 게임 중에는 모드가 완전히 비활성화되어 있습니다-네트워크 게임 버튼으로 시작하지 않은 경우
+
+* 새로운 플레이어를 등록 할 때 가끔 몇 분 동안 멈추는 경우가 있습니다.
+
+* 기술적 인 이유로 메뉴를 통하지 않고 게임을 종료하면 저장이 작동하지 않습니다. 또한 게임은 15 분마다 한 번씩 서버에 저장됩니다.
+
+* 네트워크 게임은 생존에 대한 상호 지원에만 초점을 맞추고 있습니다.
+
+* 현재 개발자 모드를 사용할 수 있지만 일반적으로 플레이어는 사용에 대해 매우 부정적입니다 (모드를 테스트해야하는 경우 제외).
+
+* HardcoreSK 프로젝트로 폰을 전송하는 것은 일시적으로 작동하지 않습니다
+
+* 상품과 폰을 플레이어에게 오프라인으로 옮길 수 있습니다
+
+* 다른 플레이어의 집과 캐러밴의 색상은 파란색입니다. 캐러밴을 강조 표시하고 마우스 오른쪽 버튼으로 클릭하여 상호 작용할 수 있습니다.
+
+* 마우스 오른쪽 버튼으로 같은 셀에 위치한 정착지와 카라반 사이를 이동할 수 있습니다. 모드 호환성 및 호스트 과부하 감시
+
+* 상품을 운송 할 때는 캐러밴의 운반 능력을 고려하십시오. 과부하되면 캐러밴은 움직일 수 없습니다. 캐러밴을 강조 표시 한 후에도 여전히 사용할 수있는화물의 양을 확인할 수 있습니다.
+
+* 플레이어의 닉네임에있는 아무 버튼이나 클릭하면 플레이어가 활성 채팅에 추가되거나 비공개 채팅 채널이 열리거나 플레이어의 일반 정보가 표시됩니다.
+
+* 다른 플레이어와의 거래에서 수령 한 물품을 합의의 특정 장소에 보관하려면 "창고"또는 "거래"기호가 포함되도록 원하는 창고의 이름을 바꾸십시오.
+
+* 마지막 폰이 전송되면 캐러밴이 해체되고 나머지 물건과 동물은 자동으로 전송에 추가됩니다
+
+* 게임 시나리오는 사용자 정의 할 수 없지만 설정을 시작한 직후 내레이터를 변경할 수 있습니다.
+
+* 당신은 하나의 카드에서 재생할 수 없으며, 이것은 아마도 미래에 변경되지 않을 것입니다
+
+* 게임을 온라인으로 다운로드 할 수 없습니다. 그러나이 게임을 오프라인으로 다운로드하거나 (온라인으로 전송할 수 없음),이를 위해 onlineCityTempLoad 저장을 다운로드 할 수 있습니다.
+
+* 모드에 의한 게임의 게임 플레이는 거의 변하지 않습니다. 본격적인 게임 규칙에 따라 상품과 폰을 교환하여 서로 도울 수있는 기회 만 있습니다. 저장에는 제한이 있습니다. 서버에는 자동으로 하나만 있습니다. 또한 행성의지도를보고 근처의 다른 정착촌을 볼 때 어깨 느낌 :)
+
+* 상호 작용의 예 : 공격시 친구에게 도움을 요청하고 게임을 일시 중지하면 캐러밴에 접근하여 정착민을 옮길 수 있습니다. 공격을 철회 한 후에 같은 방식으로 정착민을 반환 할 수 있습니다. 또는 예를 들어, 구조에 온 사람은 하나를 제외한 모든 폰을 옮길 수 있으므로 캐러밴이 해체되지 않도록하십시오. 그러면 캐러밴이 다시 캐러밴으로 옮겨서 격퇴 직후 정착민을 반환 할 수 있습니다.
+
+* 로그는 % appdata % \ .. \ LocalLow \ Ludeon Studios \ RimWorld by Ludeon Studios \ OnlineCity (탐색기에 삽입 할 수 있음)에 기록됩니다.
+
+
+참고 문헌 :
+게임 및 테스트를위한 주요 서버 : rimworld.online 서버 : 194.87.95.90
+불일치 : https://discord.gg/5DzWrnR
+의. VK 모드 그룹 : https://vk.com/rimworldonline
+트렐로 : https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
+GitHub : https://github.com/AantCoder/OnlineCity
+
+
+서버 시작에 대한 몇 마디.
+편리한 위치에 서버 파일을 압축 해제하십시오. 서버가 C : \ World 폴더를 생성 (만들어야 함)합니다. 로그와 데이터 파일이 있습니다. 시작한 후 서버는 즉시 기본 포트 19019에서 시작합니다. 등록 할 첫 번째 서버는 관리자가되고 월드의 매개 변수를 요청합니다. 세계가 창조 된 후, 그의 단절과 그는 평소와 같이 들어 와서 스스로 정착 할 수 있습니다.
+세계를 다시 만들려면 서버 콘솔을 닫고 데이터 파일을 삭제 한 다음 콘솔을 시작하십시오.
+
+한국어 번역: kang060302
+</OCity_AboutGeneralText>
+	
+</LanguageData>
