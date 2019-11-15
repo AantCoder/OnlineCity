@@ -39,7 +39,7 @@
 	<OCity_Dialog_ListChat>Chat</OCity_Dialog_ListChat>
 	<OCity_Dialog_ListInfo>Info</OCity_Dialog_ListInfo>
 	<OCity_Dialog_ListAbout>Modinfo</OCity_Dialog_ListAbout>
-	<OCity_Dialog_Connecting>Verbindung ...</OCity_Dialog_Connecting>
+	<OCity_Dialog_Connecting>Verbinde ...</OCity_Dialog_Connecting>
 	<OCity_Dialog_Login>Einloggen:</OCity_Dialog_Login>
 	<OCity_Dialog_Players>Spieler:</OCity_Dialog_Players>
 	<OCity_Dialog_ChennelOwn> Kanalersteller</OCity_Dialog_ChennelOwn>
@@ -65,7 +65,7 @@
 	<OCity_Dialog_Regame>Neues Spiel</OCity_Dialog_Regame>
 	<OCity_Dialog_DeleteData>Alle Spieldaten Löschen </OCity_Dialog_DeleteData>
 	<OCity_Dialog_DeleteDataCheck>Wollen Sie das Spiel wirklich komplett löschen und neu anfangen?</OCity_Dialog_DeleteDataCheck>
-	<OCity_Dialog_DeletedData>Das Spiel wurde gelöscht. Melden Sie sich erneut an, um Neues Spiel zu erstellen.</OCity_Dialog_DeletedData>
+	<OCity_Dialog_DeletedData>Das Spiel wurde gelöscht. Melden Sie sich erneut an, um ein neues Spiel zu erstellen.</OCity_Dialog_DeletedData>
 	
 	<!-- OnlineCity_Dialog_CreateWorld.cs -->
 	<OCity_Dialog_CreateWorld_Create>Erschaffe eine Welt</OCity_Dialog_CreateWorld_Create>
@@ -73,34 +73,34 @@
 	<OCity_Dialog_CreateWorld_Err>Fehler</OCity_Dialog_CreateWorld_Err>
 	<OCity_Dialog_CreateWorld_Err2>Ungültige Parameter</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Abbrechen</OCity_Dialog_CreateWorld_BtnCancel>
-	<OCity_Dialog_CreateWorld_Seed>Korn</OCity_Dialog_CreateWorld_Seed>
+	<OCity_Dialog_CreateWorld_Seed>Seed</OCity_Dialog_CreateWorld_Seed>
 	<OCity_Dialog_CreateWorld_Difficulty>Spiel Schwierigkeitsgrad von 0 (sehr einfach) bis 2 (schwer)</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Die Größe der Karte (200 - klein, 400 - riesig)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>Prozentsatz der Generation der Planetenoberfläche (ab 5 bis zu 100)</OCity_Dialog_CreateWorld_PercentWorld>
 	
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>Anmelden</OCity_LoginForm_BtnEnter>
-	<OCity_LoginForm_Register>Registrierung </OCity_LoginForm_Register>
+	<OCity_LoginForm_Register>Registrieren </OCity_LoginForm_Register>
 	<OCity_LoginForm_Close>Schließen</OCity_LoginForm_Close>
 	<OCity_LoginForm_LabelEnter>Anmelden</OCity_LoginForm_LabelEnter>
 	<OCity_LoginForm_Server>Server:</OCity_LoginForm_Server>
-	<OCity_LoginForm_Login>Einloggen:</OCity_LoginForm_Login>
+	<OCity_LoginForm_Login>Benutzername:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>Passwort:</OCity_LoginForm_Pass>
 
 	<!-- SessionClientController.cs -->
 	<OCity_SessionCC_ConnectionFailTitle>Keine Verbindung </OCity_SessionCC_ConnectionFailTitle>
 	<OCity_SessionCC_LoginFailTitle>Anmeldung fehlgeschlagen</OCity_SessionCC_LoginFailTitle>
 	<OCity_SessionCC_RegFailTitle>Registrierungsfehler</OCity_SessionCC_RegFailTitle>
-	<OCity_SessionCC_MsgCanceledCreateW> Festgeschlagen</OCity_SessionCC_MsgCanceledCreateW>
+	<OCity_SessionCC_MsgCanceledCreateW> Fehlgeschlagen</OCity_SessionCC_MsgCanceledCreateW>
 	<OCity_SessionCC_MsgCreateWorlErr>Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</OCity_SessionCC_MsgCreateWorlErr>
 	<OCity_SessionCC_MsgCreateWorlGood>Hurra! Die Welt wurde auf dem Server erstellt!</OCity_SessionCC_MsgCreateWorlGood>
-	<OCity_SessionCC_MsgCreatingServer>Server erstellen</OCity_SessionCC_MsgCreatingServer>
-	<OCity_SessionCC_Disconnected>Vereinigung Fehler</OCity_SessionCC_Disconnected>
-	<OCity_SessionCC_Disconnect>Spiel abgebrochen</OCity_SessionCC_Disconnect>
+	<OCity_SessionCC_MsgCreatingServer>Server erstellt</OCity_SessionCC_MsgCreatingServer>
+	<OCity_SessionCC_Disconnected>Abgebrochen</OCity_SessionCC_Disconnected>
+	<OCity_SessionCC_Disconnect>Abgebrochen</OCity_SessionCC_Disconnect>
 
 	<!-- UpdateWorldController.cs -->
 	<OCity_UpdateWorld_Trade>Übertragung</OCity_UpdateWorld_Trade>
-	<OCity_UpdateWorld_TradeDetails>Vom Spieler {0} in {1} sind die Gegenstände übergeben: {2}</OCity_UpdateWorld_TradeDetails>
+	<OCity_UpdateWorld_TradeDetails>Vom Spieler {0} in {1} sind die folgenden Gegenstände übergeben worden: {2}</OCity_UpdateWorld_TradeDetails>
 
 	<!-- Dialog_Input.cs -->
 	<OCity_DialogInput_Ok>OK</OCity_DialogInput_Ok>
@@ -108,12 +108,12 @@
 
 	<!-- Dialog_Registration.cs -->
 	<OCity_Dialog_Registration_Close>Schließen</OCity_Dialog_Registration_Close>
-	<OCity_Dialog_Registration_BtnReg>Registrierung</OCity_Dialog_Registration_BtnReg>
+	<OCity_Dialog_Registration_BtnReg>Registrieren</OCity_Dialog_Registration_BtnReg>
 	<OCity_Dialog_Registration_LabelReg>Registrierung</OCity_Dialog_Registration_LabelReg>
 	<OCity_Dialog_Registration_Server>Server:</OCity_Dialog_Registration_Server>
-	<OCity_Dialog_Registration_Login>Einloggen:</OCity_Dialog_Registration_Login>
+	<OCity_Dialog_Registration_Login>Benutzername:</OCity_Dialog_Registration_Login>
 	<OCity_Dialog_Registration_Pass>Passwort:</OCity_Dialog_Registration_Pass>
-	<OCity_Dialog_Registration_Check>Bestätigen:</OCity_Dialog_Registration_Check>
+	<OCity_Dialog_Registration_Check>Passwort bestätigen:</OCity_Dialog_Registration_Check>
 
 	<!-- Dialog_TradeOnline.cs -->
 	<OCity_Dialog_TradeOnline_Trade>Waren Übertragung</OCity_Dialog_TradeOnline_Trade>
@@ -124,12 +124,12 @@
 
 	<!-- PlayerClient.cs -->
 	<OCity_PlayerClient_LastTick>Spieljahre: {0}, Tage: {1}.</OCity_PlayerClient_LastTick>
-	<OCity_PlayerClient_LastSaveTime>War im Spiel: {2}</OCity_PlayerClient_LastSaveTime>
+	<OCity_PlayerClient_LastSaveTime>Ist im Spiel: {2}</OCity_PlayerClient_LastSaveTime>
 	<OCity_PlayerClient_baseCount>Siedlungen: {3}</OCity_PlayerClient_baseCount>
 	<OCity_PlayerClient_caravanCount>Karawanen: {4}</OCity_PlayerClient_caravanCount>
-	<OCity_PlayerClient_marketValue>Der Wert der Sachen: {5}</OCity_PlayerClient_marketValue>
+	<OCity_PlayerClient_marketValue>Wert der Sachen: {5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>Wert von Menschen und Tieren: {6}</OCity_PlayerClient_marketValuePawn>
-	<OCity_PlayerClient_LastSaveTimeNon>nicht teilgenommen</OCity_PlayerClient_LastSaveTimeNon>
+	<OCity_PlayerClient_LastSaveTimeNon>nicht gespeichert</OCity_PlayerClient_LastSaveTimeNon>
 
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Verbindungsfehler</OCity_SCC_Disconnected>

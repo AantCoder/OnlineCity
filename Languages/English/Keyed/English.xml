@@ -104,7 +104,7 @@
 	
 	<!-- Dialog_Input.cs -->
 	<OCity_DialogInput_Ok>OK</OCity_DialogInput_Ok>
-	<OCity_DialogInput_Cancele>Cancele</OCity_DialogInput_Cancele>
+	<OCity_DialogInput_Cancele>Cancel</OCity_DialogInput_Cancele>
 	
 	<!-- Dialog_Registration.cs -->
 	<OCity_Dialog_Registration_Close>Close</OCity_Dialog_Registration_Close>
