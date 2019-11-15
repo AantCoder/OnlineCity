@@ -16,14 +16,14 @@
 	<OCity_Caravan_PriceAnimalsPeople>Price of people and animals: {3}</OCity_Caravan_PriceAnimalsPeople>
 	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
 	<OCity_Caravan_FreeWeight>Remaining load capacity: </OCity_Caravan_FreeWeight>
-	<OCity_Caravan_Trade>Exchange of goods with {0}</OCity_Caravan_Trade>
+	<OCity_Caravan_Trade>Trade with {0}</OCity_Caravan_Trade>
 	
 	<!-- DevelopTest.cs -->
 	<OCity_DevTest_Test>Test</OCity_DevTest_Test>
 	<OCity_DevTest_NameTestPlayer>NameTestPlayer</OCity_DevTest_NameTestPlayer>
 	
 	<!-- GameStarter.cs -->
-	<OCity_Starter_CityNotBuild>The place is occupied by another player</OCity_Starter_CityNotBuild>
+	<OCity_Starter_CityNotBuild>This place is occupied by another player</OCity_Starter_CityNotBuild>
 	
 	<!-- StorageTest.cs -->
 	<OCity_StorageTest_CreateGrass>Plant grass in the spring (fix)</OCity_StorageTest_CreateGrass>
@@ -38,7 +38,7 @@
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
 	<OCity_Dialog_ListChat>Chat</OCity_Dialog_ListChat>
 	<OCity_Dialog_ListInfo>Information</OCity_Dialog_ListInfo>
-	<OCity_Dialog_ListAbout>About a mode</OCity_Dialog_ListAbout>
+	<OCity_Dialog_ListAbout>About the mod</OCity_Dialog_ListAbout>
 	<OCity_Dialog_Connecting>Connecting...</OCity_Dialog_Connecting>
 	<OCity_Dialog_Login>Login: </OCity_Dialog_Login>
 	<OCity_Dialog_Players>Players: </OCity_Dialog_Players>
@@ -79,10 +79,10 @@
 	<OCity_Dialog_CreateWorld_PercentWorld>Percentage of surface generation of the planet (from 5 to 100)</OCity_Dialog_CreateWorld_PercentWorld>
 	
 	<!-- Dialog_LoginForm.cs -->
-	<OCity_LoginForm_BtnEnter>Login</OCity_LoginForm_BtnEnter>
-	<OCity_LoginForm_Register>Registration</OCity_LoginForm_Register>
+	<OCity_LoginForm_BtnEnter>Log in</OCity_LoginForm_BtnEnter>
+	<OCity_LoginForm_Register>Register</OCity_LoginForm_Register>
 	<OCity_LoginForm_Close>Close</OCity_LoginForm_Close>
-	<OCity_LoginForm_LabelEnter>Login</OCity_LoginForm_LabelEnter>
+	<OCity_LoginForm_LabelEnter>Log in</OCity_LoginForm_LabelEnter>
 	<OCity_LoginForm_Server>Server:</OCity_LoginForm_Server>
 	<OCity_LoginForm_Login>Login:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>Password:</OCity_LoginForm_Pass>
@@ -91,7 +91,7 @@
 	<OCity_SessionCC_ConnectionFailTitle>Connection fail</OCity_SessionCC_ConnectionFailTitle>
 	<OCity_SessionCC_LoginFailTitle>Login fail</OCity_SessionCC_LoginFailTitle>
 	<OCity_SessionCC_RegFailTitle>Registration fail</OCity_SessionCC_RegFailTitle>
-	<OCity_SessionCC_MsgCanceledCreateW>Canceled</OCity_SessionCC_MsgCanceledCreateW>
+	<OCity_SessionCC_MsgCanceledCreateW>Cancelled</OCity_SessionCC_MsgCanceledCreateW>
 	<OCity_SessionCC_MsgCreateWorlErr>There was an error, please try again.</OCity_SessionCC_MsgCreateWorlErr>
 	<OCity_SessionCC_MsgCreateWorlGood>Hooray! The world on the server is created!</OCity_SessionCC_MsgCreateWorlGood>
 	<OCity_SessionCC_MsgCreatingServer>Creating a server</OCity_SessionCC_MsgCreatingServer>
@@ -104,11 +104,11 @@
 	
 	<!-- Dialog_Input.cs -->
 	<OCity_DialogInput_Ok>OK</OCity_DialogInput_Ok>
-	<OCity_DialogInput_Cancele>Cancele</OCity_DialogInput_Cancele>
+	<OCity_DialogInput_Cancele>Cancel</OCity_DialogInput_Cancele>
 	
 	<!-- Dialog_Registration.cs -->
 	<OCity_Dialog_Registration_Close>Close</OCity_Dialog_Registration_Close>
-	<OCity_Dialog_Registration_BtnReg>Registration</OCity_Dialog_Registration_BtnReg>
+	<OCity_Dialog_Registration_BtnReg>Register</OCity_Dialog_Registration_BtnReg>
 	<OCity_Dialog_Registration_LabelReg>Registration</OCity_Dialog_Registration_LabelReg>
 	<OCity_Dialog_Registration_Server>Server:</OCity_Dialog_Registration_Server>
 	<OCity_Dialog_Registration_Login>Login:</OCity_Dialog_Registration_Login>
@@ -127,7 +127,7 @@
 	<OCity_PlayerClient_LastSaveTime>Was in the game: {2}</OCity_PlayerClient_LastSaveTime>
 	<OCity_PlayerClient_baseCount>Number of bases: {3}</OCity_PlayerClient_baseCount>
 	<OCity_PlayerClient_caravanCount>Caravans: {4}</OCity_PlayerClient_caravanCount>
-	<OCity_PlayerClient_marketValue>Wealh of items: {5}</OCity_PlayerClient_marketValue>
+	<OCity_PlayerClient_marketValue>Wealth of items: {5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>Wealh of people and animals: {6}</OCity_PlayerClient_marketValuePawn>
 	<OCity_PlayerClient_LastSaveTimeNon>did not participate</OCity_PlayerClient_LastSaveTimeNon>
 	
@@ -138,76 +138,80 @@
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> Author Vasily Ivanov aka Aant.</OCity_AboutTabText>
-	<OCity_AboutGeneralText>Приветствую тебя, Колонизатор!
+	<OCity_AboutGeneralText>Greetings, colonizer!
 
-OnlineCity - представляет из себя модуль сетевой игры для симулятора выживания RimWorld. Он позволяет нескольким игрокам играть на одной планете в режиме онлайн. 
+OnlineCity is an online multiplayer mod for RimWorld. It allows multiple players to play on the same planet online.
 
-После регистрации, вы сможете создать свое поселение и начать развиваться бок о бок с другими участниками. Вам дается возможность наблюдать за прогрессом соседей, их поселениями и караванами, но самое главное вы сможете оказывать друг другу вполне материальную помощь, передавая еду, медикаменты, оружие или любые другие вещи, включая поселенцев. Для этого необходимо лишь по всем правилам игры собрать караван и добраться до них!
+After registration, you can create your own colony and play alongside other players. You can monitor the progress of your neighbors, their settlements, and caravans, but most importantly, you will be able to provide each other with materials by transferring food, medicine, weapons, colonists, and more. To do this, just form a caravan like in vanilla RimWorld and send it to them!
 
-Цель мода – сделать возможной игру с друзьями, не нарушая баланса и не снижая уровень погружения в игру. На данный момент жизненный путь мода только начался, и в его функционал входит:
+The purpose of the mod is to make it possible to play with friends without disturbing the balance or reducing the level of immersion in the game. At the moment the mod is in its early stages. Its functionality includes:
 
-* Игра на одной планете, с возможностью видеть поселения и караваны других игроков
+* A game on one planet with the ability to see settlements and caravans of other players
 
-* Обмен предметами (в т.ч. добавленными модами)
+* Exchange of items (including modded items)
 
-* Передача поселенцев и животных между игроками
+* Transferral of settlers and animals between players
 
-* Общий/Приватный чат между игроками
+* Public and private chat between players
 
-Технические особенности:
+Technical features:
 
-* Поддерживаются любые моды и наборы, но передавать и принимать предметы можно только игроку у которого есть моды меняющие данные предметы. Жесткого ограничения нет, соблюдайте осторожность
+* Any and all combinations of mods are supported, however when sending items to other players both players must have the mod the items are from. There are no restrictions for mod incompatibilities, so be careful
 
-* Мод полностью отключается при обычной игре - если вы начинали не с кнопки Сетевая игра
+* OnlineCity is completely disabled during a single player game (if you didn’t start with the Multiplayer button at the main menu)
 
-* При регистрации нового игрока иногда происходит подвисание на несколько минут, просто подождите
+* When registering a new account, the game may freeze for a few minutes. This is normal, please be patient.
 
-* По техническим причинам сохранение не работает при выходе из игры не через меню. Помимо этого игра сохраняется на сервере раз в 15 минут
+* For technical reasons, saving does not work when you exit the game not through the menu. Instead, the game is saved on the server once every 15 minutes
 
-* Пока сетевая игра ориентирована только на взаимопомощь в выживании. 
+* Currently the mod is focused on co-operative play.
 
-* Режим разработчика на данный момент доступен, но, обычно, игроки относятся к его использованию крайне негативно (кроме случаев, когда это нужно для тестирования мода).
+* Developer mode is currently available, but its use is frowned upon (except when it is needed to test the mod).
 
-* Передача пешек с проектом HardcoreSK временно не работает
+* Transferring pawns with the HardcoreSK project does not work at the moment
 
-* Передать товары и пешек можно и offline игроку
+* Goods and pawns can be transferred to offline players
 
-* Цвет домов и караванов других игроков – синий. С ними можно взаимодействовать, выделив свой караван и нажав на них правой кнопкой мыши. 
+* On the world map, other players' colonies and caravans are coloured blue. You can interact with them by selecting your caravan and right-clicking them.
 
-* Передавать можно между поселениями и караванами, находящимися на одной клетки правой кнопкой мыши. Следите за совместимостью модов и перегрузом принимающей стороны
+* You can transfer between settlements and caravans located on the same cell by right-clicking. Be careful of mod incompatibilities and host overload.
 
-* При передаче товаров учитывайте грузоподъемность караванов. При перегрузе караван не сможет передвигаться. Выделив караван, можно узнать сколько груза он ещё может принять. 
+* Be careful of how much goods your caravans can carry. They will not be able to move if they are overloaded. You can see how much a caravan can carry by clicking on it.
 
-* По щелчку любой кнопки мыши на никнейме игрока происходит добавление игрока в активный чат, открытие приватного канала чата, либо просмотр общей информации об игроке на выбор. 
+* Clicking on a player in the chat menu will allow you to send a private message, view their profile, or add them to your current chat channel.
 
-* Чтобы товары, полученные от сделок с другими игроками, складировались в определенном месте вашего поселения, переименуйте нужный склад так, чтобы он содержал символы "торг" или "trad".
+* To choose where items received from other players will be stored, create a stockpile that has 'trad' in the name (e.g. 'Trading', 'Trades', 'Incoming traded items' etc.)
 
-* При передаче последней пешки караван будет расформирован, а оставшиеся вещи и животные автоматически добавлены к передаче
+* When transferring pawns to another colony, after the last pawn is traded, all remaining items in the caravan are also added to the trade.
 
-* Сценарий игры настроить нельзя, но рассказчика можно сменить сразу после старта через настройки
+* The game scenario cannot be customized, but the narrator can be changed immediately after starting through the settings
 
-* Играть на одной карте нельзя, и, скорее всего, в будущем это не измениться
+* You cannot play on one colony, and most likely this will not change in the future
 
-* Нельзя загрузить игру online. Но можно загрузить эту игру в offline режиме (перевести её в online также нельзя), для этого загрузите сохранение onlineCityTempLoad.
+* Multiplayer saves may be played in singleplayer. Simply load the 'onlineTempCityLoad' save to continue in singleplayer. Note that singleplayer saves cannot be uploaded back to multiplayer.
 
-* Геймплей игры модом почти не меняется: появляется только возможность помогать друг другу обмениваясь товарами и пешками, по полноценным игровым правилам. Появляется ограничение на сохранение: только одно автоматическое на сервере. А также чувство плеча, когда вы смотрите на карту планеты и видите рядом поселения других игроков :)
+* The mod does its best not to alter gameplay, it simply adds interactions with other players via existing game mechanics (i.e. caravans). The only major change is saving, as this is done automatically by the server, and the feeling of opening the map and seeing other settlements nearby :)
 
-* Пример взаимодействия: в момент нападения можно запросить помощи у друга и поставить игру на паузу, он в это время подойдёт караваном и передаст своих поселенцев; после отбития атаки можно вернуть поселенцев таким же способом. Или, например, тот кто пришёл на помощь может передать всех пешек кроме одной, чтобы караван не был расформирован, тогда вернить поселенцев можно будет сразу же после отбития передав их в назад в караван.
+* An example player interaction might go like this: A raid arrives at your colony. You pause the game and ask a friend for assistance. They send a caravan with some troops to your settlement. Once they arrive, they join your colony and are under your control until the raiding party is pushed back, after which you form them into a caravan and send them back to their original colony. Alternatively, all of the troops except one are sent into your colony so that the caravan is not disbanded. Once their job is complete, you can return them to the caravan and your friend has control of them once again.
 
-* Логи пишуться в: %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity (это можно вставить в проводник)
-
-
-Ссылки:
-Основной сервер для игры и тестирования:  rimworld.online  он же: 194.87.95.90
-Discord:  https://discord.gg/5DzWrnR
-Оф. группа мода ВК:  https://vk.com/rimworldonline
-Trello:  https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
-GitHub:  https://github.com/AantCoder/OnlineCity
+* Logs are written to '%AppData%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity' (this can be copied and pasted into Explorer)
 
 
-Пара слов о запуске сервера.
-Распаковать файлы сервера в любое удобное место. Запускаете, сервер создаёт (должен сам создать) папку C:\World. Там будут логи и файл данных. После запуска сервер сразу стартует на порту по умолчанию 19019. Первый кто зарегистрируется становиться админом и у него спрашиваются параметры мира. После создания мира его дисконнектет и он может заходить как обычно, создать себе поселение.
-Для пересоздания мира закрыть консоль сервера, удалить файл данных, запустить консоль
+References:
+The main server address is: 194.87.95.90
+Discord: https://discord.gg/5DzWrnR
+Official VK mod group: https://vk.com/rimworldonline
+Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
+GitHub: https://github.com/AantCoder/OnlineCity
+
+
+To get a server set up, follow these steps:
+1. Unzip server files to a convenient place.
+2. Run it. The server creates the folder C:\World. Inside it will be logs and a data file. The server will begin listening on the default port 19019.
+3. Register an account. The first player to register becomes an administrator and they are asked for the parameters of the world. After the creation of the world, they are disconnected.
+4. Reconnect and resume playing as usual, create a colony, etc.
+
+To recreate the world, close the server console, delete the data file, and start the console again.
 </OCity_AboutGeneralText>
 	
 </LanguageData>
