@@ -7,12 +7,12 @@
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
 	<OCity_Caravan_GoTrade>Wir werden Waren tauschen mit {0}</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
-	<OCity_Caravan_LOGNoData>Keine Serverdaten über das Objekt Des Handels</OCity_Caravan_LOGNoData>
-	<OCity_Caravan_LOGSwap>Die Karawane Börse: selectAllCaravan</OCity_Caravan_LOGSwap>
+	<OCity_Caravan_LOGNoData>Keine Serverdaten über das Objekt im Handel vorhanden</OCity_Caravan_LOGNoData>
+	<OCity_Caravan_LOGSwap>Die Karawanenbörse: selectAllCaravan</OCity_Caravan_LOGSwap>
 
 	<!-- OnlineCity_CaravanOnline.cs -->
-	<OCity_Caravan_Player>{0} spieler {1}</OCity_Caravan_Player>
-	<OCity_Caravan_PriceThing>Der Wert der Sachen: {2}</OCity_Caravan_PriceThing>
+	<OCity_Caravan_Player>{0} Spieler {1}</OCity_Caravan_Player>
+	<OCity_Caravan_PriceThing>Wert der Gegenstände: {2}</OCity_Caravan_PriceThing>
 	<OCity_Caravan_PriceAnimalsPeople>Wert von Menschen und Tieren: {3}</OCity_Caravan_PriceAnimalsPeople>
 	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
 	<OCity_Caravan_FreeWeight>Restladekapazität: </OCity_Caravan_FreeWeight>
@@ -38,7 +38,7 @@
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
 	<OCity_Dialog_ListChat>Chat</OCity_Dialog_ListChat>
 	<OCity_Dialog_ListInfo>Info</OCity_Dialog_ListInfo>
-	<OCity_Dialog_ListAbout>Mod info</OCity_Dialog_ListAbout>
+	<OCity_Dialog_ListAbout>Modinfo</OCity_Dialog_ListAbout>
 	<OCity_Dialog_Connecting>Verbindung ...</OCity_Dialog_Connecting>
 	<OCity_Dialog_Login>Einloggen:</OCity_Dialog_Login>
 	<OCity_Dialog_Players>Spieler:</OCity_Dialog_Players>
@@ -51,9 +51,9 @@
 	<OCity_Dialog_ChennelLeave>Verlasse den Kanal</OCity_Dialog_ChennelLeave>
 	<OCity_Dialog_ChennelRen>Umbenennen</OCity_Dialog_ChennelRen>
 	<OCity_Dialog_ChennelCreating>Erstelle einen Kanal</OCity_Dialog_ChennelCreating>
-	<OCity_Dialog_ChennelCreateName>Gib einen Titel ein Kanal</OCity_Dialog_ChennelCreateName>
+	<OCity_Dialog_ChennelCreateName>Gib den Namen des Kanals ein</OCity_Dialog_ChennelCreateName>
 	<OCity_Dialog_ChennelQuit>Den Kanal verlassen</OCity_Dialog_ChennelQuit>
-	<OCity_Dialog_ChennelQuitCheck>Der Kanal wirklich verlassen?</OCity_Dialog_ChennelQuitCheck>
+	<OCity_Dialog_ChennelQuitCheck>Den Kanal wirklich verlassen?</OCity_Dialog_ChennelQuitCheck>
 	<OCity_Dialog_ChennelRenLabel>Einen Kanal umbenennen</OCity_Dialog_ChennelRenLabel>
 	<OCity_Dialog_ChennelNewName>Neuen Kanalname eingeben</OCity_Dialog_ChennelNewName>
 	<OCity_Dialog_PrivateMessage>Private Nachricht</OCity_Dialog_PrivateMessage>
@@ -88,12 +88,12 @@
 	<OCity_LoginForm_Pass>Passwort:</OCity_LoginForm_Pass>
 
 	<!-- SessionClientController.cs -->
-	<OCity_SessionCC_ConnectionFailTitle>Kein Verbindung </OCity_SessionCC_ConnectionFailTitle>
+	<OCity_SessionCC_ConnectionFailTitle>Keine Verbindung </OCity_SessionCC_ConnectionFailTitle>
 	<OCity_SessionCC_LoginFailTitle>Anmeldung fehlgeschlagen</OCity_SessionCC_LoginFailTitle>
 	<OCity_SessionCC_RegFailTitle>Registrierungsfehler</OCity_SessionCC_RegFailTitle>
 	<OCity_SessionCC_MsgCanceledCreateW> Festgeschlagen</OCity_SessionCC_MsgCanceledCreateW>
-	<OCity_SessionCC_MsgCreateWorlErr>Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</OCity_SessionCC_MsgCreateWorlErr>
-	<OCity_SessionCC_MsgCreateWorlGood>Hurra! Die Welt auf dem Server Ist geschaffen!</OCity_SessionCC_MsgCreateWorlGood>
+	<OCity_SessionCC_MsgCreateWorlErr>Es ist ein Fehler aufgetreten. Bitte versuche es erneut.</OCity_SessionCC_MsgCreateWorlErr>
+	<OCity_SessionCC_MsgCreateWorlGood>Hurra! Die Welt wurde auf dem Server erstellt!</OCity_SessionCC_MsgCreateWorlGood>
 	<OCity_SessionCC_MsgCreatingServer>Server erstellen</OCity_SessionCC_MsgCreatingServer>
 	<OCity_SessionCC_Disconnected>Vereinigung Fehler</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Spiel abgebrochen</OCity_SessionCC_Disconnect>
@@ -113,10 +113,10 @@
 	<OCity_Dialog_Registration_Server>Server:</OCity_Dialog_Registration_Server>
 	<OCity_Dialog_Registration_Login>Einloggen:</OCity_Dialog_Registration_Login>
 	<OCity_Dialog_Registration_Pass>Passwort:</OCity_Dialog_Registration_Pass>
-	<OCity_Dialog_Registration_Check>Bestätigung:</OCity_Dialog_Registration_Check>
+	<OCity_Dialog_Registration_Check>Bestätigen:</OCity_Dialog_Registration_Check>
 
 	<!-- Dialog_TradeOnline.cs -->
-	<OCity_Dialog_TradeOnline_Trade>waren übertragung</OCity_Dialog_TradeOnline_Trade>
+	<OCity_Dialog_TradeOnline_Trade>Waren Übertragung</OCity_Dialog_TradeOnline_Trade>
 
 	<!-- GrassFix.cs -->
 	<OCity_GrassFix_Plant>Gepflanzt </OCity_GrassFix_Plant>
