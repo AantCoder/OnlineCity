@@ -186,7 +186,7 @@ Technical features:
 
 * The game scenario cannot be customized, but the narrator can be changed immediately after starting through the settings
 
-* You cannot play on one colony, and most likely this will not change in the future
+* You cannot play on the same colony as another player. This is unlikely to change.
 
 * Multiplayer saves may be played in singleplayer. Simply load the 'onlineTempCityLoad' save to continue in singleplayer. Note that singleplayer saves cannot be uploaded back to multiplayer.
 
