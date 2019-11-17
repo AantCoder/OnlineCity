@@ -344,7 +344,7 @@ namespace RimWorldOnlineCity
                                                     if (te.TransportID != 0)
                                                     {
                                                         AttackerPawns[p] = te.OriginalID;
-                                                        
+
                                                         p.playerSettings.hostilityResponse = HostilityResponseMode.Ignore;
                                                         p.jobs.StartJob(new Job(JobDefOf.Wait_Combat)
                                                         {
@@ -354,6 +354,10 @@ namespace RimWorldOnlineCity
                                                         }
                                                             , JobCondition.InterruptForced);
                                                     }
+                                                }
+                                                else
+                                                {
+                                                    Loger.Log("Client AttackUpdate SpawnListPawn NotOrigID! " + " thing=" + th.Label + " ID=" + th.thingIDNumber);
                                                 }
                                             });
                                     }
@@ -373,6 +377,10 @@ namespace RimWorldOnlineCity
                                                     ThingsIDDicRev[te.OriginalID] = th.thingIDNumber;
                                                     ThingsIDDic[th.thingIDNumber] = te.OriginalID;
                                                     ThingsObjDic[th.thingIDNumber] = th;
+                                                }
+                                                else
+                                                {
+                                                    Loger.Log("Client AttackUpdate SpawnListThings NotOrigID! " + " thing=" + th.Label + " ID=" + th.thingIDNumber);
                                                 }
                                             });
                                     }
@@ -395,7 +403,7 @@ namespace RimWorldOnlineCity
                                     Loger.Log("Client AttackUpdate SpawnListEvent Exception " + ext.ToString());
                                 }
                                 InTimer = false;
-                            }, "..", false, null);
+                            }, "", false, null); //".."
                         }
                         else
                         {

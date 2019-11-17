@@ -63,6 +63,34 @@ namespace RimWorldOnlineCity.GameClasses
         }
     }
 
+
+    /// <summary>
+    /// Хост следит за уничтожением объектов, чтобы передать их
+    /// </summary>
+    [HarmonyPatch(typeof(Thing))]
+    [HarmonyPatch("DeSpawn")]
+    public static class Thing_DeSpawn_Patch
+    {
+        [HarmonyPrefix]
+        public static void Prefix(Thing __instance)
+        {
+            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Mote) return;
+            if (__instance is Projectile) return;
+            if (__instance is Plant) return;
+            if (__instance is Filth) return;
+
+            if (__instance is Corpse) return;
+            if (__instance is Pawn) return; //не отслеживаем пешек! в остальном это копия Thing_Destroy_Patch выше
+
+            var that = __instance;
+            if (that.Map == null) return;
+            GameAttackHost client;
+            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out client)) return;
+            client.UIEventChange(that, true);
+        }
+    }
+
     [HarmonyPatch(typeof(Thing))]
     [HarmonyPatch("PostApplyDamage")]
     public static class Thing_PostApplyDamage_Patch
@@ -121,6 +149,9 @@ namespace RimWorldOnlineCity.GameClasses
             if (__instance is Projectile) return;
             if (__instance is Plant) return;
             if (__instance is Filth) return;
+
+            if (__instance is Corpse) return;
+            if (__instance is Pawn) return; //есть отдельный цикл по всем пешкам
 
             //Loger.Log("HostAttackUpdate SpawnSetup " + __instance.GetType().ToString() + " " + __instance.Label + " respawningAfterLoad=" + respawningAfterLoad);
 

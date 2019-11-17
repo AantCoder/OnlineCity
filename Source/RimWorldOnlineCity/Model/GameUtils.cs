@@ -500,26 +500,36 @@ namespace RimWorldOnlineCity
                 var pawn = thing as Pawn;
                 if ((int)pawn.health.State != (int)state.DownState)
                 {
-                    if (state.DownState == AttackThingState.PawnHealthState.Dead)
+                    if (pawn.health.State == PawnHealthState.Dead)
                     {
-                        PawnKill(pawn);
+                        Loger.Log("Client ApplyState Set pawn state is Dead! Error to change on " + state.DownState.ToString());
+                    }
+                    else if (state.DownState == AttackThingState.PawnHealthState.Dead)
+                    {
+                        Loger.Log("Client ApplyState Set pawn state (1): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
+                        HealthUtility.DamageUntilDead(pawn);
+                        //PawnKill(pawn);
                     }
                     else if (state.DownState == AttackThingState.PawnHealthState.Down)
                     {
+                        Loger.Log("Client ApplyState Set pawn state (2): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
                         //todo! Применяем наркоз?
+                        HealthUtility.DamageUntilDowned(pawn, true);
                     }
                     else
                     {
-                        //todo Если нужно встать её что, воскрешать? :)
+                        Loger.Log("Client ApplyState Set pawn state (3): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
+                        //полное лечение
                         pawn.health.Notify_Resurrected();
                     }
                 }
             }
             
         }
-
+        /*
         public static void PawnKill(Pawn pawn)
         {
+            //заменено на HealthUtility.DamageUntilDead(p);
             DamageDef crush = DamageDefOf.Crush;
             float amount = 99999f;
             float armorPenetration = 999f;
@@ -531,6 +541,7 @@ namespace RimWorldOnlineCity
                 pawn.Kill(new DamageInfo?(damageInfo), null);
             }
         }
+        */
 
         public static void ShowDialodOKCancel(string title
             , string text
