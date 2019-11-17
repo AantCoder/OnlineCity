@@ -13,6 +13,8 @@ namespace DiscordChatBotServer.Models
     public class Chanel2Server
     {
         public int Chanel { get; set; }
-        public string IP { get; set; }
-    }   
+        public long IP { get; set; }
+        public int Port { get; set; }
+        public DateTime LastActiveTime { get; set; }
+    }
 }

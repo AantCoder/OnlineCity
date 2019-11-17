@@ -32,10 +32,8 @@ namespace DiscordChatBotServer.Helpers
         {
             var t = System.Data.SQLite.EF6.SQLiteProviderFactory.Instance;
             var da = t.CreateDataAdapter();
-            
 
-
-
+            return false;
         }
     }
 }

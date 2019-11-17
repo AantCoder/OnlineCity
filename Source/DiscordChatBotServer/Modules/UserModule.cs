@@ -9,14 +9,13 @@ using System.Threading.Tasks;
 
 namespace DiscordChatBotServer.Modules
 {
-    public class UserModule : ModuleBase<SocketCommandContext>
+    public class UserModule : BaseModule
     {
         [Description("Status server: where started, online player e.t.c ")]
         // RU: Сообщает статус сервера, когда запущен, сколько игроков онлайн и т.д.
         [Command("status")]
         public async Task StatusAsync()
         {
-            this.
             // TO DO
             //await ReplyAsync("");
         }

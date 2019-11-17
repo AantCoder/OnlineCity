@@ -160,12 +160,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationContext.cs" />
     <Compile Include="BotContext .cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\RegCommand.cs" />
+    <Compile Include="Commands\UnRegCommand.cs" />
     <Compile Include="Common\TwoWayDict.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Models\Chanel2Server.cs" />
     <Compile Include="Models\OCUser.cs" />
     <Compile Include="Modules\AdminServerModule.cs" />
+    <Compile Include="Modules\BaseModule.cs" />
     <Compile Include="Modules\UserModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -186,6 +191,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll\UnionDll.csproj">
+      <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
+      <Name>UnionDll</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

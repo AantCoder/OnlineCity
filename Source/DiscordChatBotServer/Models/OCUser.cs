@@ -14,5 +14,6 @@ namespace DiscordChatBotServer.Models
         public int DiscordIdUser { get; set; }
         public int DiscordIdChanel { get; set; }
         public string OCLogin { get; set; }
+        public DateTime LastActiveTime { get; set; }
     }
 }

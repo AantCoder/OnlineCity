@@ -22,28 +22,28 @@ namespace DiscordChatBotServer
         {
             if (args == null || args.Length !=1) 
             {
-                Console.WriteLine("DiscordChatBotServer.exe [token] ");
+                Console.WriteLine("DiscordChatBotServer.exe [tokenBot]");
                 return;
             }
-
 
             new Program().RunBotAsync(args[0]).GetAwaiter().GetResult();
         }     
 
         private DiscordSocketClient _discordClient;
         private CommandService _commands;
-        private SqlLiteProvider _sqlLiteProvider;
+        //private SqlLiteProvider _sqlLiteProvider;
         private IServiceProvider _services;
 
         public async Task RunBotAsync(string botToken)
         {
             _discordClient = new DiscordSocketClient();
             _commands = new CommandService();
-            _sqlLiteProvider = new SqlLiteProvider("BotDatabase.sqlite3");
+            //_sqlLiteProvider = new SqlLiteProvider("BotDatabase.sqlite3");
             _services = new ServiceCollection()
                 .AddSingleton(_discordClient)
                 .AddSingleton(_commands)
-                .AddSingleton(_sqlLiteProvider)
+                .AddSingleton<ApplicationContext>()
+                //.AddSingleton(_sqlLiteProvider)
                 .BuildServiceProvider();
 
             _discordClient.Log += _discordClient_Log;            
