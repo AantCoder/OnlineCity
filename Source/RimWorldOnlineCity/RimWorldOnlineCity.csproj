@@ -25,27 +25,28 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Assemblies\</OutputPath>
+    <!--OutputPath>..\..\Assemblies\</OutputPath-->
+    <OutputPath>$(RimWorldFolder)Mods\OnlineCity\Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="%24HugsLibChecker, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Lib\$HugsLibChecker.dll</HintPath>
+    <Reference Include="$HugsLibChecker, Version=0.5.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLibChecker.5.0.0\lib\net35\$HugsLibChecker.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\HugsLib\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLib.6.1.1\lib\net35\0Harmony.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HugsLib">
-      <HintPath>..\..\..\HugsLib\Assemblies\HugsLib.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="HugsLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLib.6.1.1\lib\net35\HugsLib.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -55,30 +56,33 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExchengeUtils.cs" />
+    <Compile Include="GameAttackHost.cs" />
     <Compile Include="GameClasses\BaseOnline.cs" />
     <Compile Include="GameClasses\CaravanArrivalAction_VisitOnline.cs" />
     <Compile Include="GameClasses\CaravanOnline.cs" />
     <Compile Include="CommonUtils.cs" />
-    <Compile Include="DevelopTest.cs" />
-    <Compile Include="GameClasses\GameExit.cs" />
-    <Compile Include="GameClasses\GameLoader.cs" />
-    <Compile Include="GameClasses\GameStarter.cs" />
+    <Compile Include="Model\UI\DevelopTest.cs" />
+    <Compile Include="GameAttacker.cs" />
+    <Compile Include="GameClasses\Harmony\GameAttackTrigger.cs" />
+    <Compile Include="GameClasses\Harmony\GameExit.cs" />
+    <Compile Include="GameClasses\Harmony\GameLoader.cs" />
+    <Compile Include="GameClasses\Harmony\GameStarter.cs" />
     <Compile Include="GameStarterSelectPawns.cs" />
     <Compile Include="Model\GameUtils.cs" />
-    <Compile Include="GameClasses\MainMenu.cs" />
+    <Compile Include="GameClasses\Harmony\MainMenu.cs" />
     <Compile Include="GameClasses\ModDefOf.cs" />
     <Compile Include="GameClasses\StartPoint.cs" />
     <Compile Include="Model\UI\Dialog_Exchenge.cs" />
     <Compile Include="Model\UI\Dialog_TextOut.cs" />
     <Compile Include="Model\UI\Dialog_SelectThingDef.cs" />
-    <Compile Include="Model\UI\GrassFix.cs" />
+    <Compile Include="GameClasses\Harmony\GrassFix.cs" />
     <Compile Include="Model\ClientData.cs" />
     <Compile Include="Model\PlayerClient.cs" />
     <Compile Include="Model\UI\DialogControlBase.cs" />
@@ -105,6 +109,9 @@
       <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
       <Name>UnionDll</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

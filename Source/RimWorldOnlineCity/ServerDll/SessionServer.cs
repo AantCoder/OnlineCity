@@ -1,4 +1,5 @@
-﻿using OCUnion;
+﻿using Model;
+using OCUnion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -183,6 +184,16 @@ namespace OCServer
                     send.TypePacket = 26;
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " ExchengeLoad");
                     send.Packet = Worker.ExchengeLoad();
+                    break;
+                case 27:
+                    send.TypePacket = 28;
+                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " AttackInitiator");
+                    send.Packet = Worker.AttackOnlineInitiator((AttackInitiatorToSrv)recObj.Packet);
+                    break;
+                case 29:
+                    send.TypePacket = 30;
+                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " AttackHost");
+                    send.Packet = Worker.AttackOnlineHost((AttackHostToSrv)recObj.Packet);
                     break;
                 default:
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Error0");

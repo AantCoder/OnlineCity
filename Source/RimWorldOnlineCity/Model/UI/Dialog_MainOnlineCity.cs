@@ -129,12 +129,15 @@ namespace RimWorldOnlineCity
             LastInitialSize = new Vector2(windowRect.width, windowRect.height);
             LastInitialPos = new Vector2(windowRect.x, windowRect.y);
 
-            if (!DevTest && new DevelopTest().Run())
+            if (MainHelper.DebugMode)
             {
-                DevTest = true;
-                Close();
+                if (!DevTest && new DevelopTest().Run())
+                {
+                    DevTest = true;
+                    Close();
+                }
+                if (DevTest) return;
             }
-            if (DevTest) return;
 
             if (!SessionClient.Get.IsLogined)
             {
@@ -634,7 +637,6 @@ namespace RimWorldOnlineCity
             List<ListableOption> list2 = new List<ListableOption>();
             ListableOption item2 = new ListableOption_WebLink("OCity_Dialog_AutorPage".Translate(), "https://vk.com/rimworldonline", IconForums);
             list2.Add(item2);
-            float num = OptionListingUtility.DrawOptionListing(rect2, list2);
 
             rect2 = new Rect(inRect.x, inRect.y + 30f, 150f, 40f);
             Text.Font = GameFont.Small;
@@ -659,9 +661,9 @@ namespace RimWorldOnlineCity
                 Find.WindowStack.Add(form);
             }, IconDelTex);
             list2.Add(item2);
-            num = OptionListingUtility.DrawOptionListing(rect2, list2);
             
             /*
+            float num = OptionListingUtility.DrawOptionListing(rect2, list2);
             GUI.BeginGroup(rect2);
             if (Current.ProgramState == ProgramState.Entry && Widgets.ButtonImage(new Rect(0f, num + 10f, 64f, 32f), LanguageDatabase.activeLanguage.icon))
             {

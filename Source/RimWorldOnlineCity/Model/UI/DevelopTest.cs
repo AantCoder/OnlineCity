@@ -54,8 +54,37 @@ namespace RimWorldOnlineCity
                 : Restricted.ToStringRestrictedShort(o, ExcludeTypes);
         }
 
+        private static int tttt;
+
         public bool Run()
         {
+            return false;
+            Log.Message("DevelopTest Run: " + UpdateWorldController.GetTestText());
+            
+            var hostPlace = UpdateWorldController.GetWOByServerId(7) as MapParent;
+            Log.Message("DevelopTest Run: " + (hostPlace?.Label ?? "null"));
+            return true;
+            /*
+            var mmap = Find.Maps[0];
+            var ppawn = mmap.mapPawns.AllPawnsSpawned.FirstOrDefault(i => i.thingIDNumber == 589);
+            var tpawn = mmap.mapPawns.AllPawnsSpawned.FirstOrDefault(i => i.thingIDNumber == 586);
+
+            var pxml = ThingEntry.CreateEntry(ppawn, 1);
+            File.WriteAllText(Loger.PathLog + "RunTest" + (++tttt).ToString() + ".xml", pxml.Data);
+
+            var place = Find.WorldObjects.Settlements
+                .FirstOrDefault(f => f.Faction == Faction.OfPlayer);
+            var map_ = ((Settlement)place).Map;
+            var cell_ = GameUtils.GetTradeCell(map_);
+
+            map_.terrainGrid.SetTerrain(cell_
+                , (tttt++) % 2 == 1 
+                ? DefDatabase<TerrainDef>.GetNamed("TileGranite")
+                : TerrainDefOf.WaterDeep);
+
+            return true;
+            */
+            /////////////////////////////////////////////////////
             /*
             GameUtils.ShowDialodOKCancel("asdasda",
                 () => Log.Message("Test OK"),

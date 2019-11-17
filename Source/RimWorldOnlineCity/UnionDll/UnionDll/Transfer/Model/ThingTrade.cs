@@ -47,6 +47,14 @@ namespace Model
         /// Снято с трупа, применимо только к одежде
         /// </summary>
         public bool WornByCorpse { get; set; }
+        /// <summary>
+        /// Ориентацияю. Используется только при переносе объектов (CreateThing CreateTrade)
+        /// </summary>
+        public int Rotation { get; set; }
+        /// <summary>
+        /// Прогресс роста. Используется только при переносе объектов (CreateThing CreateTrade)
+        /// </summary>
+        public float Growth { get; set; }
 
         /// <summary>
         /// У нас этого нет, невозможно продать. Вычисляется функцией ExchengeUtils.ChechToSell
@@ -177,33 +185,12 @@ namespace Model
             if (Concrete)
             {
                 //Log.Message(DataThing.def.defName + " ? " + thing.def.defName + " " + TransferableUtility.TransferAsOne(thing, DataThing).ToString());
-                return TransferableUtility.TransferAsOne(thing, DataThing);
+                return TransferableUtility.TransferAsOne(thing, DataThing, TransferAsOneMode.Normal);
             }
             else
                 return true;
         }
-
-        public static ThingTrade CreateTrade(Thing thing, int count)
-        {
-            var that = new ThingTrade();
-            that.SetBaseInfo(thing, count); //Data заполняется!
-            that.DataThing = thing;
-            that.Concrete = true;
-
-            that.DefName = thing.def.defName;
-            that.StuffName = thing.Stuff == null ? null : thing.Stuff.defName;
-            that.HitPoints = thing.HitPoints;
-            that.MaxHitPoints = thing.MaxHitPoints;
-            
-            QualityCategory qq;
-            if (QualityUtility.TryGetQuality(thing, out qq)) that.Quality = (int)qq;
-
-            Apparel thingA = thing as Apparel;
-            if (thingA != null) that.WornByCorpse = thingA.WornByCorpse;
-            
-            return that;
-        }
-
+        
         public static ThingTrade CreateTrade(ThingDef thingDef, float minHitPointsPercents, QualityCategory minQualities, int count)
         {
             var that = new ThingTrade();
@@ -221,8 +208,73 @@ namespace Model
             //OriginalID
             //StuffName
             //WornByCorpse
+            //Rotation
+            //Growth
 
             return that;
+        }
+
+        public static ThingTrade CreateTrade(Thing thing, int count, bool withData = true)
+        {
+            var that = new ThingTrade();
+            that.SetBaseInfo(thing, count);
+            if (withData) that.SetData(thing);
+            that.DataThing = thing;
+            that.Concrete = true;
+
+            that.DefName = thing.def.defName;
+            that.StuffName = thing.Stuff == null ? null : thing.Stuff.defName;
+            that.HitPoints = thing.HitPoints;
+            that.MaxHitPoints = thing.MaxHitPoints;
+            
+            QualityCategory qq;
+            if (QualityUtility.TryGetQuality(thing, out qq)) that.Quality = (int)qq;
+
+            Apparel thingA = thing as Apparel;
+            if (thingA != null) that.WornByCorpse = thingA.WornByCorpse;
+
+            that.Rotation = thing.Rotation.AsInt;
+
+            Plant thingP = thing as Plant;
+            if (thingP != null) that.Growth = thingP.Growth;
+
+            return that;
+        }
+
+        public Thing CreateThing()
+        {
+            var def = (ThingDef)GenDefDatabase.GetDef(typeof(ThingDef), DefName);
+            var stuffDef = !string.IsNullOrEmpty(StuffName) ? (ThingDef)GenDefDatabase.GetDef(typeof(ThingDef), StuffName) : null;
+            Thing thing = !string.IsNullOrEmpty(StuffName)
+                ? ThingMaker.MakeThing(def, stuffDef)
+                : ThingMaker.MakeThing(def);
+            thing.stackCount = Count;
+
+            if (HitPoints > 0) thing.HitPoints = HitPoints;
+
+            CompQuality compQuality = thing.TryGetComp<CompQuality>();
+            if (compQuality != null)
+            {
+                compQuality.SetQuality((QualityCategory)Quality, ArtGenerationContext.Outsider);
+            }
+
+            if (WornByCorpse)
+            {
+                Apparel thingA = thing as Apparel;
+                if (thingA != null)
+                {
+                    typeof(Apparel)
+                       .GetField("wornByCorpseInt", BindingFlags.Instance | BindingFlags.NonPublic)
+                       .SetValue(thingA, true);
+                }
+            }
+
+            thing.Rotation = new Rot4(Rotation);
+
+            Plant thingP = thing as Plant;
+            if (thingP != null) thingP.Growth = Growth;
+
+            return thing;
         }
 
     }

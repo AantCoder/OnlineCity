@@ -1,0 +1,23 @@
+﻿using OCUnion.Transfer.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Model
+{
+    [Serializable]
+    public class AttackInitiatorToSrv
+    {
+        public int State { get; set; }
+
+        public string StartHostPlayer { get; set; }
+
+        public long HostPlaceServerId { get; set; }
+
+        public long InitiatorPlaceServerId { get; set; }
+
+        public List<ThingEntry> Pawns { get; set; }
+        public List<AttackPawnCommand> UpdateCommand { get; set; }
+    }
+}

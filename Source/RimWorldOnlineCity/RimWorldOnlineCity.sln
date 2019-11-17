@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RimWorldOnlineCity", "RimWorldOnlineCity.csproj", "{871528EA-8B2C-439D-AD2B-702863331980}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -17,6 +17,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat", "..\Chat\Chat.csproj", "{648325A2-044D-499C-86E6-7BEFFAE568AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converter", "..\Converter\Converter.csproj", "{FF65F157-9528-4680-ADB3-4770A8738370}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CD73A090-1BA1-4CB2-A9B7-28E1BB14A578}"
+	ProjectSection(SolutionItems) = preProject
+		..\Directory.Build.props = ..\Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,5 +56,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E39C29C-58E3-4D41-9C31-087892CC8220}
 	EndGlobalSection
 EndGlobal

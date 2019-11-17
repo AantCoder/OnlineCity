@@ -13,8 +13,9 @@ namespace Transfer
     {
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
+        private Object LockObj = new Object();
 #region
-        private static SessionClient Single = new SessionClient();
+        private static readonly SessionClient Single = new SessionClient();
 
         public static SessionClient Get { get { return Single; } }
 
@@ -36,7 +37,6 @@ namespace Transfer
             }
             Client = null;
         }
-
 
         public bool Connect(string addr, int port = 0)
         {
@@ -77,7 +77,7 @@ namespace Transfer
                 //Запускаем таймер фоново поддерживающий открытое соединение при простое
                 ConnectSaver.AddClient(Client, (cl) =>
                 {
-                    lock (this)
+                    lock (LockObj)
                     {
                         cl.SendMessage(new byte[1] { 0x00 });
                         cl.ReceiveBytes();
@@ -102,7 +102,7 @@ namespace Transfer
         {
             try
             {
-                lock (this)
+                lock (LockObj)
                 {
                     Client.SendMessage(new byte[1] { 0x00 });
 
@@ -128,7 +128,7 @@ namespace Transfer
         {
             try
             {
-                lock (this)
+                lock (LockObj)
                 {
                     Client.SendMessage(new byte[1] { 0x01 });
 
@@ -151,7 +151,7 @@ namespace Transfer
         /// </summary>
         private ModelContainer Trans(ModelContainer sendObj)
         {
-            lock (this)
+            lock (LockObj)
             {
                 //Loger.Log("Client T1");
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
@@ -242,6 +242,10 @@ namespace Transfer
 24 - ответ 
 25 - команды работы с биржей
 26 - ответ 
+27 - атака онлайн
+28 - ответ  
+29 - атакуемый онлайн
+30 - ответ 
         */
 
         public bool Registration(string login, string pass)
@@ -393,6 +397,22 @@ namespace Transfer
                 return null;
             }
             return stat.Orders;
+        }
+        
+        public AttackInitiatorFromSrv AttackOnlineInitiator(AttackInitiatorToSrv fromClient)
+        {
+            Loger.Log("Client AttackOnlineInitiator " + fromClient.State);
+            var stat = TransObject<AttackInitiatorFromSrv>(fromClient, 27, 28);
+
+            return stat;
+        }
+
+        public AttackHostFromSrv AttackOnlineHost(AttackHostToSrv fromClient)
+        {
+            Loger.Log("Client AttackOnlineHost " + fromClient.State);
+            var stat = TransObject<AttackHostFromSrv>(fromClient, 29, 30);
+            
+            return stat;
         }
     }
 }
