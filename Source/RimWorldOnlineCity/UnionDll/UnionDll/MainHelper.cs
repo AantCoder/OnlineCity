@@ -11,7 +11,7 @@ namespace OCUnion
     {
         public static bool DebugMode = false;
 
-        public static string VersionInfo = "Версия 0.02.32a от 2019.11.05";
+        public static string VersionInfo = "Версия 0.02.32a от 2019.11.17";
 
         /// <summary>
         /// Для автоматической проверки: версия клиента должна быть больше или равна версии сервера
