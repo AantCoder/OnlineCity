@@ -8,7 +8,7 @@ using OCUnion;
 
 namespace OCServer.Services
 {
-    public class PostingChat : ModelContainerCreator
+    public class PostingChat 
     {
         public ModelStatus GetModelStatus(ref PlayerServer player, ModelPostingChat pc)
         {

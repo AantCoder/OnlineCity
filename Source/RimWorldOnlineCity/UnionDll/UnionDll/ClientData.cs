@@ -34,16 +34,19 @@ namespace OCUnion
 
         private readonly string _myLogin;
 
-        public ClientData(string myLogin) 
+        private readonly SessionClient _sessionClient;
+
+        public ClientData(string myLogin, SessionClient sessionClient) 
         {            
             _myLogin = myLogin;
+            _sessionClient = sessionClient;
         }
 
         public bool ServerConnected
         {
             get
             {
-                return SessionClient.Get.IsLogined
+                return _sessionClient.IsLogined
                     && (LastServerConnect == DateTime.MinValue
                         || (DateTime.UtcNow - LastServerConnect).TotalSeconds < 8);
             }

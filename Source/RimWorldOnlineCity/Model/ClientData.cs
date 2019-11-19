@@ -13,7 +13,7 @@ namespace RimWorldOnlineCity
     {
         public Dictionary<string, PlayerClient> Players = new Dictionary<string, PlayerClient>();
 
-        public ClientData(string clientLogin) : base(clientLogin) { }
+        public ClientData(string clientLogin, SessionClient connect) : base(clientLogin, connect) { }
 
         public static bool UIInteraction = false; //говорят уведомления слева сверху мешают, поэтому выключено (можно сделать настройку если кому надо будет)
 

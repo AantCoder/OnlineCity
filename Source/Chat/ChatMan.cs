@@ -1,8 +1,6 @@
 ﻿using Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Chat
 {
@@ -16,13 +14,13 @@ namespace Chat
 
         public string GetChat(int index)
         {
-            SCC.UpdateChats();
+            SCC.ChatProv.UpdateChats();
             string ChatText;
-            if (index >= 0 && SCC.Data.Chats.Count > index)
+            if (index >= 0 && SCC.ChatProv.Data.Chats.Count > index)
             {
                 Func<ChatPost, string> getPost = (cp) => "[" + cp.OwnerLogin + "]: " + cp.Message;
 
-                var selectCannal = SCC.Data.Chats[index];
+                var selectCannal = SCC.ChatProv.Data.Chats[index];
                 ChatText = selectCannal.Posts
                     .Aggregate("", (r, i) => (r == "" ? "" : r + Environment.NewLine) + getPost(i));
             }
@@ -31,15 +29,12 @@ namespace Chat
             return ChatText;
         }
 
-        public void Send(int index, string text, Action after = null) 
+        public void Send(int index, string text)
         {
-            var selectCannal = SCC.Data.Chats[index];
+            var selectCannal = SCC.ChatProv.Data.Chats[index];
 
-            SCC.Command((connect) =>
-            {
-                connect.PostingChat(selectCannal.Id, text);
-                if (after != null) after();
-            });
+            SCC.ChatProv.SendMessage(text, selectCannal.Id);
+            SCC.ChatProv.UpdateChats();
         }
     }
 }

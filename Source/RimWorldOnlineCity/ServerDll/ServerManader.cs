@@ -54,7 +54,7 @@ namespace OCServer
         private void CheckDiscrordUser()
         {
             var isDiscordBotUser = Repository.GetData.PlayersAll.Any(p => Repository.DISCORD == p.Public.Login);
-            if (!isDiscordBotUser) 
+            if (!isDiscordBotUser)
             {
                 var player = new PlayerServer(Repository.DISCORD)
                 {
@@ -101,7 +101,7 @@ namespace OCServer
 
                     //те, кто запустил спутники
                     //todo когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
-                    
+
                     //и те кто географически рядом
                     //todo
 
