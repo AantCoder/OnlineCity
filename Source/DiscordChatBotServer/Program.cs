@@ -1,52 +1,68 @@
-﻿using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
+using Discord.WebSocket;
+using Discord.Commands;
+using OCUnion;
+using OC.DiscordBotServer.Commands;
 
-namespace DiscordChatBotServer
+//https://discord.foxbot.me/docs/api/
+namespace OC.DiscordBotServer
 {
     class Program
     {
-        /// <summary>
-        /// Prefix OC Online City 
-        /// </summary>
-        public  const string PX = "/OC"; 
-        static void Main(string[] args) 
-        {
-            if (args == null || args.Length !=1) 
-            {
-                Console.WriteLine("DiscordChatBotServer.exe [tokenBot]");
-                return;
-            }
-
-            new Program().RunBotAsync(args[0]).GetAwaiter().GetResult();
-        }     
-
         private DiscordSocketClient _discordClient;
         private CommandService _commands;
         //private SqlLiteProvider _sqlLiteProvider;
         private IServiceProvider _services;
 
+        /// <summary>
+        /// Prefix OC Online City 
+        /// </summary>
+        public const string PX = "!OC";
+        static void Main(string[] args)
+        {
+            if (args == null || args.Length < 1)
+            {
+                Console.WriteLine("DiscordChatBotServer.exe BotToken [PathToLog]");
+                return;
+            }
+
+            if (args.Length == 2)
+            {
+                Loger.PathLog = args[1];
+            }
+            else
+            {
+                Loger.PathLog = Environment.CurrentDirectory;
+            }
+
+            new Program().RunBotAsync(args[0]).GetAwaiter().GetResult();
+        }
+
         public async Task RunBotAsync(string botToken)
         {
-            _discordClient = new DiscordSocketClient();
+            _discordClient = new DiscordSocketClient( );
             _commands = new CommandService();
             //_sqlLiteProvider = new SqlLiteProvider("BotDatabase.sqlite3");
-            _services = new ServiceCollection()
+            var services = new ServiceCollection()
                 .AddSingleton(_discordClient)
-                .AddSingleton(_commands)
                 .AddSingleton<ApplicationContext>()
-                //.AddSingleton(_sqlLiteProvider)
-                .BuildServiceProvider();
+                .AddSingleton(typeof(DataContext));
 
-            _discordClient.Log += _discordClient_Log;            
+            foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                if (type.IsClass && type.GetInterface ("ICommand")!=null)//  && is 
+                {
+                    services.AddSingleton(type);
+                }
+            }
+            _services = services
+                .AddSingleton(_commands)
+                .BuildServiceProvider();
+            
+            _discordClient.Log += _discordClient_Log;
 
             await RegisterCommandAsync();
             await _discordClient.LoginAsync(Discord.TokenType.Bot, botToken);
@@ -56,7 +72,16 @@ namespace DiscordChatBotServer
 
         private Task _discordClient_Log(Discord.LogMessage arg)
         {
-            Console.WriteLine(arg);
+            if (arg.Message != null)
+            {
+                Task.Factory.StartNew(() => { Loger.Log(arg.Message); });
+                Console.WriteLine(arg.Message);
+            }
+
+            if (arg.Exception != null)
+            {
+                Task.Factory.StartNew(() => { Loger.Log(arg.Exception.ToString()); });
+            }
 
             return Task.CompletedTask;
         }
@@ -71,21 +96,20 @@ namespace DiscordChatBotServer
         {
             var message = arg as SocketUserMessage;
 
-            if (message is null || message.Author.IsBot) return ;
+
+            if (message is null || message.Author.IsBot) return;
             int argPos = 0;
 
             if (message.HasStringPrefix(PX, ref argPos) || message.HasMentionPrefix(_discordClient.CurrentUser, ref argPos))
             {
                 var context = new SocketCommandContext(_discordClient, message);
 
-                var result = await _commands.ExecuteAsync(context, argPos, _services);               
-                if (!result.IsSuccess) 
+                var result = await _commands.ExecuteAsync(context, argPos + 1, _services);
+                if (!result.IsSuccess)
                 {
                     Console.WriteLine(result.ErrorReason);
                 }
             }
         }
     }
-
-   
 }

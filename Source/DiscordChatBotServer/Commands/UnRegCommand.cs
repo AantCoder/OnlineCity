@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace DiscordChatBotServer.Commands
+namespace OC.DiscordBotServer.Commands
 {
-    public class UnRegCommand : ICommand
+    public sealed class UnRegCommand : ICommand
     {
-        public bool CanExecute(SocketCommandContext parameter, out string message)
+        public string Execute(SocketCommandContext parameter)
         {
             throw new NotImplementedException();
         }
 
-        public void Execute(SocketCommandContext parameter)
+        protected bool CanExecute(SocketCommandContext parameter, out string message)
         {
             throw new NotImplementedException();
         }

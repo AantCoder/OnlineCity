@@ -1,15 +1,11 @@
 ﻿using Discord.Commands;
-using DiscordChatBotServer.Helpers;
-using System;
-using System.Collections.Generic;
+using OC.DiscordBotServer.Helpers;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordChatBotServer.Modules
+namespace OC.DiscordBotServer.Modules
 {
-    public class UserModule : BaseModule
+    public sealed class UserModule : ModuleBase<SocketCommandContext>
     {
         [Description("Status server: where started, online player e.t.c ")]
         // RU: Сообщает статус сервера, когда запущен, сколько игроков онлайн и т.д.

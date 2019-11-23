@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{07F790B0-CD03-468F-A8EB-A6E469FEEBF3}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>DiscordChatBotServer</RootNamespace>
-    <AssemblyName>DiscordChatBotServer</AssemblyName>
+    <RootNamespace>OC.DiscordBotServer</RootNamespace>
+    <AssemblyName>DiscordBotServer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -93,6 +93,7 @@
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\RimWorldOnlineCity\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
     </Reference>
@@ -158,19 +159,24 @@
     <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\RimWorldOnlineCity\packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\..\..\..\Games\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
-    <Compile Include="BotContext .cs" />
+    <Compile Include="DataContext.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\RegCommand.cs" />
     <Compile Include="Commands\UnRegCommand.cs" />
-    <Compile Include="Common\TwoWayDict.cs" />
     <Compile Include="Helpers\Helper.cs" />
+    <Compile Include="Languages\English.cs" />
+    <Compile Include="Languages\Translator.cs" />
     <Compile Include="Models\Chanel2Server.cs" />
     <Compile Include="Models\OCUser.cs" />
     <Compile Include="Modules\AdminServerModule.cs" />
-    <Compile Include="Modules\BaseModule.cs" />
+    <Compile Include="Modules\DeveloperModule.cs" />
+    <Compile Include="Modules\GameMasterModule.cs" />
     <Compile Include="Modules\UserModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -197,6 +203,9 @@
       <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
       <Name>UnionDll</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repositories\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

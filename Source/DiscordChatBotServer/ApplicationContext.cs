@@ -1,14 +1,18 @@
-﻿using System;
+﻿using OC.DiscordBotServer.Models;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
 
-namespace DiscordChatBotServer
+namespace OC.DiscordBotServer
 {
     public class ApplicationContext
     {
-        public ConcurrentDictionary<int, string> OCServer { get; set; } = new ConcurrentDictionary<int,string> ();
+        /// <summary>
+        /// Id DiscordChannel => Chanel2Server
+        /// </summary>
+        public ConcurrentDictionary<ulong, Chanel2Server> DiscrordToOCServer { get; set; } = new ConcurrentDictionary<ulong, Chanel2Server> ();
+        /// <summary>
+        /// 
+        /// </summary>
+        public ConcurrentDictionary<IPEndPoint, Chanel2Server> OCServerToDiscrord { get; set; } = new ConcurrentDictionary<IPEndPoint, Chanel2Server> ();
     }
 }

@@ -11,3 +11,4 @@ bin/
 obj/
 packages/
 *.user
+/Source/Chat/RimWorldWin64_Data/Managed
