@@ -41,6 +41,7 @@ namespace OCUnion
                         CultureValue = CultureInfo.InvariantCulture;
                     }
                 }
+
                 return CultureValue;
             }
         }

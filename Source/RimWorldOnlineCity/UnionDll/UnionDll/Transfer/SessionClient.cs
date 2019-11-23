@@ -19,10 +19,6 @@ namespace Transfer
         [Obsolete ("For Using in Discrod bot need many Session Clients, use SessionClient as variable in constructor in the Future")]
         private static SessionClient Single;
 
-        protected SessionClient() 
-        {
-        }
-
         /// <summary>
         /// Discrod may contains many server, Lazy initialisation Singlton class
         /// Что бы не вносить больших изменений, добавил ленивую инциализацию 
@@ -363,6 +359,7 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return false;
             }
+
             return stat != null;
         }
 

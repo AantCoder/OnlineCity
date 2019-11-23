@@ -47,7 +47,7 @@ namespace Transfer
         {
             //кол-во байт в начале в которых передается длинна сообщения
             int Int32Length = 4;
-            //длинна передаваемого сообщения (принимается в первых 4 байтах (константа Int32Length))
+            //длина передаваемого сообщения (принимается в первых 4 байтах (константа Int32Length))
             int lenghtAllMessageByte;
 
             byte[] receiveBuffer = ReceiveBytes(Int32Length);
@@ -58,6 +58,7 @@ namespace Transfer
 
             return receiveBuffer;
         }
+
         private byte[] ReceiveBytes(int countByte)
         {
             //if (!Loger.IsServer) Loger.Log("Client ReceiveBytes " + countByte.ToString() + ", " + Client.ReceiveBufferSize);
@@ -69,7 +70,7 @@ namespace Transfer
             byte[] receiveBuffer = new byte[Client.ReceiveBufferSize];
             //кол-во считано байт последний раз
             int numberOfBytesRead;
-            //длинна передаваемого сообщения (принимается в первых 4 байтах (константа Int32Length))
+            //длина передаваемого сообщения (принимается в первых 4 байтах (константа Int32Length))
             int lenghtAllMessageByte = countByte;
 
             while (lenghtAllMessageByte > 0)
@@ -89,6 +90,7 @@ namespace Transfer
                     lenghtAllMessageByte -= numberOfBytesRead;
                 }
             };
+
             return msg;
         }
     }

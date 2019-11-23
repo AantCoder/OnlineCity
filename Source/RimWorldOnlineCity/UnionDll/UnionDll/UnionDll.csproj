@@ -62,6 +62,7 @@
     <Compile Include="Transfer\Model\AttackHostToSrv.cs" />
     <Compile Include="Transfer\Model\AttackPawnCommand.cs" />
     <Compile Include="Transfer\Model\AttackThingState.cs" />
+    <Compile Include="Common\Grants.cs" />
     <Compile Include="Transfer\Model\IntVec3S.cs" />
     <Compile Include="Transfer\Model\OrderTrade.cs" />
     <Compile Include="Transfer\Model\Chat.cs" />

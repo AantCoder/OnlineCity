@@ -20,11 +20,16 @@ namespace Chat
         private void button1_Click(object sender, EventArgs e)
         {
             Chat = new ChatMan();
-            if (Chat.Login(textBox3.Text, textBox1.Text, textBox2.Text) == null)
+            var msg = Chat.Login(textBox3.Text, textBox1.Text, textBox2.Text);
+            if (msg == null)
             {
                 this.groupBox1.Visible = false;
                 UpdateChats();
+
+                return;
             }
+
+            MessageBox.Show(msg);           
         }
 
         private void button3_Click(object sender, EventArgs e)

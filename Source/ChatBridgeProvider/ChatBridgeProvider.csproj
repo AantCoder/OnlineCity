@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="ChatProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SessionClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll\UnionDll.csproj">

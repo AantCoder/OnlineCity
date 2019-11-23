@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ChatBridgeProvider")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCopyright("Apach 2.0 License")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,17 +1,15 @@
 ﻿using OCServer.Model;
 using OCUnion;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using Transfer;
 
 namespace OCServer
 {
-    public class ServerManader
+    public class ServerManager
     {
         public event Action<string> LogMessage;
         private ConnectServer Connect = null;
@@ -28,6 +26,7 @@ namespace OCServer
             var rep = Repository.Get;
             rep.SaveFileName = Path.Combine(path, "World.dat");
             rep.Load();
+            CheckDiscrordUser();
 
             //общее обслуживание
             rep.Timer.Add(1000, DoWorld);
@@ -43,7 +42,7 @@ namespace OCServer
             if (LogMessage != null) LogMessage("Start server in port " + port.ToString());
 
             Connect = new ConnectServer();
-            CheckDiscrordUser();
+            
             Connect.ConnectionAccepted = ConnectionAccepted;
             Connect.Start(null, port);
         }
@@ -59,9 +58,13 @@ namespace OCServer
                 var player = new PlayerServer(Repository.DISCORD)
                 {
                     Pass = Guid.NewGuid().ToString(),
-                    IsAdmin = true // возможно по умолчанию запретить ?
+                    IsAdmin = true, // возможно по умолчанию запретить ?
                 };
+
+                player.Public.Grants = (uint)Grants.GameMaster + (uint)Grants.Moderator;
             }
+
+            Repository.Get.Save(false);
         }
 
         /// <summary>

@@ -4,14 +4,15 @@ using System;
 using System.Net;
 using Transfer;
 using Util;
-//using SessionClient = OC.DiscordBotServer.Common.SessionClient;
 
 namespace OC.ChatBridgeProvider
 {
+    /// <summary>
+    /// Bridge class Chat between FW 3.5 and 4.6.1 
+    /// </summary>
     public class ChatProvider
     {
         public ClientData Data { get; set; }
-        //public static WorkTimer Timers { get; set; }
         public Player My { get; set; }
         public TimeSpan ServerTimeDelta { get; set; }
 
@@ -19,10 +20,9 @@ namespace OC.ChatBridgeProvider
 
         private readonly Transfer.SessionClient _sessionClient;
 
-        //public ChatProvider(Transfer.SessionClient sessionClient)
         public ChatProvider()
         {
-            //OC.DiscordBotServer.Helpers.Loger.Log("Chat Init");
+            Loger.Log("Chat Init");
             _sessionClient = new SessionClient();
         }
 
@@ -32,14 +32,14 @@ namespace OC.ChatBridgeProvider
             if (msgError != null) return msgError;
 
             var logMsg = "Login: " + login;
-            //DiscordBotServer.Helpers.Loger.Log("Chat " + logMsg);
+            Loger.Log("Chat " + logMsg);
             My = null;
             var pass = new CryptoProvider().GetHash(password);
 
             if (!_sessionClient.Login(login, pass))
             {
                 logMsg = "Login fail: " + _sessionClient.ErrorMessage;
-                //DiscordBotServer.Helpers.Loger.Log("Chat " + logMsg);
+                Loger.Log("Chat " + logMsg);
 
                 return _sessionClient.ErrorMessage;
             }
@@ -53,7 +53,7 @@ namespace OC.ChatBridgeProvider
         {
             var stringAdress = addr.Address.ToString();
             var logMsg = "Connecting to server. Addr: " + stringAdress + ":" + addr.Port.ToString();
-            //DiscordBotServer.Helpers.Loger.Log("Chat " + logMsg);
+            Loger.Log("Chat " + logMsg);
 
             if (!_sessionClient.Connect(stringAdress, addr.Port))
             {
@@ -62,7 +62,7 @@ namespace OC.ChatBridgeProvider
                 return _sessionClient.ErrorMessage;
             }
 
-            //DiscordBotServer.Helpers.Loger.Log("Chat " + logMsg);
+            Loger.Log("Chat " + logMsg);
 
             return null;
         }
@@ -117,7 +117,7 @@ namespace OC.ChatBridgeProvider
     }
 
     /// <summary>
-    /// it's litlle smell of code, because FW 3.5 does not support string as argument 
+    /// it's litlle smell of code, because FW 3.5 does not support string as argument for Event Delegate
     /// </summary>
     public class StringWrapperEventArgument : EventArgs
     {

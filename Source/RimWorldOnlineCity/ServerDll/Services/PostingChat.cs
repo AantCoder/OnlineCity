@@ -8,8 +8,9 @@ using OCUnion;
 
 namespace OCServer.Services
 {
-    public class PostingChat 
+    public class PostingChat
     {
+        private const string InvalidCommand = "The command is not available";
         public ModelStatus GetModelStatus(ref PlayerServer player, ModelPostingChat pc)
         {
             var timeNow = DateTime.UtcNow;
@@ -208,16 +209,37 @@ namespace OCServer.Services
                         }
                         break;
                     case "/Discord":
-                        Loger.Log($"User {player.Public.Login} request Discord token");
-                        if (!player.IsAdmin || player.Public.Login == Repository.DISCORD)
+                        var login = player.Public.Login;
+                        if (Repository.DISCORD.Equals(login))
+                        {
+                            PostCommandPrivatPostActivChat(player, chat, InvalidCommand);
+                            break;
+                        }
+
+                        if (argsM.Count == 0)
+                        {
+                            Loger.Log($"User {player.Public.Login} request Discord token");
+                            var playerServer = Repository.GetData.PlayersAll.Where(p1 => p1.Public.Login.Equals(login)).FirstOrDefault();
+                            Guid token = playerServer.DiscordToken.Equals(Guid.Empty) ? Guid.NewGuid() : playerServer.DiscordToken;
+                            PostCommandPrivatPostActivChat(player, chat, token.ToString());
+                            break;
+                        }
+
+                        if (!player.IsAdmin)
                         {
                             PostCommandPrivatPostActivChat(player, chat, "Command only for admin");
+                            break;
                         }
-                        else
+
+                        if (argsM[0] == "ServerToken") 
                         {
-                            var token = Repository.GetData.PlayersAll.FirstOrDefault(p => p.Public.Login == Repository.DISCORD)?.Pass;
-                            PostCommandPrivatPostActivChat(player, chat, token);
+                            Loger.Log($"User {player.Public.Login} request DiscordServer token");
+                            var ServerToken = Repository.GetData.PlayersAll.FirstOrDefault(p => p.Public.Login == Repository.DISCORD)?.Pass;
+                            PostCommandPrivatPostActivChat(player, chat, ServerToken);
+                            break;
                         }
+
+                        PostCommandPrivatPostActivChat(player, chat, InvalidCommand);
                         break;
                     default:
                         PostCommandPrivatPostActivChat(player, chat, "Command not found: " + command);
@@ -240,7 +262,6 @@ namespace OCServer.Services
                     Message = mmsg,
                     OwnerLogin = player.Public.Login
                 });
-
             }
 
             return new ModelStatus()

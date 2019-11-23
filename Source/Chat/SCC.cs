@@ -33,8 +33,22 @@ namespace Chat
 
         public static string Login(string addr, string login, string password)
         {
-            var ipAdres = IPAddress.Parse("194.87.95.90");
-            var endPoint = new IPEndPoint(ipAdres, Transfer.SessionClient.DefaultPort);
+            var StrIp = addr.Split(':');
+            var port = Transfer.SessionClient.DefaultPort;
+            if (StrIp.Length == 2)
+            {
+                if (!int.TryParse(StrIp[1], out port))
+                {
+                    return "Invalid IP adress or port";
+                }
+            }
+
+            if (!IPAddress.TryParse(StrIp[0],out IPAddress ipAdres))
+            {
+                return "Invalid IP adress";
+            }
+
+            var endPoint = new IPEndPoint(ipAdres, port);
 
             return ChatProv.Login(endPoint, login, password);
         }

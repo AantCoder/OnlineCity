@@ -24,6 +24,7 @@ namespace OCServer
             var player = Repository.GetData
                 .PlayersAll
                 .FirstOrDefault(p => p.Public.Login == packet.Login);
+
             if (player != null)
             {
                 if (player.Pass != packet.Pass) //todo ??
@@ -72,6 +73,7 @@ namespace OCServer
                     Message = "This login already exists"
                 };
             }
+
             player = new PlayerServer(packet.Login)
             {
                 Pass = packet.Pass,
@@ -430,7 +432,7 @@ namespace OCServer
         {
             if (Player == null) return null;
 
-            lock (_player)
+            lock (_player) // Теоретически _player может быть null ??
             {
                 return _postingChat.GetModelStatus(ref _player, pc);
             }

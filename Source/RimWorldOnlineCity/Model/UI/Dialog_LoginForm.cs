@@ -179,6 +179,5 @@ namespace RimWorldOnlineCity
             drawContents(sub, width);
             sub.End();
         }
-
     }
 }

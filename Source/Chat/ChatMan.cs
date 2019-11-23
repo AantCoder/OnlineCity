@@ -8,6 +8,11 @@ namespace Chat
     {
         public string Login(string addr, string login, string pass)
         {
+            if (string.IsNullOrEmpty(addr))
+            {
+                addr = "194.87.95.90";
+            }
+
             var msgError = SCC.Login(addr, login, pass);
             return msgError;
         }

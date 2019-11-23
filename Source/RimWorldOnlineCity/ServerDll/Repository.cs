@@ -63,6 +63,7 @@ namespace OCServer
                         Data.Version = MainHelper.VersionInfo;
                         needResave = true;
                     }
+
                     PlayerServer.PublicPosts = Data.PlayersAll[0].PublicChat.Posts;
                     if (Data.Orders == null) Data.Orders = new List<OrderTrade>();
 
@@ -101,6 +102,7 @@ namespace OCServer
                 file.Read(buff, 0, 10);
                 readAsXml = Encoding.ASCII.GetString(buff, 0, 10).Contains("<?xml");
             }
+
             //считываем текст как xml сейва или как сжатого zip'а
             var saveFileData = File.ReadAllBytes(fileName);
             if (readAsXml)
@@ -147,6 +149,7 @@ namespace OCServer
                     File.Copy(SaveFileName + ".bak", SaveFileName, true);
                 throw;
             }
+
             Loger.Log("Server Saved");
         }
         
