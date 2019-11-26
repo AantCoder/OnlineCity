@@ -30,8 +30,8 @@ namespace OC.DiscordBotServer.Helpers
         /// <returns></returns>
         internal static bool RegServerOffline(int idChanel, string ip)
         {
-            var t = System.Data.SQLite.EF6.SQLiteProviderFactory.Instance;
-            var da = t.CreateDataAdapter();
+          //  var t = System.Data.SQLite.EF6.SQLiteProviderFactory.Instance;
+           // var da = t.CreateDataAdapter();
 
             return false;
         }

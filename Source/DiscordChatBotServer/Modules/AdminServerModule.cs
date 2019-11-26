@@ -3,10 +3,7 @@ using OC.DiscordBotServer.Commands;
 using OC.DiscordBotServer.Helpers;
 using OCUnion;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 // How fix: A MessageReceived handler is blocking the gateway task
@@ -21,9 +18,9 @@ namespace OC.DiscordBotServer.Modules
     {
         private readonly RegCommand _regCmd;
         private readonly UnRegCommand _unRegCommand;
-        private readonly DataContext _appContext;
+        private readonly SqlLiteDataContext _appContext;
 
-        public AdminServerModule(DataContext appContext,  RegCommand reg, UnRegCommand unRegCommand)
+        public AdminServerModule(SqlLiteDataContext appContext,  RegCommand reg, UnRegCommand unRegCommand)
         {
             _regCmd = reg;
             _unRegCommand = unRegCommand;
@@ -38,20 +35,7 @@ namespace OC.DiscordBotServer.Modules
         //RU: Регистрирует новый сервер RimWorldOnlineCity на канале Discord: reg IP_server
         public async Task RegAsync(string ip, string token)
         {
-            try
-            {
-                var m = new Models.Chanel2Server()
-                {
-                    Id = 100
-                };
-
-                _appContext.Chanel2Servers.Add(m);
-            }
-
-            catch (Exception ex) 
-            {
-                Loger.Log(ex.ToString());
-            }
+           
          
             var s = _regCmd.Execute(Context , ip, token);
             await ReplyAsync(s);

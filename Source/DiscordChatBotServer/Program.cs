@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using Discord.Commands;
 using OCUnion;
 using OC.DiscordBotServer.Commands;
+using OC.DiscordBotServer.Models;
 
 //https://discord.foxbot.me/docs/api/
 namespace OC.DiscordBotServer
@@ -21,6 +22,7 @@ namespace OC.DiscordBotServer
         /// Prefix OC Online City 
         /// </summary>
         public const string PX = "!OC";
+        public const string PathToDb = "Filename=..\\BotDB.sqlite3";
         static void Main(string[] args)
         {
             if (args == null || args.Length < 1)
@@ -38,22 +40,41 @@ namespace OC.DiscordBotServer
                 Loger.PathLog = Environment.CurrentDirectory;
             }
 
+            var sqlLiteProvider = new SqlLiteDataContext(PathToDb);
+            //sqlLiteProvider.Chanel2Servers.Create();
+            //sqlLiteProvider.Chanel2Servers.Create();
+            var v = sqlLiteProvider.Chanel2Servers.Find(1);
+
+            var m = new Chanel2Server()
+            { Chanel2ServerId = 1, IP = 2, LastOnlineTime = DateTime.Now, Port = 100, LinkCreator = 100 };
+
+            var t = sqlLiteProvider.Database.BeginTransaction();
+            // sqlLiteProvider.Chanel2Servers.Add();
+
             new Program().RunBotAsync(args[0]).GetAwaiter().GetResult();
         }
 
         public async Task RunBotAsync(string botToken)
         {
-            _discordClient = new DiscordSocketClient( );
+            _discordClient = new DiscordSocketClient();
             _commands = new CommandService();
-            //_sqlLiteProvider = new SqlLiteProvider("BotDatabase.sqlite3");
+
+
+
+
             var services = new ServiceCollection()
                 .AddSingleton(_discordClient)
                 .AddSingleton<ApplicationContext>()
-                .AddSingleton(typeof(DataContext));
+                .AddSingleton<SqlLiteDataContext>();
 
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
             {
-                if (type.IsClass && type.GetInterface ("ICommand")!=null)//  && is 
+                if (!type.IsClass)
+                {
+                    continue;
+                }
+
+                if (type.GetInterface("ICommand") != null || type.GetInterface("IRepository") != null)
                 {
                     services.AddSingleton(type);
                 }
@@ -61,7 +82,7 @@ namespace OC.DiscordBotServer
             _services = services
                 .AddSingleton(_commands)
                 .BuildServiceProvider();
-            
+
             _discordClient.Log += _discordClient_Log;
 
             await RegisterCommandAsync();

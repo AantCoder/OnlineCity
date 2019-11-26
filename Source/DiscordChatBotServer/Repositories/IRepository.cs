@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordChatBotServer.UI
+namespace OC.DiscordBotServer.Repositories
 {
-    class ConfirmViewModel
+    public interface IRepository
     {
     }
 }
