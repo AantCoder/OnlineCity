@@ -186,10 +186,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.ReaderWriter" />    
+    <Reference Include="System.Xml.ReaderWriter" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
+    <Compile Include="ChatListener.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\RegCommand.cs" />
     <Compile Include="Commands\UnRegCommand.cs" />
@@ -204,10 +205,10 @@
     <Compile Include="Modules\UserModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\SQLLiteRepository\IRepository.cs" />
     <Compile Include="Repositories\SQLLiteRepository\Chanel2ServerRepository.cs" />
-    <Compile Include="Repositories\SQLLiteRepository\ModelMapping\Chanel2Server.cs" />
-    <Compile Include="Repositories\SQLLiteRepository\SqlLiteDataContext.cs" />
+    <Compile Include="Repositories\BotDataContext.cs" />
+    <Compile Include="Repositories\SQLLiteRepository\OCUserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

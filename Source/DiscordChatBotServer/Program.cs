@@ -7,6 +7,7 @@ using Discord.Commands;
 using OCUnion;
 using OC.DiscordBotServer.Commands;
 using OC.DiscordBotServer.Models;
+using OC.DiscordBotServer.Repositories;
 
 //https://discord.foxbot.me/docs/api/
 namespace OC.DiscordBotServer
@@ -40,17 +41,6 @@ namespace OC.DiscordBotServer
                 Loger.PathLog = Environment.CurrentDirectory;
             }
 
-            var sqlLiteProvider = new SqlLiteDataContext(PathToDb);
-            //sqlLiteProvider.Chanel2Servers.Create();
-            //sqlLiteProvider.Chanel2Servers.Create();
-            var v = sqlLiteProvider.Chanel2Servers.Find(1);
-
-            var m = new Chanel2Server()
-            { Chanel2ServerId = 1, IP = 2, LastOnlineTime = DateTime.Now, Port = 100, LinkCreator = 100 };
-
-            var t = sqlLiteProvider.Database.BeginTransaction();
-            // sqlLiteProvider.Chanel2Servers.Add();
-
             new Program().RunBotAsync(args[0]).GetAwaiter().GetResult();
         }
 
@@ -59,13 +49,16 @@ namespace OC.DiscordBotServer
             _discordClient = new DiscordSocketClient();
             _commands = new CommandService();
 
-
-
-
             var services = new ServiceCollection()
                 .AddSingleton(_discordClient)
                 .AddSingleton<ApplicationContext>()
-                .AddSingleton<SqlLiteDataContext>();
+                .AddSingleton<BotDataContext>(new BotDataContext(PathToDb));
+
+            services
+                .AddSingleton<OCUserRepository>()
+                .AddSingleton<Chanel2ServerRepository>()
+                .AddSingleton<IRepository<OCUser>>(x => x.GetService<OCUserRepository>())
+            .AddSingleton<IRepository<Chanel2Server>>(x => x.GetService<Chanel2ServerRepository>());
 
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
             {
@@ -74,7 +67,7 @@ namespace OC.DiscordBotServer
                     continue;
                 }
 
-                if (type.GetInterface("ICommand") != null || type.GetInterface("IRepository") != null)
+                if (type.GetInterface("ICommand") != null)
                 {
                     services.AddSingleton(type);
                 }
@@ -82,6 +75,7 @@ namespace OC.DiscordBotServer
             _services = services
                 .AddSingleton(_commands)
                 .BuildServiceProvider();
+
 
             _discordClient.Log += _discordClient_Log;
 

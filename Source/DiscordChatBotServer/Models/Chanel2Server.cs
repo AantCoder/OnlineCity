@@ -9,7 +9,7 @@ namespace OC.DiscordBotServer.Models
     public class Chanel2Server
     {
         [Key]
-        public ulong Chanel2ServerId { get; set; }
+        public ulong Id { get; set; }
         [Required]
         public long IP { get; set; }
         [Required]
@@ -18,7 +18,8 @@ namespace OC.DiscordBotServer.Models
         /// <summary>
         /// Id Discrord user
         /// </summary>
-        [DataType("UINT64")]
         public ulong LinkCreator { get; set; }
+        public string PasswordHash { get; set; }
+        public string Password { get; set; }
     }
 }

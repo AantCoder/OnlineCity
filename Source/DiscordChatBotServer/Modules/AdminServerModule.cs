@@ -18,9 +18,9 @@ namespace OC.DiscordBotServer.Modules
     {
         private readonly RegCommand _regCmd;
         private readonly UnRegCommand _unRegCommand;
-        private readonly SqlLiteDataContext _appContext;
+        private readonly BotDataContext _appContext;
 
-        public AdminServerModule(SqlLiteDataContext appContext,  RegCommand reg, UnRegCommand unRegCommand)
+        public AdminServerModule(BotDataContext appContext,  RegCommand reg, UnRegCommand unRegCommand)
         {
             _regCmd = reg;
             _unRegCommand = unRegCommand;
@@ -35,10 +35,7 @@ namespace OC.DiscordBotServer.Modules
         //RU: Регистрирует новый сервер RimWorldOnlineCity на канале Discord: reg IP_server
         public async Task RegAsync(string ip, string token)
         {
-           
-         
-            var s = _regCmd.Execute(Context , ip, token);
-            await ReplyAsync(s);
+            await ReplyAsync(_regCmd.Execute(Context , ip, token));
         }
 
         [Command("killhimplease")]

@@ -1,23 +1,23 @@
-﻿using OC.DiscordBotServer.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using OC.DiscordBotServer.Models;
 
 namespace OC.DiscordBotServer.Repositories
 {
-    public class Chanel2ServerRepository : IRepository <Chanel2Server>
+    public class OCUserRepository : IRepository <OCUser>
     {
         private readonly BotDataContext _dataContext;
 
-        public Chanel2ServerRepository(BotDataContext dataContext)
+        public OCUserRepository(BotDataContext dataContext)
         {
             _dataContext = dataContext;
         }
 
-        public bool AddNewItem(Chanel2Server server)
+        public bool AddNewItem(OCUser ocUser)
         {
             using (var tran = _dataContext.Database.BeginTransaction())
             {
-                _dataContext.Chanel2Servers.Add(server);
+                _dataContext.OCUsers.Add(ocUser);
                 tran.Commit();
             }
 
@@ -25,9 +25,9 @@ namespace OC.DiscordBotServer.Repositories
             return true;
         }
 
-        public IReadOnlyList<Chanel2Server> GetAll()
+        public IReadOnlyList<OCUser> GetAll()
         {
-            return _dataContext.Chanel2Servers.ToList().AsReadOnly();
+            return _dataContext.OCUsers.ToList().AsReadOnly();
         }
     }
 }

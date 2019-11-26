@@ -16,8 +16,6 @@ namespace Chat
 
         public static void Init()
         {
-            //MainHelper.DebugMode = true;
-            //if (MainHelper.DebugMode)
             try
             {
                 var workPath = Path.Combine(

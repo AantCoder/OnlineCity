@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace OC.DiscordBotServer.Repositories
 {
-    public interface IRepository
+    public interface IRepository<TEntity>
+        where TEntity : class
     {
+        bool AddNewItem(TEntity entity);
+        IReadOnlyList<TEntity> GetAll();
     }
 }

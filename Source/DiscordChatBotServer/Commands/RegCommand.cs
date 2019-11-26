@@ -5,19 +5,17 @@ using Discord.Commands;
 using Transfer;
 using System.Net.Sockets;
 using OCUnion;
-using OC.DiscordBotServer.Repositories;
+using Util;
 
 namespace OC.DiscordBotServer.Commands
 {
     public class RegCommand : ICommand
     {
         private readonly ApplicationContext _appContext;
-        private readonly Chanel2ServerRepository _chanel2ServerRepository;
 
-        public RegCommand(ApplicationContext appContext, Chanel2ServerRepository chanel2ServerRepository)
+        public RegCommand(ApplicationContext appContext)
         {
             _appContext = appContext;
-            _chanel2ServerRepository = chanel2ServerRepository;
         }
 
         protected string CanExecute(SocketCommandContext context, string ip, string token, out IPEndPoint serverAdr)
@@ -30,19 +28,11 @@ namespace OC.DiscordBotServer.Commands
                 return Languages.Translator.ErrInvalidIP;
             }
 
-            if (_appContext.OCServerToDiscrord.TryGetValue(serverAdr, out Chanel2Server server2Chanel))
+            if (_appContext.DiscrordToOCServer.TryGetValue(context.Channel.Id, out Chanel2Server server2Chanel))
             {
-                return string.Format(Languages.Translator.ErrTryAddToExistChannel, server2Chanel.Chanel2ServerId, serverAdr.ToString());
+                return string.Format(Languages.Translator.ErrTryAddToExistChannel, server2Chanel.Id, serverAdr.ToString());
             }
-
-            //_idChannel = context.Channel.Id;
-            //if (_appContext.DiscrordToOCServer.TryGetValue(_idChannel, out Chanel2Server chanel2Server))
-            //{
-            //    serverAdr = new IPEndPoint(chanel2Server.IP, chanel2Server.Port)
-            //      .Address.ToString();
-            //    return string.Format(Languages.Translator.ErrTryAddToExistChannel, context.Channel.Name, serverAdr);
-            //}
-
+        
             if (context.IsPrivate)
             {
                 return Languages.Translator.InfResctrictInPrivate;
@@ -58,24 +48,6 @@ namespace OC.DiscordBotServer.Commands
 
         public string Execute(SocketCommandContext context, string ip, string token)
         {
-
-            try
-            {
-                var m = new Models.Chanel2Server()
-                {
-                    Chanel2ServerId = 100
-                };
-
-                _chanel2ServerRepository.AddNewServer(m);
-            }
-
-            catch (Exception ex)
-            {
-                Loger.Log(ex.ToString());
-            }
-
-
-
             try
             {
                 IPEndPoint serverAdr;
@@ -98,34 +70,29 @@ namespace OC.DiscordBotServer.Commands
                 var client = new SessionClient();
                 if (!client.Connect(serverAdr.Address.ToString(), serverAdr.Port))
                 {
+                    return Languages.Translator.ErrServerNotAvailable;
+                }
+
+                var pass = new CryptoProvider().GetHash(token);
+                if (!client.Login("Discord", pass))
+                {
                     return Languages.Translator.ErrInvalidDiscordToken;
                 }
 
-                // 		Guid.NewGuid().ToString()	"eed1dbee-f0c9-476e-b8c4-e848bdafa4c0"	string
-                //connectClient = ServerPing(_serverAdr);
-
-                //if (connectClient == null)
-                //{
-                //    return Languages.Translator.ErrServerNotAvailable;
-                //}
-                //client.Login(ip,)
-
                 var channelToServer = new Chanel2Server()
                 {
-                    Chanel2ServerId = context.Channel.Id,
+                    Id = context.Channel.Id,
                     IP = BitConverter.ToUInt32(serverAdr.Address.GetAddressBytes(), 0),
-                    Port = serverAdr.Port
+                    Port = serverAdr.Port,
+                    LinkCreator = context.Message.Author.Id,
+                    LastOnlineTime = DateTime.UtcNow,
+                    PasswordHash = pass,
+                    Password= token
                 };
 
-                lock (_appContext)
-                {
-                    _appContext.DiscrordToOCServer[context.Channel.Id] = channelToServer;
-                    _appContext.OCServerToDiscrord[serverAdr] = channelToServer;
-                }
-
+                _appContext.RegisterNewServer(channelToServer, true);
                 context.Message.DeleteAsync();
 
-                ///////////_botContext.Chanel2Servers.Add(channelToServer);
                 return string.Format(Languages.Translator.InfServerReg, serverAdr.ToString(), context.Channel.Name);
             }
             catch (Exception ex)
