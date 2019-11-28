@@ -418,7 +418,7 @@ namespace RimWorldOnlineCity
             return CellFinder.RandomCell(map);
         }
 
-        public static IntVec3 SpawnCaravanPirate(Map map, List<ThingEntry> pawns, Action<Pawn, ThingEntry> spawn = null)
+        public static IntVec3 SpawnCaravanPirate(Map map, List<ThingEntry> pawns, Action<Thing, ThingEntry> spawn = null)
         {
             var nextCell = GameUtils.GetAttackCells(map);
             return SpawnList(map, pawns, true, (p) => true, spawn, (p) => nextCell());
@@ -426,7 +426,7 @@ namespace RimWorldOnlineCity
 
         public static IntVec3 SpawnList(Map map, List<ThingEntry> pawns, bool attackCell
             , Func<ThingEntry, bool> getPirate
-            , Action<Pawn, ThingEntry> spawn = null
+            , Action<Thing, ThingEntry> spawn = null
             , Func<Thing, IntVec3> getCell = null)
         {
             if (MainHelper.DebugMode) Loger.Log("SpawnList...");
@@ -453,10 +453,10 @@ namespace RimWorldOnlineCity
                 {
                     if (MainHelper.DebugMode) Loger.Log("Pawn... " + thin.Position.x + " " + thin.Position.y);
                     GenSpawn.Spawn((Pawn)thin, cell, map);
-                    if (spawn != null) spawn((Pawn)thin, thing);
                 }
                 else
                     GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
+                if (spawn != null) spawn(thin, thing);
                 if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
             }
             return ret;
@@ -467,6 +467,7 @@ namespace RimWorldOnlineCity
             //полезное из игры: RecoverFromUnwalkablePositionOrKill
             if (state.StackCount > 0 && thing.stackCount != state.StackCount)
             {
+                Loger.Log("Client ApplyState Set StackCount " + thing.stackCount.ToString() + " -> " + state.StackCount.ToString());
                 thing.stackCount = state.StackCount;
             }
 
@@ -490,6 +491,7 @@ namespace RimWorldOnlineCity
 
             if (thing.def.useHitPoints)
             {
+                Loger.Log("Client ApplyState Set HitPoints " + thing.HitPoints.ToString() + " -> " + state.HitPoints.ToString());
                 thing.HitPoints = state.HitPoints;
             }
 
@@ -498,26 +500,36 @@ namespace RimWorldOnlineCity
                 var pawn = thing as Pawn;
                 if ((int)pawn.health.State != (int)state.DownState)
                 {
-                    if (state.DownState == AttackThingState.PawnHealthState.Dead)
+                    if (pawn.health.State == PawnHealthState.Dead)
                     {
-                        PawnKill(pawn);
+                        Loger.Log("Client ApplyState Set pawn state is Dead! Error to change on " + state.DownState.ToString());
+                    }
+                    else if (state.DownState == AttackThingState.PawnHealthState.Dead)
+                    {
+                        Loger.Log("Client ApplyState Set pawn state (1): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
+                        HealthUtility.DamageUntilDead(pawn);
+                        //PawnKill(pawn);
                     }
                     else if (state.DownState == AttackThingState.PawnHealthState.Down)
                     {
+                        Loger.Log("Client ApplyState Set pawn state (2): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
                         //todo! Применяем наркоз?
+                        HealthUtility.DamageUntilDowned(pawn, true);
                     }
                     else
                     {
-                        //todo Если нужно встать её что, воскрешать? :)
+                        Loger.Log("Client ApplyState Set pawn state (3): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
+                        //полное лечение
                         pawn.health.Notify_Resurrected();
                     }
                 }
             }
             
         }
-
+        /*
         public static void PawnKill(Pawn pawn)
         {
+            //заменено на HealthUtility.DamageUntilDead(p);
             DamageDef crush = DamageDefOf.Crush;
             float amount = 99999f;
             float armorPenetration = 999f;
@@ -529,6 +541,7 @@ namespace RimWorldOnlineCity
                 pawn.Kill(new DamageInfo?(damageInfo), null);
             }
         }
+        */
 
         public static void ShowDialodOKCancel(string title
             , string text

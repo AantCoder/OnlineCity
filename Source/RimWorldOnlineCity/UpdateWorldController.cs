@@ -19,7 +19,8 @@ namespace RimWorldOnlineCity
 
             //отправка всех новых и измененных объектов игрока
             toServ.WObjects = Find.WorldObjects.AllWorldObjects
-                .Where(o => o.Faction != null && o.Faction.IsPlayer && !(o is CaravanOnline) && !(o is BaseOnline))
+                .Where(o => o.Faction != null && o.Faction.IsPlayer //&& !(o is CaravanOnline) && !(o is BaseOnline)
+                    && (o is Settlement || o is Caravan)) //Чтобы отсеч разные карты событий
                 .Select(o => GetWorldObjectEntry(o))
                 .ToList();
 
@@ -36,8 +37,25 @@ namespace RimWorldOnlineCity
             toServ.WObjectsToDelete = ToDelete;
         }
 
-        public static void LoadFromServer(ModelPlayToClient fromServ)
+        public static void LoadFromServer(ModelPlayToClient fromServ, bool removeMissing)
         {
+            if (removeMissing)
+            {
+                //запускается только при первом получении данных от сервера после загрузки или создания карты
+                //удаляем все объекты других игроков (на всякий случай, т.к. в сейв они не сохраняются)
+
+                var missingWObjects = Find.WorldObjects.AllWorldObjects
+                    .Select(o => o as CaravanOnline)
+                    .Where(o => o != null)
+                    //.Where(o => !fromServ.WObjects.Any(wo => wo.ServerId == o.OnlineWObject.ServerId))
+                    .ToList();
+                for (int i = 0; i < missingWObjects.Count; i++)
+                {
+                    Find.WorldObjects.Remove(missingWObjects[i]);
+                }
+                Loger.Log("RemoveMissing " + missingWObjects.Count);
+            }
+
             //обновление всех объектов
             ToDelete = new List<WorldObjectEntry>();
             if (fromServ.WObjects != null && fromServ.WObjects.Count > 0)
@@ -79,7 +97,7 @@ namespace RimWorldOnlineCity
                         {
                             //если нет, и какой-то сбой, посылаем в первый поселек
                             place = Find.WorldObjects.Settlements
-                                .FirstOrDefault(f => f.Faction == Faction.OfPlayer);
+                                .FirstOrDefault(f => f.Faction == Faction.OfPlayer && f is MapParent && ((MapParent)f).Map.IsPlayerHome);
                         }
                         else
                         {
@@ -469,92 +487,120 @@ namespace RimWorldOnlineCity
         /// <returns></returns>
         public static void ApplyWorldObject(WorldObjectEntry worldObjectEntry)
         {
-            List<WorldObject> allWorldObjects = Find.WorldObjects.AllWorldObjects;
-
-            if (worldObjectEntry.LoginOwner == SessionClientController.My.Login)
+            var err = "";
+            try
             {
-                //для своих нужно только занести в MyWorldObjectEntry (чтобы запомнить ServerId)
-                if (MyWorldObjectEntry.Any(wo => wo.Value.ServerId == worldObjectEntry.ServerId))
-                    return;
-
-                for (int i = 0; i < allWorldObjects.Count; i++)
+                List<WorldObject> allWorldObjects = Find.WorldObjects.AllWorldObjects;
+                err += "1 ";
+                if (worldObjectEntry.LoginOwner == SessionClientController.My.Login)
                 {
-                    if (!MyWorldObjectEntry.ContainsKey(allWorldObjects[i].ID)
-                        && allWorldObjects[i].Tile == worldObjectEntry.Tile 
-                        && (allWorldObjects[i] is Caravan && worldObjectEntry.Type == WorldObjectEntryType.Caravan
-                            || allWorldObjects[i] is Settlement && worldObjectEntry.Type == WorldObjectEntryType.Base))
-                    {
-                        var id = allWorldObjects[i].ID;
-                        Loger.Log("SetMyID " + id + " ServerId " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
-                        MyWorldObjectEntry.Add(id, worldObjectEntry);
-
-                        if (!ConverterServerId.ContainsKey(worldObjectEntry.ServerId))
-                            ConverterServerId.Add(worldObjectEntry.ServerId, id);
+                    //для своих нужно только занести в MyWorldObjectEntry (чтобы запомнить ServerId)
+                    if (MyWorldObjectEntry.Any(wo => wo.Value.ServerId == worldObjectEntry.ServerId))
                         return;
-                    }
-                }
+                    err += "2 ";
 
-                Loger.Log("ToDel " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
-
-                //объект нужно удалить на сервере - его нету у самого игрока (не заполняется при самом первом обновлении после загрузки)
-                if (ToDelete != null) ToDelete.Add(worldObjectEntry);
-                return;
-            }
-            
-            //поиск уже существующих
-            CaravanOnline worldObject = null;
-            /*
-            int existId;
-            if (ConverterServerId.TryGetValue(worldObjectEntry.ServerId, out existId))
-            {
-                for (int i = 0; i < allWorldObjects.Count; i++)
-                {
-                    if (allWorldObjects[i].ID == existId && allWorldObjects[i] is CaravanOnline)
+                    for (int i = 0; i < allWorldObjects.Count; i++)
                     {
-                        worldObject = allWorldObjects[i] as CaravanOnline;
-                        break;
-                    }
-                }
-            }
-            */
-            worldObject = GetOtherByServerId(worldObjectEntry.ServerId, allWorldObjects);
+                        err += "3 ";
+                        if (!MyWorldObjectEntry.ContainsKey(allWorldObjects[i].ID)
+                            && allWorldObjects[i].Tile == worldObjectEntry.Tile
+                            && (allWorldObjects[i] is Caravan && worldObjectEntry.Type == WorldObjectEntryType.Caravan
+                                || allWorldObjects[i] is MapParent && worldObjectEntry.Type == WorldObjectEntryType.Base))
+                        {
+                            err += "4 ";
+                            var id = allWorldObjects[i].ID;
+                            Loger.Log("SetMyID " + id + " ServerId " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
+                            MyWorldObjectEntry.Add(id, worldObjectEntry);
 
-            //если тут база другого игрока, то удаление всех кто занимает этот тайл, кроме караванов (удаление новых НПЦ и событий с занятых тайлов)
-            if (worldObjectEntry.Type == WorldObjectEntryType.Base)
-            {
-                for (int i = 0; i < allWorldObjects.Count; i++)
+                            if (!ConverterServerId.ContainsKey(worldObjectEntry.ServerId))
+                                ConverterServerId.Add(worldObjectEntry.ServerId, id);
+                            err += "5 ";
+                            return;
+                        }
+                    }
+
+                    err += "6 ";
+                    Loger.Log("ToDel " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
+
+                    //объект нужно удалить на сервере - его нету у самого игрока (не заполняется при самом первом обновлении после загрузки)
+                    if (ToDelete != null) ToDelete.Add(worldObjectEntry);
+                    err += "7 ";
+                    return;
+                }
+
+                //поиск уже существующих
+                CaravanOnline worldObject = null;
+                /*
+                int existId;
+                if (ConverterServerId.TryGetValue(worldObjectEntry.ServerId, out existId))
                 {
-                    if (allWorldObjects[i].Tile == worldObjectEntry.Tile && allWorldObjects[i] != worldObject
-                        && !(allWorldObjects[i] is Caravan) && !(allWorldObjects[i] is CaravanOnline)
-                        && !allWorldObjects[i].Faction.IsPlayer)
+                    for (int i = 0; i < allWorldObjects.Count; i++)
                     {
-                        Loger.Log("Remove " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
-                        Find.WorldObjects.Remove(allWorldObjects[i]);
+                        if (allWorldObjects[i].ID == existId && allWorldObjects[i] is CaravanOnline)
+                        {
+                            worldObject = allWorldObjects[i] as CaravanOnline;
+                            break;
+                        }
                     }
                 }
-            }
+                */
+                err += "8 ";
+                worldObject = GetOtherByServerId(worldObjectEntry.ServerId, allWorldObjects);
 
-            //создание
-            if (worldObject == null)
-            {
-                worldObject = worldObjectEntry.Type == WorldObjectEntryType.Base
-                    ? (CaravanOnline)WorldObjectMaker.MakeWorldObject(ModDefOf.BaseOnline)
-                    : (CaravanOnline)WorldObjectMaker.MakeWorldObject(ModDefOf.CaravanOnline);
-                worldObject.SetFaction(Faction.OfPlayer);
+                err += "9 ";
+                //если тут база другого игрока, то удаление всех кто занимает этот тайл, кроме караванов (удаление новых НПЦ и событий с занятых тайлов)
+                if (worldObjectEntry.Type == WorldObjectEntryType.Base)
+                {
+                    err += "10 ";
+                    for (int i = 0; i < allWorldObjects.Count; i++)
+                    {
+                        err += "11 ";
+                        if (allWorldObjects[i].Tile == worldObjectEntry.Tile && allWorldObjects[i] != worldObject
+                            && !(allWorldObjects[i] is Caravan) && !(allWorldObjects[i] is CaravanOnline)
+                            && (allWorldObjects[i].Faction == null || !allWorldObjects[i].Faction.IsPlayer))
+                        {
+                            err += "12 ";
+                            Loger.Log("Remove " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
+                            Find.WorldObjects.Remove(allWorldObjects[i]);
+                        }
+                    }
+                }
+
+                err += "13 ";
+                //создание
+                if (worldObject == null)
+                {
+                    err += "14 ";
+                    worldObject = worldObjectEntry.Type == WorldObjectEntryType.Base
+                        ? (CaravanOnline)WorldObjectMaker.MakeWorldObject(ModDefOf.BaseOnline)
+                        : (CaravanOnline)WorldObjectMaker.MakeWorldObject(ModDefOf.CaravanOnline);
+                    err += "15 ";
+                    worldObject.SetFaction(Faction.OfPlayer);
+                    worldObject.Tile = worldObjectEntry.Tile;
+                    Find.WorldObjects.Add(worldObject);
+                    err += "16 ";
+                    ConverterServerId.Add(worldObjectEntry.ServerId, worldObject.ID);
+                    Loger.Log("Add " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name + " " + worldObjectEntry.LoginOwner);
+                    err += "17 ";
+                }
+                else
+                {
+                    err += "18 ";
+                    ConverterServerId[worldObjectEntry.ServerId] = worldObject.ID; //на всякий случай
+                    err += "19 ";
+                    Loger.Log("SetID " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
+                }
+                err += "20 ";
+                //обновление
                 worldObject.Tile = worldObjectEntry.Tile;
-                Find.WorldObjects.Add(worldObject);
-                ConverterServerId.Add(worldObjectEntry.ServerId, worldObject.ID);
-                Loger.Log("Add " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name + " " + worldObjectEntry.LoginOwner);
+                err += "21 ";
+                worldObject.OnlineWObject = worldObjectEntry;
             }
-            else
+            catch
             {
-                ConverterServerId[worldObjectEntry.ServerId] = worldObject.ID; //на всякий случай
-                Loger.Log("SetID " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
+                Loger.Log("ApplyWorldObject ErrorLog: " + err);
+                throw;
             }
-            //обновление
-            worldObject.Tile = worldObjectEntry.Tile;
-            worldObject.OnlineWObject = worldObjectEntry;
-            
         }
 
         public static void DeleteWorldObject(WorldObjectEntry worldObjectEntry)

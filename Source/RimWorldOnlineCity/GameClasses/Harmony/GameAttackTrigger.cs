@@ -1,5 +1,6 @@
 ﻿using Harmony;
 using OCUnion;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -49,11 +50,116 @@ namespace RimWorldOnlineCity.GameClasses
         public static void Prefix(Thing __instance)
         {
             if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Mote) return;
+            if (__instance is Projectile) return;
+            if (__instance is Plant) return;
+            if (__instance is Filth) return;
 
             var that = __instance;
+            if (that.Map == null) return;
             GameAttackHost client;
             if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out client)) return;
             client.UIEventChange(that, true);
+        }
+    }
+
+
+    /// <summary>
+    /// Хост следит за уничтожением объектов, чтобы передать их
+    /// </summary>
+    [HarmonyPatch(typeof(Thing))]
+    [HarmonyPatch("DeSpawn")]
+    public static class Thing_DeSpawn_Patch
+    {
+        [HarmonyPrefix]
+        public static void Prefix(Thing __instance)
+        {
+            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Mote) return;
+            if (__instance is Projectile) return;
+            if (__instance is Plant) return;
+            if (__instance is Filth) return;
+
+            if (__instance is Corpse) return;
+            if (__instance is Pawn) return; //не отслеживаем пешек! в остальном это копия Thing_Destroy_Patch выше
+
+            var that = __instance;
+            if (that.Map == null) return;
+            GameAttackHost client;
+            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out client)) return;
+            client.UIEventChange(that, true);
+        }
+    }
+
+    [HarmonyPatch(typeof(Thing))]
+    [HarmonyPatch("PostApplyDamage")]
+    public static class Thing_PostApplyDamage_Patch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(Thing __instance, DamageInfo dinfo, float totalDamageDealt)
+        {
+            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Mote) return;
+            if (__instance is Projectile) return;
+            if (__instance is Plant) return;
+            if (__instance is Filth) return;
+
+            //Loger.Log("HostAttackUpdate PostApplyDamage1 " + __instance.GetType().ToString() + " " + __instance.Label + " totalDamageDealt=" + totalDamageDealt + " " + dinfo.ToString());
+
+            var that = __instance;
+            if (that.Map == null) return;
+            GameAttackHost client;
+            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out client)) return;
+            client.UIEventChange(that, false);
+        }
+    }
+
+    [HarmonyPatch(typeof(ThingWithComps))]
+    [HarmonyPatch("PostApplyDamage")]
+    public static class ThingWithComps_PostApplyDamage_Patch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(Thing __instance, DamageInfo dinfo, float totalDamageDealt)
+        {
+            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Mote) return;
+            if (__instance is Projectile) return;
+            if (__instance is Plant) return;
+            if (__instance is Filth) return;
+
+            //Loger.Log("HostAttackUpdate PostApplyDamage2 " + __instance.GetType().ToString() + " " + __instance.Label + " totalDamageDealt=" + totalDamageDealt + " " + dinfo.ToString());
+
+            var that = __instance;
+            if (that.Map == null) return;
+            GameAttackHost client;
+            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out client)) return;
+            client.UIEventChange(that, false);
+        }
+    }
+
+    [HarmonyPatch(typeof(Thing))]
+    [HarmonyPatch("SpawnSetup")]
+    public static class Thing_SpawnSetup_Patch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(Thing __instance, Map map, bool respawningAfterLoad)
+        {
+            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Mote) return;
+            if (__instance is Projectile) return;
+            if (__instance is Plant) return;
+            if (__instance is Filth) return;
+
+            if (__instance is Corpse) return;
+            if (__instance is Pawn) return; //есть отдельный цикл по всем пешкам
+
+            //Loger.Log("HostAttackUpdate SpawnSetup " + __instance.GetType().ToString() + " " + __instance.Label + " respawningAfterLoad=" + respawningAfterLoad);
+
+            var that = __instance;
+            if (that.Map == null) return;
+            GameAttackHost client;
+            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out client)) return;
+            client.UIEventChange(that, false, true);
         }
     }
 
@@ -72,6 +178,7 @@ namespace RimWorldOnlineCity.GameClasses
             var that = __instance;
             var pawn = that.GetPawn();
             var curJob = that.curJob;
+            if (pawn.Map == null) return;
             GameAttacker client;
             if (GameAttackTrigger_Patch.ActiveAttacker.TryGetValue(pawn.Map, out client))
             {
@@ -99,6 +206,7 @@ namespace RimWorldOnlineCity.GameClasses
                 && GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
             var that = __instance;
             var pawn = that.GetPawn();
+            if (pawn.Map == null) return;
             GameAttacker client;
             if (GameAttackTrigger_Patch.ActiveAttacker.TryGetValue(pawn.Map, out client))
             {

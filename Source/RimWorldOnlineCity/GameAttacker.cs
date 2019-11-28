@@ -134,7 +134,7 @@ namespace RimWorldOnlineCity
                         return;
                     }
                     if (response.State >= 4) break;
-                    if ((DateTime.UtcNow - s1Time).Seconds > 60)
+                    if ((DateTime.UtcNow - s1Time).TotalSeconds > 60)
                     {
                         ErrorBreak("Timeout");
                         return;
@@ -267,36 +267,58 @@ namespace RimWorldOnlineCity
                         {
                             Loger.Log("Client AttackUpdate 4. UpdateState=" + toClient.UpdateState.Count);
 
-                            //Применение изменения местоположения и пр. по ID хоста 
-                            if (toClient.UpdateState.Count > 0)
+                            //Применение изменения местоположения и пр. по ID хоста
+                            for (int i = 0; i < toClient.UpdateState.Count; i++)
                             {
-                                for (int i = 0; i < toClient.UpdateState.Count; i++)
+                                int id;
+                                if (!ThingsIDDicRev.TryGetValue(toClient.UpdateState[i].HostThingID, out id))
                                 {
-                                    int id;
-                                    if (!ThingsIDDicRev.TryGetValue(toClient.UpdateState[i].HostThingID, out id))
-                                    {
-                                        Loger.Log("Client AttackUpdate 4 Err1 " + toClient.UpdateState[i].ToString());
-                                        continue;
-                                    }
-
-                                    Thing thing;
-                                    if (!ThingsObjDic.TryGetValue(id, out thing))
-                                    {
-                                        Loger.Log("Client AttackUpdate 4 Err2 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
-                                        continue;
-                                    }
-                                    if (thing == null)
-                                    {
-                                        Loger.Log("Client AttackUpdate 4 Err3 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
-                                        continue;
-                                    }
-                                    if (!(thing is Pawn)) Loger.Log("Client AttackUpdate 4 Apply " + toClient.UpdateState[i].ToString() + " thing=" + thing.Label);
-                                    GameUtils.ApplyState(thing, toClient.UpdateState[i]);
+                                    Loger.Log("Client AttackUpdate 4 Err1 " + toClient.UpdateState[i].ToString());
+                                    continue;
                                 }
+
+                                Thing thing;
+                                if (!ThingsObjDic.TryGetValue(id, out thing))
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err2 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
+                                    continue;
+                                }
+                                if (thing == null)
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err3 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
+                                    continue;
+                                }
+                                if (!(thing is Pawn)) Loger.Log("Client AttackUpdate 4 Apply " + toClient.UpdateState[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                GameUtils.ApplyState(thing, toClient.UpdateState[i]);
                             }
+
+                            for (int i = 0; i < toClient.Delete.Count; i++)
+                            {
+                                int id;
+                                if (!ThingsIDDicRev.TryGetValue(toClient.Delete[i], out id))
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err4 " + toClient.Delete[i].ToString());
+                                    continue;
+                                }
+
+                                Thing thing;
+                                if (!ThingsObjDic.TryGetValue(id, out thing))
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err5 " + toClient.Delete[i].ToString() + " id=" + id.ToString());
+                                    continue;
+                                }
+                                if (thing == null)
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Err6 " + toClient.Delete[i].ToString() + " id=" + id.ToString());
+                                    continue;
+                                }
+                                Loger.Log("Client AttackUpdate 4 Destroy " + toClient.Delete[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                thing.Destroy();
+                            }
+                            
                         };
 
-                        if (toClient.NewPawns.Count > 0)
+                        if (toClient.NewPawns.Count > 0 || toClient.NewThings.Count > 0)
                         {
                             LongEventHandler.QueueLongEvent(delegate
                             {
@@ -310,7 +332,8 @@ namespace RimWorldOnlineCity
                                             , (p) => p.TransportID == 0 //если без нашего ID, то у нас как пират
                                             , (th, te) =>
                                             {
-                                                //Loger.Log("Client AttackUpdate 3. NewPawn " + (th.IsColonist ? "IsColonist" : "NotColonist"));
+                                                var p = th as Pawn;
+                                                //Loger.Log("Client AttackUpdate 3. NewPawn " + (p.IsColonist ? "IsColonist" : "NotColonist"));
                                                 //Дополнить словарь сопоставления ID (их из OriginalID, наш ID, а TransportID уже никому не нужен, т.к. пешки дропнуты и переозданы)
                                                 if (te.OriginalID != 0 && th.thingIDNumber != 0)
                                                 {
@@ -320,10 +343,10 @@ namespace RimWorldOnlineCity
                                                     //Наши пешки сохраняем отдельно
                                                     if (te.TransportID != 0)
                                                     {
-                                                        AttackerPawns[th] = te.OriginalID;
-                                                        
-                                                        th.playerSettings.hostilityResponse = HostilityResponseMode.Ignore;
-                                                        th.jobs.StartJob(new Job(JobDefOf.Wait_Combat)
+                                                        AttackerPawns[p] = te.OriginalID;
+
+                                                        p.playerSettings.hostilityResponse = HostilityResponseMode.Ignore;
+                                                        p.jobs.StartJob(new Job(JobDefOf.Wait_Combat)
                                                         {
                                                             playerForced = true,
                                                             expiryInterval = int.MaxValue,
@@ -332,6 +355,33 @@ namespace RimWorldOnlineCity
                                                             , JobCondition.InterruptForced);
                                                     }
                                                 }
+                                                else
+                                                {
+                                                    Loger.Log("Client AttackUpdate SpawnListPawn NotOrigID! " + " thing=" + th.Label + " ID=" + th.thingIDNumber);
+                                                }
+                                            });
+                                    }
+
+                                    Loger.Log("Client AttackUpdate 3. NewThings=" + toClient.NewThings.Count);
+
+                                    if (toClient.NewThings.Count > 0)
+                                    {
+                                        GameUtils.SpawnList(GameMap, toClient.NewThings, false, (p) => false
+                                            , (th, te) =>
+                                            {
+                                                var p = th as Pawn;
+                                                //Loger.Log("Client AttackUpdate 3. NewPawn " + (p.IsColonist ? "IsColonist" : "NotColonist"));
+                                                //Дополнить словарь сопоставления ID (их из OriginalID, наш ID, а TransportID уже никому не нужен, т.к. пешки дропнуты и переозданы)
+                                                if (te.OriginalID != 0 && th.thingIDNumber != 0)
+                                                {
+                                                    ThingsIDDicRev[te.OriginalID] = th.thingIDNumber;
+                                                    ThingsIDDic[th.thingIDNumber] = te.OriginalID;
+                                                    ThingsObjDic[th.thingIDNumber] = th;
+                                                }
+                                                else
+                                                {
+                                                    Loger.Log("Client AttackUpdate SpawnListThings NotOrigID! " + " thing=" + th.Label + " ID=" + th.thingIDNumber);
+                                                }
                                             });
                                     }
 
@@ -339,11 +389,11 @@ namespace RimWorldOnlineCity
 
                                     Loger.Log("Client AttackUpdate 5");
 
-                                    //проверка обзора
+                                    //после первого массового спавна всех пешек
                                     if (AttackUpdateTick == 1)
                                     {
+                                        //проверка обзора и переключение на карту
                                         FloodFillerFog.DebugRefogMap(GameMap);
-                                        //CameraJumper.TryJump(cellRect.CenterCell, map);
                                         CameraJumper.TryJump(GameMap.Center, GameMap);
                                         GameAttackTrigger_Patch.ActiveAttacker.Add(GameMap, this);
                                     }
@@ -353,7 +403,7 @@ namespace RimWorldOnlineCity
                                     Loger.Log("Client AttackUpdate SpawnListEvent Exception " + ext.ToString());
                                 }
                                 InTimer = false;
-                            }, "..", false, null);
+                            }, "", false, null); //".."
                         }
                         else
                         {
@@ -460,6 +510,7 @@ namespace RimWorldOnlineCity
                     mapParent.Tile = tile;
                     Loger.Log("Client CreateClearMap 3");
                     Find.WorldObjects.Add(mapParent);
+                    mapParent.SetFaction(Find.FactionManager.OfPlayer);
                     Loger.Log("Client CreateClearMap 4");
                     var map = MapGenerator.GenerateMap(mapSize, mapParent, mapParent.MapGeneratorDef, null, null);
                     Loger.Log("Client CreateClearMap 5");

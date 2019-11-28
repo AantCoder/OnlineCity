@@ -263,6 +263,10 @@ namespace OCServer
                                 WO.Tile = pWOs[i].Tile;
                             }
                         }
+                        else
+                        {
+                            Loger.Log("PlayInfo find error add WO: " + pWOs[i].Name + " sid=" + sid);
+                        }
                     }
 
                     //передаем объекты других игроков + при первом обращении first
@@ -273,28 +277,29 @@ namespace OCServer
                         outWO.Add(data.WorldObjects[i]);
                     }
 
-                    //передаем удаленные объекты других игроков
-                    for (int i = 0; i < data.WorldObjectsDeleted.Count; i++)
+                    //передаем удаленные объекты других игроков (не для первого запроса)
+                    if (packet.UpdateTime > DateTime.MinValue)
                     {
-                        if (data.WorldObjectsDeleted[i].UpdateTime < packet.UpdateTime) continue;
-                        if (data.WorldObjectsDeleted[i].LoginOwner == pLogin) continue;
-                        outWOD.Add(data.WorldObjectsDeleted[i]);
+                        for (int i = 0; i < data.WorldObjectsDeleted.Count; i++)
+                        {
+                            if (data.WorldObjectsDeleted[i].UpdateTime < packet.UpdateTime)
+                            {
+                                //Удаляем все записи сроком старше 2х минут (их нужно хранить время между тем как игрок у которого удалился караван зальёт это на сервер, и все другие онлайн игроки получат эту инфу, а обновление идет раз в 5 сек)
+                                if ((timeNow - data.WorldObjectsDeleted[i].UpdateTime).TotalSeconds > 120000)
+                                {
+                                    data.WorldObjectsDeleted.RemoveAt(i--);
+                                }
+                                continue;
+                            }
+                            if (data.WorldObjectsDeleted[i].LoginOwner == pLogin) continue;
+                            outWOD.Add(data.WorldObjectsDeleted[i]);
+                        }
                     }
 
                     //завершили сбор информации клиенту
                     toClient.WObjects = outWO;
                     toClient.WObjectsToDelete = outWOD;
                     Player.LastUpdateTime = timeNow;
-
-                    //обслуживание data.WorldObjectsDeleted
-                    for (int i = 0; i < data.WorldObjectsDeleted.Count; i++)
-                    {
-                        var delTime = data.WorldObjectsDeleted[i].UpdateTime;
-                        if (data.PlayersAll.All(p => p.LastUpdateTime > delTime))
-                        {
-                            data.WorldObjectsDeleted.RemoveAt(i--);
-                        }
-                    }
                 }
                 
                 //прикрепляем письма

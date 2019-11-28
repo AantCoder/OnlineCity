@@ -35,14 +35,24 @@ namespace RimWorldOnlineCity
         public Dictionary<int, int> SendedState { get; set; }
 
         /// <summary>
+        /// Вещи, информацию по которым нужно обновить
+        /// </summary>
+        public List<int> ToUpdateStateId { get; set; }
+        public List<Thing> ToUpdateState { get; set; }
+
+        /// <summary>
         /// К передаче на удаление
         /// </summary>
         public HashSet<int> ToSendDeleteId { get; set; }
 
         /// <summary>
-        /// К передаче на создание/обновление
+        /// К передаче на создание/обновление пешек
         /// </summary>
         public HashSet<int> ToSendAddId { get; set; }
+        /// <summary>
+        /// К передаче на создание не пешек
+        /// </summary>
+        public HashSet<Thing> ToSendThingAdd { get; set; }
 
         /// <summary>
         /// К передаче на создание/обновление
@@ -69,9 +79,26 @@ namespace RimWorldOnlineCity
         /// </summary>
         public Dictionary<int, AttackPawnCommand> AttackingPawnJobDic { get; set; }
 
+        private Object ToSendListsSync = new Object();
+
         public long AttackUpdateTick { get; set; }
 
         private Map GameMap { get; set; }
+
+        /// <summary>
+        /// Пешка, которая начала Job связанный с вещью. Пешка - Вещь
+        /// </summary>
+        private Dictionary<int, Thing> ThingPrepareChange2 = new Dictionary<int, Thing>();
+
+        /// <summary>
+        /// Job связанный с вещью был завершен, она готова к следующей отправке
+        /// </summary>
+        private HashSet<Thing> ThingPrepareChange1 = new HashSet<Thing>();
+
+        /// <summary>
+        /// Job связанный с вещью был завершен, она готова к отправке
+        /// </summary>
+        private HashSet<Thing> ThingPrepareChange0 = new HashSet<Thing>();
 
         public static GameAttackHost Get
         {
@@ -210,8 +237,11 @@ namespace RimWorldOnlineCity
                         //Потом добавляем список к отправке
                         SendedPawnsId = new HashSet<int>();
                         SendedState = new Dictionary<int, int>();
+                        ToUpdateStateId = new List<int>();
+                        ToUpdateState = new List<Thing>();
                         ToSendDeleteId = new HashSet<int>();
                         ToSendAddId = new HashSet<int>();
+                        ToSendThingAdd = new HashSet<Thing>();
                         AttackingPawns = new List<Pawn>();
                         AttackingPawnDic = new Dictionary<int, int>();
                         AttackingPawnJobDic = new Dictionary<int, AttackPawnCommand>();
@@ -220,8 +250,11 @@ namespace RimWorldOnlineCity
 
                         UIEventNewJobDisable = true;
                         var cellPawns = GameUtils.SpawnCaravanPirate(cloneMap, pawnsA, 
-                            (p, te) => 
+                            (th, te) => 
                             {
+                                var p = th as Pawn;
+                                if (p == null) return;
+
                                 AttackingPawns.Add(p);
                                 AttackingPawnDic.Add(p.thingIDNumber, te.OriginalID);
 
@@ -301,100 +334,134 @@ namespace RimWorldOnlineCity
                 SessionClientController.Command((connect) =>
                 {
                     try
-                    { 
-//                      Loger.Log("Client HostAttackUpdate 1");
-                        //обновляем списки
-                        var mapPawns = GameMap.mapPawns.AllPawnsSpawned;
-                        var mapPawnsId = new HashSet<int>(mapPawns.Select(p => p.thingIDNumber));
-                        mapPawnsId.SymmetricExceptWith(SendedPawnsId);
-
-                        if (mapPawnsId.Count > 0)
+                    {
+                        List<Pawn> mapPawns;
+                        AttackHostFromSrv toClient;
+                        lock (ToSendListsSync)
                         {
-                            var toSendAddId = new HashSet<int>(mapPawnsId);
-                            toSendAddId.ExceptWith(SendedPawnsId);
-                            if (toSendAddId.Count > 0)
+                            //                      Loger.Log("Client HostAttackUpdate 1");
+                            //обновляем списки
+                            mapPawns = GameMap.mapPawns.AllPawnsSpawned;
+                            var mapPawnsId = new HashSet<int>(mapPawns.Select(p => p.thingIDNumber));
+                            mapPawnsId.SymmetricExceptWith(SendedPawnsId); //новые пешки + те что на сервере, но их уже нет на карте
+
+                            if (mapPawnsId.Count > 0)
                             {
-                                toSendAddId.ExceptWith(ToSendAddId);
-                                ToSendAddId.AddRange(toSendAddId);
-                            }
-
-                            var toSendDeleteId = new HashSet<int>(mapPawnsId);
-                            toSendDeleteId.IntersectWith(SendedPawnsId);
-                            if (toSendDeleteId.Count > 0)
-                            {
-                                toSendDeleteId.ExceptWith(ToSendDeleteId);
-                                ToSendDeleteId.AddRange(toSendDeleteId);
-                            }
-                        }
-
-                        //посылаем пакеты с данными
-//                      Loger.Log("Client HostAttackUpdate 2");
-
-                        var newPawns = new List<ThingEntry>();
-                        var newPawnsId = new List<int>();
-                        int cnt = ToSendAddId.Count < 3 || ToSendAddId.Count > 6 || AttackUpdateTick == 0
-                            ? ToSendAddId.Count
-                            : 3;
-                        int i = 0;
-                        int[] added = new int[cnt];
-                        foreach (int id in ToSendAddId)
-                        {
-                            if (i >= cnt) break;
-                            added[i++] = id;
-
-                            var thing = mapPawns.Where(p => p.thingIDNumber == id).FirstOrDefault();
-                            var tt = ThingEntry.CreateEntry(thing, 1);
-                            //передаем те, что были исходные у атакуемого (хотя там используется только как признак TransportID != 0 - значит те кто атакует)
-                            if (AttackingPawnDic.ContainsKey(tt.OriginalID)) tt.TransportID = AttackingPawnDic[tt.OriginalID];
-                            newPawns.Add(tt);
-                            newPawnsId.Add(id);
-                        }
-                        for (i = 0; i < cnt; i++)
-                        {
-                            ToSendAddId.Remove(added[i]);
-                            SendedPawnsId.Add(added[i]);
-                        }
-
-                        foreach (int id in ToSendDeleteId)
-                        {
-                            SendedPawnsId.Remove(id);
-                        }
-
-                        //передаем изменение местоположения и пр. по ID хоста
-                        var toSendState = new List<AttackThingState>();
-                        for (int imp = 0; imp < mapPawns.Count; imp++)
-                        {
-                            var mp = mapPawns[imp];
-                            var mpHash = ((mp.Position.x % 50) * 50 + mp.Position.z % 50)
-                                + mp.stackCount * 10000
-                                + mp.HitPoints * 100000;
-                            var mpID = mp.thingIDNumber;
-                            int mpHS;
-                            if (!SendedState.TryGetValue(mpID, out mpHS) || mpHS != mpHash)
-                            {
-                                SendedState[mpID] = mpHash;
-                                toSendState.Add(new AttackThingState()
+                                var toSendAddId = new HashSet<int>(mapPawnsId);
+                                toSendAddId.ExceptWith(SendedPawnsId); //только новые пешки
+                                if (toSendAddId.Count > 0)
                                 {
-                                    HostThingID = mpID,
-                                    StackCount = mp.stackCount,
-                                    Position = new IntVec3S(mp.Position),
-                                    HitPoints = mp.HitPoints,
-                                    DownState = (AttackThingState.PawnHealthState)(int)mp.health.State,
-                                });
-                                //А применяется созданый здесь контейнер в GameUtils.ApplyState
-                            }
-                        }
+                                    toSendAddId.ExceptWith(ToSendAddId); //исключаем те, которые уже есть в списке
+                                    ToSendAddId.AddRange(toSendAddId);
+                                }
 
-//                      Loger.Log("Client HostAttackUpdate 3");
-                        var toClient = connect.AttackOnlineHost(new AttackHostToSrv()
-                        {
-                            State = 10,
-                            NewPawns = newPawns,
-                            NewPawnsId = newPawnsId,
-                            Delete = ToSendDeleteId.ToList(),
-                            UpdateState = toSendState
-                        });
-                        ToSendDeleteId.Clear();
+                                var toSendDeleteId = new HashSet<int>(mapPawnsId);
+                                toSendDeleteId.IntersectWith(SendedPawnsId); //только те, что на сервере но их уже нет на карте
+                                if (toSendDeleteId.Count > 0)
+                                {
+                                    toSendDeleteId.ExceptWith(ToSendDeleteId); //исключаем те, которые уже есть в списке 
+                                    ToSendDeleteId.AddRange(toSendDeleteId);
+                                }
+                            }
+
+                            //посылаем пакеты с данными
+                            //                      Loger.Log("Client HostAttackUpdate 2");
+
+                            var newPawns = new List<ThingEntry>();
+                            var newPawnsId = new List<int>();
+                            int cnt = ToSendAddId.Count < 3 || ToSendAddId.Count > 6 || AttackUpdateTick == 0
+                                ? ToSendAddId.Count
+                                : 3;
+                            int i = 0;
+                            int[] added = new int[cnt];
+                            foreach (int id in ToSendAddId)
+                            {
+                                if (i >= cnt) break;
+                                added[i++] = id;
+
+                                var thing = mapPawns.Where(p => p.thingIDNumber == id).FirstOrDefault();
+                                var tt = ThingEntry.CreateEntry(thing, 1);
+                                //передаем те, что были исходные у атакуемого (хотя там используется только как признак TransportID != 0 - значит те кто атакует)
+                                if (AttackingPawnDic.ContainsKey(tt.OriginalID)) tt.TransportID = AttackingPawnDic[tt.OriginalID];
+                                newPawns.Add(tt);
+                                newPawnsId.Add(id);
+                            }
+                            for (i = 0; i < cnt; i++)
+                            {
+                                ToSendAddId.Remove(added[i]);
+                                SendedPawnsId.Add(added[i]);
+                            }
+
+                            foreach (int id in ToSendDeleteId)
+                            {
+                                SendedPawnsId.Remove(id);
+                            }
+
+                            //вещи
+                            var newThings = ToSendThingAdd
+                                .Where(thing => !ToSendDeleteId.Any(d => thing.thingIDNumber == d))
+                                .Select(thing => ThingEntry.CreateEntry(thing, thing.stackCount))
+                                .ToList();
+
+                            //передаем изменение местоположения и пр. по ID хоста
+                            var toSendState = new List<AttackThingState>();
+                            var toSendStateId = new List<int>();
+                            for (int imp = 0; imp < mapPawns.Count; imp++)
+                            {
+                                var mp = mapPawns[imp];
+                                var mpID = mp.thingIDNumber;
+                                if (ToUpdateStateId.Contains(mpID)) continue;
+
+                                var mpHash = AttackThingState.GetHash(mp);
+                                int mpHS;
+                                if (!SendedState.TryGetValue(mpID, out mpHS) || mpHS != mpHash)
+                                {
+                                    SendedState[mpID] = mpHash;
+                                    toSendState.Add(new AttackThingState(mp));
+                                }
+                            }
+                            for (int imp = 0; imp < ToUpdateState.Count; imp++)
+                            {
+                                var mp = ToUpdateState[imp];
+                                var mpID = mp.thingIDNumber;
+                                if (ToSendDeleteId.Contains(mpID)) continue;
+
+                                if (mp is Pawn)
+                                {
+                                    var mpHash = AttackThingState.GetHash(mp);
+                                    SendedState[mpID] = mpHash; //заносим только для проверки выше
+                                }
+                                toSendState.Add(new AttackThingState(mp));
+                            }
+
+                            //обновляем поколения вещей учавствующих в Job и отправляем нужные
+                            foreach(var mp in ThingPrepareChange0)
+                            {
+                                var mpID = mp.thingIDNumber;
+                                if (ToSendDeleteId.Contains(mpID)) continue;
+
+                                toSendState.Add(new AttackThingState(mp));
+                            }
+                            Loger.Log("HostAttackUpdate UpdateCommand FromJob Count=" + ThingPrepareChange0.Count.ToString());
+                            ThingPrepareChange0 = ThingPrepareChange1;
+                            ThingPrepareChange1 = new HashSet<Thing>();
+
+                            //Loger.Log("Client HostAttackUpdate 3");
+                            toClient = connect.AttackOnlineHost(new AttackHostToSrv()
+                            {
+                                State = 10,
+                                NewPawns = newPawns,
+                                NewPawnsId = newPawnsId,
+                                NewThings = newThings,
+                                NewThingsId = newThings.Select(th => th.OriginalID).ToList(),
+                                Delete = ToSendDeleteId.ToList(),
+                                UpdateState = toSendState
+                            });
+                            ToSendThingAdd.Clear();
+                            ToSendDeleteId.Clear();
+                            ToUpdateStateId.Clear();
+                            ToUpdateState.Clear();
+                        }
 
                         //принимаем обновление команд атакующих
                         if (toClient.UpdateCommand.Count > 0)
@@ -552,20 +619,33 @@ namespace RimWorldOnlineCity
             //UIEventNewJobDisable = false;
         }
 
-        public void UIEventChange(Thing thing, bool distroy = false)
-        {
-            //todo!
-        }
-
         private bool UIEventNewJobDisable = false;
         public void UIEventNewJob(Pawn pawn, Job job) //если job == null значит команда стоять и не двигаться Wait_Combat
         {
             try
             {
                 if (UIEventNewJobDisable) return;
+                var pawnId = pawn.thingIDNumber;
+
+                //помимо главной обработки события изменения задания помечаем цель задачи для обновления её состояния позже, когда задача пешки завершиться
+                //это всё для того, чтобы поймать, что кол-во какой-то вещи изменилось
+                //добавляем тут намерение пешки взять вещь в новый словарь если Job не null, 
+                //а если null (когда джоб завершился) помещаем в предварительный массив к отправке
+                //в момент отправки из предварительного массива данные переносятся в массив к отправке, а те что там были отправляются атакующиму с их текущим количеством стака
+                Thing jobThing;
+                if (ThingPrepareChange2.TryGetValue(pawnId, out jobThing) && !ThingPrepareChange1.Contains(jobThing))
+                {
+                    Loger.Log("HostAttackUpdate UIEventNewJob AddFromJob " + jobThing.Label);
+                    ThingPrepareChange1.Add(jobThing);
+                    ThingPrepareChange2.Remove(pawnId);
+                }
+                if (job != null && job.targetA.HasThing && !(job.targetA.Thing is Pawn))
+                {
+                    ThingPrepareChange2[pawnId] = job.targetA.Thing;
+                }
 
                 //у атакующих отменяем все команды и повторяем те, которые были переданы нам последний раз
-                if (!AttackingPawnDic.ContainsKey(pawn.thingIDNumber))
+                if (!AttackingPawnDic.ContainsKey(pawnId))
                 {
                     if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("HostAttackUpdate UIEventNewJob StartJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore");
                     return;
@@ -595,6 +675,36 @@ namespace RimWorldOnlineCity
             UIEventNewJobDisable = false;
         }
 
+        /// <summary>
+        /// Перехват события когда что-то было уничтожено, получило повреждения или только что создано
+        /// </summary>
+        public void UIEventChange(Thing thing, bool distroy = false, bool newSpawn = false)
+        {
+            Loger.Log("HostAttackUpdate UIEventChange " + thing.GetType().ToString() + " " + thing.Label + " id=" + thing.thingIDNumber
+                + (distroy ? " distroy!" : "")
+                + (newSpawn ? " newSpawn!" : ""));
+            
+            var tId = thing.thingIDNumber;
+            lock (ToSendListsSync)
+            {
+                if (distroy)
+                {
+                    if (!ToSendDeleteId.Contains(tId)) ToSendDeleteId.Add(tId);
+                }
+                else if (newSpawn)
+                {
+                    ToSendThingAdd.Add(thing);
+                }
+                else
+                {
+                    if (!ToUpdateStateId.Contains(tId))
+                    {
+                        ToUpdateStateId.Add(tId);
+                        ToUpdateState.Add(thing);
+                    }
+                }
+            }
+        }
 
     }
 }

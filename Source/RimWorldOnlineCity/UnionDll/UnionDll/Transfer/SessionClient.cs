@@ -15,7 +15,7 @@ namespace Transfer
         public const bool UseCryptoKeys = false;
         private Object LockObj = new Object();
 #region
-        private static SessionClient Single = new SessionClient();
+        private static readonly SessionClient Single = new SessionClient();
 
         public static SessionClient Get { get { return Single; } }
 
@@ -37,7 +37,6 @@ namespace Transfer
             }
             Client = null;
         }
-
 
         public bool Connect(string addr, int port = 0)
         {

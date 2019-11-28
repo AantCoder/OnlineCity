@@ -27,37 +27,18 @@ namespace RimWorldOnlineCity
         public static Player My { get; set; }
         public static TimeSpan ServerTimeDelta { get; set; }
 
-        private static Scenario ScenarioDefaultMem = null;
-        public static Scenario ScenarioDefault
-        {
-            get
-            {
-                if (ScenarioDefaultMem != null) return ScenarioDefaultMem;
-
-                var listS = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef);
-
-                ScenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
-                if (ScenarioDefaultMem == null)
-                    ScenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Классика");
-                if (ScenarioDefaultMem == null)
-                    ScenarioDefaultMem = listS.FirstOrDefault();
-
-                return ScenarioDefaultMem;
-            }
-        }
 
         private const string SaveName = "onlineCityTempLoad";
 
-        private static string SaveFullName
-        {
-            get { return GenFilePaths.FilePathForSavedGame(SaveName); }
-        }
+        private static string SaveFullName { get; set; }
         
         /// <summary>
         /// Инициализация при старте игры. Как можно раньше
         /// </summary>
         public static void Init()
         {
+            SaveFullName = GenFilePaths.FilePathForSavedGame(SaveName);
+            MainHelper.CultureFromGame = Prefs.LangFolderName ?? "";
             //if (MainHelper.DebugMode) 
             try
             {
@@ -69,7 +50,7 @@ namespace RimWorldOnlineCity
             }
             catch { }
 
-            Loger.Log("Client Init");
+            Loger.Log("Client Init " + MainHelper.VersionInfo);
             Loger.Log("Client Language: " + Prefs.LangFolderName);
         }
 
@@ -77,10 +58,13 @@ namespace RimWorldOnlineCity
 
         private static void UpdateWorld(bool firstRun = false)
         {
+            //Loger.Log("Client UpdateWorld 1 ");
             lock (UpdatingWorld)
             {
+                //Loger.Log("Client UpdateWorld 2 ");
                 Command((connect) =>
                 {
+                    //Loger.Log("Client Init " + MainHelper.VersionInfo);
                     //собираем пакет на сервер
                     var toServ = new ModelPlayToServer()
                     {
@@ -93,8 +77,11 @@ namespace RimWorldOnlineCity
                         Data.SaveFileData = null;
                     }
 
+                    //Loger.Log("Client UpdateWorld 3 ");
                     //собираем данные с планеты
                     if (!firstRun) UpdateWorldController.SendToServer(toServ);
+
+                    //Loger.Log("Client UpdateWorld 4 ");
 
                     //запрос на информацию об игроках. Можно будет ограничить редкое получение для тех кто оффлайн
                     if (Data.Chats != null && Data.Chats[0].PartyLogin != null)
@@ -104,6 +91,8 @@ namespace RimWorldOnlineCity
 
                     //отправляем на сервер, получаем ответ
                     ModelPlayToClient fromServ = connect.PlayInfo(toServ);
+
+                    //Loger.Log("Client UpdateWorld 5 ");
                     Loger.Log("Client " + My.Login + " UpdateWorld "
                         + string.Format("Отпр. свои {0}, своиDel {1}{5}. Пришло {2}, del {3}, посылок {4}{6}"
                             , toServ.WObjects == null ? 0 : toServ.WObjects.Count
@@ -131,8 +120,8 @@ namespace RimWorldOnlineCity
                         }
                     }
                     var allWObjects = Find.WorldObjects.AllWorldObjects
-                        .Where(o => o is CaravanOnline)
                         .Select(o => o as CaravanOnline)
+                        .Where(o => o != null)
                         .ToList();
                     foreach (var pi in Data.Players)
                     {
@@ -140,7 +129,7 @@ namespace RimWorldOnlineCity
                     }
 
                     //обновляем планету
-                    UpdateWorldController.LoadFromServer(fromServ);
+                    UpdateWorldController.LoadFromServer(fromServ, firstRun);
 
                     //если на нас напали запускаем процесс
                     if (fromServ.AreAttacking && GameAttackHost.AttackMessage())
@@ -355,6 +344,19 @@ namespace RimWorldOnlineCity
             Timers = null;
         }
 
+        public static Scenario GetScenarioDefault()
+        {
+            var listS = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef);
+
+            var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
+            if (scenarioDefaultMem == null)
+                scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Классика");
+            if (scenarioDefaultMem == null)
+                scenarioDefaultMem = listS.FirstOrDefault();
+
+            return scenarioDefaultMem;
+        }
+
         /// <summary>
         /// После успешной регистрации или входа
         /// </summary>
@@ -396,7 +398,7 @@ namespace RimWorldOnlineCity
                     GameStarter.SetPlanetCoverage = float.Parse(form.InputPlanetCoverage) / 100f;
                     GameStarter.SetSeed = form.InputSeed;
                     GameStarter.SetDifficulty = int.Parse(form.InputDifficulty);
-                    GameStarter.SetScenario = ScenarioDefault;
+                    GameStarter.SetScenario = GetScenarioDefault();
 
                     GameStarter.AfterStart = CreatingWorld;
                     GameStarter.GameGeneration();
@@ -414,7 +416,7 @@ namespace RimWorldOnlineCity
                 GameStarter.SetPlanetCoverage = serverInfo.PlanetCoverage;
                 GameStarter.SetSeed = serverInfo.Seed;
                 GameStarter.SetDifficulty = serverInfo.Difficulty;
-                GameStarter.SetScenario = ScenarioDefault;
+                GameStarter.SetScenario = GetScenarioDefault();
 
                 GameStarter.AfterStart = CreatePlayerMap;
 
