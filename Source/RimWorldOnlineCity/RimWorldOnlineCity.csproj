@@ -25,29 +25,28 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Assemblies\</OutputPath>
+    <!--OutputPath>..\..\Assemblies\</OutputPath-->
+    <OutputPath>$(RimWorldFolder)Mods\OnlineCity\Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="%24HugsLibChecker, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Lib\$HugsLibChecker.dll</HintPath>
+    <Reference Include="$HugsLibChecker, Version=0.5.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLibChecker.5.0.0\lib\net35\$HugsLibChecker.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="0Harmony">
-      <HintPath>$(RimWorldFolder)Mods\HugsLib\Assemblies\0Harmony.dll</HintPath>
-      <!--HintPath>$(SteamWorkShopFolder)818773962\Assemblies\0Harmony.dll</HintPath-->
-      <Private>False</Private>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLib.6.1.1\lib\net35\0Harmony.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HugsLib">
-      <HintPath>$(RimWorldFolder)Mods\HugsLib\Assemblies\HugsLib.dll</HintPath>
-      <!--HintPath>$(SteamWorkShopFolder)818773962\Assemblies\HugsLib.dll</HintPath-->
-      <Private>False</Private>
+    <Reference Include="HugsLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLib.6.1.1\lib\net35\HugsLib.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -110,6 +109,9 @@
       <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
       <Name>UnionDll</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

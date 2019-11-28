@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<!-- MainMenu.cs -->
+	<OCity_LAN_btn>Multijoueur</OCity_LAN_btn>
+	
+	<!-- CaravanArrivalAction_VisitOnline.cs -->
+	<OCity_Caravan_GoTrade>Nous allons échaanger des biens avec {0}</OCity_Caravan_GoTrade>
+	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
+	<OCity_Caravan_LOGNoData>Aucune information serveur sur l'objet de l'échange</OCity_Caravan_LOGNoData>
+	<OCity_Caravan_LOGSwap>Echange de caravane: selectAllCaravan</OCity_Caravan_LOGSwap>
+	
+	<!-- OnlineCity_CaravanOnline.cs -->
+	<OCity_Caravan_Player>{0} joueur {1}</OCity_Caravan_Player>
+	<OCity_Caravan_PriceThing>Prix des choses : {2}</OCity_Caravan_PriceThing>
+	<OCity_Caravan_PriceAnimalsPeople>Prix des personnes et des animaux: {3}</OCity_Caravan_PriceAnimalsPeople>
+	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
+	<OCity_Caravan_FreeWeight>Capacité de transport restante: </OCity_Caravan_FreeWeight>
+	<OCity_Caravan_Trade>Echanger avec {0}</OCity_Caravan_Trade>
+	
+	<!-- DevelopTest.cs -->
+	<OCity_DevTest_Test>Test</OCity_DevTest_Test>
+	<OCity_DevTest_NameTestPlayer>NameTestPlayer</OCity_DevTest_NameTestPlayer>
+	
+	<!-- GameStarter.cs -->
+	<OCity_Starter_CityNotBuild>Cette emplacement est occupé par un autre joueur</OCity_Starter_CityNotBuild>
+	
+	<!-- StorageTest.cs -->
+	<OCity_StorageTest_CreateGrass>Plante de l'herbe au printemps (fix)</OCity_StorageTest_CreateGrass>
+	<OCity_StorageTest_CreateGrassDescrip>Une fois par an, sur chaque carte, quand la température dépasse de 5 degrés, une nouvelle case innocuppée sera plantée à une disctance de 10 de l'herbe</OCity_StorageTest_CreateGrassDescrip>
+	<OCity_StorageTest_LastIP>Dernière IP</OCity_StorageTest_LastIP>
+	
+	<!-- OnlineCity_ClientData.cs -->
+	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
+	<OCity_ClientData_Chat>Chat </OCity_ClientData_Chat>
+	
+	<!-- Dialog_MainOnlineCity.cs -->
+	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
+	<OCity_Dialog_ListChat>Chat</OCity_Dialog_ListChat>
+	<OCity_Dialog_ListInfo>Information</OCity_Dialog_ListInfo>
+	<OCity_Dialog_ListAbout>A propos du mod</OCity_Dialog_ListAbout>
+	<OCity_Dialog_Connecting>Connection en cours...</OCity_Dialog_Connecting>
+	<OCity_Dialog_Login>Connexion: </OCity_Dialog_Login>
+	<OCity_Dialog_Players>Joueurs: </OCity_Dialog_Players>
+	<OCity_Dialog_ChennelOwn> Créateur de salon de discussion</OCity_Dialog_ChennelOwn>
+	<OCity_Dialog_ChennelUser> Membre</OCity_Dialog_ChennelUser>
+	<OCity_Dialog_ChennelCreate>Créer un salon</OCity_Dialog_ChennelCreate>
+	<OCity_Dialog_ChennelClose>Fermer le salon</OCity_Dialog_ChennelClose>
+	<OCity_Dialog_OthersFunctions>Autres fonctions</OCity_Dialog_OthersFunctions>
+	<OCity_Dialog_ChennelCreate2>Créer un salon</OCity_Dialog_ChennelCreate2>
+	<OCity_Dialog_ChennelLeave>Quitter le salon</OCity_Dialog_ChennelLeave>
+	<OCity_Dialog_ChennelRen>Renommer</OCity_Dialog_ChennelRen>
+	<OCity_Dialog_ChennelCreating>Création du salon</OCity_Dialog_ChennelCreating>
+	<OCity_Dialog_ChennelCreateName>Entrer un nom pour le salon</OCity_Dialog_ChennelCreateName>
+	<OCity_Dialog_ChennelQuit>Déconnexion du salon</OCity_Dialog_ChennelQuit>
+	<OCity_Dialog_ChennelQuitCheck>Etes-vous sûr de vouloir quitter le salon ?</OCity_Dialog_ChennelQuitCheck>
+	<OCity_Dialog_ChennelRenLabel>Renommement d'un salon</OCity_Dialog_ChennelRenLabel>
+	<OCity_Dialog_ChennelNewName>Entrer un nouveau nom de salon </OCity_Dialog_ChennelNewName>
+	<OCity_Dialog_PrivateMessage>Message privé</OCity_Dialog_PrivateMessage>
+	<OCity_Dialog_ChennelAddUser>Ajouter un membre</OCity_Dialog_ChennelAddUser>
+	<OCity_Dialog_ChennelPlayerInfo>Information</OCity_Dialog_ChennelPlayerInfo>
+	<OCity_Dialog_ChennelPlayerInfoTitle>A propos </OCity_Dialog_ChennelPlayerInfoTitle>
+	<OCity_Dialog_AboutMode>A propos d'OnlineCity</OCity_Dialog_AboutMode>
+	<OCity_Dialog_AutorPage>Page du créateur</OCity_Dialog_AutorPage>
+	<OCity_Dialog_Regame>Recommencer</OCity_Dialog_Regame>
+	<OCity_Dialog_DeleteData>Supprimer toutes les données de la partie</OCity_Dialog_DeleteData>
+	<OCity_Dialog_DeleteDataCheck>Voulez-vous vraiment supprimer cette partie et recommencer depuis le début?</OCity_Dialog_DeleteDataCheck>
+	<OCity_Dialog_DeletedData>TLa partie a été supprimée. Inscrivez-vous pour créer une nouvelle colonie.</OCity_Dialog_DeletedData>
+	
+	<!-- OnlineCity_Dialog_CreateWorld.cs -->
+	<OCity_Dialog_CreateWorld_Create>Créer un monde</OCity_Dialog_CreateWorld_Create>
+	<OCity_Dialog_CreateWorld_BtnOk>Ok</OCity_Dialog_CreateWorld_BtnOk>
+	<OCity_Dialog_CreateWorld_Err>Erreur</OCity_Dialog_CreateWorld_Err>
+	<OCity_Dialog_CreateWorld_Err2>Paramètres invalides</OCity_Dialog_CreateWorld_Err2>
+	<OCity_Dialog_CreateWorld_BtnCancel>Annuler</OCity_Dialog_CreateWorld_BtnCancel>
+	<OCity_Dialog_CreateWorld_Seed>Graine</OCity_Dialog_CreateWorld_Seed>
+	<OCity_Dialog_CreateWorld_Difficulty>Difficulté. Nombre de 0 (très simple) à 2 (difficile)</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_MapSize>Taille de la carte locale (200 - petite, 400 - ludeonicrous)</OCity_Dialog_CreateWorld_MapSize>
+	<OCity_Dialog_CreateWorld_PercentWorld>Pourcentage de génération de la planète (de 5 à 100)</OCity_Dialog_CreateWorld_PercentWorld>
+	
+	<!-- Dialog_LoginForm.cs -->
+	<OCity_LoginForm_BtnEnter>Connexion</OCity_LoginForm_BtnEnter>
+	<OCity_LoginForm_Register>Enregistrement</OCity_LoginForm_Register>
+	<OCity_LoginForm_Close>Fermer</OCity_LoginForm_Close>
+	<OCity_LoginForm_LabelEnter>Connexion</OCity_LoginForm_LabelEnter>
+	<OCity_LoginForm_Server>Serveur:</OCity_LoginForm_Server>
+	<OCity_LoginForm_Login>Pseudo:</OCity_LoginForm_Login>
+	<OCity_LoginForm_Pass>Mot de passe:</OCity_LoginForm_Pass>
+	
+	<!-- SessionClientController.cs -->
+	<OCity_SessionCC_ConnectionFailTitle>Echec de la connexion</OCity_SessionCC_ConnectionFailTitle>
+	<OCity_SessionCC_LoginFailTitle>Mauvais pseudo ou mot de passe</OCity_SessionCC_LoginFailTitle>
+	<OCity_SessionCC_RegFailTitle>Enregistrement échoué</OCity_SessionCC_RegFailTitle>
+	<OCity_SessionCC_MsgCanceledCreateW>Annulé</OCity_SessionCC_MsgCanceledCreateW>
+	<OCity_SessionCC_MsgCreateWorlErr>TIl y a eu une erreur, essayez de nouveau.</OCity_SessionCC_MsgCreateWorlErr>
+	<OCity_SessionCC_MsgCreateWorlGood>Hooray! Le monde sur le serveur est créé!</OCity_SessionCC_MsgCreateWorlGood>
+	<OCity_SessionCC_MsgCreatingServer>Création d'un serveur</OCity_SessionCC_MsgCreatingServer>
+	<OCity_SessionCC_Disconnected>Déconnecté.</OCity_SessionCC_Disconnected>
+	<OCity_SessionCC_Disconnect>Déconnexion</OCity_SessionCC_Disconnect>
+	
+	<!-- UpdateWorldController.cs -->
+	<OCity_UpdateWorld_Trade>Echanger</OCity_UpdateWorld_Trade>
+	<OCity_UpdateWorld_TradeDetails>Le joueur {0} a transféré les objets: {2} au joueur {1}</OCity_UpdateWorld_TradeDetails>
+	
+	<!-- Dialog_Input.cs -->
+	<OCity_DialogInput_Ok>Ok</OCity_DialogInput_Ok>
+	<OCity_DialogInput_Cancele>Annuler</OCity_DialogInput_Cancele>
+	
+	<!-- Dialog_Registration.cs -->
+	<OCity_Dialog_Registration_Close>Fermer</OCity_Dialog_Registration_Close>
+	<OCity_Dialog_Registration_BtnReg>Enregistrement</OCity_Dialog_Registration_BtnReg>
+	<OCity_Dialog_Registration_LabelReg>Enregistrement</OCity_Dialog_Registration_LabelReg>
+	<OCity_Dialog_Registration_Server>Serveur:</OCity_Dialog_Registration_Server>
+	<OCity_Dialog_Registration_Login>Pseudo:</OCity_Dialog_Registration_Login>
+	<OCity_Dialog_Registration_Pass>Mot de passe:</OCity_Dialog_Registration_Pass>
+	<OCity_Dialog_Registration_Check>Confirmation:</OCity_Dialog_Registration_Check>
+	
+	<!-- Dialog_TradeOnline.cs -->
+	<OCity_Dialog_TradeOnline_Trade>Transfère de biens</OCity_Dialog_TradeOnline_Trade>
+	
+	<!-- GrassFix.cs -->
+	<OCity_GrassFix_Plant>Plantée </OCity_GrassFix_Plant>
+	<OCity_GrassFix_Grass> herbe</OCity_GrassFix_Grass>
+	
+	<!-- PlayerClient.cs -->
+	<OCity_PlayerClient_LastTick>Joue depuis: {0} années, et: {1} jours.</OCity_PlayerClient_LastTick>
+	<OCity_PlayerClient_LastSaveTime>Est dans la partie depuis: {2}</OCity_PlayerClient_LastSaveTime>
+	<OCity_PlayerClient_baseCount>Nombres de bases: {3}</OCity_PlayerClient_baseCount>
+	<OCity_PlayerClient_caravanCount>Caravanes: {4}</OCity_PlayerClient_caravanCount>
+	<OCity_PlayerClient_marketValue>Valeur des objets: {5}</OCity_PlayerClient_marketValue>
+	<OCity_PlayerClient_marketValuePawn>Valeur des personnes et des animaux: {6}</OCity_PlayerClient_marketValuePawn>
+	<OCity_PlayerClient_LastSaveTimeNon>N'a pas participé</OCity_PlayerClient_LastSaveTimeNon>
+	
+	<!-- SCC.cs -->
+	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>
+	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
+	
+	<!-- Dialog_MainOnlineCity.cs -->
+	<OCity_InfoTabText></OCity_InfoTabText>
+	<OCity_AboutTabText> Créateur Vasily Ivanov aka Aant.</OCity_AboutTabText>
+	<OCity_AboutGeneralText>Salutations, colonisateur!
+
+OnlineCity est un mod multijoueur pour RimWorld. Il permet à plusieurs joueurs de jouer sur la même planète en ligne.
+
+Après l'enregistrement, vous pouvez votre propre colonie et jouer aux cotés des autres joueurs. Vous pouvez voir la progression de vos voisins, leurs colonies et caravanes, mais surtout, vous pourrez apporter du matériel en échangeant de la nourriture, des médicaments, des armes, des colons et plus . Pour cela, il suffit de former une caravane comme dans RimWord vanilla and l'envoyer aux autres joueurs!
+
+L'objectif de ce mod et de pouvoir jouer avec des amis sans perturber l'équilibrage ou le niveau d'immersion du jeu. Pour le moment, le mod est dans ses premiers stades. Ses fonctionnalités incluent:
+
+* Une partie sur une planète avec la possibilité de voir les colonies et les caravanes des autres joueurs
+
+* L'échange d'objets (objets moddés inclus si les deux joueurs possèdent ce mod)
+
+* Le transfers de personnages et d'animaux entre les joueurs
+
+* Des salons de discussion privés et publics entre les joueurs
+
+Caractéristiques techniques:
+
+* Toutes les combinaisons de mods sont supportées et possibles, mais lors d'un échange, les deux joueurs doivent avoir le mod dont sont issus les objets. Il n'y a pas de restriction concernant les incomptatibilités entre les mods, alors soyez prudent!
+
+* OnlineCity est complétement désactivé lors d'une partie solo (si vous ne commencez pas avec le bouton "Mutlijoueur" sur le menu principal)
+
+* Lorsque vous enregistrez un nouveau compte, le jeu peut freeze pendant quelques minutes. C'est normal, soyez patient s'il vous plait.
+
+* Pour des raisons techniques, la sauvegarde ne fonctionne pas quand le jeu n'est pas fermé depuis le menu du jeu. Au lieu de ça, la partie est sauvgardée sur le serveur toutes les 15 minutes.
+
+* Pour le moment, le jeu est surtout sur le jeu coopératif.
+
+* Le mode développeur est actuellement disponible, maias son utilisation est désapprouvée (sauf quand c'est nécessaire pour tester le mod).
+
+* Le transfers de colons avec HardcoreSK project ne fonctionne pas pour le moment
+
+* Les bbiens et les personnages peuvent être transferés à des des joueurs hors ligne
+
+* Sur la carte du monde, les colonies et caravanes des autres joueurs sont en bleues. Vous pouvez intéragir avec eux en sélectionnant votre caravane et en effectuant un clic droit sur eux.
+
+* Vous pouvez échanger entre les caravanes et colonies sur les mêmes cases en faisant un clic droit dessus. Attention aux incompatibilités dûes aux mods et à la surcharge de l'hôte.
+
+* Attention au nombre de biens que votre caravane peut transporter. Ils ne pourront pas bouger si ils sont surchargés. Vous pouvez combien de biens la carave peut transporter en cliquant dessus.
+
+* Cliquer sur un joueur dans le salon de discussion permet de lui envoyer des messages privés, voir son profil, ou l'ajouter à votre salon de discussion actuel.
+
+* Pour choisir où seront stockés les objets reçus des autre joueurs, créez une pile de stockage avec 'trad' dans le nom (ex 'Trading', 'Trades', 'Incoming traded items' etc.)
+
+* Lorsque des colons sont transférés dans une autre colonie, après que le dernier colon soit transféré, tous les objets restants seront automatiquement ajoutés à l'échange.
+
+* Le scénario de la partie ne peut pas être customisé, mais le narrateur peut être changé directement après le début de la partie dans les options.
+
+* Vous ne pouvez pas jouer sur le même colonie en étant un autre joueur. C'est peu susceptible de changer.
+
+* Les sauvgardes multijoueur peuvent être chargées en solo. Chargez simplement la sauvegarde 'onlineTempCityLoad' pour continuer en solo. Notez que la sauvegarde solo ne peut pas être réexportée dans le multijoueur.
+
+* Le mod fait de son mieux pour ne pas altérer le jeu, il ajoute simplement des interactions entre les joueur via des mécaniques déjà existantes (i.e. caravans). Le seul changement majeur est le sauvegarde, comme elle est automatiquement faite par le serveur, et la sensation d'ouvrir la carte et de voir les colonies des autres joueurs à coté :)
+
+* Un exemple d'interaction entre les joueurs peut être ceci : Votre colonie subit un raid. Vous mettez le jeu en pause et demandez à un ami de l'aide. Il envoie une caravane avec des troupes. Quand ils arrivent, ils rejoignent votre colonie et sont sous votre contrôle jusqu'à ce que le raid soit repoussé, après vous reformez la caravane et les renvoyez dans leur colonie d'origine. Alternativement, tous les soldats sauf un sont envoyées dans votre colonie donc la caravane n'est pas dissoute. Une fois leur travail accompli, vous pouvez les renvoyer dans la caravane et votre ami a de nouveau leur contrôle.
+
+* Les logs sont écrits dans '%AppData%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity' (cela peut être copié-collé dans l'explorateur de fichier)
+
+
+Références:
+L'adresse du serveur principal est: 194.87.95.90
+Discord: https://discord.gg/5DzWrnR
+Groupe officiel VK mod: https://vk.com/rimworldonline
+Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
+GitHub: https://github.com/AantCoder/OnlineCity
+
+
+Pour avoir son propre serveur, suivez ces indications:
+1. Dézippez les fichiers du serveur dans une place alouée.
+2. Lancez-le. Le serveur crée le dossier C:\World. Dans celui-ci seront les logs et les données. Le serveur sera de base sur le port 19019.
+3. Enregistrez un compte. Le premier jouer à s'enregistrer devient administrateur et lui sont demandés les paramètres du monde. Après la création du monde, il est déconnecté.
+4. Reconnectez-vous et recommencez à jouer comme d'habitude, créez une colonie, etc.
+
+Pour recréer un monde, fermez la console du serveur, supprimez les données, et relancez la console.
+</OCity_AboutGeneralText>
+	
+</LanguageData>

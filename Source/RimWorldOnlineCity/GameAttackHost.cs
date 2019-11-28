@@ -681,7 +681,8 @@ namespace RimWorldOnlineCity
         public void UIEventChange(Thing thing, bool distroy = false, bool newSpawn = false)
         {
             Loger.Log("HostAttackUpdate UIEventChange " + thing.GetType().ToString() + " " + thing.Label + " id=" + thing.thingIDNumber
-                + " distroy=" + distroy + " newSpawn=" + newSpawn);
+                + (distroy ? " distroy!" : "")
+                + (newSpawn ? " newSpawn!" : ""));
             
             var tId = thing.thingIDNumber;
             lock (ToSendListsSync)

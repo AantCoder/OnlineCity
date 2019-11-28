@@ -39,7 +39,10 @@ namespace OCUnion.Transfer.Model
             HitPoints = mp.HitPoints;
             var pawn = mp as Pawn;
             if (pawn != null)
+            {
+                //Loger.Log("Client AttackThingState " + pawn.health.State.ToString() + " thing=" + pawn.Label + " ID=" + pawn.thingIDNumber);
                 DownState = (AttackThingState.PawnHealthState)(int)pawn.health.State;
+            }
             else
                 DownState = PawnHealthState.Mobile;
         }
