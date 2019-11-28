@@ -9,7 +9,7 @@ using Model;
 
 namespace Transfer
 {
-    public class SessionClient
+    public class SessionClient 
     {
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
@@ -37,7 +37,7 @@ namespace Transfer
             } 
         }
 
-        public bool IsLogined = false;
+        public volatile bool IsLogined = false;
 
         public ConnectClient Client;
         private byte[] Key;

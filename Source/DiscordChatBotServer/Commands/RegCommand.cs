@@ -6,6 +6,8 @@ using Transfer;
 using System.Net.Sockets;
 using OCUnion;
 using Util;
+using OC.DiscordBotServer.Common;
+using OC.DiscordBotServer.Helpers;
 
 namespace OC.DiscordBotServer.Commands
 {
@@ -22,17 +24,17 @@ namespace OC.DiscordBotServer.Commands
         {
             // RU: Проверка на дурака: такой сервер не зарегистрирован, и сервер живой
             // RU: Регистрируем сервер и сохраняем параметры: в виде таблицы: IDканала, IPserver
-            serverAdr = tryParseStringToIp(ip);
+            serverAdr = Helper.TryParseStringToIp(ip);
             if (serverAdr == null)
             {
                 return Languages.Translator.ErrInvalidIP;
             }
 
-            if (_appContext.DiscrordToOCServer.TryGetValue(context.Channel.Id, out Chanel2Server server2Chanel))
+            if (_appContext.DiscrordToOCServer.TryGetValue(context.Channel.Id, out SessionClientWrapper server2Chanel))
             {
-                return string.Format(Languages.Translator.ErrTryAddToExistChannel, server2Chanel.Id, serverAdr.ToString());
+                return string.Format(Languages.Translator.ErrTryAddToExistChannel, getChannelLinkByServerIP(serverAdr));
             }
-        
+
             if (context.IsPrivate)
             {
                 return Languages.Translator.InfResctrictInPrivate;
@@ -44,6 +46,11 @@ namespace OC.DiscordBotServer.Commands
             }
 
             return string.Empty;
+        }
+
+        private object getChannelLinkByServerIP(IPEndPoint serverAdr)
+        {
+            return "{here must be link to Discrord Channel}";
         }
 
         public string Execute(SocketCommandContext context, string ip, string token)
@@ -82,15 +89,14 @@ namespace OC.DiscordBotServer.Commands
                 var channelToServer = new Chanel2Server()
                 {
                     Id = context.Channel.Id,
-                    IP = BitConverter.ToUInt32(serverAdr.Address.GetAddressBytes(), 0),
+                    IP = serverAdr.Address.ToString(),
                     Port = serverAdr.Port,
                     LinkCreator = context.Message.Author.Id,
                     LastOnlineTime = DateTime.UtcNow,
-                    PasswordHash = pass,
-                    Password= token
+                    Token = token
                 };
 
-                _appContext.RegisterNewServer(channelToServer, true);
+                _appContext.RegisterNewServer(channelToServer, new SessionClientWrapper(channelToServer, client));
                 context.Message.DeleteAsync();
 
                 return string.Format(Languages.Translator.InfServerReg, serverAdr.ToString(), context.Channel.Name);
@@ -100,34 +106,6 @@ namespace OC.DiscordBotServer.Commands
                 Loger.Log(ex.ToString());
                 return "Internal error";
             }
-        }
-
-        private IPEndPoint tryParseStringToIp(string value)
-        {
-            int port;
-            var lastIndex = value.IndexOf(":");
-            if (lastIndex > 0)
-            {
-                var strPort = value.Substring(lastIndex);
-                if (!int.TryParse(strPort, out port) || port < IPEndPoint.MinPort || port > IPEndPoint.MaxPort)
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                port = Transfer.SessionClient.DefaultPort;
-            }
-
-            lastIndex = lastIndex > 0 ? lastIndex : value.Length;
-            var ipString = value.Substring(0, lastIndex);
-
-            if (!IPAddress.TryParse(ipString, out IPAddress ip))
-            {
-                return null;
-            }
-
-            return new IPEndPoint(ip, port);
         }
     }
 }

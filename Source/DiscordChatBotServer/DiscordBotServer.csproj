@@ -194,6 +194,7 @@
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\RegCommand.cs" />
     <Compile Include="Commands\UnRegCommand.cs" />
+    <Compile Include="Common\SessionClientWrapper.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Languages\English.cs" />
     <Compile Include="Languages\Translator.cs" />

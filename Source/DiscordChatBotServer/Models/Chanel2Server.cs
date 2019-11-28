@@ -11,7 +11,7 @@ namespace OC.DiscordBotServer.Models
         [Key]
         public ulong Id { get; set; }
         [Required]
-        public long IP { get; set; }
+        public string IP { get; set; }
         [Required]
         public int Port { get; set; }
         public DateTime LastOnlineTime { get; set; }
@@ -19,7 +19,6 @@ namespace OC.DiscordBotServer.Models
         /// Id Discrord user
         /// </summary>
         public ulong LinkCreator { get; set; }
-        public string PasswordHash { get; set; }
-        public string Password { get; set; }
+        public string Token { get; set; }
     }
 }

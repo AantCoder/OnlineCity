@@ -1,9 +1,11 @@
-﻿using OC.DiscordBotServer.Models;
+﻿using OC.DiscordBotServer.Common;
+using OC.DiscordBotServer.Models;
 using OC.DiscordBotServer.Repositories;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
+using Transfer;
 
 namespace OC.DiscordBotServer
 {
@@ -15,7 +17,7 @@ namespace OC.DiscordBotServer
         /// <summary>
         /// Id DiscordChannel => Chanel2Server
         /// </summary>
-        public ConcurrentDictionary<ulong, Chanel2Server> DiscrordToOCServer { get; set; } = new ConcurrentDictionary<ulong, Chanel2Server>();
+        public ConcurrentDictionary<ulong, SessionClientWrapper> DiscrordToOCServer { get; set; } = new ConcurrentDictionary<ulong, SessionClientWrapper>();
         /// <summary>
         /// Online City Server => Discord Server
         /// </summary>
@@ -32,7 +34,7 @@ namespace OC.DiscordBotServer
 
             foreach (var server in serversRepository.GetAll())
             {
-                RegisterNewServer(server, false);
+                RegisterNewServer(server, new SessionClientWrapper(server));
             }
 
             foreach (var user in userRepository.GetAll())
@@ -41,21 +43,27 @@ namespace OC.DiscordBotServer
             }
         }
 
-        internal bool RegisterNewServer(Chanel2Server server, bool SaveInDataBase)
+        internal bool RegisterNewServer(Chanel2Server server, SessionClientWrapper sessionClient)
         {
-            var endPoint = new IPEndPoint(server.IP, server.Port);
+            var apadr = IPAddress.Parse(server.IP);
+            var endPoint = new IPEndPoint(apadr, server.Port);
             var result =
             OCServerToDiscrord.TryAdd(endPoint, server.Id) &&
-            DiscrordToOCServer.TryAdd(server.Id, server) &&
-
             UserOnServers.TryAdd(server.Id, new ConcurrentDictionary<ulong, OCUser>());
 
-            if (!SaveInDataBase || !result)
+            result &= DiscrordToOCServer.TryAdd(server.Id, sessionClient);
+
+            // if sessionClient.IsLogined  then must be registred in DataBase
+            if (sessionClient.IsLogined)
             {
-                return result;
+                result &= _repositoryChanel2Server.AddNewItem(server);
+            }
+            else
+            {
+                result &= sessionClient.ConnectAndLogin();
             }
 
-            return _repositoryChanel2Server.AddNewItem(server); ;
+            return result;
         }
     }
 }
