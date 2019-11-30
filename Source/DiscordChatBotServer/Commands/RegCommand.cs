@@ -92,7 +92,7 @@ namespace OC.DiscordBotServer.Commands
                     IP = serverAdr.Address.ToString(),
                     Port = serverAdr.Port,
                     LinkCreator = context.Message.Author.Id,
-                    LastOnlineTime = DateTime.UtcNow,
+                    LastOnlineTime = DateTime.UtcNow.AddDays(-1),
                     Token = token
                 };
 

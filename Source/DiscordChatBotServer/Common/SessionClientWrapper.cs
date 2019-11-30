@@ -30,6 +30,8 @@ namespace OC.DiscordBotServer.Common
         {
             _serverData = serverData;
             _sessionClient = sessionClient;
+            
+            updateClientData();
         }
 
         public bool IsLogined => _sessionClient.IsLogined;
@@ -43,6 +45,7 @@ namespace OC.DiscordBotServer.Common
             }
 
             var pass = new CryptoProvider().GetHash(_serverData.Token);
+
             lock (_sessionClient)
             {
                 if (!_sessionClient.Login("Discord", pass))
@@ -50,18 +53,27 @@ namespace OC.DiscordBotServer.Common
                     return false;
                 }
 
-                var serverInfo = _sessionClient.GetInfo(true);
-                My = serverInfo.My;
-                Data = new ClientData(My.Login, _sessionClient);
-                Data.ServetTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
+                updateClientData();
             }
 
             return true;
         }
 
+        private void updateClientData()
+        {
+            var serverInfo = _sessionClient.GetInfo(true);
+            My = serverInfo.My;
+            Data = new ClientData(My.Login, _sessionClient);
+            Data.ServetTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
+        }
+
         public IReadOnlyList<ChatPost> GetChatMessages()
         {
             ModelUpdateChat dc;
+            if (Data == null)
+            {
+                Loger.Log("Хрень какая-то эта переменная Data присваевается в залоченной _sessionClient в момент логина и не может быть NULL");
+            }
             dc = _sessionClient.UpdateChat(Data.ChatsTime);
             if (dc == null)
             {

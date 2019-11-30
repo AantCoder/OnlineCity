@@ -4,7 +4,7 @@ using Model;
 using OCUnion;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 
 namespace OC.DiscordBotServer
 {
@@ -22,37 +22,40 @@ namespace OC.DiscordBotServer
             _botDataContext = botDataContext;
         }
 
-        private bool TranslateChatToDiscord(ulong channelId, IReadOnlyList<ChatPost> messages)
+        private bool TranslateChatToDiscordAsync(ulong channelId, IReadOnlyList<ChatPost> messages)
         {
             var channel = _dc.GetChannel(channelId) as IMessageChannel;
             if (channel == null)
             {
                 return false;
             }
-            string ChatText = string.Empty;
 
-            if (messages.Count > 0)
+            const int MAX_LENGTH_NESSAGE = 2000 - 100;
+            var sb = new StringBuilder(MAX_LENGTH_NESSAGE);
+            foreach (var chatPost in messages)
             {
-                var time = "";
-#if DEBUG
-                Func<ChatPost, string> getPost = (cp) => "[" + cp.OwnerLogin + cp.Time.ToString(" dd.MM HH:mm") + "]: " + cp.Message;
-#else
-                Func<ChatPost, string> getPost = (cp) => "[" + cp.OwnerLogin + "]: " + cp.Message;
-#endif
+                if (chatPost.Message.Length + sb.Length > MAX_LENGTH_NESSAGE)
+                {
+                    // Limit for max Message Length = 2000 
+                    // Limit for max Message per Second =5 ( variable) 
+                    // https://github.com/discordapp/discord-api-docs/blob/master/docs/topics/Rate_Limits.md
 
-                ChatText = messages
-                    .Aggregate("", (r, i) => (r == "" ? "" : r + Environment.NewLine) + getPost(i));
+                    Console.WriteLine(sb.ToString());
+                    var res = channel.SendMessageAsync(sb.ToString());
+                    res.Wait();
+                    sb = new StringBuilder(MAX_LENGTH_NESSAGE);
+
+                }
+
+                sb.AppendLine("[" + chatPost.OwnerLogin + chatPost.Time.ToString(" dd.MM HH:mm") + "]: " + chatPost.Message);
             }
 
-            if (string.IsNullOrEmpty(ChatText))
+            if (sb.Length > 0)
             {
-                return true;
+                var t2 = channel.SendMessageAsync(sb.ToString());
+                t2.Wait();
             }
 
-            channel.SendMessageAsync(ChatText);
-#if DEBUG
-            Console.WriteLine(ChatText);
-#endif
             return true;
         }
 
@@ -76,7 +79,7 @@ namespace OC.DiscordBotServer
                     }
 
                     var chats = onlineCityServer.GetChatMessages();
-                    if (chats != null && TranslateChatToDiscord(bindServer.Key, chats))
+                    if (chats != null && TranslateChatToDiscordAsync(bindServer.Key, chats))
                     {
                         _botDataContext.SaveChanges();
                     }
