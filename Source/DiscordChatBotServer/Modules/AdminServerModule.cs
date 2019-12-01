@@ -18,13 +18,11 @@ namespace OC.DiscordBotServer.Modules
     {
         private readonly RegCommand _regCmd;
         private readonly UnRegCommand _unRegCommand;
-        private readonly BotDataContext _appContext;
 
-        public AdminServerModule(BotDataContext appContext,  RegCommand reg, UnRegCommand unRegCommand)
+        public AdminServerModule(RegCommand reg, UnRegCommand unRegCommand)
         {
             _regCmd = reg;
             _unRegCommand = unRegCommand;
-            _appContext = appContext;
         }
 
         [Command("reg", ignoreExtraArgs: false, RunMode = RunMode.Async)]

@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using OC.DiscordBotServer.Commands;
 using OC.DiscordBotServer.Helpers;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -7,6 +8,13 @@ namespace OC.DiscordBotServer.Modules
 {
     public sealed class UserModule : ModuleBase<SocketCommandContext>
     {
+        private readonly RegisterUserCommand _regUserCmd; 
+
+        public UserModule(RegisterUserCommand regUserCmd) 
+        {
+            _regUserCmd = regUserCmd;
+        }
+
         [Description("Status server: where started, online player e.t.c ")]
         // RU: Сообщает статус сервера, когда запущен, сколько игроков онлайн и т.д.
         [Command("status")]
@@ -19,9 +27,9 @@ namespace OC.DiscordBotServer.Modules
         [Command("regme")]
         [Description("Linking account discord user to RimWorld Online City :" + Helper.PREFIX + "regme [OCLogin]")]
         // RU: Привязывает аккаунт пользователя Discrod к серверу RimworldOnlineCity: !regme Логин_в_RimworldonlineCity
-        public async Task RegmeAsync()
-        {
-            await ReplyAsync("Hello world");
+        public async Task RegmeAsync(string userToken)
+        {            
+            await ReplyAsync(_regUserCmd.Execute (Context, userToken));
         }
 
         [Command("help")]

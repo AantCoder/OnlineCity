@@ -27,6 +27,7 @@ namespace OC.DiscordBotServer.Repositories
 
         public IReadOnlyList<OCUser> GetAll()
         {
+
             return _dataContext.OCUsers.ToList().AsReadOnly();
         }
     }

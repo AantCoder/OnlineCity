@@ -22,5 +22,6 @@ namespace OC.DiscordBotServer.Models
         public ulong UserId { get; set; }
         public string OCLogin { get; set; }
         public DateTime LastActiveTime { get; set; }
+        //public string Token { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace OC.DiscordBotServer.Commands
 
             if (!Guid.TryParse(token, out Guid guidToken))
             {
-                return Languages.Translator.ErrInvalidDiscordToken;
+                return Languages.Translator.ErrInvalidToken;
             }
 
             return string.Empty;
@@ -83,7 +83,7 @@ namespace OC.DiscordBotServer.Commands
                 var pass = new CryptoProvider().GetHash(token);
                 if (!client.Login("Discord", pass))
                 {
-                    return Languages.Translator.ErrInvalidDiscordToken;
+                    return Languages.Translator.ErrInvalidToken;
                 }
 
                 var channelToServer = new Chanel2Server()
