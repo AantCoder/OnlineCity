@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord.Commands;
 using OCUnion;
-using OC.DiscordBotServer.Commands;
 using OC.DiscordBotServer.Models;
 using OC.DiscordBotServer.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 //https://discord.foxbot.me/docs/api/
 namespace OC.DiscordBotServer
@@ -49,10 +49,15 @@ namespace OC.DiscordBotServer
             _discordClient = new DiscordSocketClient();
             _commands = new CommandService();
 
+            var optionsBuilder = new DbContextOptionsBuilder<BotDataContext>();
+            var options = optionsBuilder
+                .UseSqlite(PathToDb)
+                .Options;
+
             var services = new ServiceCollection()
                 .AddSingleton<DiscordSocketClient>(_discordClient)
                 .AddSingleton<ApplicationContext>()
-                .AddSingleton<BotDataContext>(new BotDataContext(PathToDb));
+                .AddSingleton<BotDataContext>(new BotDataContext(options));
 
             services
                 .AddSingleton<OCUserRepository>()

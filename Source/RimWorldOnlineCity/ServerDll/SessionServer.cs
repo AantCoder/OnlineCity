@@ -198,6 +198,12 @@ namespace OCServer
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " AttackHost");
                     send.Packet = Worker.AttackOnlineHost((AttackHostToSrv)recObj.Packet);
                     break;
+                 case 23412:
+                    send.TypePacket = 30;
+                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " GetLoginByToken");
+                    // Player
+                    send.Packet = Worker.GetLoginByToken((ModelPostingChat)recObj.Packet);
+                    break;
                 default:
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Error0");
                     send.TypePacket = 0;

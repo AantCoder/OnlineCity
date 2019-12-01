@@ -321,6 +321,32 @@ namespace OCServer
             }
         }
 
+        internal object GetLoginByToken(ModelPostingChat packet)
+        {
+            if (Player == null) return null;
+
+            //var token = Guid
+
+            //lock (Player)
+            //{
+            //    var data = Repository.GetData;
+
+            //    data.PlayersAll.FirstOrDefault(p => p.DiscordToken.Equals();
+            //    if (toPlayer == null)
+            //    {
+            //        return new ModelStatus()
+            //        {
+            //            Status = 1,
+            //            Message = "Destination not found"
+            //        };
+            //    }
+
+            //    packet.From = data.PlayersAll.Select(p => p.Public).FirstOrDefault(p => p.Login == packet.From.Login);
+            //    packet.To = toPlayer.Public;
+            return null;
+
+        }
+
         public ModelStatus SendThings(ModelMailTrade packet)
         {
             if (Player == null) return null;
@@ -344,10 +370,12 @@ namespace OCServer
                 packet.From = data.PlayersAll.Select(p => p.Public).FirstOrDefault(p => p.Login == packet.From.Login);
                 packet.To = toPlayer.Public;
             }
+
             lock (toPlayer)
             {
                 toPlayer.Mails.Add(packet);
             }
+
             return new ModelStatus()
             {
                 Status = 0,

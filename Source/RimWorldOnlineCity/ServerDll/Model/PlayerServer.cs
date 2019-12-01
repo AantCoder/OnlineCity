@@ -16,7 +16,7 @@ namespace OCServer.Model
 
         public bool IsAdmin;
 
-        public Guid DiscordToken = Guid.Empty;
+        public Guid DiscordToken;
 
         public Chat PublicChat
         {

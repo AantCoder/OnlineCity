@@ -205,6 +205,15 @@
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Languages\English.cs" />
     <Compile Include="Languages\Translator.cs" />
+    <Compile Include="Migrations\20191201AddOCUserToken.cs" />
+    <Compile Include="Migrations\20191201AddOCUserToken.designer.cs">
+      <DependentUpon>20191201AddOCUserToken.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\InitialCreate.cs" />
+    <Compile Include="Migrations\InitialCreate.designer.cs">
+      <DependentUpon>InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\BotDataContextModelSnapshot.cs" />
     <Compile Include="Models\Chanel2Server.cs" />
     <Compile Include="Models\OCUser.cs" />
     <Compile Include="Modules\AdminServerModule.cs" />
@@ -213,6 +222,7 @@
     <Compile Include="Modules\UserModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\BotDataBaseContextFactory .cs" />
     <Compile Include="Repositories\SQLLiteRepository\IRepository.cs" />
     <Compile Include="Repositories\SQLLiteRepository\Chanel2ServerRepository.cs" />
     <Compile Include="Repositories\BotDataContext.cs" />
