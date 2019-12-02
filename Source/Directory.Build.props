@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
 <PropertyGroup>
-  <SteamFolder>E:\SteamLibrary\steamapps\</SteamFolder>
+  <SteamFolder>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data</SteamFolder>
   <!--<RimWorldFolder>..\..\..\..\</RimWorldFolder>-->  
   <RimWorldFolder>$(SteamFolder)common\RimWorld\</RimWorldFolder>
   <SteamWorkShopFolder>$(SteamFolder)workshop\content\294100\</SteamWorkShopFolder>
