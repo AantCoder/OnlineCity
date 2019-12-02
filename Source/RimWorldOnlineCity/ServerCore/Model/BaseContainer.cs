@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Transfer;
 
-namespace OCServer.Model
+namespace ServerOnlineCity.Model
 {
     [Serializable]
     public class BaseContainer

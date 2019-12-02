@@ -7,7 +7,7 @@ using System.Text;
 using Transfer;
 using Util;
 
-namespace OCServer
+namespace ServerOnlineCity
 {
     public class SessionServer : IDisposable
     {

@@ -50,6 +50,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RimWorldOnlineCity\ServerCore\ServerCore.csproj">
+      <Project>{edc6d479-883b-4087-b9e1-47383b6713ee}</Project>
+      <Name>ServerCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll\UnionDll.csproj">
       <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
       <Name>UnionDll</Name>
