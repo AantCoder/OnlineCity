@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ServerDll\ServerDll.csproj" />
     <ProjectReference Include="..\UnionDll\UnionDll\UnionDll.csproj" />
   </ItemGroup>
 
