@@ -11,7 +11,7 @@ using Transfer;
 
 namespace OCServer
 {
-    public class ServerManader
+    public class ServerManager
     {
         public event Action<string> LogMessage;
         private ConnectServer Connect = null;

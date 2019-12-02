@@ -21,7 +21,7 @@ namespace ServerOnlineCity
 
             Loger.PathLog = workPath;
             Loger.IsServer = true;
-            var serverManader = new ServerManader();
+            var serverManader = new ServerManager();
             serverManader.LogMessage += (msg) => Console.WriteLine(msg);
             Loger.Log("Server Console Start!");
             if (workPort == 0)
