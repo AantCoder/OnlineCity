@@ -42,6 +42,8 @@ namespace ServerOnlineCity
                 ServerSettings = JsonConvert.DeserializeObject<ServerSettings>(File.ReadAllText(Path.Combine(path, "Settings.json")));
             }
 
+            Loger.Log($"Server starting on port: {ServerSettings.Port}");
+
             Loger.PathLog = path;
             Loger.IsServer = true;
 
@@ -59,8 +61,6 @@ namespace ServerOnlineCity
             });
 
             ActiveClientCount = 0;
-
-            LogMessage?.Invoke("Start server in port " + ServerSettings.Port.ToString());
 
             Connect = new ConnectServer();
             Connect.ConnectionAccepted = ConnectionAccepted;

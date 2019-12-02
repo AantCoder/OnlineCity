@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ServerCore.Model
+﻿namespace ServerCore.Model
 {
     public class ServerSettings
     {
+        public string ServerName = "Another OnlineCity Server";
         public int SaveInterval = 10000;
         public int Port = 8888;
     }
