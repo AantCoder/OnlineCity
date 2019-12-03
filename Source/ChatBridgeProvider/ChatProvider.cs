@@ -124,4 +124,3 @@ namespace OC.ChatBridgeProvider
         public string Message { get; internal set; }
     }
 }
-
