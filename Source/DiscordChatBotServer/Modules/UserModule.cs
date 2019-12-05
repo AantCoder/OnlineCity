@@ -8,9 +8,9 @@ namespace OC.DiscordBotServer.Modules
 {
     public sealed class UserModule : ModuleBase<SocketCommandContext>
     {
-        private readonly RegisterUserCommand _regUserCmd; 
+        private readonly RegmeCommand _regUserCmd; 
 
-        public UserModule(RegisterUserCommand regUserCmd) 
+        public UserModule(RegmeCommand regUserCmd) 
         {
             _regUserCmd = regUserCmd;
         }

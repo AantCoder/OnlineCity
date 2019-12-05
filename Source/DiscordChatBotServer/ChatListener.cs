@@ -44,7 +44,6 @@ namespace OC.DiscordBotServer
                     var res = channel.SendMessageAsync(sb.ToString());
                     res.Wait();
                     sb = new StringBuilder(MAX_LENGTH_NESSAGE);
-
                 }
 
                 sb.AppendLine("[" + chatPost.OwnerLogin + chatPost.Time.ToString(" dd.MM HH:mm") + "]: " + chatPost.Message);
@@ -91,6 +90,14 @@ namespace OC.DiscordBotServer
             }
 
             IsWork = false;
+        }
+
+        /// <summary>
+        /// Check each server for online & Update Bot Status 
+        /// </summary>
+        public void UpdateBotStatus() 
+        {
+        
         }
     }
 }

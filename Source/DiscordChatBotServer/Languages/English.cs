@@ -16,6 +16,8 @@ namespace OC.DiscordBotServer.Languages
         public const string ErrUserTokenExist = "On this token exist user {0} on Discord Channel {1}";
         public const string InfServerReg = "Сongratulation! Server  {0} related to the channel ID {1}";
         public const string InfResctrictInPrivate = "This command must be typed in a channel, not in private Chat";
-        
+        public const string InfResctrictInChannel= "This command must be typed in private Chat, not in a channel ";
+
+        public const string InfFoundUser = "Registred user {0} on the server {1}";
     }
 }

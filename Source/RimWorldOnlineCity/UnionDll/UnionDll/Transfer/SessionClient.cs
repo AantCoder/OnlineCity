@@ -6,6 +6,7 @@ using System.Text;
 using Transfer;
 using Util;
 using Model;
+using OCUnion.Transfer.Model;
 
 namespace Transfer
 {
@@ -219,6 +220,12 @@ namespace Transfer
                 ExceptionUtil.ExceptionLog(e, "Client");
                 return null;
             }
+        }
+
+        private T TransObject2<T>(object objOut, PackageType typeOut, PackageType typeIn)
+            where T : class
+        {
+            return TransObject<T>(objOut, (int)typeOut, (int)typeIn);
         }
 
         /// <summary>
@@ -439,6 +446,13 @@ namespace Transfer
         {
             Loger.Log("Client AttackOnlineHost " + fromClient.State);
             var stat = TransObject<AttackHostFromSrv>(fromClient, 29, 30);
+
+            return stat;
+        }
+
+        public Player GetPlayerByToken(Guid guidToken) 
+        {
+            var stat = TransObject2<Player>(guidToken, PackageType.RequestPlayerByToken, PackageType.ResponsePlayerByToken);
 
             return stat;
         }

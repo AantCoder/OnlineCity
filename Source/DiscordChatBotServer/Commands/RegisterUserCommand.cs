@@ -1,47 +1,59 @@
 ﻿using Discord.Commands;
+using OC.DiscordBotServer.Languages;
+using OC.DiscordBotServer.Models;
+using OC.DiscordBotServer.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Transfer;
 
 namespace OC.DiscordBotServer.Commands
 {
-    public class RegisterUserCommand : ICommand
+    public class RegmeCommand : ICommand
     {
         ApplicationContext _appContext;
-        public RegisterUserCommand(ApplicationContext appContext)
+        IRepository<OCUser> _userRepository;
+
+        public RegmeCommand(ApplicationContext appContext, IRepository<OCUser> userRepository)
         {
             _appContext = appContext;
+            _userRepository = userRepository;
         }
 
         public string Execute(SocketCommandContext context, string token)
         {
-            token = token.ToUpper();
-            if (!Guid.TryParse(token, out Guid guidToken))
+            if (!context.IsPrivate)
             {
-                return Languages.Translator.ErrInvalidToken;
+                return Translator.InfResctrictInChannel;
             }
 
-            // fast check
-            foreach (var usersOnServer in _appContext.UserOnServers.Values)
+            if (!Guid.TryParse(token, out Guid guidToken))
             {
-                //var userInfo = usersOnServer.Values.FirstOrDefault(x => x.Token.Equals(token));
-                
-                //if (usersOnServer.Values.Any(x => x.Token.Equals(token))) 
-                //{                    
-                //    return string.Format(Languages.Translator.ErrUserTokenExist, userInfo.OCLogin, userInfo.DiscordIdChanel);
-                //}
+                return Translator.ErrInvalidToken;
             }
 
             //Check each Online City Server for this User 
-            foreach (var ocServer in _appContext.DiscrordToOCServer.Where (x => x.Value.IsLogined))
+            foreach (var ocServerKeyPair in _appContext.DiscrordToOCServer.Where(srv => srv.Value.IsLogined))
             {
-                var requestPackage = new ModelPostingChat() { ChatId = (long)context.Message.Author.Id, Message = token };
+                var ocServer = ocServerKeyPair.Value;
+                var player = ocServer.GetPlayerByToken(guidToken);
+                if (player != null)
+                {
+                    OCUser user = _appContext.GetOCUser(ocServerKeyPair.Key, context.User.Id);
+                    if (user != null)
+                    {
+                        return string.Format(Translator.ErrUserTokenExist, user.OCLogin, user.DiscordIdChanel);
+                    }
+
+                    user = new OCUser() { DiscordIdChanel = ocServerKeyPair.Key, LastActiveTime = player.LastOnlineTime, OCLogin = player.Login, UserId = context.Message.Author.Id };
+
+                    _appContext.UserOnServers[ocServerKeyPair.Key][context.Message.Author.Id] = user;
+                    _userRepository.AddNewItem(user);
+
+                    // to do register user  
+                    return string.Format(Translator.InfFoundUser, player.Login, player.ServerName);
+                }
             }
 
-            return string.Empty;
+            return "User not found or server is offline";
         }
     }
 }

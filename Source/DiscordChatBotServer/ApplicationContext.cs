@@ -43,6 +43,21 @@ namespace OC.DiscordBotServer
             }
         }
 
+        public OCUser GetOCUser(ulong idChannel, ulong idUser) 
+        {
+            if (!UserOnServers.TryGetValue (idChannel , out ConcurrentDictionary<ulong, OCUser> OCUsers ))
+            {
+                return null;
+            }
+
+            if (!OCUsers.TryGetValue(idUser, out  OCUser OCUser))
+            {
+                return null;
+            }
+
+            return OCUser;
+        }
+
         internal bool RegisterNewServer(Chanel2Server server, SessionClientWrapper sessionClient)
         {
             var apadr = IPAddress.Parse(server.IP);

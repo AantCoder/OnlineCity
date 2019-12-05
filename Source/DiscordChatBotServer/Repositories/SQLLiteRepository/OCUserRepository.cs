@@ -4,7 +4,7 @@ using OC.DiscordBotServer.Models;
 
 namespace OC.DiscordBotServer.Repositories
 {
-    public class OCUserRepository : IRepository <OCUser>
+    public class OCUserRepository : IRepository<OCUser>
     {
         private readonly BotDataContext _dataContext;
 
@@ -23,6 +23,15 @@ namespace OC.DiscordBotServer.Repositories
 
             _dataContext.SaveChanges();
             return true;
+        }
+
+        public void Delete(IEnumerable<OCUser> users)
+        {
+            using (var tran = _dataContext.Database.BeginTransaction())
+            {
+                _dataContext.OCUsers.RemoveRange(users);
+                tran.Commit();
+            }
         }
 
         public IReadOnlyList<OCUser> GetAll()

@@ -196,8 +196,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
+    <Compile Include="Commands\ChannelDestroyedCommand.cs" />
     <Compile Include="ChatListener.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\MessageParser.cs" />
     <Compile Include="Commands\RegCommand.cs" />
     <Compile Include="Commands\RegisterUserCommand.cs" />
     <Compile Include="Commands\UnRegCommand.cs" />
@@ -205,10 +207,6 @@
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Languages\English.cs" />
     <Compile Include="Languages\Translator.cs" />
-    <Compile Include="Migrations\20191201AddOCUserToken.cs" />
-    <Compile Include="Migrations\20191201AddOCUserToken.designer.cs">
-      <DependentUpon>20191201AddOCUserToken.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\InitialCreate.cs" />
     <Compile Include="Migrations\InitialCreate.designer.cs">
       <DependentUpon>InitialCreate.cs</DependentUpon>

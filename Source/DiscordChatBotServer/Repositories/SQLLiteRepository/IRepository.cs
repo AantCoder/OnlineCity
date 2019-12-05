@@ -11,5 +11,6 @@ namespace OC.DiscordBotServer.Repositories
     {
         bool AddNewItem(TEntity entity);
         IReadOnlyList<TEntity> GetAll();
+        void Delete( IEnumerable<TEntity> entityes);
     }
 }

@@ -29,5 +29,10 @@ namespace OC.DiscordBotServer.Repositories
         {
             return _dataContext.Chanel2Servers.ToList().AsReadOnly();
         }
+
+        public void Delete(IEnumerable<Chanel2Server> servers)
+        {
+            _dataContext.Chanel2Servers.RemoveRange(servers);
+        }
     }
 }

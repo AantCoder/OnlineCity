@@ -14,23 +14,22 @@ namespace OC.DiscordBotServer.Common
     public class SessionClientWrapper : IDisposable
     {
         private readonly SessionClient _sessionClient;
-        private readonly Chanel2Server _serverData;
+        public Chanel2Server Chanel2Server { get; }
         private ClientData Data { get; set; }
         public Player My { get; set; }
 
-        public event EventHandler DisconnectedEvent;
-
+        //public event EventHandler DisconnectedEvent;
         public SessionClientWrapper(Chanel2Server serverData)
         {
-            _serverData = serverData;
+            Chanel2Server = serverData;
             _sessionClient = new SessionClient();
         }
 
         public SessionClientWrapper(Chanel2Server serverData, SessionClient sessionClient)
         {
-            _serverData = serverData;
+            Chanel2Server = serverData;
             _sessionClient = sessionClient;
-            
+
             updateClientData();
         }
 
@@ -38,13 +37,13 @@ namespace OC.DiscordBotServer.Common
 
         public bool ConnectAndLogin()
         {
-            var t = _sessionClient.Connect(_serverData.IP, _serverData.Port);
+            var t = _sessionClient.Connect(Chanel2Server.IP, Chanel2Server.Port);
             if (!t)
             {
                 return false;
             }
 
-            var pass = new CryptoProvider().GetHash(_serverData.Token);
+            var pass = new CryptoProvider().GetHash(Chanel2Server.Token);
 
             lock (_sessionClient)
             {
@@ -70,10 +69,7 @@ namespace OC.DiscordBotServer.Common
         public IReadOnlyList<ChatPost> GetChatMessages()
         {
             ModelUpdateChat dc;
-            if (Data == null)
-            {
-                Loger.Log("Хрень какая-то эта переменная Data присваевается в залоченной _sessionClient в момент логина и не может быть NULL");
-            }
+
             dc = _sessionClient.UpdateChat(Data.ChatsTime);
             if (dc == null)
             {
@@ -90,17 +86,16 @@ namespace OC.DiscordBotServer.Common
             Data.LastServerConnect = DateTime.UtcNow;
             var lastMessage = string.Empty;
             Data.ApplyChats(dc, ref lastMessage);
-            var result = new List<ChatPost>(dc.Chats[0].Posts.Where(x => x.Time > _serverData.LastOnlineTime));
-            _serverData.LastOnlineTime = Data.ChatsTime;
+            var result = new List<ChatPost>(dc.Chats[0].Posts.Where(x => x.Time > Chanel2Server.LastOnlineTime));
+            Chanel2Server.LastOnlineTime = Data.ChatsTime;
+
             return result;
         }
 
         public void Disconnected(string msg = "Error Connection.")
         {
-            var login = _sessionClient.GetInfo(false).My.Login;
             _sessionClient.Disconnect();
             // to do : Notify that the server Disconnected 
-            DisconnectedEvent?.Invoke(this, new EventArgs());
         }
 
         public bool SendMessage(string message)
@@ -112,6 +107,11 @@ namespace OC.DiscordBotServer.Common
             }
 
             return true;
+        }
+
+        public Player GetPlayerByToken(Guid guidToken)
+        {
+            return _sessionClient.GetPlayerByToken(guidToken);
         }
 
         /// <summary>

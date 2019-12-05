@@ -1,10 +1,12 @@
 ﻿using Model;
 using OCServer.Model;
 using OCUnion;
+using OCUnion.Transfer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Transfer;
+using Verse;
 
 namespace OCServer
 {
@@ -12,10 +14,10 @@ namespace OCServer
     {
         private Services.PostingChat _postingChat = new Services.PostingChat();
         private PlayerServer _player;
-        public PlayerServer Player { get { return _player; }}
+        public PlayerServer Player { get { return _player; } }
 
         public ModelStatus Login(ModelLogin packet)
-        {
+        {           
             if (Player != null) return null;
             //Thread.Sleep(3000);
 
@@ -321,30 +323,17 @@ namespace OCServer
             }
         }
 
-        internal object GetLoginByToken(ModelPostingChat packet)
+        internal Player GetPlayerByToken(ModelGuid packet)
         {
             if (Player == null) return null;
 
-            //var token = Guid
+            lock (Player)
+            {
+                var data = Repository.GetData;
 
-            //lock (Player)
-            //{
-            //    var data = Repository.GetData;
-
-            //    data.PlayersAll.FirstOrDefault(p => p.DiscordToken.Equals();
-            //    if (toPlayer == null)
-            //    {
-            //        return new ModelStatus()
-            //        {
-            //            Status = 1,
-            //            Message = "Destination not found"
-            //        };
-            //    }
-
-            //    packet.From = data.PlayersAll.Select(p => p.Public).FirstOrDefault(p => p.Login == packet.From.Login);
-            //    packet.To = toPlayer.Public;
-            return null;
-
+                var playerServer = data.PlayersAll.FirstOrDefault(p => packet.Guid.Equals(p.DiscordToken));
+                return playerServer?.Public;
+            }
         }
 
         public ModelStatus SendThings(ModelMailTrade packet)

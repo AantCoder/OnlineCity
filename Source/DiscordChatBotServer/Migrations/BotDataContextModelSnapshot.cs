@@ -49,6 +49,8 @@ namespace OC.DiscordBotServer.Migrations
 
                     b.Property<string>("Token");
 
+                    b.Property<Guid>("TokenGuid");
+
                     b.HasKey("DiscordIdChanel", "UserId");
 
                     b.ToTable("OCUsers");
