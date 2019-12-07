@@ -16,6 +16,7 @@ namespace RimWorldOnlineCity.UI
         public void Drow(Rect chatAreaOuter, bool scrollToDown = false)
         {
             var chatAreaInner = new Rect(0, 0, chatAreaOuter.width - ListBox<string>.WidthScrollLine, 0);
+            if (chatAreaInner.width <= 0) return;
             //chatAreaInner.height = Text.CalcHeight(ChatText, chatAreaInner.width);
             GUI.skin.textField.wordWrap = true;
             chatAreaInner.height = GUI.skin.textField.CalcHeight(new GUIContent(Text), chatAreaInner.width);

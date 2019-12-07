@@ -150,7 +150,6 @@ namespace RimWorldOnlineCity.GameClasses
             if (__instance is Plant) return;
             if (__instance is Filth) return;
 
-            if (__instance is Corpse) return;
             if (__instance is Pawn) return; //есть отдельный цикл по всем пешкам
 
             //Loger.Log("HostAttackUpdate SpawnSetup " + __instance.GetType().ToString() + " " + __instance.Label + " respawningAfterLoad=" + respawningAfterLoad);

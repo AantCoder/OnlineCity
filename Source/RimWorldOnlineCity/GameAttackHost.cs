@@ -682,7 +682,8 @@ namespace RimWorldOnlineCity
         {
             Loger.Log("HostAttackUpdate UIEventChange " + thing.GetType().ToString() + " " + thing.Label + " id=" + thing.thingIDNumber
                 + (distroy ? " distroy!" : "")
-                + (newSpawn ? " newSpawn!" : ""));
+                + (newSpawn ? " newSpawn!" : "")
+                + (thing is Corpse ? " Corpse" : ""));
             
             var tId = thing.thingIDNumber;
             lock (ToSendListsSync)
@@ -693,7 +694,12 @@ namespace RimWorldOnlineCity
                 }
                 else if (newSpawn)
                 {
-                    ToSendThingAdd.Add(thing);
+                    if (thing is Corpse)
+                    { 
+                        //трупы обрабатываем отдельно: передаем труп не как объект, а как редактирование состояния пешки - она сама станет трупом + после изменеия состояния удалить из словарей, чтобы её не удалили (да ID созданного трупа будет не синхронизированно, но считаем что с ними ничего не будут делать)
+                        //todo здесь, а также изменить у атакующего: когда пришла команда удалить пешку, то задержать команду на 1 цикл (новый массив)
+                    }
+                    else ToSendThingAdd.Add(thing);
                 }
                 else
                 {
