@@ -39,6 +39,7 @@ namespace OCUnion
                     if (dd >= 1000000) dd = 0;
                     var logMsg = dn.ToString(Culture) + " | " + dd.ToString().PadLeft(6) + " | " + msg + Environment.NewLine;
                     var date = DateTime.Now.ToString("yyyy-MM-dd");
+                    Console.WriteLine(logMsg);
                     File.AppendAllText(PathLog + @"Log " + date + ".txt", logMsg, Encoding.UTF8);
                 }
                 catch
