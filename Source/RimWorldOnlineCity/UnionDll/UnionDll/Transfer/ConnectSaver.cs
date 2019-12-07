@@ -32,25 +32,29 @@ namespace Transfer
 
         private static void WorkerDo()
         {
-            while(Clients.Count > 0)
+            while (Clients.Count > 0)
             {
                 Thread.Sleep(60000);
                 var now = DateTime.UtcNow.AddMinutes(5);
-                foreach (var client in Clients.Keys)
+
+                lock (Clients)    // for resolving System.InvalidOperationException: 'Коллекция была изменена; невозможно выполнить операцию перечисления.'              
                 {
-                    if (!client.Client.Connected)
+                    foreach (var client in Clients.Keys)
                     {
-                        Clients.Remove(client);
-                        continue;
-                    }
-                    if (now > client.LastSend)
-                    {
-                        //запуск пинга через 5-6 мин после последнего обращения (в т.ч. пинга)
-                        Clients[client](client);
+                        if (!client.Client.Connected)
+                        {
+                            Clients.Remove(client);
+                            continue;
+                        }
+                        if (now > client.LastSend)
+                        {
+                            //запуск пинга через 5-6 мин после последнего обращения (в т.ч. пинга)
+                            Clients[client](client);
+                        }
                     }
                 }
-
             }
+
             Worker = null;
         }
     }

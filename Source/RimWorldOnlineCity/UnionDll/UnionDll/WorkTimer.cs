@@ -53,6 +53,7 @@ namespace OCUnion
             {
                 Timers.Add(item);
             }
+
             return item;
         }
 
@@ -97,7 +98,6 @@ namespace OCUnion
                     }
                 }
             }
-
         }
 
         private void DoItem(Action action)
@@ -111,6 +111,5 @@ namespace OCUnion
                 ExceptionUtil.ExceptionLog(e, "WorkTimer");
             }
         }
-
     }
 }

@@ -51,6 +51,7 @@
     <Compile Include="ServerManader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />
+    <Compile Include="Services\PostingChat.cs" />
     <Compile Include="SessionServer.cs" />
   </ItemGroup>
   <ItemGroup>

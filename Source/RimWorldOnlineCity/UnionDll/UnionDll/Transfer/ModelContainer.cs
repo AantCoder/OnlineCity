@@ -11,7 +11,5 @@ namespace Transfer
         public int TypePacket { get; set; }
 
         public object Packet { get; set; }
-
-
     }
 }

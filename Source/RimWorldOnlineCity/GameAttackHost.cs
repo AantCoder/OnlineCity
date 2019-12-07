@@ -711,6 +711,5 @@ namespace RimWorldOnlineCity
                 }
             }
         }
-
     }
 }

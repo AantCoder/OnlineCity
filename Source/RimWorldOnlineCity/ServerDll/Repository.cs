@@ -17,6 +17,8 @@ namespace OCServer
         private static Repository Current = new Repository();
         public static Repository Get { get { return Current; } }
 
+        public const string DISCORD = "Discord";
+
         public static BaseContainer GetData {  get { return Get.Data; } }
 
         public BaseContainer Data;
@@ -27,7 +29,7 @@ namespace OCServer
         public string SaveFileName;
         public string SaveFolderDataPlayers => Path.Combine(Path.GetDirectoryName(SaveFileName), "DataPlayers");
 
-        public Repository()
+        private Repository()
         {
             Timer = new WorkTimer();
         }
@@ -36,7 +38,10 @@ namespace OCServer
         {
             bool needResave = false;
             if (!Directory.Exists(SaveFolderDataPlayers))
+            {
                 Directory.CreateDirectory(SaveFolderDataPlayers);
+            }
+
             if (!File.Exists(SaveFileName))
             {
                 Data = new BaseContainer();
@@ -58,6 +63,7 @@ namespace OCServer
                         Data.Version = MainHelper.VersionInfo;
                         needResave = true;
                     }
+
                     PlayerServer.PublicPosts = Data.PlayersAll[0].PublicChat.Posts;
                     if (Data.Orders == null) Data.Orders = new List<OrderTrade>();
 
@@ -96,6 +102,7 @@ namespace OCServer
                 file.Read(buff, 0, 10);
                 readAsXml = Encoding.ASCII.GetString(buff, 0, 10).Contains("<?xml");
             }
+
             //считываем текст как xml сейва или как сжатого zip'а
             var saveFileData = File.ReadAllBytes(fileName);
             if (readAsXml)
@@ -127,6 +134,7 @@ namespace OCServer
                     if (File.Exists(SaveFileName + ".bak")) File.Delete(SaveFileName + ".bak");
                     File.Move(SaveFileName, SaveFileName + ".bak");
                 }
+
                 using (var fs = File.OpenWrite(SaveFileName))
                 {
                     var bf = new BinaryFormatter();
@@ -141,6 +149,7 @@ namespace OCServer
                     File.Copy(SaveFileName + ".bak", SaveFileName, true);
                 throw;
             }
+
             Loger.Log("Server Saved");
         }
         
@@ -166,6 +175,5 @@ namespace OCServer
             foreach (var c in invalidFileChars) if (login.Contains(c)) login = login.Replace(c, '_');
             return login.ToLowerInvariant();
         }
-        
     }
 }

@@ -111,6 +111,7 @@
             this.textBox2.PasswordChar = '*';
             this.textBox2.Size = new System.Drawing.Size(203, 20);
             this.textBox2.TabIndex = 2;
+            this.textBox2.Text = "test";
             // 
             // textBox3
             // 
@@ -119,7 +120,7 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(203, 20);
             this.textBox3.TabIndex = 0;
-            this.textBox3.Text = "localhost";
+            this.textBox3.Text = "127.0.0.1";
             // 
             // textBox1
             // 
@@ -128,6 +129,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(203, 20);
             this.textBox1.TabIndex = 1;
+            this.textBox1.Text = "test";
             // 
             // textBox4
             // 

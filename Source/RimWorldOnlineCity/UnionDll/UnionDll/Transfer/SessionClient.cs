@@ -6,20 +6,39 @@ using System.Text;
 using Transfer;
 using Util;
 using Model;
+using OCUnion.Transfer.Model;
 
 namespace Transfer
 {
-    public class SessionClient
+    public class SessionClient 
     {
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
         private Object LockObj = new Object();
-#region
-        private static readonly SessionClient Single = new SessionClient();
+        #region
 
-        public static SessionClient Get { get { return Single; } }
+        [Obsolete ("For Using in Discrod bot need many Session Clients, use SessionClient as variable in constructor in the Future")]
+        private static SessionClient Single;
 
-        public bool IsLogined = false;
+        /// <summary>
+        /// Discrod may contains many server, Lazy initialisation Singlton class
+        /// Что бы не вносить больших изменений, добавил ленивую инциализацию 
+        /// </summary>
+        [Obsolete ("For Using in Discrod bot need many Session Clients, use SessionClient as variable in constructor in the Future")]
+        public static SessionClient Get 
+        { 
+            get 
+            {
+                if (Single == null)
+                {
+                    Single = new SessionClient();
+                }
+
+                return Single;
+            } 
+        }
+
+        public volatile bool IsLogined = false;
 
         public ConnectClient Client;
         private byte[] Key;
@@ -35,6 +54,7 @@ namespace Transfer
             catch
             {
             }
+
             Client = null;
         }
 
@@ -48,10 +68,11 @@ namespace Transfer
             }
             catch
             { }
-         
+
             try
             {
                 //Loger.Log("Client Connect1");
+                // Generate open-close keys  KClose-KOpen
                 //Генерим рандомную пару КЗакр-КОткр
                 var crypto = new CryptoProvider();
                 if (UseCryptoKeys) crypto.GenerateKeys();
@@ -68,8 +89,10 @@ namespace Transfer
                 //Loger.Log("Client Connect4");
                 //Строго первый ответ: Передаем клиенту КОткр(Сессия)
                 var rc = Client.ReceiveBytes();
-                if (UseCryptoKeys) Key = crypto.Decrypt(rc);
-                else Key = rc;
+                if (UseCryptoKeys) 
+                    Key = crypto.Decrypt(rc);
+                else 
+                    Key = rc;
 
                 //Loger.Log("Client Connect5");
                 //Обмен по протоколу ниже: Передаем серверу Сессия(Логин - Пароль или запрос на создание)
@@ -83,6 +106,7 @@ namespace Transfer
                         cl.ReceiveBytes();
                     }
                 });
+
                 return true;
             }
             catch (Exception e)
@@ -167,12 +191,12 @@ namespace Transfer
                 return (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
             }
         }
-        
+
         /// <summary>
         /// Передаем объект с указанием номера типа.
         /// </summary>
         private T TransObject<T>(object objOut, int typeOut, int typeIn)
-            where T: class
+            where T : class
         {
             //Loger.Log("Client T2");
             try
@@ -195,7 +219,13 @@ namespace Transfer
                     + (e.InnerException == null ? "" : " -> " + e.InnerException.Message);
                 ExceptionUtil.ExceptionLog(e, "Client");
                 return null;
-            }            
+            }
+        }
+
+        private T TransObject2<T>(object objOut, PackageType typeOut, PackageType typeIn)
+            where T : class
+        {
+            return TransObject<T>(objOut, (int)typeOut, (int)typeIn);
         }
 
         /// <summary>
@@ -294,7 +324,7 @@ namespace Transfer
             }
             return stat != null;
         }
-        
+
         /*
         public bool CreatePlayerMap(ModelCreatePlayerMap packet)
         {
@@ -336,6 +366,7 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return false;
             }
+
             return stat != null;
         }
 
@@ -357,6 +388,7 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return false;
             }
+
             return stat != null;
         }
 
@@ -370,6 +402,7 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return false;
             }
+
             return stat != null;
         }
 
@@ -383,6 +416,7 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return false;
             }
+
             return stat != null;
         }
 
@@ -396,9 +430,10 @@ namespace Transfer
                 ErrorMessage = stat.Message;
                 return null;
             }
+
             return stat.Orders;
         }
-        
+
         public AttackInitiatorFromSrv AttackOnlineInitiator(AttackInitiatorToSrv fromClient)
         {
             Loger.Log("Client AttackOnlineInitiator " + fromClient.State);
@@ -411,7 +446,14 @@ namespace Transfer
         {
             Loger.Log("Client AttackOnlineHost " + fromClient.State);
             var stat = TransObject<AttackHostFromSrv>(fromClient, 29, 30);
-            
+
+            return stat;
+        }
+
+        public Player GetPlayerByToken(Guid guidToken) 
+        {
+            var stat = TransObject2<Player>(guidToken, PackageType.RequestPlayerByToken, PackageType.ResponsePlayerByToken);
+
             return stat;
         }
     }
