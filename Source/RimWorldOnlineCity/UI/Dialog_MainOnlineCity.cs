@@ -46,7 +46,7 @@ namespace RimWorldOnlineCity
 
         private long UpdateLogHash;
         private string lbCannalsGoToChat; //как только появиться этот чат перейти к нему
-        
+
         private bool NeedFockus = true;
 
         public static string AboutGeneralText = MainHelper.VersionInfo + " "
@@ -122,51 +122,58 @@ namespace RimWorldOnlineCity
             IsShow = null;
             //ClientController.SaveSettings();
         }
-        
+
         private bool DevTest = false;
         public override void DoWindowContents(Rect inRect)
         {
-            LastInitialSize = new Vector2(windowRect.width, windowRect.height);
-            LastInitialPos = new Vector2(windowRect.x, windowRect.y);
-
-            if (MainHelper.DebugMode)
+            try
             {
-                if (!DevTest && new DevelopTest().Run())
+                LastInitialSize = new Vector2(windowRect.width, windowRect.height);
+                LastInitialPos = new Vector2(windowRect.x, windowRect.y);
+
+                if (MainHelper.DebugMode)
                 {
-                    DevTest = true;
-                    Close();
+                    if (!DevTest && new DevelopTest().Run())
+                    {
+                        DevTest = true;
+                        Close();
+                    }
+                    if (DevTest) return;
                 }
-                if (DevTest) return;
-            }
 
-            if (!SessionClient.Get.IsLogined)
+                if (!SessionClient.Get.IsLogined)
+                {
+                    Close();
+                    Find.WindowStack.Add(new Dialog_LoginForm());
+                    return;
+                }
+
+                //Rect r1 = new Rect(inRect.x - 5f, inRect.y, 180f, 40f); // inRect.width, inRect.height);
+                //Widgets.DrawBoxSolid(r1, new Color(0, 1, 1));
+
+                var screenRect = new Rect(inRect.x, inRect.y + 31f, 400f, 0);
+                var tabRect = new Rect(inRect.x, inRect.y + 31f, inRect.width, inRect.height - 31f);
+
+                List<TabRecord> list = new List<TabRecord>();
+                list.Add(new TabRecord("OCity_Dialog_ListChat".Translate(), () => { TabIndex = 0; }, TabIndex == 0));
+                list.Add(new TabRecord("OCity_Dialog_ListInfo".Translate(), () => { TabIndex = 1; }, TabIndex == 1));
+                list.Add(new TabRecord("OCity_Dialog_ListAbout".Translate(), () => { TabIndex = 2; }, TabIndex == 2));
+                TabDrawer.DrawTabs(screenRect, list);
+                if (TabIndex == 0) DoTab0Contents(tabRect);
+                else if (TabIndex == 1) DoTab1Contents(tabRect);
+                else if (TabIndex == 2) DoTab2Contents(tabRect);
+
+                Text.Font = GameFont.Small;
+                var loginRect = new Rect(inRect.width - 180f, -2f, 180f, 50f);
+                Widgets.Label(loginRect, SessionClientController.Data.LastServerConnectFail
+                    ? "OCity_Dialog_Connecting".Translate()
+                    : "OCity_Dialog_Login".Translate() + SessionClientController.My.Login
+                        + " " + (int)SessionClientController.Data.Ping.TotalMilliseconds + "ms");
+            }
+            catch (Exception e)
             {
-                Close();
-                Find.WindowStack.Add(new Dialog_LoginForm());
-                return;
+                Loger.Log("Dialog_MainOnlineCity Exception: " + e.Message + Environment.NewLine + e.ToString());
             }
-
-            //Rect r1 = new Rect(inRect.x - 5f, inRect.y, 180f, 40f); // inRect.width, inRect.height);
-            //Widgets.DrawBoxSolid(r1, new Color(0, 1, 1));
-
-            var screenRect = new Rect(inRect.x, inRect.y + 31f, 400f, 0);
-            var tabRect = new Rect(inRect.x, inRect.y + 31f, inRect.width, inRect.height - 31f);
-            
-            List<TabRecord> list = new List<TabRecord>();
-            list.Add(new TabRecord("OCity_Dialog_ListChat".Translate(), () => { TabIndex = 0; }, TabIndex == 0));
-            list.Add(new TabRecord("OCity_Dialog_ListInfo".Translate(), () => { TabIndex = 1; }, TabIndex == 1));
-            list.Add(new TabRecord("OCity_Dialog_ListAbout".Translate(), () => { TabIndex = 2; }, TabIndex == 2));
-            TabDrawer.DrawTabs(screenRect, list);
-            if (TabIndex == 0) DoTab0Contents(tabRect);
-            else if (TabIndex == 1) DoTab1Contents(tabRect);
-            else if (TabIndex == 2) DoTab2Contents(tabRect);
-
-            Text.Font = GameFont.Small;
-            var loginRect = new Rect(inRect.width - 180f, -2f, 180f, 50f);
-            Widgets.Label(loginRect, SessionClientController.Data.LastServerConnectFail
-                ? "OCity_Dialog_Connecting".Translate()
-                : "OCity_Dialog_Login".Translate() + SessionClientController.My.Login
-                    + " " + (int)SessionClientController.Data.Ping.TotalMilliseconds + "ms");
         }
 
         private float DoTab0LastHeight = 0;
@@ -204,7 +211,7 @@ namespace RimWorldOnlineCity
                     lbCannals.OnClick += (index, text) => DataLastChatsTime = DateTime.MinValue; /*StatusTemp = text;*/
                     lbCannals.SelectedIndex = 0;
                 }
-                
+
                 if (lbPlayers == null)
                 {
                     //первый запуск
@@ -233,7 +240,7 @@ namespace RimWorldOnlineCity
                         , 100f
                         , inRect.height - (iconWidthSpase + lbCannalsHeight + 22f));
                 }
-                
+
                 if (DataLastChatsTime != SessionClientController.Data.ChatsTime
                     || DataLastChatsTimeUpdateTime < DateTime.UtcNow.AddSeconds(-5))
                 {
@@ -244,10 +251,9 @@ namespace RimWorldOnlineCity
                     if (updateLogHash != UpdateLogHash)
                     {
                         UpdateLogHash = updateLogHash;
-                        Loger.Log("Client UpdateChats count="
+                        Loger.Log("Client UpdateChats chats="
                             + SessionClientController.Data.Chats.Count.ToString()
-                            + " posts=" + (updateLogHash % 1000000).ToString()
-                            + " - " + SessionClientController.Data.ChatsTime.ToString(Loger.Culture));
+                            + " players=" + SessionClientController.Data.Players.Count.ToString());
                     }
                     //устанавливаем данные
                     lbCannals.DataSource = SessionClientController.Data.Chats
@@ -284,13 +290,13 @@ namespace RimWorldOnlineCity
                         if (lbPlayers.DataSource.Count > 0) addPl(null, " ").GroupTitle = true;
                         addPl(null, " <i>– " + text + " –</i> ").GroupTitle = true;
                     };
-                    Func<string, bool> isOnline = (login) => login == SessionClientController.My.Login 
-                        || SessionClientController.Data.Players[login].Online;
+                    Func<string, bool> isOnline = (login) => login == SessionClientController.My.Login
+                        || SessionClientController.Data.Players.ContainsKey(login) && SessionClientController.Data.Players[login].Online;
                     Func<bool, string, string> frameOnline = (online, txt) =>
                         online
                         ? "<b>" + txt + "</b>"
                         : "<color=#888888ff>" + txt + "</color>";
-                    
+
                     if (lbCannals.SelectedIndex > 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                     {
                         var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
@@ -406,19 +412,26 @@ namespace RimWorldOnlineCity
                     if (lbCannals.SelectedIndex >= 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                     {
                         var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
-                        var chatLastPostTime = selectCannal.Posts.Max(p => p.Time);
-                        if (ChatLastPostTime != chatLastPostTime)
+                        if (selectCannal.Posts != null || selectCannal.Posts.Count > 0)
                         {
-                            ChatLastPostTime = chatLastPostTime;
-                            Func<ChatPost, string> getPost = (cp) => "[" + cp.Time.ToGoodUtcString("dd HH:mm ") + cp.OwnerLogin + "]: " + cp.Message;
+                            var chatLastPostTime = selectCannal.Posts.Max(p => p.Time);
+                            if (ChatLastPostTime != chatLastPostTime)
+                            {
+                                ChatLastPostTime = chatLastPostTime;
+                                Func<ChatPost, string> getPost = (cp) => "[" + cp.Time.ToGoodUtcString("dd HH:mm ") + cp.OwnerLogin + "]: " + cp.Message;
 
-                            var totalLength = 0;
-                            ChatBox.Text = selectCannal.Posts
-                                .Reverse<ChatPost>()
-                                .Where(i => (totalLength += i.Message.Length) < 5000)
-                                .Aggregate("", (r, i) => getPost(i) + (r == "" ? "" : Environment.NewLine + r));
-                            ChatScrollToDown = true;
+                                var totalLength = 0;
+                                ChatBox.Text = selectCannal.Posts
+                                    .Reverse<ChatPost>()
+                                    .Where(i => (totalLength += i.Message.Length) < 5000)
+                                    .Aggregate("", (r, i) => getPost(i) + (r == "" ? "" : Environment.NewLine + r));
+                                ChatScrollToDown = true;
+                            }
+                            else
+                                ChatBox.Text = "";
                         }
+                        else
+                            ChatBox.Text = "";
                     }
                     else
                         ChatBox.Text = "";
@@ -617,7 +630,7 @@ namespace RimWorldOnlineCity
 
             Text.Font = GameFont.Medium;
             Widgets.Label(inRect, InfoTabTitle);
-            
+
             Text.Font = GameFont.Small;
             var chatAreaOuter = new Rect(inRect.x + 50f, inRect.y + 40f, inRect.width - 50f, inRect.height - 30f - 40f);
             InfoBox.Drow(chatAreaOuter);
@@ -635,7 +648,7 @@ namespace RimWorldOnlineCity
             var rect2 = new Rect(inRect.x, inRect.y + inRect.height / 2f, 150f, inRect.height - 30f - 40f);
             Text.Font = GameFont.Small;
             List<ListableOption> list2 = new List<ListableOption>();
-            ListableOption item2 = new ListableOption_WebLink("OCity_Dialog_AutorPage".Translate(), "https://vk.com/rimworldonline", IconForums);
+            ListableOption item2 = new ListableOption_WebLink("OCity_Dialog_AutorPage".Translate(), "https://steamcommunity.com/sharedfiles/filedetails/?id=1908437382", IconForums);
             list2.Add(item2);
 
             rect2 = new Rect(inRect.x, inRect.y + 30f, 150f, 40f);
@@ -661,8 +674,7 @@ namespace RimWorldOnlineCity
                 Find.WindowStack.Add(form);
             }, IconDelTex);
             list2.Add(item2);
-            
-            /*
+
             float num = OptionListingUtility.DrawOptionListing(rect2, list2);
             GUI.BeginGroup(rect2);
             if (Current.ProgramState == ProgramState.Entry && Widgets.ButtonImage(new Rect(0f, num + 10f, 64f, 32f), LanguageDatabase.activeLanguage.icon))
@@ -680,7 +692,6 @@ namespace RimWorldOnlineCity
                 Find.WindowStack.Add(new FloatMenu(list3));
             }
             GUI.EndGroup();
-            */
 
             /*
             var rectCannals = new Rect(inRect.x, inRect.y, 100f, (float)Math.Round((decimal)(inRect.height / 2f * 10f)) / 10f);

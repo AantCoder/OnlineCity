@@ -9,6 +9,7 @@ namespace OCUnion
 {
     public static class Loger
     {
+        public static event Action<string> LogMessage;
 
         private static string _PathLog;
         private static DateTime LastMsg;
@@ -37,10 +38,10 @@ namespace OCUnion
                     var dd = (long)(dn - LastMsg).TotalMilliseconds;
                     LastMsg = dn;
                     if (dd >= 1000000) dd = 0;
-                    var logMsg = dn.ToString(Culture) + " | " + dd.ToString().PadLeft(6) + " | " + msg + Environment.NewLine;
+                    var logMsg = dn.ToString(Culture) + " | " + dd.ToString().PadLeft(6) + " | " + msg;
                     var date = DateTime.Now.ToString("yyyy-MM-dd");
-                    Console.WriteLine(logMsg);
-                    File.AppendAllText(PathLog + @"Log " + date + ".txt", logMsg, Encoding.UTF8);
+                    if (LogMessage != null) LogMessage(logMsg);
+                    File.AppendAllText(PathLog + @"Log " + date + ".txt", logMsg + Environment.NewLine, Encoding.UTF8);
                 }
                 catch
                 { }

@@ -12,7 +12,6 @@ namespace ServerOnlineCity
 {
     public class ServerManager
     {
-        public event Action<string> LogMessage;
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
         public int ActiveClientCount
@@ -42,10 +41,10 @@ namespace ServerOnlineCity
                 ServerSettings = JsonConvert.DeserializeObject<ServerSettings>(File.ReadAllText(Path.Combine(path, "Settings.json")));
             }
 
-            Loger.Log($"Server starting on port: {ServerSettings.Port}");
-
             Loger.PathLog = path;
             Loger.IsServer = true;
+
+            Loger.Log($"Server starting on port: {ServerSettings.Port}");
 
             var rep = Repository.Get;
             rep.SaveFileName = Path.Combine(path, "World.dat");
@@ -145,11 +144,10 @@ namespace ServerOnlineCity
         {
             try
             {
-                if (LogMessage != null) LogMessage("New connect");
+                Loger.Log("New connect");
 
                 using (var ss = new SessionServer())
                 {
-                    ss.LogMessage += LogMessage;
                     ss.Do(client);
                 }
             }
@@ -158,7 +156,7 @@ namespace ServerOnlineCity
                 var errorText = ExceptionUtil.ExceptionLog(e, "Server Exception");
                 if (!(e is SocketException) && !(e.InnerException is SocketException))
                 {
-                    if (LogMessage != null) LogMessage(errorText);
+                    Loger.Log(errorText);
                 }
             }
             //if (LogMessage != null) LogMessage("End connect");

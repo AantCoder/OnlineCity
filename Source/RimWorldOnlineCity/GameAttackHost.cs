@@ -192,7 +192,7 @@ namespace RimWorldOnlineCity
                             toSrvMap.Thing.Add(tt);
                         }
                     }
-                    
+
                     Loger.Log("Client GameAttackHost Start 6");
                     SessionClientController.Command((connect0) =>
                     {
@@ -249,8 +249,8 @@ namespace RimWorldOnlineCity
                         GameMap = cloneMap;
 
                         UIEventNewJobDisable = true;
-                        var cellPawns = GameUtils.SpawnCaravanPirate(cloneMap, pawnsA, 
-                            (th, te) => 
+                        var cellPawns = GameUtils.SpawnCaravanPirate(cloneMap, pawnsA,
+                            (th, te) =>
                             {
                                 var p = th as Pawn;
                                 if (p == null) return;
@@ -262,11 +262,11 @@ namespace RimWorldOnlineCity
                                 Loger.Log("Client GameAttackHost Start 9 StartJob Wait_Combat ");
                                 p.playerSettings.hostilityResponse = HostilityResponseMode.Ignore;
                                 p.jobs.StartJob(new Job(JobDefOf.Wait_Combat)
-                                    {
-                                        playerForced = true,
-                                        expiryInterval = int.MaxValue,
-                                        checkOverrideOnExpire = false,
-                                    }
+                                {
+                                    playerForced = true,
+                                    expiryInterval = int.MaxValue,
+                                    checkOverrideOnExpire = false,
+                                }
                                     , JobCondition.InterruptForced);
                                 /*
                                 if (p.Label == "Douglas, Клерк")
@@ -329,7 +329,7 @@ namespace RimWorldOnlineCity
                 if (InTimer) return;
                 InTimer = true;
                 AttackUpdateTick++;
-//                Loger.Log("Client HostAttackUpdate #" + AttackUpdateTick.ToString());
+                //                Loger.Log("Client HostAttackUpdate #" + AttackUpdateTick.ToString());
 
                 SessionClientController.Command((connect) =>
                 {
@@ -435,7 +435,7 @@ namespace RimWorldOnlineCity
                             }
 
                             //обновляем поколения вещей учавствующих в Job и отправляем нужные
-                            foreach(var mp in ThingPrepareChange0)
+                            foreach (var mp in ThingPrepareChange0)
                             {
                                 var mpID = mp.thingIDNumber;
                                 if (ToSendDeleteId.Contains(mpID)) continue;
@@ -472,7 +472,7 @@ namespace RimWorldOnlineCity
                             {
                                 var comm = toClient.UpdateCommand[ii];
                                 var pawn = mapPawns.Where(p => p.thingIDNumber == comm.HostPawnID).FirstOrDefault() as Pawn;
-                                if (pawn == null) 
+                                if (pawn == null)
                                 {
                                     Loger.Log("HostAttackUpdate UpdateCommand pawn == null " + comm.HostPawnID.ToString());
                                     continue;
@@ -493,7 +493,7 @@ namespace RimWorldOnlineCity
                         Loger.Log("HostAttackUpdate Event Exception " + ext.ToString());
                     }
                     finally
-                    { 
+                    {
                         InTimer = false;
                     }
                 });
@@ -551,7 +551,7 @@ namespace RimWorldOnlineCity
                         stopJob = true;
                     }
                 }
-                
+
                 if (!stopJob)
                 {
                     if (comm.Command == AttackPawnCommand.PawnCommand.Attack)
@@ -682,8 +682,9 @@ namespace RimWorldOnlineCity
         {
             Loger.Log("HostAttackUpdate UIEventChange " + thing.GetType().ToString() + " " + thing.Label + " id=" + thing.thingIDNumber
                 + (distroy ? " distroy!" : "")
-                + (newSpawn ? " newSpawn!" : ""));
-            
+                + (newSpawn ? " newSpawn!" : "")
+                + (thing is Corpse ? " Corpse" : ""));
+
             var tId = thing.thingIDNumber;
             lock (ToSendListsSync)
             {
@@ -693,7 +694,12 @@ namespace RimWorldOnlineCity
                 }
                 else if (newSpawn)
                 {
-                    ToSendThingAdd.Add(thing);
+                    if (thing is Corpse)
+                    {
+                        //трупы обрабатываем отдельно: передаем труп не как объект, а как редактирование состояния пешки - она сама станет трупом + после изменеия состояния удалить из словарей, чтобы её не удалили (да ID созданного трупа будет не синхронизированно, но считаем что с ними ничего не будут делать)
+                        //todo здесь, а также изменить у атакующего: когда пришла команда удалить пешку, то задержать команду на 1 цикл (новый массив)
+                    }
+                    else ToSendThingAdd.Add(thing);
                 }
                 else
                 {

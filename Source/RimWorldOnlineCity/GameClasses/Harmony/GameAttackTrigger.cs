@@ -150,7 +150,6 @@ namespace RimWorldOnlineCity.GameClasses
             if (__instance is Plant) return;
             if (__instance is Filth) return;
 
-            if (__instance is Corpse) return;
             if (__instance is Pawn) return; //есть отдельный цикл по всем пешкам
 
             //Loger.Log("HostAttackUpdate SpawnSetup " + __instance.GetType().ToString() + " " + __instance.Label + " respawningAfterLoad=" + respawningAfterLoad);
@@ -173,7 +172,7 @@ namespace RimWorldOnlineCity.GameClasses
         [HarmonyPostfix]
         public static void Postfix(Pawn_JobTracker __instance)
         {
-            if (GameAttackTrigger_Patch.ActiveAttacker.Count == 0 
+            if (GameAttackTrigger_Patch.ActiveAttacker.Count == 0
                 && GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
             var that = __instance;
             var pawn = that.GetPawn();
