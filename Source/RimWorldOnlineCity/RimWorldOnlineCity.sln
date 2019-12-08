@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RimWorldOnlineCity", "RimWo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnionDll", "UnionDll\UnionDll\UnionDll.csproj", "{9513586E-B487-4BEE-A3FB-0D277D4E5B5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerDll", "ServerDll\ServerDll.csproj", "{BB85A737-6A0A-4D84-BC94-D8657897D46A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCore", "ServerCore\ServerCore.csproj", "{BB85A737-6A0A-4D84-BC94-D8657897D46A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerConsole", "ServerOnlineCity\ServerConsole.csproj", "{E38E0476-8ED6-4F29-9C89-FA545566B838}"
 EndProject

@@ -47,7 +47,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ServerDll\ServerDll.csproj">
+    <ProjectReference Include="..\ServerCore\ServerCore.csproj">
       <Project>{bb85a737-6a0a-4d84-bc94-d8657897d46a}</Project>
       <Name>ServerDll</Name>
     </ProjectReference>
