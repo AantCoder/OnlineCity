@@ -69,9 +69,8 @@ namespace OC.DiscordBotServer
             var services = new ServiceCollection()
                 .AddSingleton<DiscordSocketClient>(_discordClient)
                 .AddSingleton<ApplicationContext>()
-                .AddSingleton<BotDataContext>(new BotDataContext(options));
-
-            services
+                .AddSingleton<BotDataContext>(new BotDataContext(options))
+                .AddSingleton<CommandService>(_commands)
                 .AddSingleton<OCUserRepository>()
                 .AddSingleton<Chanel2ServerRepository>()
                 .AddSingleton<IRepository<OCUser>>(x => x.GetService<OCUserRepository>())
@@ -90,11 +89,9 @@ namespace OC.DiscordBotServer
                 }
             }
             _services = services
-                //  .AddSingleton(_commands)
                 .AddSingleton<ChatListener>()
                 .AddTransient<ChannelDestroyedCommand>()
                 .BuildServiceProvider();
-
 
             _discordClient.Log += _discordClient_Log;
             _discordClient.ChannelDestroyed += _discordClient_ChannelDestroyed;
@@ -136,8 +133,8 @@ namespace OC.DiscordBotServer
 
         public async Task RegisterCommandAsync()
         {
-            _messageParser = new MessageParser(_services);
-            _discordClient.MessageReceived += _messageParser.Execute;
+             _messageParser = new MessageParser(_services);
+             _discordClient.MessageReceived += _messageParser.Execute;
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
     }
