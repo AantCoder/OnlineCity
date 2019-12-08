@@ -23,6 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\Directory.Build.props = ..\Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordBotServer", "..\DiscordChatBotServer\DiscordBotServer.csproj", "{6774332F-BEBF-44FC-AEDA-BA363F487D95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "..\UnitTest\UnitTest.csproj", "{0EF588A3-E6EE-439E-A39C-D09FEB4663DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +57,14 @@ Global
 		{FF65F157-9528-4680-ADB3-4770A8738370}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF65F157-9528-4680-ADB3-4770A8738370}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF65F157-9528-4680-ADB3-4770A8738370}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6774332F-BEBF-44FC-AEDA-BA363F487D95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6774332F-BEBF-44FC-AEDA-BA363F487D95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6774332F-BEBF-44FC-AEDA-BA363F487D95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6774332F-BEBF-44FC-AEDA-BA363F487D95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EF588A3-E6EE-439E-A39C-D09FEB4663DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EF588A3-E6EE-439E-A39C-D09FEB4663DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EF588A3-E6EE-439E-A39C-D09FEB4663DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EF588A3-E6EE-439E-A39C-D09FEB4663DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

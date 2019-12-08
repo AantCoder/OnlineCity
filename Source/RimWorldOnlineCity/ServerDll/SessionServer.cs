@@ -1,5 +1,7 @@
 ﻿using Model;
 using OCUnion;
+using OCUnion.Transfer;
+using OCUnion.Transfer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +55,10 @@ namespace OCServer
             //Строго первый пакет: Передаем серверу КОткр
             var rc = Client.ReceiveBytes();
             var crypto = new CryptoProvider();
-            if (SessionClient.UseCryptoKeys) crypto.OpenKey = Encoding.UTF8.GetString(rc);
+            if (SessionClient.UseCryptoKeys)
+            {
+                crypto.OpenKey = Encoding.UTF8.GetString(rc);
+            }
 
             //Строго первый ответ: Передаем клиенту КОткр(Сессия)
             SetKey();
@@ -110,7 +115,7 @@ namespace OCServer
         }
 
         /// <summary>
-        /// Есть ли изменеия. Сейчас используется только для чата
+        /// Есть ли изменения. Сейчас используется только для чата
         /// </summary>
         /// <returns></returns>
         private bool ServiceCheck()
@@ -194,6 +199,11 @@ namespace OCServer
                     send.TypePacket = 30;
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " AttackHost");
                     send.Packet = Worker.AttackOnlineHost((AttackHostToSrv)recObj.Packet);
+                    break;
+                 case (int)PackageType.RequestPlayerByToken:
+                    send.TypePacket = (int)PackageType.ResponsePlayerByToken;
+                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " GetLoginByToken");
+                    send.Packet = Worker.GetPlayerByToken((ModelGuid)recObj.Packet);
                     break;
                 default:
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Error0");

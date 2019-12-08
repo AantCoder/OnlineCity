@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Model
 {
@@ -19,5 +16,10 @@ namespace Model
         public DateTime LastOnlineTime { get; set; }
 
         public long LastTick { get; set; }
+
+        /// <summary>
+        /// Grants for user for Example: 1 -admin, 2  - Moderator ( Can Kick users) , 4 - GameMaster (Can Create Events), 8 - Can Rename settlements e t.c 
+        /// </summary>
+        public uint Grants { get; set; }
     }
 }

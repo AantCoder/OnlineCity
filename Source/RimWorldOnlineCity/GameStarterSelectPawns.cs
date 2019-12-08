@@ -13,7 +13,6 @@ namespace RimWorldOnlineCity
 {
     public static class GameStarterSelectPawns
     {
-
         /// <summary>
         /// Перед запуском удалить всех колонистов игрока
         /// </summary>
@@ -66,7 +65,6 @@ namespace RimWorldOnlineCity
             };
             Find.WindowStack.Add(form);
         }
-
 
         public static Pawn PawnGenerateRandom()
         {

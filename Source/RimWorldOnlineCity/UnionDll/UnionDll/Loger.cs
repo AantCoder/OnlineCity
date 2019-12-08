@@ -9,7 +9,6 @@ namespace OCUnion
 {
     public static class Loger
     {
-
         private static string _PathLog;
         private static DateTime LastMsg;
         public static CultureInfo Culture = CultureInfo.GetCultureInfo("ru-RU");

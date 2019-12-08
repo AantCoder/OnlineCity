@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("RimWorldOnlineCity")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
+[assembly: AssemblyCopyright("Apache 2.0 License")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

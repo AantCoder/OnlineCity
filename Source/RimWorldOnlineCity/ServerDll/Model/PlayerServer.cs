@@ -16,6 +16,8 @@ namespace OCServer.Model
 
         public bool IsAdmin;
 
+        public Guid DiscordToken;
+
         public Chat PublicChat
         {
             get { return Chats[0]; }
@@ -55,6 +57,7 @@ namespace OCServer.Model
             {
                 Login = login
             };
+
             var publicChat = new Chat()
             {
                 Id = 1,
@@ -64,8 +67,8 @@ namespace OCServer.Model
                 PartyLogin = new List<string>() { login, "system" },
                 Posts = PublicPosts
             };
+
             Chats = new List<Chat>() { publicChat };
         }
-        
     }
 }
