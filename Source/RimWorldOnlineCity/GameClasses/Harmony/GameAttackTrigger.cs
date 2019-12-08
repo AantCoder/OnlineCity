@@ -172,7 +172,7 @@ namespace RimWorldOnlineCity.GameClasses
         [HarmonyPostfix]
         public static void Postfix(Pawn_JobTracker __instance)
         {
-            if (GameAttackTrigger_Patch.ActiveAttacker.Count == 0 
+            if (GameAttackTrigger_Patch.ActiveAttacker.Count == 0
                 && GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
             var that = __instance;
             var pawn = that.GetPawn();

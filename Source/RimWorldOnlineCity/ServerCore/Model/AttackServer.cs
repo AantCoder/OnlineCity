@@ -5,7 +5,7 @@ using System.Text;
 using Model;
 using OCUnion.Transfer.Model;
 
-namespace OCServer.Model
+namespace ServerOnlineCity.Model
 {
     public class AttackServer
     {

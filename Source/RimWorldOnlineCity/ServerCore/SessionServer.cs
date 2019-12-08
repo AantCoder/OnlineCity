@@ -9,12 +9,10 @@ using System.Text;
 using Transfer;
 using Util;
 
-namespace OCServer
+namespace ServerOnlineCity
 {
     public class SessionServer : IDisposable
     {
-        public event Action<string> LogMessage;
-
         private ConnectClient Client;
         private byte[] Key;
         private static Random Rnd = new Random();

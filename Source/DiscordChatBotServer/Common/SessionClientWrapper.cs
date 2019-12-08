@@ -13,7 +13,7 @@ namespace OC.DiscordBotServer.Common
 {
     public class SessionClientWrapper : IDisposable
     {
-        private readonly SessionClient _sessionClient;
+        private readonly Transfer.SessionClient _sessionClient;
         public Chanel2Server Chanel2Server { get; }
         private ClientData Data { get; set; }
         public Player My { get; set; }
