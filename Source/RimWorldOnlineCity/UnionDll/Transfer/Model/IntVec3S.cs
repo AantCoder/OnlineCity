@@ -24,5 +24,7 @@ namespace OCUnion.Transfer.Model
         {
             return new IntVec3(x, y, z);
         }
+
+        
     }
 }

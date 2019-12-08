@@ -17,8 +17,6 @@ namespace ServerOnlineCity
         private static Repository Current = new Repository();
         public static Repository Get { get { return Current; } }
 
-        public const string DISCORD = "Discord";
-
         public static BaseContainer GetData {  get { return Get.Data; } }
 
         public BaseContainer Data;
@@ -29,7 +27,7 @@ namespace ServerOnlineCity
         public string SaveFileName;
         public string SaveFolderDataPlayers => Path.Combine(Path.GetDirectoryName(SaveFileName), "DataPlayers");
 
-        private Repository()
+        public Repository()
         {
             Timer = new WorkTimer();
         }
@@ -38,10 +36,7 @@ namespace ServerOnlineCity
         {
             bool needResave = false;
             if (!Directory.Exists(SaveFolderDataPlayers))
-            {
                 Directory.CreateDirectory(SaveFolderDataPlayers);
-            }
-
             if (!File.Exists(SaveFileName))
             {
                 Data = new BaseContainer();
@@ -63,7 +58,6 @@ namespace ServerOnlineCity
                         Data.Version = MainHelper.VersionInfo;
                         needResave = true;
                     }
-
                     PlayerServer.PublicPosts = Data.PlayersAll[0].PublicChat.Posts;
                     if (Data.Orders == null) Data.Orders = new List<OrderTrade>();
 
@@ -102,7 +96,6 @@ namespace ServerOnlineCity
                 file.Read(buff, 0, 10);
                 readAsXml = Encoding.ASCII.GetString(buff, 0, 10).Contains("<?xml");
             }
-
             //считываем текст как xml сейва или как сжатого zip'а
             var saveFileData = File.ReadAllBytes(fileName);
             if (readAsXml)
@@ -134,7 +127,6 @@ namespace ServerOnlineCity
                     if (File.Exists(SaveFileName + ".bak")) File.Delete(SaveFileName + ".bak");
                     File.Move(SaveFileName, SaveFileName + ".bak");
                 }
-
                 using (var fs = File.OpenWrite(SaveFileName))
                 {
                     var bf = new BinaryFormatter();
@@ -149,7 +141,6 @@ namespace ServerOnlineCity
                     File.Copy(SaveFileName + ".bak", SaveFileName, true);
                 throw;
             }
-
             Loger.Log("Server Saved");
         }
         
@@ -175,5 +166,6 @@ namespace ServerOnlineCity
             foreach (var c in invalidFileChars) if (login.Contains(c)) login = login.Replace(c, '_');
             return login.ToLowerInvariant();
         }
+        
     }
 }

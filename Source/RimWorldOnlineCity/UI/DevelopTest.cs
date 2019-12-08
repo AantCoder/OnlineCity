@@ -54,7 +54,8 @@ namespace RimWorldOnlineCity
                 : Restricted.ToStringRestrictedShort(o, ExcludeTypes);
         }
 
-      
+        private static int tttt;
+
         public bool Run()
         {
             return false;

@@ -34,7 +34,6 @@ namespace Util
             using (var msi = new MemoryStream(bytes))
                 return ZipStreamByte(msi);
         }
-
         public static byte[] ZipByte(string str)
         {
             var bytes = Encoding.UTF8.GetBytes(str);

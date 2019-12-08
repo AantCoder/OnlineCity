@@ -13,5 +13,6 @@ namespace Transfer
         public string Message { get; set; }
 
         public List<OrderTrade> Orders { get; set; }
+
     }
 }

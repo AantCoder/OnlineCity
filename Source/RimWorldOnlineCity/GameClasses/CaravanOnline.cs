@@ -14,11 +14,11 @@ namespace RimWorldOnlineCity
     [StaticConstructorOnStartup]
     public class CaravanOnline : WorldObject
     {
+
         public string OnlinePlayerLogin
         {
             get { return OnlineWObject == null ? null : OnlineWObject.LoginOwner; }
         }
-
         public string OnlineName
         {
             get { return OnlineWObject == null ? "" : OnlineWObject.Name; }
@@ -31,7 +31,6 @@ namespace RimWorldOnlineCity
                 return SessionClientController.Data.Players.TryGetValue(OnlinePlayerLogin);
             }
         }
-
         public bool IsOnline
         {
             get
@@ -186,7 +185,6 @@ namespace RimWorldOnlineCity
                 return IsOnline ? CaravanOnExpanding : CaravanOffExpanding;
             }
         }
-
         #endregion
     }
 }

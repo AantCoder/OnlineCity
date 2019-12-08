@@ -124,7 +124,7 @@
 
 	<!-- PlayerClient.cs -->
 	<OCity_PlayerClient_LastTick>Spieljahre: {0}, Tage: {1}.</OCity_PlayerClient_LastTick>
-	<OCity_PlayerClient_LastSaveTime>Ist im Spiel seit: {2}</OCity_PlayerClient_LastSaveTime>
+	<OCity_PlayerClient_LastSaveTime>Ist im Spiel: {2}</OCity_PlayerClient_LastSaveTime>
 	<OCity_PlayerClient_baseCount>Siedlungen: {3}</OCity_PlayerClient_baseCount>
 	<OCity_PlayerClient_caravanCount>Karawanen: {4}</OCity_PlayerClient_caravanCount>
 	<OCity_PlayerClient_marketValue>Wert der Sachen: {5}</OCity_PlayerClient_marketValue>

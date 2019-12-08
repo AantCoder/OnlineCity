@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 using OCUnion;
 using HugsLib;
 
@@ -102,7 +107,7 @@ namespace RimWorldOnlineCity
             var iresct = mainListing.GetRect(20f);
 
             //что к чему
-            ListableOption item = new ListableOption_WebLink("About Mod :-))".NeedTranslate(), () => 
+            ListableOption item = new ListableOption_WebLink("Что к чему".NeedTranslate(), () => 
             {
                 var textForm = new Dialog_TextOut(Dialog_MainOnlineCity.AboutGeneralText);
                 Find.WindowStack.Add(textForm);
@@ -179,5 +184,6 @@ namespace RimWorldOnlineCity
             drawContents(sub, width);
             sub.End();
         }
+
     }
 }

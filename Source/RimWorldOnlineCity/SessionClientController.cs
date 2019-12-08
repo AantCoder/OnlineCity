@@ -363,13 +363,12 @@ namespace RimWorldOnlineCity
         /// 
         public static void InitConnected()
         {
-            var connect = SessionClient.Get;
             Loger.Log("Client InitConnected()");
-            Data = new ClientData(SessionClientController.My.Login, connect); 
+            Data = new ClientData();
             TimersStop();
             Timers = new WorkTimer();
             
-           
+            var connect = SessionClient.Get;
             var serverInfo = connect.GetInfo(true);
             My = serverInfo.My;
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;

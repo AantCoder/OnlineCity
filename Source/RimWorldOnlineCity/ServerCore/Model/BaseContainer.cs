@@ -34,7 +34,6 @@ namespace ServerOnlineCity.Model
             {
                 new PlayerServer("system")
             };
-
             WorldObjects = new List<WorldObjectEntry>();
             WorldObjectsDeleted = new List<WorldObjectEntry>();
             Orders = new List<OrderTrade>();

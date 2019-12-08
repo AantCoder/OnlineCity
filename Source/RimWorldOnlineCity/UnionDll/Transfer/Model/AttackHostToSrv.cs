@@ -10,6 +10,7 @@ namespace Model
     [Serializable]
     public class AttackHostToSrv
     {
+
         public int State { get; set; }
 
         public IntVec3S MapSize { get; set; }

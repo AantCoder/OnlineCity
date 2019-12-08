@@ -46,7 +46,6 @@ namespace Transfer
                         if (Listening) break;
                         ConnectionAccepted(new ConnectClient(srv.AcceptTcpClient()));
                     }
-
                     if (Listening) break;
                 }
             }
@@ -60,5 +59,6 @@ namespace Transfer
         {
             Listening = true;
         }
+        
     }
 }

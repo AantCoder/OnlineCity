@@ -36,6 +36,7 @@ namespace ServerOnlineCity.Model
         public List<ThingTrade> Thing { get; set; }
         public List<IntVec3S> ThingCell { get; set; }
 
+
         public List<ThingEntry> NewPawns { get; set; }
         public List<int> NewPawnsId { get; set; }
         public List<ThingEntry> NewThings { get; set; }

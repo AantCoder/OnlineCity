@@ -10,9 +10,11 @@ namespace Transfer
     public class ModelInfo
     {
         public Player My { get; set; }
+
         public bool IsAdmin { get; set; }
         public string VersionInfo { get; set; }
         public long VersionNum { get; set; }
+
 
         public bool NeedCreateWorld { get; set; }
 

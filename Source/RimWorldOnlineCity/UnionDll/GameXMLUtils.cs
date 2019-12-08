@@ -77,7 +77,6 @@ namespace OCUnion
             Scribe.EnterNode(rootElementName);
             var thing = new T();
             Scribe_Deep.Look<T>(ref thing, "saveable", new object[0]);
-
             return thing;
         }
 

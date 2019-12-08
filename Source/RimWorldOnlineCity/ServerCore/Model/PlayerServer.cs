@@ -16,8 +16,6 @@ namespace ServerOnlineCity.Model
 
         public bool IsAdmin;
 
-        public Guid DiscordToken;
-
         public Chat PublicChat
         {
             get { return Chats[0]; }
@@ -57,7 +55,6 @@ namespace ServerOnlineCity.Model
             {
                 Login = login
             };
-
             var publicChat = new Chat()
             {
                 Id = 1,
@@ -67,8 +64,8 @@ namespace ServerOnlineCity.Model
                 PartyLogin = new List<string>() { login, "system" },
                 Posts = PublicPosts
             };
-
             Chats = new List<Chat>() { publicChat };
         }
+        
     }
 }
