@@ -22,13 +22,13 @@ namespace ServerOnlineCity
 
             Loger.PathLog = workPath;
             Loger.IsServer = true;
-            var serverManader = new ServerManager();
-            serverManader.LogMessage += (msg) => Console.WriteLine(msg);
+            var serverManager = new ServerManager(workPath);
+            serverManager.LogMessage += (msg) => Console.WriteLine(msg);
             Loger.Log("Server Console Start!");
             if (workPort == 0)
-                serverManader.Start(workPath);
+                serverManager.Start();
             else
-                serverManader.Start(workPath, workPort);
+                serverManager.Start(workPort);
         }
     }
 }

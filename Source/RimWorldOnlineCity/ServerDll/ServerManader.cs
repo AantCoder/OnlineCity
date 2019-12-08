@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using Transfer;
 
@@ -14,17 +15,26 @@ namespace OCServer
         public event Action<string> LogMessage;
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
+        private string _path;
+
+        public ServerManager(string path)
+        {
+            _path = path;
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+        }
+
         public int ActiveClientCount
         {
             get { return _ActiveClientCount; }
             private set { _ActiveClientCount = value; }
         }
+
         public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
 
-        public void Start(string path, int port = SessionClient.DefaultPort)
+        public void Start(int port = SessionClient.DefaultPort)
         {
             var rep = Repository.Get;
-            rep.SaveFileName = Path.Combine(path, "World.dat");
+            rep.SaveFileName = Path.Combine(_path, "World.dat");
             rep.Load();
             CheckDiscrordUser();
 
@@ -39,12 +49,20 @@ namespace OCServer
 
             ActiveClientCount = 0;
 
-            if (LogMessage != null) LogMessage("Start server in port " + port.ToString());
+            LogMessage?.Invoke("Start server in port " + port.ToString());
 
             Connect = new ConnectServer();
-            
+
             Connect.ConnectionAccepted = ConnectionAccepted;
+            //throw new Exception("test");
             Connect.Start(null, port);
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var date = DateTime.Now.ToString("yyyy-MM-dd-hh-mm");
+            var fileName = Path.Combine(_path, "!UnhandledException" + date + ".log");
+            File.WriteAllText(fileName, e.ExceptionObject.ToString(), Encoding.UTF8);
         }
 
         /// <summary>

@@ -9,6 +9,8 @@ using OC.DiscordBotServer.Models;
 using OC.DiscordBotServer.Repositories;
 using Microsoft.EntityFrameworkCore;
 using OC.DiscordBotServer.Commands;
+using System.IO;
+using System.Text;
 
 //https://discord.foxbot.me/docs/api/
 namespace OC.DiscordBotServer
@@ -46,8 +48,17 @@ namespace OC.DiscordBotServer
             new Program().RunBotAsync(args[0]).GetAwaiter().GetResult();
         }
 
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            var date = DateTime.Now.ToString("yyyy-MM-dd-hh-mm");
+            var fileName = Path.Combine(path, "!UnhandledException" + date + ".log");
+            File.WriteAllText(fileName, e.ExceptionObject.ToString(), Encoding.UTF8);
+        }
+
         public async Task RunBotAsync(string botToken)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             _discordClient = new DiscordSocketClient();
             _commands = new CommandService();
             var optionsBuilder = new DbContextOptionsBuilder<BotDataContext>();
@@ -79,9 +90,9 @@ namespace OC.DiscordBotServer
                 }
             }
             _services = services
-              //  .AddSingleton(_commands)
+                //  .AddSingleton(_commands)
                 .AddSingleton<ChatListener>()
-                .AddTransient<ChannelDestroyedCommand>()                
+                .AddTransient<ChannelDestroyedCommand>()
                 .BuildServiceProvider();
 
 
@@ -124,7 +135,7 @@ namespace OC.DiscordBotServer
         }
 
         public async Task RegisterCommandAsync()
-        {           
+        {
             _messageParser = new MessageParser(_services);
             _discordClient.MessageReceived += _messageParser.Execute;
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
