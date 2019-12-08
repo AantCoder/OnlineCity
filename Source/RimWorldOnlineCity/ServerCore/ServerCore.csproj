@@ -55,7 +55,7 @@
     <Compile Include="SessionServer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UnionDll\UnionDll\UnionDll.csproj">
+    <ProjectReference Include="..\UnionDll\UnionDll.csproj">
       <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
       <Name>UnionDll</Name>
     </ProjectReference>

@@ -51,7 +51,7 @@
       <Project>{bb85a737-6a0a-4d84-bc94-d8657897d46a}</Project>
       <Name>ServerDll</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UnionDll\UnionDll\UnionDll.csproj">
+    <ProjectReference Include="..\UnionDll\UnionDll.csproj">
       <Project>{9513586E-B487-4BEE-A3FB-0D277D4E5B5C}</Project>
       <Name>UnionDll</Name>
     </ProjectReference>
