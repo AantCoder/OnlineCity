@@ -1,8 +1,6 @@
 ﻿using Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Transfer
 {
@@ -70,7 +68,7 @@ namespace Transfer
     }
 }
 ///todo:
-///Не авктвен выбор своих бъектов, если не редактирвется ордер
+///Не активен выбор своих объектов, если не редактирвется ордер
 ///Функция Встречное предложение переворачивает шелл и бай
 ///
 ///Ввести цену в $ справа?
