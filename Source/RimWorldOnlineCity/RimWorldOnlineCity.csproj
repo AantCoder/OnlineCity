@@ -105,13 +105,13 @@
     <Content Include="Lib\%24HugsLibChecker.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="UnionDll\UnionDll\UnionDll.csproj">
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="UnionDll\UnionDll.csproj">
       <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
       <Name>UnionDll</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

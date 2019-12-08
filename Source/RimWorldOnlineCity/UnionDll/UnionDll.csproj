@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9513586E-B487-4BEE-A3FB-0D277D4E5B5C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OCUnion</RootNamespace>
+    <AssemblyName>OCUnion</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClientData.cs" />
+    <Compile Include="Common\Grants.cs" />
+    <Compile Include="ExceptionUtil.cs" />
+    <Compile Include="GameXMLUtils.cs" />
+    <Compile Include="Loger.cs" />
+    <Compile Include="Transfer\ConnectSaver.cs" />
+    <Compile Include="Transfer\ModelGuid.cs" />
+    <Compile Include="Transfer\ModelOrderBuy.cs" />
+    <Compile Include="Transfer\GZip.SharpZipLib.cs" />
+    <Compile Include="Transfer\ModelOrderLoad.cs" />
+    <Compile Include="Transfer\Model\AttackInitiatorFromSrv.cs" />
+    <Compile Include="Transfer\Model\AttackInitiatorToSrv.cs" />
+    <Compile Include="Transfer\Model\AttackHostFromSrv.cs" />
+    <Compile Include="Transfer\Model\AttackHostToSrv.cs" />
+    <Compile Include="Transfer\Model\AttackPawnCommand.cs" />
+    <Compile Include="Transfer\Model\AttackThingState.cs" />
+    <Compile Include="Transfer\Model\IntVec3S.cs" />
+    <Compile Include="Transfer\Model\OrderTrade.cs" />
+    <Compile Include="Transfer\Model\Chat.cs" />
+    <Compile Include="Transfer\Model\ChatPost.cs" />
+    <Compile Include="Transfer\Model\PackageType.cs" />
+    <Compile Include="Transfer\Model\Place.cs" />
+    <Compile Include="Transfer\Model\Player.cs" />
+    <Compile Include="Transfer\Model\ThingEntry.cs" />
+    <Compile Include="Transfer\Model\ThingTrade.cs" />
+    <Compile Include="Transfer\WorldObjectEntry.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MainHelper.cs" />
+    <Compile Include="Transfer\ConnectClient.cs" />
+    <Compile Include="Transfer\ConnectServer.cs" />
+    <Compile Include="Transfer\Crypto.cs" />
+    <Compile Include="Transfer\GZip.cs" />
+    <Compile Include="Transfer\ModelContainer.cs" />
+    <Compile Include="Transfer\ModelCreateWorld.cs" />
+    <Compile Include="Transfer\ModelInfo.cs" />
+    <Compile Include="Transfer\ModelInt.cs" />
+    <Compile Include="Transfer\ModelLogin.cs" />
+    <Compile Include="Transfer\ModelMailTrade.cs" />
+    <Compile Include="Transfer\ModelPlayToServer.cs" />
+    <Compile Include="Transfer\ModelPlayToClient.cs" />
+    <Compile Include="Transfer\ModelPostingChat.cs" />
+    <Compile Include="Transfer\ModelStatus.cs" />
+    <Compile Include="Transfer\ModelUpdateChat.cs" />
+    <Compile Include="Transfer\ModelUpdateTime.cs" />
+    <Compile Include="Transfer\SessionClient.cs" />
+    <Compile Include="WorkTimer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
