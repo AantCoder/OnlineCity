@@ -8,13 +8,14 @@ using System.Text;
 using System.Threading;
 using Transfer;
 using Util;
+using ServerCore.Model;
 
 namespace ServerOnlineCity
 {
     public class Service
     {
         public PlayerServer Player;
-        
+
         public ModelStatus Login(ModelLogin packet)
         {
             if (Player != null) return null;
@@ -24,6 +25,38 @@ namespace ServerOnlineCity
             //Loger.Log("1111 " + Repository.GetData.PlayersAll.Count);
             var player = Repository.GetData.PlayersAll
                 .FirstOrDefault(p => p.Public.Login == packet.Login);
+
+            // Check Mods
+            if (ServerManager.Settings.IsModsWhitelisted)
+            {
+                if (packet.ModsID != null)
+                {
+                    var modNotAllowed = packet.ModsID.Where(p => !ServerManager.Settings.ModsID.Contains(p.Value) && p.Value != "OnlineCity" && p.Value != "Core" && p.Value != "818773962");
+                    if (modNotAllowed.Count() > 0)
+                    {
+                        string modpath = "";
+                        foreach (var modid in modNotAllowed)
+                        {
+                            modpath += modid.Key + "\n";
+                        }
+
+                        return new ModelStatus()
+                        {
+                            Status = 1,
+                            Message = "Mods not allowed: \n" + modpath
+                        };
+                    }
+                }
+                else
+                {
+                    return new ModelStatus()
+                    {
+                        Status = 1,
+                        Message = "Mods error."
+                    };
+                }
+            }
+
             if (player != null)
             {
                 if (player.Pass != packet.Pass) //todo
@@ -83,7 +116,7 @@ namespace ServerOnlineCity
                 Message = null
             };
         }
-        
+
         public ModelInfo GetInfo(ModelInt packet)
         {
             if (Player == null) return null;
@@ -125,7 +158,7 @@ namespace ServerOnlineCity
                 }
             }
         }
-        
+
         public ModelStatus CreatingWorld(ModelCreateWorld packet)
         {
             if (Player == null) return null;
@@ -301,7 +334,7 @@ namespace ServerOnlineCity
                     toClient.WObjectsToDelete = outWOD;
                     Player.LastUpdateTime = timeNow;
                 }
-                
+
                 //прикрепляем письма
                 toClient.Mails = Player.Mails;
                 Player.Mails = new List<ModelMailTrade>();
@@ -339,7 +372,7 @@ namespace ServerOnlineCity
             lock (toPlayer)
             {
                 toPlayer.Mails.Add(packet);
-            }   
+            }
             return new ModelStatus()
             {
                 Status = 0,
@@ -449,13 +482,13 @@ namespace ServerOnlineCity
                     var args = s.Length == 1 ? "" : s[1];
                     //разбираем аргументы в кавычках '. Удвоенная кавычка указывает на её символ.
                     var argsM = SplitBySpace(args);
-                    
+
                     // обработка команд чата {
                     switch (command)
                     {
                         case "/help":
                             PostCommandPrivatPostActivChat(chat, ChatHelpText
-                                + (Player.IsAdmin ? ChatHelpTextAdmin : "" ));
+                                + (Player.IsAdmin ? ChatHelpTextAdmin : ""));
                             break;
                         case "/createchat":
                             Loger.Log("Server createChat");
@@ -664,7 +697,7 @@ namespace ServerOnlineCity
                 }
             }
         }
-        
+
         public static List<string> SplitBySpace(string args)
         {
             int i = 0;
@@ -869,7 +902,7 @@ namespace ServerOnlineCity
                             && (o.PrivatPlayers.Count == 0 || o.PrivatPlayers.Any(p => p.Login == Player.Public.Login)))
                     .ToList();
 
-                            
+
 
                 return res;
             }

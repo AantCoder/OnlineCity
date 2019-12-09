@@ -20,31 +20,43 @@ namespace ServerOnlineCity
             private set { _ActiveClientCount = value; }
         }
         public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
-        public ServerSettings ServerSettings;
+        private static ServerSettings _settings;
+        public static ServerSettings Settings
+        {
+            get
+            {
+                if (_settings == null)
+                    _settings = new ServerSettings();
+                return _settings;
+            }
+            set => _settings = value;
+        }
 
         public void Start(string path, int port = SessionClient.DefaultPort)
         {
-            if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "Settings.json")))
+            if (!File.Exists(Path.Combine(path, "Settings.json")))
             {
-                ServerSettings = new ServerSettings();
-                ServerSettings.Port = port;
+                Loger.Log("Make new settings file.");
+                Settings = new ServerSettings();
+                Settings.Port = port;
+                Settings.ModsID.Add("test");
 
                 using (StreamWriter file = File.CreateText(Path.Combine(path, "Settings.json")))
                 {
                     JsonSerializer serializer = new JsonSerializer();
                     serializer.Formatting = Formatting.Indented;
-                    serializer.Serialize(file, ServerSettings);
+                    serializer.Serialize(file, Settings);
                 }
             }
             else
             {
-                ServerSettings = JsonConvert.DeserializeObject<ServerSettings>(File.ReadAllText(Path.Combine(path, "Settings.json")));
+                Settings = JsonConvert.DeserializeObject<ServerSettings>(File.ReadAllText(Path.Combine(path, "Settings.json")));
             }
 
             Loger.PathLog = path;
             Loger.IsServer = true;
 
-            Loger.Log($"Server starting on port: {ServerSettings.Port}");
+            Loger.Log($"Server starting on port: {Settings.Port}");
 
             var rep = Repository.Get;
             rep.SaveFileName = Path.Combine(path, "World.dat");
@@ -54,7 +66,7 @@ namespace ServerOnlineCity
             rep.Timer.Add(1000, DoWorld);
 
             //сохранение, если были изменения
-            rep.Timer.Add(ServerSettings.SaveInterval, () =>
+            rep.Timer.Add(Settings.SaveInterval, () =>
             {
                 rep.Save(true);
             });
@@ -63,7 +75,7 @@ namespace ServerOnlineCity
 
             Connect = new ConnectServer();
             Connect.ConnectionAccepted = ConnectionAccepted;
-            Connect.Start(null, ServerSettings.Port);
+            Connect.Start(null, Settings.Port);
         }
 
         /// <summary>
