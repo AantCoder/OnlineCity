@@ -7,8 +7,8 @@
     <ProjectGuid>{BB85A737-6A0A-4D84-BC94-D8657897D46A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OCServer</RootNamespace>
-    <AssemblyName>OCServer</AssemblyName>
+    <RootNamespace>ServerOnlineCity</RootNamespace>
+    <AssemblyName>ServerOnlineCity</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -36,6 +36,9 @@
       <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,6 +50,7 @@
     <Compile Include="Model\AttackServer.cs" />
     <Compile Include="Model\BaseContainer.cs" />
     <Compile Include="Model\PlayerServer.cs" />
+    <Compile Include="Model\ServerSettings.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="ServerManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,7 +64,9 @@
       <Name>UnionDll</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

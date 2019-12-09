@@ -1,4 +1,6 @@
-﻿using ServerOnlineCity.Model;
+﻿using Newtonsoft.Json;
+using ServerOnlineCity.Model;
+using ServerCore.Model;
 using OCUnion;
 using System;
 using System.IO;
@@ -7,6 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Transfer;
+
 
 namespace ServerOnlineCity
 {
@@ -30,9 +33,32 @@ namespace ServerOnlineCity
         }
 
         public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
+        public ServerSettings ServerSettings;
 
         public void Start(int port = SessionClient.DefaultPort)
         {
+            if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "Settings.json")))
+            {
+                ServerSettings = new ServerSettings();
+                ServerSettings.Port = port;
+
+                using (StreamWriter file = File.CreateText(Path.Combine(_path, "Settings.json")))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    serializer.Formatting = Formatting.Indented;
+                    serializer.Serialize(file, ServerSettings);
+                }
+            }
+            else
+            {
+                ServerSettings = JsonConvert.DeserializeObject<ServerSettings>(File.ReadAllText(Path.Combine(_path, "Settings.json")));
+            }
+
+            Loger.PathLog = _path;
+            Loger.IsServer = true;
+
+            Loger.Log($"Server starting on port: {ServerSettings.Port}");
+
             var rep = Repository.Get;
             rep.SaveFileName = Path.Combine(_path, "World.dat");
             rep.Load();
