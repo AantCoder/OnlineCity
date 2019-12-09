@@ -48,7 +48,7 @@
     <Compile Include="Model\BaseContainer.cs" />
     <Compile Include="Model\PlayerServer.cs" />
     <Compile Include="Repository.cs" />
-    <Compile Include="ServerManader.cs" />
+    <Compile Include="ServerManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="Services\PostingChat.cs" />

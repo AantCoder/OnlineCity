@@ -1,11 +1,9 @@
 ﻿using Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Transfer;
 
-namespace OCServer.Model
+namespace ServerOnlineCity.Model
 {
     [Serializable]
     public class PlayerServer
@@ -67,8 +65,7 @@ namespace OCServer.Model
                 PartyLogin = new List<string>() { login, "system" },
                 Posts = PublicPosts
             };
-
             Chats = new List<Chat>() { publicChat };
-        }
+        }        
     }
 }

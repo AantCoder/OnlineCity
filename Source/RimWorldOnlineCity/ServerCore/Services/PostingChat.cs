@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Transfer;
 using Model;
-using OCServer.Model;
 using OCUnion;
+using ServerOnlineCity.Model;
 
-namespace OCServer.Services
+namespace ServerOnlineCity.Services
 {
     public class PostingChat
     {

@@ -1,4 +1,4 @@
-﻿using OCServer.Model;
+﻿using ServerOnlineCity.Model;
 using OCUnion;
 using System;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using Transfer;
 
-namespace OCServer
+namespace ServerOnlineCity
 {
     public class ServerManager
     {

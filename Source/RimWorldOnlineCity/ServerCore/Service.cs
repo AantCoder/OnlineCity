@@ -1,5 +1,5 @@
 ﻿using Model;
-using OCServer.Model;
+using ServerOnlineCity.Model;
 using OCUnion;
 using OCUnion.Transfer;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using Transfer;
 using Verse;
 
-namespace OCServer
+namespace ServerOnlineCity
 {
     public class Service
     {
@@ -17,7 +17,7 @@ namespace OCServer
         public PlayerServer Player { get { return _player; } }
 
         public ModelStatus Login(ModelLogin packet)
-        {           
+        {
             if (Player != null) return null;
             //Thread.Sleep(3000);
 
@@ -29,7 +29,7 @@ namespace OCServer
 
             if (player != null)
             {
-                if (player.Pass != packet.Pass) //todo ??
+                if (player.Pass != packet.Pass) //todo
                     player = null;
             }
 

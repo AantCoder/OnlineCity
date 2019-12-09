@@ -3,13 +3,11 @@ using OCUnion;
 using OCUnion.Transfer;
 using OCUnion.Transfer.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Transfer;
 using Util;
 
-namespace OCServer
+namespace ServerOnlineCity
 {
     public class SessionServer : IDisposable
     {
@@ -138,7 +136,7 @@ namespace OCServer
             {
                 case 1:
                     send.TypePacket = 2;
-                    Loger.Log("Server "+(Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) +" Registration");
+                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Registration");
                     send.Packet = Worker.Registration((ModelLogin)recObj.Packet);
                     break;
                 case 3:
@@ -200,7 +198,7 @@ namespace OCServer
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " AttackHost");
                     send.Packet = Worker.AttackOnlineHost((AttackHostToSrv)recObj.Packet);
                     break;
-                 case (int)PackageType.RequestPlayerByToken:
+                case (int)PackageType.RequestPlayerByToken:
                     send.TypePacket = (int)PackageType.ResponsePlayerByToken;
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " GetLoginByToken");
                     send.Packet = Worker.GetPlayerByToken((ModelGuid)recObj.Packet);

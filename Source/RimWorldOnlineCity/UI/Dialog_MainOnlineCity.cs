@@ -46,7 +46,7 @@ namespace RimWorldOnlineCity
 
         private long UpdateLogHash;
         private string lbCannalsGoToChat; //как только появиться этот чат перейти к нему
-        
+
         private bool NeedFockus = true;
 
         public static string AboutGeneralText = MainHelper.VersionInfo + " "
@@ -122,7 +122,7 @@ namespace RimWorldOnlineCity
             IsShow = null;
             //ClientController.SaveSettings();
         }
-        
+
         private bool DevTest = false;
         public override void DoWindowContents(Rect inRect)
         {
@@ -170,7 +170,7 @@ namespace RimWorldOnlineCity
                     : "OCity_Dialog_Login".Translate() + SessionClientController.My.Login
                         + " " + (int)SessionClientController.Data.Ping.TotalMilliseconds + "ms");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Loger.Log("Dialog_MainOnlineCity Exception: " + e.Message + Environment.NewLine + e.ToString());
             }
@@ -211,7 +211,7 @@ namespace RimWorldOnlineCity
                     lbCannals.OnClick += (index, text) => DataLastChatsTime = DateTime.MinValue; /*StatusTemp = text;*/
                     lbCannals.SelectedIndex = 0;
                 }
-                
+
                 if (lbPlayers == null)
                 {
                     //первый запуск
@@ -240,7 +240,7 @@ namespace RimWorldOnlineCity
                         , 100f
                         , inRect.height - (iconWidthSpase + lbCannalsHeight + 22f));
                 }
-                
+
                 if (DataLastChatsTime != SessionClientController.Data.ChatsTime
                     || DataLastChatsTimeUpdateTime < DateTime.UtcNow.AddSeconds(-5))
                 {
@@ -290,13 +290,13 @@ namespace RimWorldOnlineCity
                         if (lbPlayers.DataSource.Count > 0) addPl(null, " ").GroupTitle = true;
                         addPl(null, " <i>– " + text + " –</i> ").GroupTitle = true;
                     };
-                    Func<string, bool> isOnline = (login) => login == SessionClientController.My.Login 
+                    Func<string, bool> isOnline = (login) => login == SessionClientController.My.Login
                         || SessionClientController.Data.Players.ContainsKey(login) && SessionClientController.Data.Players[login].Online;
                     Func<bool, string, string> frameOnline = (online, txt) =>
                         online
                         ? "<b>" + txt + "</b>"
                         : "<color=#888888ff>" + txt + "</color>";
-                    
+
                     if (lbCannals.SelectedIndex > 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                     {
                         var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
@@ -630,7 +630,7 @@ namespace RimWorldOnlineCity
 
             Text.Font = GameFont.Medium;
             Widgets.Label(inRect, InfoTabTitle);
-            
+
             Text.Font = GameFont.Small;
             var chatAreaOuter = new Rect(inRect.x + 50f, inRect.y + 40f, inRect.width - 50f, inRect.height - 30f - 40f);
             InfoBox.Drow(chatAreaOuter);
@@ -674,7 +674,7 @@ namespace RimWorldOnlineCity
                 Find.WindowStack.Add(form);
             }, IconDelTex);
             list2.Add(item2);
-            
+
             float num = OptionListingUtility.DrawOptionListing(rect2, list2);
             GUI.BeginGroup(rect2);
             if (Current.ProgramState == ProgramState.Entry && Widgets.ButtonImage(new Rect(0f, num + 10f, 64f, 32f), LanguageDatabase.activeLanguage.icon))
@@ -692,7 +692,7 @@ namespace RimWorldOnlineCity
                 Find.WindowStack.Add(new FloatMenu(list3));
             }
             GUI.EndGroup();
-            
+
             /*
             var rectCannals = new Rect(inRect.x, inRect.y, 100f, (float)Math.Round((decimal)(inRect.height / 2f * 10f)) / 10f);
             Widgets.DrawBoxSolid(inRect, new Color(0.2f, 0.2f, 0));

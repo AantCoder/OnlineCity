@@ -12,7 +12,7 @@ namespace OCUnion
     {
         public static bool DebugMode = false;
 
-        //public static string VersionInfo = $"Version {Assembly.GetExecutingAssembly().FullName} from 2019.11.05";
+        //public static string VersionInfo = $"Version {Assembly.GetExecutingAssembly().FullName}";
         public static string VersionInfo = "Версия 0.02.33a от 2019.11.24";
 
         /// <summary>

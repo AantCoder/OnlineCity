@@ -5,7 +5,7 @@ using System.Text;
 using Model;
 using OCUnion.Transfer.Model;
 
-namespace OCServer.Model
+namespace ServerOnlineCity.Model
 {
     public class AttackServer
     {
@@ -35,6 +35,7 @@ namespace OCServer.Model
         public List<string> TerrainDefName { get; set; }
         public List<ThingTrade> Thing { get; set; }
         public List<IntVec3S> ThingCell { get; set; }
+
 
         public List<ThingEntry> NewPawns { get; set; }
         public List<int> NewPawnsId { get; set; }

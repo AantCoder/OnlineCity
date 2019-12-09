@@ -1,7 +1,5 @@
-﻿using Model;
-using OCServer.Model;
+﻿using ServerOnlineCity.Model;
 using OCUnion;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +8,7 @@ using System.Text;
 using Transfer;
 using Util;
 
-namespace OCServer
+namespace ServerOnlineCity
 {
     public class Repository
     {
@@ -19,7 +17,7 @@ namespace OCServer
 
         public const string DISCORD = "Discord";
 
-        public static BaseContainer GetData {  get { return Get.Data; } }
+        public static BaseContainer GetData { get { return Get.Data; } }
 
         public BaseContainer Data;
         public bool ChangeData;
@@ -29,11 +27,11 @@ namespace OCServer
         public string SaveFileName;
         public string SaveFolderDataPlayers => Path.Combine(Path.GetDirectoryName(SaveFileName), "DataPlayers");
 
-        private Repository()
+        public Repository()
         {
             Timer = new WorkTimer();
         }
-        
+
         public void Load()
         {
             bool needResave = false;
@@ -76,7 +74,7 @@ namespace OCServer
                     }
                     catch { }
                     */
-                    
+
                     Loger.Log("Server Load done. Users " + Data.PlayersAll.Count.ToString() + ": "
                         + Data.PlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
                         );
@@ -90,10 +88,10 @@ namespace OCServer
         public byte[] LoadPlayerData(string login)
         {
             var fileName = Path.Combine(SaveFolderDataPlayers, NormalizeLogin(login) + ".dat");
-            
+
             var info = new FileInfo(fileName);
             if (!info.Exists || info.Length < 10) return null;
-            
+
             //читаем содержимое
             bool readAsXml;
             using (var file = File.OpenRead(fileName))
@@ -140,7 +138,7 @@ namespace OCServer
                     var bf = new BinaryFormatter();
                     bf.Serialize(fs, Data);
                 }
-                
+
                 ChangeData = false;
             }
             catch
@@ -152,7 +150,7 @@ namespace OCServer
 
             Loger.Log("Server Saved");
         }
-        
+
         public void SavePlayerData(string login, byte[] data)
         {
             var fileName = Path.Combine(SaveFolderDataPlayers, NormalizeLogin(login) + ".dat");
@@ -168,7 +166,7 @@ namespace OCServer
             File.WriteAllBytes(fileName, data);
             Loger.Log("Server User " + Path.GetFileNameWithoutExtension(fileName) + " saved.");
         }
-        
+
         public static string NormalizeLogin(string login)
         {
             char[] invalidFileChars = Path.GetInvalidFileNameChars();

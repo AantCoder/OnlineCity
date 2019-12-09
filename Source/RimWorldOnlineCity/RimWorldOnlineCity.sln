@@ -12,8 +12,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnionDll", "UnionDll\UnionD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCore", "ServerCore\ServerCore.csproj", "{BB85A737-6A0A-4D84-BC94-D8657897D46A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerConsole", "ServerOnlineCity\ServerConsole.csproj", "{E38E0476-8ED6-4F29-9C89-FA545566B838}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat", "..\Chat\Chat.csproj", "{648325A2-044D-499C-86E6-7BEFFAE568AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converter", "..\Converter\Converter.csproj", "{FF65F157-9528-4680-ADB3-4770A8738370}"
@@ -45,10 +43,6 @@ Global
 		{BB85A737-6A0A-4D84-BC94-D8657897D46A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB85A737-6A0A-4D84-BC94-D8657897D46A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB85A737-6A0A-4D84-BC94-D8657897D46A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E38E0476-8ED6-4F29-9C89-FA545566B838}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E38E0476-8ED6-4F29-9C89-FA545566B838}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E38E0476-8ED6-4F29-9C89-FA545566B838}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E38E0476-8ED6-4F29-9C89-FA545566B838}.Release|Any CPU.Build.0 = Release|Any CPU
 		{648325A2-044D-499C-86E6-7BEFFAE568AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{648325A2-044D-499C-86E6-7BEFFAE568AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{648325A2-044D-499C-86E6-7BEFFAE568AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
