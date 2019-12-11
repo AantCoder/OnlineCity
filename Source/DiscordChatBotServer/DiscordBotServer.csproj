@@ -231,11 +231,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RimWorldOnlineCity\RimWorldOnlineCity.csproj">
-      <Project>{871528ea-8b2c-439d-ad2b-702863331980}</Project>
-      <Name>RimWorldOnlineCity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll\UnionDll.csproj">
+    <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll.csproj">
       <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
       <Name>UnionDll</Name>
     </ProjectReference>

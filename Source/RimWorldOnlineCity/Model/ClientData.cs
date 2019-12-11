@@ -1,16 +1,13 @@
-﻿using Model;
-using RimWorld;
-using System;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Transfer;
 using Verse;
 
 namespace RimWorldOnlineCity
 {
     public class ClientData : OCUnion.ClientData
-    {
+    {     
         public Dictionary<string, PlayerClient> Players = new Dictionary<string, PlayerClient>();
 
         public ClientData(string clientLogin, SessionClient connect) : base(clientLogin, connect) { }
@@ -52,7 +49,7 @@ namespace RimWorldOnlineCity
         }
 
         private void GameMessage(string newStr)
-        {
+        { 
             if (newStr.Length > 50) newStr = newStr.Substring(0, 49) + "OCity_ClientData_ChatDot".Translate();
             Messages.Message("OCity_ClientData_Chat".Translate() + newStr, MessageTypeDefOf.NeutralEvent);
         }

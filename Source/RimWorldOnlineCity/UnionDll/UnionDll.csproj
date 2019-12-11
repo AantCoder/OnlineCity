@@ -36,7 +36,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientData.cs" />
+    <Compile Include="Common\Grants.cs" />
     <Compile Include="ExceptionUtil.cs" />
     <Compile Include="GameXMLUtils.cs" />
     <Compile Include="Loger.cs" />
@@ -63,7 +64,6 @@
     <Compile Include="Transfer\Model\AttackHostToSrv.cs" />
     <Compile Include="Transfer\Model\AttackPawnCommand.cs" />
     <Compile Include="Transfer\Model\AttackThingState.cs" />
-    <Compile Include="Common\Grants.cs" />
     <Compile Include="Transfer\Model\IntVec3S.cs" />
     <Compile Include="Transfer\Model\OrderTrade.cs" />
     <Compile Include="Transfer\Model\Chat.cs" />

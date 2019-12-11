@@ -54,23 +54,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChatBridgeProvider\ChatBridgeProvider.csproj">
-      <Project>{c662a8fe-81d9-4efa-aa4f-1723ac5a014d}</Project>
-      <Name>ChatBridgeProvider</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DiscordChatBotServer\DiscordBotServer.csproj">
-      <Project>{07f790b0-cd03-468f-a8eb-a6e469feebf3}</Project>
+      <Project>{6774332f-bebf-44fc-aeda-ba363f487d95}</Project>
       <Name>DiscordBotServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\RimWorldOnlineCity\RimWorldOnlineCity.csproj">
       <Project>{871528ea-8b2c-439d-ad2b-702863331980}</Project>
       <Name>RimWorldOnlineCity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RimWorldOnlineCity\ServerDll\ServerDll.csproj">
-      <Project>{bb85a737-6a0a-4d84-bc94-d8657897d46a}</Project>
-      <Name>ServerDll</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll\UnionDll.csproj">
+    <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll.csproj">
       <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
       <Name>UnionDll</Name>
     </ProjectReference>

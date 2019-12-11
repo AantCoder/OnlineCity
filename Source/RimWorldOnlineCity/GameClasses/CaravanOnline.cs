@@ -4,8 +4,6 @@ using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using Verse;
 
@@ -18,7 +16,6 @@ namespace RimWorldOnlineCity
         {
             get { return OnlineWObject == null ? null : OnlineWObject.LoginOwner; }
         }
-
         public string OnlineName
         {
             get { return OnlineWObject == null ? "" : OnlineWObject.Name; }
@@ -31,7 +28,6 @@ namespace RimWorldOnlineCity
                 return SessionClientController.Data.Players.TryGetValue(OnlinePlayerLogin);
             }
         }
-
         public bool IsOnline
         {
             get
