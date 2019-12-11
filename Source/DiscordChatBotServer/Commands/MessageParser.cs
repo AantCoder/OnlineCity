@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
+using OC.DiscordBotServer.Languages;
 using OC.DiscordBotServer.Models;
 using System;
 using System.Collections.Concurrent;
@@ -43,25 +44,27 @@ namespace OC.DiscordBotServer.Commands
                 {
                     Console.WriteLine(result.ErrorReason);
                 }
+
+                return;
             }
-            else
+
+            var id = message.Channel.Id;
+            // проверяем что сообщение находится в зарегестрированном канале, и если да, то обрабатываем его дальше
+            if (!_app.UserOnServers.TryGetValue(message.Channel.Id, out ConcurrentDictionary<ulong, OCUser> users))
             {
-                var id = message.Channel.Id;
-                // проверяем что сообщение находится в зарегестрированном канале, и если да, то обрабатываем его дальше
-                if (!_app.UserOnServers.TryGetValue(message.Channel.Id, out ConcurrentDictionary<ulong, OCUser> users))
-                {
-                    // отправим приватное сообщение пользователю что он не зарегистрирован и удалим его сообщение с канала
-
-                    // await message.DeleteAsync();
-                    //var  privateChannel = _discordClient.GetChannel(message.Author.Id) ;
-                    // IMessageChannel
-                    // IMessageChannel
-                    // _discordClient
-                    // privateChannel.\Send
-
-
-                }
+                return;
             }
+
+            if (!users.TryGetValue(message.Author.Id, out OCUser user))
+            {
+                var privateChannel = await message.Author.GetOrCreateDMChannelAsync();
+                // отправим приватное сообщение пользователю что он не зарегистрирован и удалим его сообщение с канала
+                await privateChannel.SendMessageAsync(Translator.InfUserNotFound);
+                await message.DeleteAsync();
+                return;
+            }
+
+            // Here may be every commands for a game
         }
     }
 }
