@@ -89,7 +89,7 @@ namespace OC.DiscordBotServer
                 }
             }
             _services = services
-                .AddSingleton<ChatListener>()
+                .AddSingleton<Listener>()
                 .AddTransient<ChannelDestroyedCommand>()
                 .BuildServiceProvider();
 
@@ -100,7 +100,7 @@ namespace OC.DiscordBotServer
             await _discordClient.LoginAsync(Discord.TokenType.Bot, botToken);
             await _discordClient.StartAsync();
 
-            var listener = _services.GetService<ChatListener>();
+            var listener = _services.GetService<Listener>();
             const int WAIT_LOGIN_DISCORD_TIME = 3000;
             const int REFRESH_TIME = 500;
             var t = new System.Threading.Timer((a) => { listener.UpdateChats(); }, null, WAIT_LOGIN_DISCORD_TIME, REFRESH_TIME);

@@ -355,3 +355,4 @@ MigrationBackup/
 .idea/
 /Source/RimWorldOnlineCityServerOut
 /Assemblies
+/Tests

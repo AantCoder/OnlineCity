@@ -197,7 +197,7 @@
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="Commands\ChannelDestroyedCommand.cs" />
-    <Compile Include="ChatListener.cs" />
+    <Compile Include="Listener.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\MessageParser.cs" />
     <Compile Include="Commands\RegCommand.cs" />

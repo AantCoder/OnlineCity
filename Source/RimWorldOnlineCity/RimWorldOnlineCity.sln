@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RimWorldOnlineCity", "RimWo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnionDll", "UnionDll\UnionDll.csproj", "{9513586E-B487-4BEE-A3FB-0D277D4E5B5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCore", "ServerCore\ServerCore.csproj", "{BB85A737-6A0A-4D84-BC94-D8657897D46A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerCore", "ServerCore\ServerCore.csproj", "{BB85A737-6A0A-4D84-BC94-D8657897D46A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat", "..\Chat\Chat.csproj", "{648325A2-044D-499C-86E6-7BEFFAE568AE}"
 EndProject
@@ -24,6 +24,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordBotServer", "..\DiscordChatBotServer\DiscordBotServer.csproj", "{6774332F-BEBF-44FC-AEDA-BA363F487D95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "..\UnitTest\UnitTest.csproj", "{0EF588A3-E6EE-439E-A39C-D09FEB4663DB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB85A737-6A0A-4D84-BC94-D8657897D46A} = {BB85A737-6A0A-4D84-BC94-D8657897D46A}
+		{648325A2-044D-499C-86E6-7BEFFAE568AE} = {648325A2-044D-499C-86E6-7BEFFAE568AE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

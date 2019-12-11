@@ -1,0 +1,5 @@
+<RunConfiguration>
+    <MaxCpuCount>4</MaxCpuCount>
+    <TargetPlatform>x64</TargetPlatform>
+    <TestSessionTimeout>10000</TestSessionTimeout>
+</RunConfiguration>

@@ -6,7 +6,9 @@
     <OutputType>Exe</OutputType>
     <StartupObject />
     <RootNamespace>ServerOnlineCity</RootNamespace>
-    <AssemblyName>ServerOnlineCity</AssemblyName> <!--namespace отличается ServerCore -->
+    <AssemblyName>ServerOnlineCity</AssemblyName>
+    <AssemblyVersion>0.2.33.20034</AssemblyVersion>
+    <Description /> <!--namespace отличается ServerCore -->
   </PropertyGroup>
 
   <ItemGroup>

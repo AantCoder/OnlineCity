@@ -8,14 +8,15 @@ using System.Text;
 
 namespace OC.DiscordBotServer
 {
-    sealed public class ChatListener
+    sealed public class Listener
     {
         private volatile bool IsWork = false;
+        private volatile bool IsUpdatingChats = false;
         private readonly ApplicationContext _applicationContext;
         private readonly DiscordSocketClient _dc;
         private readonly BotDataContext _botDataContext;
 
-        public ChatListener(ApplicationContext applicationContext, DiscordSocketClient dc, BotDataContext botDataContext)
+        public Listener(ApplicationContext applicationContext, DiscordSocketClient dc, BotDataContext botDataContext)
         {
             _applicationContext = applicationContext;
             _dc = dc;
@@ -97,7 +98,42 @@ namespace OC.DiscordBotServer
         /// </summary>
         public void UpdateBotStatus() 
         {
-        
+            IsUpdatingChats = true; // Этого по идее не нужно, т.к. запуск раз в 10 минут и за это время цикл должен успеть отработь
+            try
+            {
+                foreach (var bindServer in _applicationContext.DiscrordToOCServer)
+                {
+                    var onlineCityServer = bindServer.Value;
+                    if (!onlineCityServer.IsLogined)
+                    {
+                        // to do Attempt to Connect Every 10 minuts
+                        continue;
+                    }
+
+
+                    /*
+Main Official server
+IP: 194.87.95.90
+Location: Moscow
+Hosted by: @Aant
+Language: Multilingual
+Now online: 
+
+                     */
+
+                    var chats = onlineCityServer.GetChatMessages();
+                    if (chats != null && TranslateChatToDiscordAsync(bindServer.Key, chats))
+                    {
+                        _botDataContext.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Loger.Log(ex.ToString());
+            }
+
+            IsUpdatingChats = false;
         }
     }
 }

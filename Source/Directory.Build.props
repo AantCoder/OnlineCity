@@ -8,5 +8,6 @@
     <SteamWorkShopFolder>$(SteamFolder)workshop\content\294100\</SteamWorkShopFolder>
     <RimWorldDlls>$(RimWorldFolderBin)*.*</RimWorldDlls>
     <PlatformTarget>x64</PlatformTarget>
+    <RunSettingsFilePath>$(SolutionDir)\OnlineCity.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 </Project>

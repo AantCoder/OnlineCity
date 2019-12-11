@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Transfer;
-
+using System.Reflection;
 
 namespace ServerOnlineCity
 {
@@ -24,6 +24,14 @@ namespace ServerOnlineCity
         {
             _path = path;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            AppDomain.CurrentDomain.AssemblyResolve += Missing_AssemblyResolver;
+        }
+
+        private Assembly Missing_AssemblyResolver(object sender, ResolveEventArgs args)
+        {
+            var asm = args.Name.Split(",")[0];
+            var a = Assembly.Load(asm);
+            return a;
         }
 
         public int ActiveClientCount
