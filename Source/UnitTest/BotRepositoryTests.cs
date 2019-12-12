@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OC.DiscordBotServer;
 using OC.DiscordBotServer.Models;
 using OC.DiscordBotServer.Repositories;
 using Transfer;
+using Util;
 
 namespace UnitTest
 {
@@ -18,14 +20,14 @@ namespace UnitTest
 
         public BotRepositoryTests()
         {
+            Thread.Sleep(5);
             _sessionClient = new SessionClient();
             var res = _sessionClient.Connect("127.0.0.1");
             Assert.IsTrue(res);
-            res = _sessionClient.Login("q", "qqq");
+            var pass = new CryptoProvider().GetHash("111");
+            res = _sessionClient.Login("111", pass);
             Assert.IsTrue(res);
         }
-
-
 
         [TestMethod]
         public void Chanel2ServerRepositoryTest()
