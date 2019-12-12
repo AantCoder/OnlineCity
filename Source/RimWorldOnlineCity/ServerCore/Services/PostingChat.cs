@@ -208,7 +208,7 @@ namespace ServerOnlineCity.Services
                             }
                         }
                         break;
-                    case "/Discord":
+                    case "/discord":
                         var login = player.Public.Login;
                         if (Repository.DISCORD.Equals(login))
                         {
@@ -220,8 +220,12 @@ namespace ServerOnlineCity.Services
                         {
                             Loger.Log($"User {player.Public.Login} request Discord token");
                             var playerServer = Repository.GetData.PlayersAll.Where(p1 => p1.Public.Login.Equals(login)).FirstOrDefault();
-                            Guid token = playerServer.DiscordToken.Equals(Guid.Empty) ? Guid.NewGuid() : playerServer.DiscordToken;
-                            PostCommandPrivatPostActivChat(player, chat, token.ToString());
+                            if (playerServer.DiscordToken.Equals(Guid.Empty))
+                            {
+                                playerServer.DiscordToken = Guid.NewGuid();
+                            }
+
+                            PostCommandPrivatPostActivChat(player, chat, playerServer.DiscordToken.ToString());
                             break;
                         }
 
@@ -231,7 +235,7 @@ namespace ServerOnlineCity.Services
                             break;
                         }
 
-                        if (argsM[0] == "ServerToken") 
+                        if (argsM[0] == "servertoken")
                         {
                             Loger.Log($"User {player.Public.Login} request DiscordServer token");
                             var ServerToken = Repository.GetData.PlayersAll.FirstOrDefault(p => p.Public.Login == Repository.DISCORD)?.Pass;

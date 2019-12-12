@@ -88,6 +88,7 @@ namespace OC.DiscordBotServer.Common
             Data.ApplyChats(dc, ref lastMessage);
             var result = new List<ChatPost>(dc.Chats[0].Posts.Where(x => x.Time > Chanel2Server.LastOnlineTime));
             Chanel2Server.LastOnlineTime = Data.ChatsTime;
+            Chanel2Server.LastCheckTime = Data.ChatsTime;
 
             return result;
         }
@@ -100,7 +101,7 @@ namespace OC.DiscordBotServer.Common
 
         public bool SendMessage(string message)
         {
-            if (!_sessionClient.PostingChat(0, message))
+            if (!_sessionClient.PostingChat(1, message))
             {
                 Loger.Log(_sessionClient.ErrorMessage);
                 return false;

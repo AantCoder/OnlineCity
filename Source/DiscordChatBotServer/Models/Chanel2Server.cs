@@ -17,6 +17,7 @@ namespace OC.DiscordBotServer.Models
         [Required]
         public int Port { get; set; }
         public DateTime LastOnlineTime { get; set; }
+        public DateTime LastCheckTime { get; set; }
         /// <summary>
         /// Id Discrord user
         /// </summary>

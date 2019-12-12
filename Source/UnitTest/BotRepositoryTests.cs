@@ -17,6 +17,7 @@ namespace UnitTest
     public class BotRepositoryTests
     {
         private readonly SessionClient _sessionClient;
+        const string userName = "111";
 
         public BotRepositoryTests()
         {
@@ -24,8 +25,8 @@ namespace UnitTest
             _sessionClient = new SessionClient();
             var res = _sessionClient.Connect("127.0.0.1");
             Assert.IsTrue(res);
-            var pass = new CryptoProvider().GetHash("111");
-            res = _sessionClient.Login("111", pass);
+            var pass = new CryptoProvider().GetHash(userName);
+            res = _sessionClient.Login(userName, pass);
             Assert.IsTrue(res);
         }
 
@@ -33,8 +34,30 @@ namespace UnitTest
         public void Chanel2ServerRepositoryTest()
         {
             var t = _sessionClient.IsLogined;
-            //var repo = new Chanel2ServerRepository(_sqlLiteDataContext);
-            // repo.AddNewServer(testObjServer);
+
+            var f = _sessionClient.GetInfo(false);
+            f = _sessionClient.GetInfo(true);
+
+        }
+
+        [TestMethod]
+        public void GetTokenFromGame()
+        {
+            checkGetToken("/Discord", 0);
+            checkGetToken("/Discord servertoken", 1);
+        }
+
+        private void checkGetToken(string msg, int index)
+        {
+            var res = _sessionClient.PostingChat(1, msg);
+            Assert.IsTrue(res);
+            var dc = _sessionClient.UpdateChat(DateTime.UtcNow.AddHours(-1));
+            Assert.IsNotNull(dc);
+            Assert.IsTrue(dc.Chats[0].OwnerLogin == userName);
+
+            var m = dc.Chats[0].Posts[index].Message;
+            var boolres = Guid.TryParse(m, out Guid guid);
+            Assert.IsTrue(boolres);
         }
     }
 }
