@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace UnitTest
+namespace OC.UnitTest
 {
     class Program
     {
         static void Main(string[] args)
         {
             var t = new BotRepositoryTests();
+            var methods = t.GetType().GetMethods();
+            foreach (var m in methods.Where(x => x.IsPublic && x.CustomAttributes.Any(y => y.AttributeType == typeof(TestMethodAttribute))))
+            {
+                m.Invoke(t, null);
+            }
         }
     }
 }

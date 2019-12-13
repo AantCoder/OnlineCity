@@ -2,7 +2,6 @@
 <Project>
   <PropertyGroup>
     <SteamFolder>E:\SteamLibrary\steamapps\</SteamFolder>
-    <!--<RimWorldFolder>..\..\..\..\</RimWorldFolder>-->
     <RimWorldFolder>$(SteamFolder)common\RimWorld\</RimWorldFolder>
     <RimWorldFolderBin>$(RimWorldFolder)RimWorldWin64_Data\Managed\</RimWorldFolderBin>
     <SteamWorkShopFolder>$(SteamFolder)workshop\content\294100\</SteamWorkShopFolder>

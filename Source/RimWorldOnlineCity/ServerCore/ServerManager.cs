@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using Transfer;
 using System.Reflection;
+using Util;
 
 namespace ServerOnlineCity
 {
@@ -105,17 +106,21 @@ namespace ServerOnlineCity
         private void CheckDiscrordUser()
         {
             var isDiscordBotUser = Repository.GetData.PlayersAll.Any(p => Repository.DISCORD == p.Public.Login);
-            if (!isDiscordBotUser)
+            if (isDiscordBotUser)
             {
-                var player = new PlayerServer(Repository.DISCORD)
-                {
-                    Pass = Guid.NewGuid().ToString(),
-                    IsAdmin = true, // возможно по умолчанию запретить ?
-                };
-
-                player.Public.Grants = (uint)Grants.GameMaster + (uint)Grants.Moderator;
+                return;
             }
 
+            var guid = Guid.NewGuid();
+            var player = new PlayerServer(Repository.DISCORD)
+            {
+                Pass = new CryptoProvider().GetHash(guid.ToString()),
+                DiscordToken=guid,
+                IsAdmin = true, // возможно по умолчанию запретить ?
+            };
+
+            player.Public.Grants = (uint)Grants.GameMaster + (uint)Grants.Moderator;
+            Repository.GetData.PlayersAll.Add(player);
             Repository.Get.Save(false);
         }
 

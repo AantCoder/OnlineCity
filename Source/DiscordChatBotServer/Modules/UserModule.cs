@@ -43,7 +43,7 @@ namespace OC.DiscordBotServer.Modules
         [Command("help")]
         [Description("List of all commands: " + Helper.PREFIX + "help")]
         //RU: Выводит список команд
-        public async Task Helpsync()
+        public async Task HelpAsync()
         {
             var result = new StringBuilder();
             var list = _commandService.Commands.OrderBy(x => x.Name);
@@ -57,6 +57,25 @@ namespace OC.DiscordBotServer.Modules
             }
 
             await ReplyAsync(result.ToString());
+        }
+
+        [Command("srvinfo")]
+        [Description(
+         "srvinfo ipserver: full information aboute server" +
+         "srvinfo my: (все где я зарегестрирован\n" +
+         "srvinfo all: информация по всем серверам, отсортированные 1.По количеству пользователей от максимального к минимальному, по дате поледнего онлайна")]
+        public async Task SrvInfoAsync(string param)
+        {
+
+        }
+
+
+        [Command("srvinfo")]
+        [Description("srvinfo ")]
+        //RU: Выводит список команд
+        public async Task SrvInfoAsync()
+        {
+
         }
     }
 }
