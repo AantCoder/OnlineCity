@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Transfer
 {
@@ -10,5 +8,6 @@ namespace Transfer
     {
         public string Login { get; set; }
         public string Pass { get; set; }
+        public Dictionary<string, string> ModsID { get; set; } = new Dictionary<string, string>();
     }
 }
