@@ -7,6 +7,7 @@
     <StartupObject />
     <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <Description />
+    <RootNamespace>OC.UnitTest</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

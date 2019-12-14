@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OC.DiscordBotServer;
-using OC.DiscordBotServer.Models;
-using OC.DiscordBotServer.Repositories;
+using OCUnion.Transfer;
 using Transfer;
 using Util;
 
-namespace UnitTest
+namespace OC.UnitTest
 {
     // Important Start Server before
     // Важно: сначала надо запустить сервер ;-)
@@ -33,11 +31,13 @@ namespace UnitTest
         [TestMethod]
         public void Chanel2ServerRepositoryTest()
         {
-            var t = _sessionClient.IsLogined;
-
-            var f = _sessionClient.GetInfo(false);
-            f = _sessionClient.GetInfo(true);
-
+            var f1 = _sessionClient.GetInfo(ServerInfoType.Full);
+            Assert.IsNotNull(f1);
+            var f2 = _sessionClient.GetInfo(ServerInfoType.Short);
+            Assert.IsNotNull(f2);
+            var f3 = _sessionClient.GetInfo(ServerInfoType.FullWithDescription);
+            Assert.IsNotNull(f3);
+            Assert.IsFalse(string.IsNullOrEmpty(f3.Description));
         }
 
         [TestMethod]

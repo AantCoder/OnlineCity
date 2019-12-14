@@ -5,11 +5,12 @@ using System.Text;
 using Util;
 using Model;
 using OCUnion.Transfer.Model;
+using OCUnion.Transfer;
 using Verse;
 
 namespace Transfer
 {
-    public class SessionClient 
+    public class SessionClient
     {
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
@@ -24,9 +25,9 @@ namespace Transfer
         /// Что бы не вносить больших изменений, добавил ленивую инциализацию 
         /// </summary>
         [Obsolete ("For Using in Discrod bot need many Session Clients, use SessionClient as variable in constructor in the Future")]
-        public static SessionClient Get 
-        { 
-            get 
+        public static SessionClient Get
+        {
+            get
             {
                 if (Single == null)
                 {
@@ -34,7 +35,7 @@ namespace Transfer
                 }
 
                 return Single;
-            } 
+            }
         }
 
         public volatile bool IsLogined = false;
@@ -88,9 +89,9 @@ namespace Transfer
                 //Loger.Log("Client Connect4");
                 //Строго первый ответ: Передаем клиенту КОткр(Сессия)
                 var rc = Client.ReceiveBytes();
-                if (UseCryptoKeys) 
+                if (UseCryptoKeys)
                     Key = crypto.Decrypt(rc);
-                else 
+                else
                     Key = rc;
 
                 //Loger.Log("Client Connect5");
@@ -295,10 +296,10 @@ namespace Transfer
             return good;
         }
 
-        public ModelInfo GetInfo(bool fullInfo)
+        public ModelInfo GetInfo(ServerInfoType infoType)
         {
-            Loger.Log("Client GetInfo " + (fullInfo ? 1 : 2).ToString());
-            var packet = new ModelInt() { Value = fullInfo ? 1 : 2 };
+            Loger.Log("Client GetInfo " + infoType.ToString());
+            var packet = new ModelInt() { Value = (int)infoType };
             var stat = TransObject<ModelInfo>(packet, 5, 6);
             return stat;
         }
@@ -449,7 +450,7 @@ namespace Transfer
             return stat;
         }
 
-        public Player GetPlayerByToken(Guid guidToken) 
+        public Player GetPlayerByToken(Guid guidToken)
         {
             var stat = TransObject2<Player>(guidToken, PackageType.RequestPlayerByToken, PackageType.ResponsePlayerByToken);
 

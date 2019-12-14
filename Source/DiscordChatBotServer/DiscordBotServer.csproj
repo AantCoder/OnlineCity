@@ -5,7 +5,7 @@
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
-    <RootNamespace>OC</RootNamespace>
+    <RootNamespace>OC.DiscordBotServer</RootNamespace>
     <AssemblyName>DiscordBotServer</AssemblyName>
     <AssemblyVersion>0.3.0.0</AssemblyVersion>
     <Description />

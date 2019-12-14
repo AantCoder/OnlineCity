@@ -11,6 +11,8 @@ using System.Threading;
 using Transfer;
 using System.Reflection;
 using Util;
+using ServerOnlineCity.Services;
+using System.Collections.Generic;
 
 namespace ServerOnlineCity
 {
@@ -20,12 +22,15 @@ namespace ServerOnlineCity
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
         private string _path;
+        public static IReadOnlyDictionary<int, IGenerateResponseContainer> ServiceDictionary { get; private set; }
 
         public ServerManager(string path)
         {
             _path = path;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             AppDomain.CurrentDomain.AssemblyResolve += Missing_AssemblyResolver;
+
+            DependencyInjection();
         }
 
         private Assembly Missing_AssemblyResolver(object sender, ResolveEventArgs args)
@@ -34,18 +39,26 @@ namespace ServerOnlineCity
             var a = Assembly.Load(asm);
             return a;
         }
-      
-        public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
-        private static ServerSettings _settings;
-        public static ServerSettings Settings
+
+        private void DependencyInjection()
         {
-            get
+            //may better way use a native .Net Core DI
+            var d = new Dictionary<int, IGenerateResponseContainer>();
+            foreach (var type in Assembly.GetEntryAssembly().GetTypes())
             {
-                if (_settings == null)
-                    _settings = new ServerSettings();
-                return _settings;
+                if (!type.IsClass)
+                {
+                    continue;
+                }
+
+                if (type.GetInterfaces().Any(x => x == typeof(IGenerateResponseContainer)))
+                {
+                    var t = (IGenerateResponseContainer)Activator.CreateInstance(type);
+                    d[t.RequestTypePackage] = t;
+                }
             }
-            set => _settings = value;
+
+            ServiceDictionary = d;
         }
 
         public int ActiveClientCount
@@ -55,7 +68,7 @@ namespace ServerOnlineCity
         }
 
         public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
-        public ServerSettings ServerSettings;
+        public static ServerSettings ServerSettings;
 
         public void Start(int port = SessionClient.DefaultPort)
         {
@@ -105,7 +118,7 @@ namespace ServerOnlineCity
 
             Connect.ConnectionAccepted = ConnectionAccepted;
             //throw new Exception("test");
-            Connect.Start(null, Settings.Port);
+            Connect.Start(null, port);
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -130,7 +143,7 @@ namespace ServerOnlineCity
             var player = new PlayerServer(Repository.DISCORD)
             {
                 Pass = new CryptoProvider().GetHash(guid.ToString()),
-                DiscordToken=guid,
+                DiscordToken = guid,
                 IsAdmin = true, // возможно по умолчанию запретить ?
             };
 

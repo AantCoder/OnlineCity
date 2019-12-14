@@ -11,6 +11,11 @@ namespace OC.DiscordBotServer.Helpers
 
         public static IPEndPoint TryParseStringToIp(string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
             int port;
             var lastIndex = value.IndexOf(":");
             if (lastIndex > 0)

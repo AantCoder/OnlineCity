@@ -3,7 +3,6 @@ using OC.DiscordBotServer.Commands;
 using OC.DiscordBotServer.Helpers;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,13 +12,15 @@ namespace OC.DiscordBotServer.Modules
     {
         private readonly RegmeCommand _regUserCmd;
         private readonly CommandService _commandService;
+        private readonly SrvInfoCommand _srvInfoCmd;
         private readonly ApplicationContext _app;
 
-        public UserModule(RegmeCommand regUserCmd, CommandService commandService, ApplicationContext app)
+        public UserModule(RegmeCommand regUserCmd, CommandService commandService, SrvInfoCommand srvInfoCmd, ApplicationContext app)
         {
             _regUserCmd = regUserCmd;
             _commandService = commandService;
             _app = app;
+            _srvInfoCmd = srvInfoCmd;
         }
 
         [Description("Status server: when started, online player e.t.c ")]
@@ -43,7 +44,7 @@ namespace OC.DiscordBotServer.Modules
         [Command("help")]
         [Description("List of all commands: " + Helper.PREFIX + "help")]
         //RU: Выводит список команд
-        public async Task Helpsync()
+        public async Task HelpAsync()
         {
             var result = new StringBuilder();
             var list = _commandService.Commands.OrderBy(x => x.Name);
@@ -57,6 +58,16 @@ namespace OC.DiscordBotServer.Modules
             }
 
             await ReplyAsync(result.ToString());
+        }
+
+        [Command("srvinfo")]
+        [Description(
+         "srvinfo ipserver: full information about server" +
+         "srvinfo my: (все где я зарегестрирован\n" +
+         "srvinfo all: информация по всем серверам, отсортированные 1.По количеству пользователей от максимального к минимальному, по дате поcледнего онлайна")]
+        public async Task SrvInfoAsync(string param)
+        {
+            await ReplyAsync(_srvInfoCmd.Execute(Context, param));
         }
     }
 }

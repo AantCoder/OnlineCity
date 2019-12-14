@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>$(RimWorldFolderBin)\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
@@ -54,7 +54,6 @@
     <Compile Include="GameXMLUtils.cs" />
     <Compile Include="Loger.cs" />
     <Compile Include="Transfer\ConnectSaver.cs" />
-    <Compile Include="Transfer\ModelGuid.cs" />
     <Compile Include="Transfer\ModelOrderBuy.cs" />
     <Compile Include="Transfer\GZip.SharpZipLib.cs" />
     <Compile Include="Transfer\ModelOrderLoad.cs" />
@@ -73,6 +72,7 @@
     <Compile Include="Transfer\Model\Player.cs" />
     <Compile Include="Transfer\Model\ThingEntry.cs" />
     <Compile Include="Transfer\Model\ThingTrade.cs" />
+    <Compile Include="Transfer\ServerInfoType.cs" />
     <Compile Include="Transfer\WorldObjectEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MainHelper.cs" />

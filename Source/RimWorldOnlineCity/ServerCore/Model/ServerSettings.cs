@@ -1,13 +1,19 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 ﻿using System.Collections.Generic;
 
 namespace ServerCore.Model
-{
+{ 
+    // all properties marked as [DisplayAttribute] show in Discord by a command srvinfo or in the Game
+    [Serializable]
     public class ServerSettings
-    {
-        public string HostingLocation = "Moscow";
-        public string Language = "Russian";
+    {        
+        [Display]
         public string ServerName = "Another OnlineCity Server";
+        [Display]
+        public string HostingLocation = "Moscow";
+        [Display]
+        public string Language = "Russian";
         public int SaveInterval = 10000;
         public int Port = 8888;
         public bool IsModsWhitelisted;

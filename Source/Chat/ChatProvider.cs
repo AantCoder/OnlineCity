@@ -7,9 +7,6 @@ using Util;
 
 namespace OC.ChatBridgeProvider
 {
-    /// <summary>
-    /// Bridge class Chat between FW 3.5 and 4.6.1 
-    /// </summary>
     public class ChatProvider
     {
         public ClientData Data { get; set; }
@@ -58,7 +55,6 @@ namespace OC.ChatBridgeProvider
             if (!_sessionClient.Connect(stringAdress, addr.Port))
             {
                 logMsg = "Connection fail: " + _sessionClient.ErrorMessage;
-                //DiscordBotServer.Helpers.Loger.Log("Chat " + logMsg);
                 return _sessionClient.ErrorMessage;
             }
 
@@ -69,8 +65,7 @@ namespace OC.ChatBridgeProvider
 
         public void Disconnected(string msg = "Error Connection.")
         {
-            var login = _sessionClient.GetInfo(false).My.Login;
-            //DiscordBotServer.Helpers.Loger.Log("Chat Disconected :( " + login);
+            var login = _sessionClient.GetInfo(OCUnion.Transfer.ServerInfoType.Short).My.Login;
             _sessionClient.Disconnect();
             DisconnectedEvent?.Invoke(this, new StringWrapperEventArgument() { Message = login });
         }
@@ -106,8 +101,7 @@ namespace OC.ChatBridgeProvider
         /// </summary>
         private void InitConnected()
         {
-            // OC.DiscordBotServer.Helpers.Loger.Log("Chat Connection OK");
-            var serverInfo = _sessionClient.GetInfo(true);
+            var serverInfo = _sessionClient.GetInfo(OCUnion.Transfer.ServerInfoType.Full);
             My = serverInfo.My;
             Data = new ClientData(My.Login, _sessionClient);
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;

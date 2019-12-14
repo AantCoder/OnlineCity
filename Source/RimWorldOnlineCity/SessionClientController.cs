@@ -1,14 +1,13 @@
 ﻿using HugsLib.Utils;
 using Model;
 using OCUnion;
+using OCUnion.Transfer;
 using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using Transfer;
 using Util;
 using Verse;
@@ -26,7 +25,6 @@ namespace RimWorldOnlineCity
         public static WorkTimer Timers { get; set; }
         public static Player My { get; set; }
         public static TimeSpan ServerTimeDelta { get; set; }
-
 
         private const string SaveName = "onlineCityTempLoad";
 
@@ -259,6 +257,7 @@ namespace RimWorldOnlineCity
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
             }
+
             return null;
         }
 
@@ -294,6 +293,7 @@ namespace RimWorldOnlineCity
                 Log.Warning(logMsg);
                 InitConnected();
             }
+
             return null;
         }
 
@@ -370,7 +370,7 @@ namespace RimWorldOnlineCity
             Timers = new WorkTimer();
             
            
-            var serverInfo = connect.GetInfo(true);
+            var serverInfo = connect.GetInfo(ServerInfoType.Full);
             My = serverInfo.My;
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
 
@@ -530,7 +530,6 @@ namespace RimWorldOnlineCity
             }
             return page;
         }
-
 
         /// <summary>
         /// Запускается, когда админ первый раз заходит на сервер, выберет параметры нового мира, и 
