@@ -7,6 +7,7 @@ using Transfer;
 using Util;
 using Model;
 using OCUnion.Transfer.Model;
+using Verse;
 
 namespace Transfer
 {
@@ -290,6 +291,11 @@ namespace Transfer
         public bool Login(string login, string pass)
         {
             var packet = new ModelLogin() { Login = login, Pass = pass };
+            foreach (var mod in LoadedModManager.RunningModsListForReading)
+            {
+                packet.ModsID.Add(mod.Name, mod.Identifier);
+            }
+
             var good = TransStatus(packet, 3, 4);
 
             if (good) IsLogined = true;
