@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using OC.DiscordBotServer.Commands;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 //https://discord.foxbot.me/docs/api/
 namespace OC.DiscordBotServer
@@ -82,8 +83,8 @@ namespace OC.DiscordBotServer
                 {
                     continue;
                 }
-
-                if (type.GetInterface("ICommand") != null)
+                
+                if (type.GetInterfaces().Any(x => x == typeof(ICommand)))
                 {
                     services.AddSingleton(type);
                 }

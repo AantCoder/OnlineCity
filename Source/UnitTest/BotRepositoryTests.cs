@@ -32,9 +32,10 @@ namespace OC.UnitTest
         {
             var t = _sessionClient.IsLogined;
 
-            var f = _sessionClient.GetInfo(false);
-            f = _sessionClient.GetInfo(true);
-
+            var f1 = _sessionClient.GetInfo(false);
+            Assert.IsNotNull(f1);
+            var f2 = _sessionClient.GetInfo(true);
+            Assert.IsNotNull(f2);
         }
 
         [TestMethod]

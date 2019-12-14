@@ -8,10 +8,21 @@ using ServerOnlineCity.Model;
 
 namespace ServerOnlineCity.Services
 {
-    public class PostingChat
+    public class PostingChat : IGenerateResponseContainer
     {
         private const string InvalidCommand = "The command is not available";
-        public ModelStatus GetModelStatus(ref PlayerServer player, ModelPostingChat pc)
+        public byte RequestTypePackage => 19;
+
+        public byte ResponseTypePackage => 20;
+
+        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        {
+            var result = new ModelContainer() { TypePacket = ResponseTypePackage };
+            result.Packet = GetModelStatus((ModelPostingChat)request.Packet, ref player);
+            return result;
+        }
+
+        public ModelStatus GetModelStatus(ModelPostingChat pc, ref PlayerServer player)
         {
             var timeNow = DateTime.UtcNow;
             if (string.IsNullOrEmpty(pc.Message))
@@ -385,5 +396,7 @@ namespace ServerOnlineCity.Services
 /killhimplease
 
 ";
+
+
     }
 }

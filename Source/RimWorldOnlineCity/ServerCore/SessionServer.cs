@@ -1,7 +1,5 @@
 ﻿using Model;
 using OCUnion;
-using OCUnion.Transfer;
-using OCUnion.Transfer.Model;
 using System;
 using System.Text;
 using Transfer;
@@ -143,12 +141,7 @@ namespace ServerOnlineCity
                     send.TypePacket = 4;
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Login");
                     send.Packet = Worker.Login((ModelLogin)recObj.Packet);
-                    break;
-                case 5:
-                    send.TypePacket = 6;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Info");
-                    send.Packet = Worker.GetInfo((ModelInt)recObj.Packet);
-                    break;
+                    break;          
                 case 7:
                     send.TypePacket = 8;
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " CreatingWorld");
@@ -167,11 +160,6 @@ namespace ServerOnlineCity
                 case 17:
                     send.TypePacket = 18;
                     send.Packet = Worker.UpdateChat((ModelUpdateTime)recObj.Packet);
-                    break;
-                case 19:
-                    send.TypePacket = 20;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " PostingChat");
-                    send.Packet = Worker.PostingChat((ModelPostingChat)recObj.Packet);
                     break;
                 case 21:
                     send.TypePacket = 22;
@@ -198,16 +186,13 @@ namespace ServerOnlineCity
                     Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " AttackHost");
                     send.Packet = Worker.AttackOnlineHost((AttackHostToSrv)recObj.Packet);
                     break;
-                case (int)PackageType.RequestPlayerByToken:
-                    send.TypePacket = (int)PackageType.ResponsePlayerByToken;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " GetLoginByToken");
-                    send.Packet = Worker.GetPlayerByToken((ModelGuid)recObj.Packet);
-                    break;
                 default:
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Error0");
-                    send.TypePacket = 0;
+                    var typePacket = recObj.TypePacket;
+                    ModelContainer mc = Worker.GetPackage(recObj);
+                    send = mc;
                     break;
             }
+
             return send;
         }
     }

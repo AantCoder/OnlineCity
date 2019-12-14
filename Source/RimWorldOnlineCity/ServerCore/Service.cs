@@ -1,7 +1,7 @@
 ﻿using Model;
-using ServerOnlineCity.Model;
 using OCUnion;
-using OCUnion.Transfer;
+using ServerOnlineCity.Model;
+using ServerOnlineCity.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,6 @@ namespace ServerOnlineCity
 {
     public class Service
     {
-        private Services.PostingChat _postingChat = new Services.PostingChat();
         private PlayerServer _player;
         public PlayerServer Player { get { return _player; } }
 
@@ -89,49 +88,6 @@ namespace ServerOnlineCity
                 Status = 0,
                 Message = null
             };
-        }
-
-        public ModelInfo GetInfo(ModelInt packet)
-        {
-            if (Player == null) return null;
-
-            lock (Player)
-            {
-                var saveData = Player.SaveDataPacket;
-                if (packet.Value == 1)
-                {
-                    //полная информация fullInfo = true
-                    var data = Repository.GetData;
-                    var result = new ModelInfo()
-                    {
-                        My = Player.Public,
-                        IsAdmin = Player.IsAdmin,
-                        VersionInfo = MainHelper.VersionInfo,
-                        VersionNum = MainHelper.VersionNum,
-                        Seed = data.WorldSeed ?? "",
-                        MapSize = data.WorldMapSize,
-                        PlanetCoverage = data.WorldPlanetCoverage,
-                        Difficulty = data.WorldDifficulty,
-                        NeedCreateWorld = saveData == null,
-                        ServerTime = DateTime.UtcNow,
-                    };
-
-                    return result;
-                }
-                else if (packet.Value == 3)
-                {
-                    //передача файла игры, для загрузки WorldLoad();
-                    var result = new ModelInfo();
-                    result.SaveFileData = saveData;
-                    return result;
-                }
-                else
-                {
-                    //краткая (зарезервированно, пока не используется) fullInfo = false
-                    var result = new ModelInfo();
-                    return result;
-                }
-            }
         }
 
         public ModelStatus CreatingWorld(ModelCreateWorld packet)
@@ -322,17 +278,20 @@ namespace ServerOnlineCity
             }
         }
 
-        internal Player GetPlayerByToken(ModelGuid packet)
+        internal ModelContainer GetPackage(ModelContainer inputPackage)
         {
-            if (Player == null) return null;
+            if (_player == null) return null;
 
-            lock (Player)
+            //lock (_player){         
+            if (ServerManager.ServiceDictionary.TryGetValue((byte)inputPackage.TypePacket, out IGenerateResponseContainer generateResponseContainer))
             {
-                var data = Repository.GetData;
-
-                var playerServer = data.PlayersAll.FirstOrDefault(p => packet.Guid.Equals(p.DiscordToken));
-                return playerServer?.Public;
+                Loger.Log("Server " + (Player == null ? "     " : Player.Public.Login.PadRight(5)) + generateResponseContainer.GetType().Name);
+                return generateResponseContainer.GenerateModelContainer(inputPackage, ref _player);
             }
+            //}
+            Loger.Log("Server " + (Player == null ? "     " : Player.Public.Login.PadRight(5)) + $" Reponse for type {inputPackage.TypePacket} not found");
+
+            return new ModelContainer() { TypePacket = 0 };
         }
 
         public ModelStatus SendThings(ModelMailTrade packet)
@@ -441,16 +400,6 @@ namespace ServerOnlineCity
 
                 //Loger.Log("Server " + res.Chats.Count);
                 return res;
-            }
-        }
-
-        public ModelStatus PostingChat(ModelPostingChat pc)
-        {
-            if (Player == null) return null;
-
-            lock (_player) // Теоретически _player может быть null ??
-            {
-                return _postingChat.GetModelStatus(ref _player, pc);
             }
         }
 

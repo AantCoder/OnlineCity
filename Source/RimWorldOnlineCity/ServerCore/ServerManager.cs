@@ -11,6 +11,8 @@ using System.Threading;
 using Transfer;
 using System.Reflection;
 using Util;
+using ServerOnlineCity.Services;
+using System.Collections.Generic;
 
 namespace ServerOnlineCity
 {
@@ -20,12 +22,15 @@ namespace ServerOnlineCity
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
         private string _path;
+        public static IReadOnlyDictionary<int, IGenerateResponseContainer> ServiceDictionary { get; private set; }
 
         public ServerManager(string path)
         {
             _path = path;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             AppDomain.CurrentDomain.AssemblyResolve += Missing_AssemblyResolver;
+
+            DependencyInjection();
         }
 
         private Assembly Missing_AssemblyResolver(object sender, ResolveEventArgs args)
@@ -33,6 +38,27 @@ namespace ServerOnlineCity
             var asm = args.Name.Split(",")[0];
             var a = Assembly.Load(asm);
             return a;
+        }
+
+        private void DependencyInjection()
+        {
+            //may better way use a native .Net Core DI
+            var d = new Dictionary<int, IGenerateResponseContainer>();
+            foreach (var type in Assembly.GetEntryAssembly().GetTypes())
+            {
+                if (!type.IsClass)
+                {
+                    continue;
+                }
+
+                if (type.GetInterfaces().Any(x => x == typeof(IGenerateResponseContainer)))
+                {
+                    var t = (IGenerateResponseContainer)Activator.CreateInstance(type);
+                    d[t.RequestTypePackage] = t;
+                }
+            }
+
+            ServiceDictionary = d;
         }
 
         public int ActiveClientCount
@@ -115,7 +141,7 @@ namespace ServerOnlineCity
             var player = new PlayerServer(Repository.DISCORD)
             {
                 Pass = new CryptoProvider().GetHash(guid.ToString()),
-                DiscordToken=guid,
+                DiscordToken = guid,
                 IsAdmin = true, // возможно по умолчанию запретить ?
             };
 

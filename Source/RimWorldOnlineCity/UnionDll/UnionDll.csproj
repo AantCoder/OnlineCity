@@ -54,7 +54,6 @@
     <Compile Include="GameXMLUtils.cs" />
     <Compile Include="Loger.cs" />
     <Compile Include="Transfer\ConnectSaver.cs" />
-    <Compile Include="Transfer\ModelGuid.cs" />
     <Compile Include="Transfer\ModelOrderBuy.cs" />
     <Compile Include="Transfer\GZip.SharpZipLib.cs" />
     <Compile Include="Transfer\ModelOrderLoad.cs" />
