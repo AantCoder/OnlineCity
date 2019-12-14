@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OCUnion.Transfer;
 using Transfer;
 using Util;
 
@@ -30,12 +31,13 @@ namespace OC.UnitTest
         [TestMethod]
         public void Chanel2ServerRepositoryTest()
         {
-            var t = _sessionClient.IsLogined;
-
-            var f1 = _sessionClient.GetInfo(false);
+            var f1 = _sessionClient.GetInfo(ServerInfoType.Full);
             Assert.IsNotNull(f1);
-            var f2 = _sessionClient.GetInfo(true);
+            var f2 = _sessionClient.GetInfo(ServerInfoType.Short);
             Assert.IsNotNull(f2);
+            var f3 = _sessionClient.GetInfo(ServerInfoType.FullWithDescription);
+            Assert.IsNotNull(f3);
+            Assert.IsFalse(string.IsNullOrEmpty(f3.Description));
         }
 
         [TestMethod]

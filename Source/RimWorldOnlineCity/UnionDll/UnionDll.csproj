@@ -72,6 +72,7 @@
     <Compile Include="Transfer\Model\Player.cs" />
     <Compile Include="Transfer\Model\ThingEntry.cs" />
     <Compile Include="Transfer\Model\ThingTrade.cs" />
+    <Compile Include="Transfer\ServerInfoType.cs" />
     <Compile Include="Transfer\WorldObjectEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MainHelper.cs" />

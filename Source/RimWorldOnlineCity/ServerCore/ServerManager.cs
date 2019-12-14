@@ -68,7 +68,7 @@ namespace ServerOnlineCity
         }
 
         public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
-        public ServerSettings ServerSettings;
+        public static ServerSettings ServerSettings;
 
         public void Start(int port = SessionClient.DefaultPort)
         {

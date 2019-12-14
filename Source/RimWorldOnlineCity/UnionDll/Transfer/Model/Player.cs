@@ -7,10 +7,6 @@ namespace Model
     {
         public string Login { get; set; }
 
-        public string ServerName { get; set; }
-
-        //public bool ExistMap { get; set; }
-
         public DateTime LastSaveTime { get; set; }
 
         public DateTime LastOnlineTime { get; set; }

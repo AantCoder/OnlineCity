@@ -21,7 +21,7 @@ namespace OC.DiscordBotServer
         private DiscordSocketClient _discordClient;
         private CommandService _commands;
         private IServiceProvider _services;
-        private ApplicationContext _appContext;
+       // private ApplicationContext _appContext;
         private MessageParser _messageParser;
 
         /// <summary>

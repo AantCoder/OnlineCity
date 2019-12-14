@@ -10,7 +10,7 @@ namespace OC.DiscordBotServer
 {
     sealed public class Listener
     {
-        private volatile bool IsWork = false;
+        private volatile bool IsUpdatingBotStatus = false;
         private volatile bool IsUpdatingChats = false;
         private readonly ApplicationContext _applicationContext;
         private readonly DiscordSocketClient _dc;
@@ -61,12 +61,12 @@ namespace OC.DiscordBotServer
 
         public void UpdateChats()
         {
-            if (IsWork || !(_dc.ConnectionState == ConnectionState.Connected))
+            if (IsUpdatingChats || !(_dc.ConnectionState == ConnectionState.Connected))
             {
                 return;
             }
 
-            IsWork = true;
+            IsUpdatingChats = true;
             try
             {
                 foreach (var bindServer in _applicationContext.DiscrordToOCServer)
@@ -77,49 +77,6 @@ namespace OC.DiscordBotServer
                         // to do Attempt to Connect Every 10 minuts
                         continue;
                     }
-
-                    var chats = onlineCityServer.GetChatMessages();
-                    if (chats != null && TranslateChatToDiscordAsync(bindServer.Key, chats))
-                    {
-                        _botDataContext.SaveChanges();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Loger.Log(ex.ToString());
-            }
-
-            IsWork = false;
-        }
-
-        /// <summary>
-        /// Check each server for online & Update Bot Status 
-        /// </summary>
-        public void UpdateBotStatus() 
-        {
-            IsUpdatingChats = true; // Этого по идее не нужно, т.к. запуск раз в 10 минут и за это время цикл должен успеть отработь
-            try
-            {
-                foreach (var bindServer in _applicationContext.DiscrordToOCServer)
-                {
-                    var onlineCityServer = bindServer.Value;
-                    if (!onlineCityServer.IsLogined)
-                    {
-                        // to do Attempt to Connect Every 10 minuts
-                        continue;
-                    }
-
-
-                    /*
-Main Official server
-IP: 194.87.95.90
-Location: Moscow
-Hosted by: @Aant
-Language: Multilingual
-Now online: 
-
-                     */
 
                     var chats = onlineCityServer.GetChatMessages();
                     if (chats != null && TranslateChatToDiscordAsync(bindServer.Key, chats))
@@ -134,6 +91,38 @@ Now online:
             }
 
             IsUpdatingChats = false;
+        }
+
+        /// <summary>
+        /// Check each server for online & Update Bot Status 
+        /// </summary>
+        public void UpdateBotStatus() 
+        {
+            IsUpdatingBotStatus = true; // Этого по идее не нужно, т.к. запуск раз в 10 минут и за это время цикл должен успеть отработь
+            if (IsUpdatingBotStatus || !(_dc.ConnectionState == ConnectionState.Connected))
+            {
+                return;
+            }
+
+            try
+            {
+                foreach (var bindServer in _applicationContext.DiscrordToOCServer)
+                {
+                    var onlineCityServer = bindServer.Value;
+                    if (!onlineCityServer.IsLogined)
+                    {
+                        // to do Attempt to Connect Every 10 minuts
+                        continue;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Loger.Log(ex.ToString());
+            }
+
+            IsUpdatingBotStatus = false;
         }
     }
 }
