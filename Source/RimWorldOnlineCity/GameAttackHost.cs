@@ -49,10 +49,16 @@ namespace RimWorldOnlineCity
         /// К передаче на создание/обновление пешек
         /// </summary>
         public HashSet<int> ToSendAddId { get; set; }
+
         /// <summary>
         /// К передаче на создание не пешек
         /// </summary>
         public HashSet<Thing> ToSendThingAdd { get; set; }
+
+        /// <summary>
+        /// Новые трупы (отличаются от ToSendThingAdd тем, что берем содержимое контейнера Corpse)
+        /// </summary>
+        private HashSet<Thing> ToSendNewCorpse = new HashSet<Thing>();
 
         /// <summary>
         /// К передаче на создание/обновление
@@ -242,6 +248,7 @@ namespace RimWorldOnlineCity
                         ToSendDeleteId = new HashSet<int>();
                         ToSendAddId = new HashSet<int>();
                         ToSendThingAdd = new HashSet<Thing>();
+                        ToSendNewCorpse = new HashSet<Thing>();
                         AttackingPawns = new List<Pawn>();
                         AttackingPawnDic = new Dictionary<int, int>();
                         AttackingPawnJobDic = new Dictionary<int, AttackPawnCommand>();
@@ -446,6 +453,12 @@ namespace RimWorldOnlineCity
                             ThingPrepareChange0 = ThingPrepareChange1;
                             ThingPrepareChange1 = new HashSet<Thing>();
 
+                            //трупы
+                            foreach (var mp in ToSendNewCorpse)
+                            {
+                                toSendState.Add(new AttackThingState(mp));
+                            }
+
                             //Loger.Log("Client HostAttackUpdate 3");
                             toClient = connect.AttackOnlineHost(new AttackHostToSrv()
                             {
@@ -458,6 +471,7 @@ namespace RimWorldOnlineCity
                                 UpdateState = toSendState
                             });
                             ToSendThingAdd.Clear();
+                            ToSendNewCorpse.Clear();
                             ToSendDeleteId.Clear();
                             ToUpdateStateId.Clear();
                             ToUpdateState.Clear();
@@ -694,10 +708,15 @@ namespace RimWorldOnlineCity
                 }
                 else if (newSpawn)
                 {
-                    if (thing is Corpse)
+                    if (thing is Corpse && (thing as Corpse).InnerPawn != null)
                     {
-                        //трупы обрабатываем отдельно: передаем труп не как объект, а как редактирование состояния пешки - она сама станет трупом + после изменеия состояния удалить из словарей, чтобы её не удалили (да ID созданного трупа будет не синхронизированно, но считаем что с ними ничего не будут делать)
-                        //todo здесь, а также изменить у атакующего: когда пришла команда удалить пешку, то задержать команду на 1 цикл (новый массив)
+                        //трупы обрабатываем отдельно: передаем труп не как объект, а как редактирование состояния пешки - 
+                        //  она сама станет трупом + после изменеия состояния удалить из словарей, чтобы её не удалили 
+                        //  (да ID созданного трупа будет не синхронизированно, но считаем что с ними ничего не будут делать)
+                        //todo здесь, а также изменить у атакующего: когда пришла команда удалить пешку, то 
+                        //  задержать команду на 1 цикл (новый массив)
+                        var corpse = thing as Corpse;
+                        ToSendNewCorpse.Add(corpse.InnerPawn);
                     }
                     else ToSendThingAdd.Add(thing);
                 }

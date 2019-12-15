@@ -47,7 +47,7 @@ namespace ServerOnlineCity
             {
                 using (var fs = File.OpenRead(SaveFileName))
                 {
-                    var bf = new BinaryFormatter();
+                    var bf = new BinaryFormatter() { Binder = new ServerCoreSerializationBinder() };
                     Loger.Log("Server Load...");
                     Data = (BaseContainer)bf.Deserialize(fs);
                     //var dataVersion = Data.VersionNum;

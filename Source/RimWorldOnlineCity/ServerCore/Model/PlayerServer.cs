@@ -1,8 +1,6 @@
 ﻿using Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Transfer;
 
 namespace ServerOnlineCity.Model
@@ -15,6 +13,8 @@ namespace ServerOnlineCity.Model
         public string Pass;
 
         public bool IsAdmin;
+
+        public Guid DiscordToken;
 
         public Chat PublicChat
         {
@@ -55,6 +55,7 @@ namespace ServerOnlineCity.Model
             {
                 Login = login
             };
+
             var publicChat = new Chat()
             {
                 Id = 1,
@@ -65,7 +66,6 @@ namespace ServerOnlineCity.Model
                 Posts = PublicPosts
             };
             Chats = new List<Chat>() { publicChat };
-        }
-        
+        }        
     }
 }

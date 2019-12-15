@@ -33,11 +33,11 @@ namespace RimWorldOnlineCity
         private bool InTimer { get; set; }
         private Map GameMap { get; set; }
         /// <summary>
-        /// Словарь сопоставления ID их и сейчас созданных (их из OriginalID, наш ID)
+        /// Словарь сопоставления ID с хоста и сейчас созданных (Key с хоста из OriginalID, Value наш ID)
         /// </summary>
         private Dictionary<int, int> ThingsIDDicRev { get; set; }
         /// <summary>
-        /// Словарь сопоставления ID их и сейчас созданных (наш ID, их из OriginalID)
+        /// Словарь сопоставления ID с хоста и сейчас созданных (Key наш ID, Value с хоста из OriginalID)
         /// </summary>
         private Dictionary<int, int> ThingsIDDic { get; set; }
         /// <summary>
@@ -52,6 +52,11 @@ namespace RimWorldOnlineCity
         /// Команды отданые игроком для отправки
         /// </summary>
         private Dictionary<int, AttackPawnCommand> ToSendCommand { get; set; }
+        /// <summary>
+        /// Для пешек которым прикла команда на удаление идет задержка перед удалением на 1 цикл
+        /// Если в этом же или следующем пакете придет кодманда создать труп из пешки, то команда станет не актуальной
+        /// </summary>
+        private List<Thing> DelayDestroyPawn { get; set; }
 
         public static bool Create()
         {
@@ -200,6 +205,16 @@ namespace RimWorldOnlineCity
             });
         }
 
+        private void DestroyThing(Thing thing, int hostId = 0)
+        {
+            var id = thing.thingIDNumber;
+            if (hostId != 0 || ThingsIDDic.TryGetValue(id, out hostId))
+                ThingsIDDicRev.Remove(hostId);
+            ThingsIDDic.Remove(id);
+            ThingsObjDic.Remove(id);
+            thing.Destroy();
+        }
+
         private void ErrorBreak(string msg)
         {
             Loger.Log("Client GameAttack error" + msg);
@@ -289,8 +304,20 @@ namespace RimWorldOnlineCity
                                     continue;
                                 }
                                 if (!(thing is Pawn)) Loger.Log("Client AttackUpdate 4 Apply " + toClient.UpdateState[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                if (thing is Pawn && toClient.UpdateState[i].DownState == AttackThingState.PawnHealthState.Dead)
+                                {
+                                    DelayDestroyPawn.Remove(thing);
+                                }
                                 GameUtils.ApplyState(thing, toClient.UpdateState[i]);
                             }
+
+                            for (int i = 0; i < DelayDestroyPawn.Count; i++)
+                            {
+                                Thing thing = DelayDestroyPawn[i];
+                                Loger.Log("Client AttackUpdate 4 DelayDestroyPawn " + toClient.Delete[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                DestroyThing(thing);
+                            }
+                            DelayDestroyPawn.Clear();
 
                             for (int i = 0; i < toClient.Delete.Count; i++)
                             {
@@ -312,8 +339,16 @@ namespace RimWorldOnlineCity
                                     Loger.Log("Client AttackUpdate 4 Err6 " + toClient.Delete[i].ToString() + " id=" + id.ToString());
                                     continue;
                                 }
-                                Loger.Log("Client AttackUpdate 4 Destroy " + toClient.Delete[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
-                                thing.Destroy();
+                                if (thing is Pawn)
+                                {
+                                    Loger.Log("Client AttackUpdate 4 ToDelayDestroy " + toClient.Delete[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                    DelayDestroyPawn.Add(thing);
+                                }
+                                else
+                                {
+                                    Loger.Log("Client AttackUpdate 4 Destroy " + toClient.Delete[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                    DestroyThing(thing, toClient.Delete[i]);
+                                }
                             }
                             
                         };
@@ -328,6 +363,30 @@ namespace RimWorldOnlineCity
 
                                     if (toClient.NewPawns.Count > 0)
                                     {
+                                        //удаляем пешки NewPawnsId (здесь список thingIDNumber от хоста), которые сейчас обновим
+                                        for (int i = 0; i < toClient.NewPawnsId.Count; i++)
+                                        {
+                                            var hostid = toClient.NewPawnsId[i];
+                                            int id;
+                                            if (!ThingsIDDicRev.TryGetValue(hostid, out id))
+                                            {
+                                                continue;
+                                            }
+
+                                            Thing thing;
+                                            if (!ThingsObjDic.TryGetValue(id, out thing))
+                                            {
+                                                continue;
+                                            }
+                                            if (thing == null)
+                                            {
+                                                continue;
+                                            }
+                                            Loger.Log("Client AttackUpdate 3 DestroyPawnForUpdate " + hostid.ToString() + " pawn=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                            DestroyThing(thing, hostid);
+                                        }
+
+                                        //создаем список пешек toClient.NewPawns
                                         GameUtils.SpawnList(GameMap, toClient.NewPawns, false
                                             , (p) => p.TransportID == 0 //если без нашего ID, то у нас как пират
                                             , (th, te) =>
