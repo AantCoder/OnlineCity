@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading;
 using Transfer;
 
@@ -12,6 +13,18 @@ namespace ServerOnlineCity
 {
     public class ServerManager
     {
+        public ServerManager() 
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += Missing_AssemblyResolver;
+        }
+
+        private Assembly Missing_AssemblyResolver(object sender, ResolveEventArgs args)
+        {
+            var asm = args.Name.Split(",")[0];
+            var a = Assembly.Load(asm);
+            return a;
+        }
+
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
         public int ActiveClientCount
