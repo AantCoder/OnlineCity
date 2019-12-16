@@ -5,6 +5,8 @@
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
+    <AssemblyName>ServerOnlineCity</AssemblyName>
+    <RootNamespace>ServerOnlineCity</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
