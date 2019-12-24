@@ -96,7 +96,7 @@ namespace ServerOnlineCity
                 var recObj = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
                 //Loger.Log("Server Loop4");
 
-                var sendObj = Service(recObj);
+                var sendObj = Worker.GetPackage(recObj);
 
                 //Loger.Log("Server Loop5");
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
@@ -118,87 +118,11 @@ namespace ServerOnlineCity
                 ServiceCheckTime = DateTime.UtcNow;
                 return true;
             }
+
             //На данный момен только проверка чата
             var res = Worker.CheckChat(ServiceCheckTime);
             ServiceCheckTime = DateTime.UtcNow;
             return res;
-        }
-
-        private ModelContainer Service(ModelContainer recObj)
-        {
-            var send = new ModelContainer();
-            switch (recObj.TypePacket)
-            {
-                case 1:
-                    send.TypePacket = 2;
-                    Loger.Log("Server "+(Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) +" Registration");
-                    send.Packet = Worker.Registration((ModelLogin)recObj.Packet);
-                    break;
-                case 3:
-                    send.TypePacket = 4;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Login");
-                    send.Packet = Worker.Login((ModelLogin)recObj.Packet);
-                    break;
-                case 5:
-                    send.TypePacket = 6;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Info");
-                    send.Packet = Worker.GetInfo((ModelInt)recObj.Packet);
-                    break;
-                case 7:
-                    send.TypePacket = 8;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " CreatingWorld");
-                    send.Packet = Worker.CreatingWorld((ModelCreateWorld)recObj.Packet);
-                    break;
-                case 11:
-                    send.TypePacket = 12;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " PlayInfo");
-                    send.Packet = Worker.PlayInfo((ModelPlayToServer)recObj.Packet);
-                    break;
-                case 15:
-                    send.TypePacket = 16;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " SendThings");
-                    send.Packet = Worker.SendThings((ModelMailTrade)recObj.Packet);
-                    break;
-                case 17:
-                    send.TypePacket = 18;
-                    send.Packet = Worker.UpdateChat((ModelUpdateTime)recObj.Packet);
-                    break;
-                case 19:
-                    send.TypePacket = 20;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " PostingChat");
-                    send.Packet = Worker.PostingChat((ModelPostingChat)recObj.Packet);
-                    break;
-                case 21:
-                    send.TypePacket = 22;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " ExchengeEdit");
-                    send.Packet = Worker.ExchengeEdit((OrderTrade)recObj.Packet);
-                    break;
-                case 23:
-                    send.TypePacket = 24;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " ExchengeBuy");
-                    send.Packet = Worker.ExchengeBuy((ModelOrderBuy)recObj.Packet);
-                    break;
-                case 25:
-                    send.TypePacket = 26;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " ExchengeLoad");
-                    send.Packet = Worker.ExchengeLoad();
-                    break;
-                case 27:
-                    send.TypePacket = 28;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " AttackInitiator");
-                    send.Packet = Worker.AttackOnlineInitiator((AttackInitiatorToSrv)recObj.Packet);
-                    break;
-                case 29:
-                    send.TypePacket = 30;
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " AttackHost");
-                    send.Packet = Worker.AttackOnlineHost((AttackHostToSrv)recObj.Packet);
-                    break;
-                default:
-                    Loger.Log("Server " + (Worker.Player == null ? "     " : Worker.Player.Public.Login.PadRight(5)) + " Error0");
-                    send.TypePacket = 0;
-                    break;
-            }
-            return send;
         }
     }
 }

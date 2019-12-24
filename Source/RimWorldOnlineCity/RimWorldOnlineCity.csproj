@@ -25,7 +25,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <!--OutputPath>..\..\Assemblies\</OutputPath-->
     <OutputPath>..\..\Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -69,6 +68,7 @@
     <Compile Include="GameClasses\CaravanArrivalAction_VisitOnline.cs" />
     <Compile Include="GameClasses\CaravanOnline.cs" />
     <Compile Include="CommonUtils.cs" />
+    <Compile Include="SessionClient.cs" />
     <Compile Include="UI\DevelopTest.cs" />
     <Compile Include="GameAttacker.cs" />
     <Compile Include="GameClasses\Harmony\GameAttackTrigger.cs" />

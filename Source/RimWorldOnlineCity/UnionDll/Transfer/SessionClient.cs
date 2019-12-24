@@ -16,28 +16,7 @@ namespace Transfer
         public const bool UseCryptoKeys = false;
         private Object LockObj = new Object();
         #region
-
-        [Obsolete("For Using in Discrod bot need many Session Clients, use SessionClient as variable in constructor in the Future")]
-        private static SessionClient Single;
-
-        /// <summary>
-        /// Discrod may contains many server, Lazy initialisation Singlton class
-        /// Что бы не вносить больших изменений, добавил ленивую инциализацию 
-        /// </summary>
-        [Obsolete("For Using in Discrod bot need many Session Clients, use SessionClient as variable in constructor in the Future")]
-        public static SessionClient Get
-        {
-            get
-            {
-                if (Single == null)
-                {
-                    Single = new SessionClient();
-                }
-
-                return Single;
-            }
-        }
-
+      
         public volatile bool IsLogined = false;
 
         public ConnectClient Client;
