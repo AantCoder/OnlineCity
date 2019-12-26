@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ServerCore": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Word"
+    }
+  }
+}

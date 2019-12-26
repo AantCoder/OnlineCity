@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using OCUnion;
 using ServerCore.Model;
+using ServerOnlineCity.Services;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -13,9 +15,18 @@ namespace ServerOnlineCity
 {
     public class ServerManager
     {
-        public ServerManager() 
+        public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
+        public static ServerSettings ServerSettings = new ServerSettings();
+        private ConnectServer Connect = null;
+        private int _ActiveClientCount;
+
+        public static IReadOnlyDictionary<int, IGenerateResponseContainer> ServiceDictionary { get; private set; }
+
+        public ServerManager()
         {
             AppDomain.CurrentDomain.AssemblyResolve += Missing_AssemblyResolver;
+
+            DependencyInjection();
         }
 
         private Assembly Missing_AssemblyResolver(object sender, ResolveEventArgs args)
@@ -25,21 +36,37 @@ namespace ServerOnlineCity
             return a;
         }
 
-        private ConnectServer Connect = null;
-        private int _ActiveClientCount;
+        private void DependencyInjection()
+        {
+            //may better way use a native .Net Core DI
+            var d = new Dictionary<int, IGenerateResponseContainer>();
+            foreach (var type in Assembly.GetEntryAssembly().GetTypes())
+            {
+                if (!type.IsClass)
+                {
+                    continue;
+                }
+
+                if (type.GetInterfaces().Any(x => x == typeof(IGenerateResponseContainer)))
+                {
+                    var t = (IGenerateResponseContainer)Activator.CreateInstance(type);
+                    d[t.RequestTypePackage] = t;
+                }
+            }
+
+            ServiceDictionary = d;
+        }
+
         public int ActiveClientCount
         {
             get { return _ActiveClientCount; }
             private set { _ActiveClientCount = value; }
         }
-        public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
-        public ServerSettings ServerSettings;
 
         public void Start(string path, int port = SessionClient.DefaultPort)
         {
             if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "Settings.json")))
             {
-                ServerSettings = new ServerSettings();
                 ServerSettings.Port = port;
 
                 using (StreamWriter file = File.CreateText(Path.Combine(path, "Settings.json")))
@@ -116,7 +143,7 @@ namespace ServerOnlineCity
 
                     //те, кто запустил спутники
                     //todo когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
-                    
+
                     //и те кто географически рядом
                     //todo
 
