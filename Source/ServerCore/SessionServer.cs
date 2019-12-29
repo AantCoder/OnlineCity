@@ -60,17 +60,12 @@ namespace ServerOnlineCity
                 Client.SendMessage(crypto.Encrypt(Key));
             else
                 Client.SendMessage(Key);
-
-            //if (LogMessage != null) LogMessage("session Connected");
-
             Worker = new Service();
 
             ///рабочий цикл
             while (true)
             {
-                //Loger.Log("Server Loop1");
                 var rec = Client.ReceiveBytes();
-
                 if (Worker.Player != null) Worker.Player.Public.LastOnlineTime = DateTime.UtcNow;
 
                 //отдельно обрабатываем пинг
@@ -89,20 +84,12 @@ namespace ServerOnlineCity
                     continue;
                 }
 
-                //Loger.Log("Server Loop2");
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
-                //Loger.Log("Server " + Loger.Bytes(rec2));
-                //Loger.Log("Server Loop3");
                 var recObj = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
-                //Loger.Log("Server Loop4");
-
                 var sendObj = Worker.GetPackage(recObj);
-
-                //Loger.Log("Server Loop5");
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
-                //Loger.Log("Server Loop6");
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
-                //Loger.Log("Server Loop7");
+                
                 Client.SendMessage(send);
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using ServerOnlineCity.Model;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Converter
@@ -17,6 +18,7 @@ namespace Converter
             {
                 return;
             }
+
             File.Copy(SaveFileName, SaveFileNameOld, true);
 
             BaseContainer Data;

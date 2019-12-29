@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using OCUnion;
 using ServerOnlineCity.Model;
 using Transfer;
 
@@ -29,7 +30,7 @@ namespace ServerOnlineCity.Services
                     Message = "Incorrect login or password"
                 };
             }
-            
+
             packet.Login = packet.Login.Trim();
             player = Repository.GetData.PlayersAll
                 .FirstOrDefault(p => Repository.NormalizeLogin(p.Public.Login) == Repository.NormalizeLogin(packet.Login));
@@ -42,11 +43,14 @@ namespace ServerOnlineCity.Services
                 };
             }
 
+            var isAdmin = Repository.GetData.PlayersAll.Count == 2;// 1 : system, 2 : discord и если  в этот момент добавляетесь Вы, voilà получаете админские права 
             player = new PlayerServer(packet.Login)
             {
                 Pass = packet.Pass,
-                IsAdmin = Repository.GetData.PlayersAll.Count == 1
+                IsAdmin = isAdmin,
             };
+
+            player.Public.Grants = isAdmin ? Grants.SuperAdmin : Grants.UsualUser;
 
             Repository.GetData.PlayersAll.Add(player);
             Repository.Get.ChangeData = true;

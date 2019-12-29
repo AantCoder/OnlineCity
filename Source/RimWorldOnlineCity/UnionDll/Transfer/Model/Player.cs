@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using OCUnion;
+using System;
 
 namespace Model
 {
@@ -9,6 +7,11 @@ namespace Model
     public class Player
     {
         public string Login { get; set; }
+        
+        /// <summary>
+        /// int faster then string ;-)
+        /// </summary>
+        public int Id { get; set; }
 
         public string ServerName { get; set; }
 
@@ -19,5 +22,7 @@ namespace Model
         public DateTime LastOnlineTime { get; set; }
 
         public long LastTick { get; set; }
+
+        public Grants Grants { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace Chat
+namespace OC.Chat
 {
     public class ChatMan
     {

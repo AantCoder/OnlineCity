@@ -1,15 +1,15 @@
 ﻿using Newtonsoft.Json;
 using OCUnion;
 using ServerCore.Model;
-using ServerOnlineCity.Services;
+using ServerOnlineCity.Model;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using Transfer;
+using Util;
 
 namespace ServerOnlineCity
 {
@@ -20,41 +20,17 @@ namespace ServerOnlineCity
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
 
-        public static IReadOnlyDictionary<int, IGenerateResponseContainer> ServiceDictionary { get; private set; }
-
         public ServerManager()
         {
             AppDomain.CurrentDomain.AssemblyResolve += Missing_AssemblyResolver;
-
-            DependencyInjection();
         }
 
         private Assembly Missing_AssemblyResolver(object sender, ResolveEventArgs args)
         {
-            var asm = args.Name.Split(",")[0];
+            // var asm = args.Name.Split(",")[0];
+            var asm = args.RequestingAssembly.FullName.Split(",")[0];
             var a = Assembly.Load(asm);
             return a;
-        }
-
-        private void DependencyInjection()
-        {
-            //may better way use a native .Net Core DI
-            var d = new Dictionary<int, IGenerateResponseContainer>();
-            foreach (var type in Assembly.GetEntryAssembly().GetTypes())
-            {
-                if (!type.IsClass)
-                {
-                    continue;
-                }
-
-                if (type.GetInterfaces().Any(x => x == typeof(IGenerateResponseContainer)))
-                {
-                    var t = (IGenerateResponseContainer)Activator.CreateInstance(type);
-                    d[t.RequestTypePackage] = t;
-                }
-            }
-
-            ServiceDictionary = d;
         }
 
         public int ActiveClientCount
@@ -89,6 +65,7 @@ namespace ServerOnlineCity
             var rep = Repository.Get;
             rep.SaveFileName = Path.Combine(path, "World.dat");
             rep.Load();
+            CheckDiscrordUser();
 
             //общее обслуживание
             rep.Timer.Add(1000, DoWorld);
@@ -107,11 +84,37 @@ namespace ServerOnlineCity
         }
 
         /// <summary>
+        /// check and create if it is necessary DiscrordUser
+        /// </summary>
+        private void CheckDiscrordUser()
+        {
+            var isDiscordBotUser = Repository.GetData.PlayersAll.Any(p => "discord" == p.Public.Login);
+
+            if (isDiscordBotUser)
+            {
+                return;
+            }
+
+            var guid = Guid.NewGuid();
+            var player = new PlayerServer("discord")
+            {
+                Pass = new CryptoProvider().GetHash(guid.ToString()),
+                DiscordToken = guid,
+                IsAdmin = true, // возможно по умолчанию запретить ?                
+            };
+
+            player.Public.Grants = Grants.GameMaster | Grants.SuperAdmin | Grants.UsualUser | Grants.Moderator;
+            player.Public.Id = Repository.GetData.GenerateMaxPlayerId(); // 0 - system, 1 - discord
+
+            Repository.GetData.PlayersAll.Add(player);
+            Repository.Get.Save();
+        }
+
+        /// <summary>
         /// Общее обслуживание мира
         /// </summary>
         private void DoWorld()
         {
-            //Loger.Log("Server DoWorld");
             ///Обновляем кто кого видит
             foreach (var player in Repository.GetData.PlayersAll)
             {
@@ -134,7 +137,7 @@ namespace ServerOnlineCity
                 }
                 else
                 {
-                    ///оперделяем кого видят остальные 
+                    ///определяем кого видят остальные 
                     //админов
                     var plNeed = Repository.GetData.PlayersAll
                         .Where(p => p.IsAdmin)
@@ -173,6 +176,7 @@ namespace ServerOnlineCity
                 client.Dispose();
                 return;
             }
+
             Interlocked.Increment(ref _ActiveClientCount);
             ActiveClientCount++;
             var thread = new Thread(() => DoClient(client));

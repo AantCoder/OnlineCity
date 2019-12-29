@@ -58,19 +58,10 @@ namespace ServerOnlineCity
                         Data.Version = MainHelper.VersionInfo;
                         needResave = true;
                     }
+
                     PlayerServer.PublicPosts = Data.PlayersAll[0].PublicChat.Posts;
                     if (Data.Orders == null) Data.Orders = new List<OrderTrade>();
 
-                    /*
-                    try ////////////////////////////////
-                    {
-                        Loger.Log("Server test " + Data.PlayersAll[1].Chats[0].Posts.Count + "=" + Data.PlayersAll[Data.PlayersAll.Count - 1].Chats[0].Posts.Count);
-                        Data.PlayersAll[1].Chats[0].Posts.Add(new ChatPost());
-                        Loger.Log("Server test " + Data.PlayersAll[1].Chats[0].Posts.Count + "=" + Data.PlayersAll[Data.PlayersAll.Count - 1].Chats[0].Posts.Count);
-                    }
-                    catch { }
-                    */
-                    
                     Loger.Log("Server Load done. Users " + Data.PlayersAll.Count.ToString() + ": "
                         + Data.PlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
                         );
@@ -112,14 +103,7 @@ namespace ServerOnlineCity
         {
             if (onlyChangeData && !ChangeData) return;
             Loger.Log("Server Saving");
-            /*
-            try ///////////////////////////////
-            {
-                Data.PlayersAll[1].Chats[0].Posts.Add(new ChatPost());
-                Loger.Log("Server test " + Data.PlayersAll[1].Chats[0].Posts.Count + "=" + Data.PlayersAll[2].Chats[0].Posts.Count);
-            }
-            catch { }
-            */
+
             try
             {
                 if (File.Exists(SaveFileName))
@@ -141,6 +125,7 @@ namespace ServerOnlineCity
                     File.Copy(SaveFileName + ".bak", SaveFileName, true);
                 throw;
             }
+
             Loger.Log("Server Saved");
         }
         
@@ -165,7 +150,6 @@ namespace ServerOnlineCity
             char[] invalidFileChars = Path.GetInvalidFileNameChars();
             foreach (var c in invalidFileChars) if (login.Contains(c)) login = login.Replace(c, '_');
             return login.ToLowerInvariant();
-        }
-        
+        }       
     }
 }

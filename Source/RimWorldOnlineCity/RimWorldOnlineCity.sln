@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnionDll", "UnionDll\UnionD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordBotServer", "..\DiscordChatBotServer\DiscordBotServer.csproj", "{6774332F-BEBF-44FC-AEDA-BA363F487D95}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "..\UnitTest\UnitTest.csproj", "{606CC5D0-59F1-464E-AB2E-EB516C725E0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{6774332F-BEBF-44FC-AEDA-BA363F487D95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6774332F-BEBF-44FC-AEDA-BA363F487D95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6774332F-BEBF-44FC-AEDA-BA363F487D95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{606CC5D0-59F1-464E-AB2E-EB516C725E0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{606CC5D0-59F1-464E-AB2E-EB516C725E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{606CC5D0-59F1-464E-AB2E-EB516C725E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{606CC5D0-59F1-464E-AB2E-EB516C725E0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
