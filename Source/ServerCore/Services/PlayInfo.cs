@@ -15,17 +15,17 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 12;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = playInfo((ModelPlayToServer)request.Packet, ref player);
+            result.Packet = playInfo((ModelPlayToServer)request.Packet, context);
             return result;
         }
 
-        public ModelPlayToClient playInfo(ModelPlayToServer packet, ref PlayerServer player)
+        public ModelPlayToClient playInfo(ModelPlayToServer packet, ServiceContext context)
         {
-            lock (player)
+            lock (context.Player)
             {
                 var data = Repository.GetData;
                 var timeNow = DateTime.UtcNow;
@@ -33,7 +33,7 @@ namespace ServerOnlineCity.Services
                 toClient.UpdateTime = timeNow;
                 if (packet.GetPlayersInfo != null && packet.GetPlayersInfo.Count > 0)
                 {
-                    var pSee = StaticHelper.PartyLoginSee(player);
+                    var pSee = StaticHelper.PartyLoginSee(context.Player);
                     var pGet = pSee.Where(s => packet.GetPlayersInfo.Any(p => s == p)).ToList();
                     toClient.PlayersInfo = Repository.GetData.PlayersAll
                         .Where(p => pGet.Any(g => g == p.Public.Login))
@@ -43,13 +43,13 @@ namespace ServerOnlineCity.Services
                 }
                 if (packet.SaveFileData != null && packet.SaveFileData.Length > 0)
                 {
-                    player.SaveDataPacket = packet.SaveFileData;
-                    player.Public.LastSaveTime = timeNow;
+                    context.Player.SaveDataPacket = packet.SaveFileData;
+                    context.Player.Public.LastSaveTime = timeNow;
                     Repository.Get.ChangeData = true;
                 }
-                player.Public.LastTick = packet.LastTick;
+                context.Player.Public.LastTick = packet.LastTick;
 
-                var pLogin = player.Public.Login;
+                var pLogin = context.Player.Public.Login;
                 //packet.WObjects тут все объекты этого игрока, добавляем которых у нас нет
                 var pWOs = packet.WObjects ?? new List<WorldObjectEntry>();
                 //packet.WObjectsToDelete тут те объекты этого игрока, что нужно удалить
@@ -63,7 +63,7 @@ namespace ServerOnlineCity.Services
                 {
                     for (int i = 0; i < pDs.Count; i++)
                     {
-                        if (pDs[i].LoginOwner != player.Public.Login) continue;
+                        if (pDs[i].LoginOwner != context.Player.Public.Login) continue;
                         var sid = pDs[i].ServerId;
                         var pD = data.WorldObjects.FirstOrDefault(p => p.ServerId == sid);
                         if (pD != null)
@@ -77,7 +77,7 @@ namespace ServerOnlineCity.Services
 
                     for (int i = 0; i < pWOs.Count; i++)
                     {
-                        if (pWOs[i].LoginOwner != player.Public.Login) continue; // <-на всякий случай
+                        if (pWOs[i].LoginOwner != context.Player.Public.Login) continue; // <-на всякий случай
                         var sid = pWOs[i].ServerId;
                         if (sid == 0)
                         {
@@ -154,15 +154,15 @@ namespace ServerOnlineCity.Services
                     //завершили сбор информации клиенту
                     toClient.WObjects = outWO;
                     toClient.WObjectsToDelete = outWOD;
-                    player.LastUpdateTime = timeNow;
+                    context.Player.LastUpdateTime = timeNow;
                 }
 
                 //прикрепляем письма
-                toClient.Mails = player.Mails;
-                player.Mails = new List<ModelMailTrade>();
+                toClient.Mails = context.Player.Mails;
+                context.Player.Mails = new List<ModelMailTrade>();
 
                 //флаг, что на клиента кто-то напал и он должен запросить подробности
-                toClient.AreAttacking = player.AttackData != null && player.AttackData.Host == player && player.AttackData.State == 1;
+                toClient.AreAttacking = context.Player.AttackData != null && context.Player.AttackData.Host == context.Player && context.Player.AttackData.State == 1;
 
                 return toClient;
             }

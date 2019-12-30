@@ -10,27 +10,27 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 4;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player != null) return null;
+            if (context.Player != null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = login((ModelLogin)request.Packet, ref player);
+            result.Packet = login((ModelLogin)request.Packet, context);
             return result;
         }
 
-        private ModelStatus login(ModelLogin packet, ref PlayerServer player)
+        private ModelStatus login(ModelLogin packet, ServiceContext context)
         {
             if (packet.Login == "system") return null;
-            player = Repository.GetData.PlayersAll
+            context.Player = Repository.GetData.PlayersAll
                 .FirstOrDefault(p => p.Public.Login == packet.Login);
 
-            if (player != null)
+            if (context.Player != null)
             {
-                if (player.Pass != packet.Pass) //todo
-                    player = null;
+                if (context.Player.Pass != packet.Pass) //todo
+                    context.Player = null;
             }
 
-            if (player == null)
+            if (context.Player == null)
             {
                 return new ModelStatus()
                 {

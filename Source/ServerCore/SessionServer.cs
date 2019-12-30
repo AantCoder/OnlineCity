@@ -1,5 +1,6 @@
 ﻿using Model;
 using OCUnion;
+using ServerOnlineCity.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,13 +61,15 @@ namespace ServerOnlineCity
                 Client.SendMessage(crypto.Encrypt(Key));
             else
                 Client.SendMessage(Key);
-            Worker = new Service();
+
+            var context = new ServiceContext();
+            Worker = new Service(context);
 
             ///рабочий цикл
             while (true)
             {
                 var rec = Client.ReceiveBytes();
-                if (Worker.Player != null) Worker.Player.Public.LastOnlineTime = DateTime.UtcNow;
+                if (context.Player != null) context.Player.Public.LastOnlineTime = DateTime.UtcNow;
 
                 //отдельно обрабатываем пинг
                 if (rec.Length == 1)

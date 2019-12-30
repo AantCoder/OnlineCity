@@ -12,17 +12,17 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 28;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = attackOnlineInitiator((AttackInitiatorToSrv)request.Packet, ref player);
+            result.Packet = attackOnlineInitiator((AttackInitiatorToSrv)request.Packet, context);
             return result;
         }
 
-        public AttackInitiatorFromSrv attackOnlineInitiator(AttackInitiatorToSrv fromClient, ref PlayerServer player)
+        public AttackInitiatorFromSrv attackOnlineInitiator(AttackInitiatorToSrv fromClient, ServiceContext context)
         {
-            lock (player)
+            lock (context.Player)
             {
                 var timeNow = DateTime.UtcNow;
                 var data = Repository.GetData;
@@ -33,7 +33,7 @@ namespace ServerOnlineCity.Services
                 //инициализируем общий объект
                 if (fromClient.StartHostPlayer != null)
                 {
-                    if (player.AttackData != null)
+                    if (context.Player.AttackData != null)
                     {
                         res.ErrorText = "There is an active attack";
                         return res;
@@ -53,21 +53,21 @@ namespace ServerOnlineCity.Services
                     }
 
                     var att = new AttackServer();
-                    var err = att.New(player, hostPlayer, fromClient);
+                    var err = att.New(context.Player, hostPlayer, fromClient);
                     if (err != null)
                     {
                         res.ErrorText = err;
                         return res;
                     }
                 }
-                if (player.AttackData == null)
+                if (context.Player.AttackData == null)
                 {
                     res.ErrorText = "Unexpected error, no data";
                     return res;
                 }
 
                 //передаем управление общему объекту
-                res = player.AttackData.RequestInitiator(fromClient);
+                res = context.Player.AttackData.RequestInitiator(fromClient);
 
                 return res;
             }

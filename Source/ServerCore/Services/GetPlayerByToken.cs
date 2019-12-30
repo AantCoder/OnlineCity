@@ -12,13 +12,13 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => (int)PackageType.ResponsePlayerByToken;
 
-        public ModelContainer GenerateModelContainer(ModelContainer modelContainer, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer modelContainer, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var packet = (Guid)modelContainer.Packet;
             var result = new ModelContainer { TypePacket = ResponseTypePackage };
 
-            lock (player)
+            lock (context.Player)
             {
                 var data = Repository.GetData;
                 var playerServer = data.PlayersAll.FirstOrDefault(p => packet.Equals(p.DiscordToken));

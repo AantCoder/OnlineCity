@@ -17,35 +17,35 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 6;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = GetInfo((ModelInt)request.Packet, ref player);
+            result.Packet = GetInfo((ModelInt)request.Packet, context);
             return result;
         }
 
-        public ModelInfo GetInfo(ModelInt packet, ref PlayerServer player)
+        public ModelInfo GetInfo(ModelInt packet, ServiceContext context)
         {
-            lock (player)
+            lock (context.Player)
             {
                 switch (packet.Value)
                 {
                     case 1:
                         {
-                            var result = GetModelInfo(player);
+                            var result = GetModelInfo(context.Player);
                             return result;
                         }
                     case 3:
                         {
                             //передача файла игры, для загрузки WorldLoad();
                             var result = new ModelInfo();
-                            result.SaveFileData = player.SaveDataPacket;
+                            result.SaveFileData = context.Player.SaveDataPacket;
                             return result;
                         }
                     case 4:
                         {
-                            var result = GetModelInfo(player);
+                            var result = GetModelInfo(context.Player);
                             //result.Description = "";
                             var displayAttributes = new List<Tuple<int, string>>();
 

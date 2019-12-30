@@ -11,15 +11,15 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 2;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player != null) return null;
+            if (context.Player != null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = registration((ModelLogin)request.Packet, ref player);
+            result.Packet = registration((ModelLogin)request.Packet, context);
             return result;
         }
 
-        private ModelStatus registration(ModelLogin packet, ref PlayerServer player)
+        private ModelStatus registration(ModelLogin packet, ServiceContext context)
         {
             if (packet.Login.Trim().Length < 2
                 || packet.Pass.Length < 5)
@@ -32,9 +32,9 @@ namespace ServerOnlineCity.Services
             }
 
             packet.Login = packet.Login.Trim();
-            player = Repository.GetData.PlayersAll
+            context.Player = Repository.GetData.PlayersAll
                 .FirstOrDefault(p => Repository.NormalizeLogin(p.Public.Login) == Repository.NormalizeLogin(packet.Login));
-            if (player != null)
+            if (context.Player != null)
             {
                 return new ModelStatus()
                 {
@@ -44,15 +44,15 @@ namespace ServerOnlineCity.Services
             }
 
             var isAdmin = Repository.GetData.PlayersAll.Count == 2;// 1 : system, 2 : discord и если  в этот момент добавляетесь Вы, voilà получаете админские права 
-            player = new PlayerServer(packet.Login)
+            context.Player = new PlayerServer(packet.Login)
             {
                 Pass = packet.Pass,
                 IsAdmin = isAdmin,
             };
 
-            player.Public.Grants = isAdmin ? Grants.SuperAdmin : Grants.UsualUser;
+            context.Player.Public.Grants = isAdmin ? Grants.SuperAdmin : Grants.UsualUser;
 
-            Repository.GetData.PlayersAll.Add(player);
+            Repository.GetData.PlayersAll.Add(context.Player);
             Repository.Get.ChangeData = true;
             return new ModelStatus()
             {

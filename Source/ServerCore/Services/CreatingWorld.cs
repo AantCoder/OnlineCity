@@ -11,19 +11,19 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 8;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = creatingWorld((ModelCreateWorld)request.Packet, ref player);
+            result.Packet = creatingWorld((ModelCreateWorld)request.Packet, context);
             return result;
         }
 
-        public ModelStatus creatingWorld(ModelCreateWorld packet, ref PlayerServer player)
+        public ModelStatus creatingWorld(ModelCreateWorld packet, ServiceContext context)
         {
-            lock (player)
+            lock (context.Player)
             {
-                if (!player.IsAdmin)
+                if (!context.Player.IsAdmin)
                 {
                     return new ModelStatus()
                     {

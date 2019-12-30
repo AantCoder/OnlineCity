@@ -13,11 +13,16 @@ namespace ServerOnlineCity
     {
         public static IReadOnlyDictionary<int, IGenerateResponseContainer> ServiceDictionary { get; private set; }
 
-        public PlayerServer Player;
+        public ServiceContext Context { get; private set; }
 
         static Service()
         {
             DependencyInjection();
+        }
+
+        public Service(ServiceContext context)
+        {
+            Context =context;
         }
 
         private static void DependencyInjection()
@@ -43,23 +48,23 @@ namespace ServerOnlineCity
 
         public bool CheckChat(DateTime time)
         {
-            if (Player == null)
+            if (Context.Player == null)
             {
                 return false;
             }
 
-            return Player.Chats.Any(ct => ct.Posts.Any(p => p.Time > time));
+            return Context.Player.Chats.Any(ct => ct.Posts.Any(p => p.Time > time));
         }
 
         internal ModelContainer GetPackage(ModelContainer inputPackage)
         {
             if (ServiceDictionary.TryGetValue(inputPackage.TypePacket, out IGenerateResponseContainer generateResponseContainer))
             {
-                Loger.Log("Server " + (Player == null ? "     " : Player.Public.Login.PadRight(5)) + generateResponseContainer.GetType().Name);
-                return generateResponseContainer.GenerateModelContainer(inputPackage, ref Player);
+                Loger.Log("Server " + (Context.Player == null ? "     " : Context.Player.Public.Login.PadRight(5)) + generateResponseContainer.GetType().Name);
+                return generateResponseContainer.GenerateModelContainer(inputPackage, Context);
             }
 
-            Loger.Log("Server " + (Player == null ? "     " : Player.Public.Login.PadRight(5)) + $" Response for type {inputPackage.TypePacket} not found");
+            Loger.Log("Server " + (Context.Player == null ? "     " : Context.Player.Public.Login.PadRight(5)) + $" Response for type {inputPackage.TypePacket} not found");
 
             return new ModelContainer() { TypePacket = 0 };
         }

@@ -60,7 +60,7 @@ namespace OC.DiscordBotServer.Common
 
         private void updateClientData()
         {
-            var serverInfo = _sessionClient.GetInfo(true);
+            var serverInfo = _sessionClient.GetInfo(OCUnion.Transfer.ServerInfoType.Full);
             My = serverInfo.My;
             Data = new ClientData(My.Login, _sessionClient);
             Data.ServetTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;

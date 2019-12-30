@@ -9,15 +9,15 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 24;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = exchengeBuy((ModelOrderBuy)request.Packet, ref player);
+            result.Packet = exchengeBuy((ModelOrderBuy)request.Packet, context);
             return result;
         }
 
-        private ModelStatus exchengeBuy(ModelOrderBuy buy, ref PlayerServer player)
+        private ModelStatus exchengeBuy(ModelOrderBuy buy, ServiceContext context)
         {
             return null;
             ///проверям в одной ли точке находятся

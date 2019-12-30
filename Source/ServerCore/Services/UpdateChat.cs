@@ -13,17 +13,17 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 18;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = updateChat((ModelUpdateTime)request.Packet, ref player);
+            result.Packet = updateChat((ModelUpdateTime)request.Packet, context);
             return result;
         }
 
-        private ModelUpdateChat updateChat(ModelUpdateTime time, ref PlayerServer player)
+        private ModelUpdateChat updateChat(ModelUpdateTime time, ServiceContext context)
         {
-            lock (player)
+            lock (context.Player)
             {
                 var res = new ModelUpdateChat()
                 {
@@ -31,10 +31,10 @@ namespace ServerOnlineCity.Services
                 };
 
                 //Список игроков кого видим
-                var ps = StaticHelper.PartyLoginSee(player);
+                var ps = StaticHelper.PartyLoginSee(context.Player);
 
                 //Копируем чат без лишнего и отфильтровываем посты
-                res.Chats = player.Chats
+                res.Chats = context.Player.Chats
                     .Select(ct => new Chat()
                     {
                         Id = ct.Id,

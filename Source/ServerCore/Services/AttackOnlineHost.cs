@@ -11,17 +11,17 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 30;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = attackOnlineHost((AttackHostToSrv)request.Packet, ref player);
+            result.Packet = attackOnlineHost((AttackHostToSrv)request.Packet, context);
             return result;
         }
 
-        private AttackHostFromSrv attackOnlineHost(AttackHostToSrv fromClient, ref PlayerServer player)
+        private AttackHostFromSrv attackOnlineHost(AttackHostToSrv fromClient, ServiceContext context)
         {
-            lock (player)
+            lock (context.Player)
             {
                 var timeNow = DateTime.UtcNow;
                 var data = Repository.GetData;
@@ -29,14 +29,14 @@ namespace ServerOnlineCity.Services
                 {
                 };
 
-                if (player.AttackData == null)
+                if (context.Player.AttackData == null)
                 {
                     res.ErrorText = "Unexpected error, no data";
                     return res;
                 }
 
                 //передаем управление общему объекту
-                res = player.AttackData.RequestHost(fromClient);
+                res = context.Player.AttackData.RequestHost(fromClient);
 
                 return res;
             }

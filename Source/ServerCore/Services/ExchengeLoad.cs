@@ -13,17 +13,17 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 26;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = exchengeLoad(ref player);
+            result.Packet = exchengeLoad(context);
             return result;
         }
 
-        private ModelOrderLoad exchengeLoad(ref PlayerServer player)
+        private ModelOrderLoad exchengeLoad(ServiceContext context)
         {
-            lock (player)
+            lock (context.Player)
             {
                 var timeNow = DateTime.UtcNow;
                 var res = new ModelOrderLoad()
@@ -32,7 +32,7 @@ namespace ServerOnlineCity.Services
                     Message = null
                 };
 
-                res.Orders = getOrders(player);
+                res.Orders = getOrders(context.Player);
 
                 return res;
             }

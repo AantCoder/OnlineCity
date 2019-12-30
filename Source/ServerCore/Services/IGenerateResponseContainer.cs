@@ -7,6 +7,6 @@ namespace ServerOnlineCity.Services
     {
         int RequestTypePackage { get; }
         int ResponseTypePackage { get; }
-        ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player);
+        ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context);
     }
 }

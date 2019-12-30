@@ -14,24 +14,24 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 22;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = exchengeEdit((OrderTrade)request.Packet, ref player);
+            result.Packet = exchengeEdit((OrderTrade)request.Packet, context);
             return result;
         }
 
-        private ModelStatus exchengeEdit(OrderTrade order, ref PlayerServer player)
+        private ModelStatus exchengeEdit(OrderTrade order, ServiceContext context)
         {
-            if (player == null) return null;
-            lock (player)
+            if (context.Player == null) return null;
+            lock (context.Player)
             {
                 var timeNow = DateTime.UtcNow;
 
                 var data = Repository.GetData;
 
-                if (player.Public.Login != order.Owner.Login)
+                if (context.Player.Public.Login != order.Owner.Login)
                 {
                     return new ModelStatus()
                     {
@@ -47,7 +47,7 @@ namespace ServerOnlineCity.Services
                     //актуализируем
                     order.Created = timeNow;
 
-                    order.Owner = player.Public;
+                    order.Owner = context.Player.Public;
 
                     if (order.PrivatPlayers == null) order.PrivatPlayers = new List<Player>();
                     order.PrivatPlayers = order.PrivatPlayers
@@ -77,7 +77,7 @@ namespace ServerOnlineCity.Services
                         var id = order.Id > 0 ? order.Id : -order.Id;
                         var dataOrder = data.Orders.FirstOrDefault(o => o.Id == id);
                         if (dataOrder == null
-                            || player.Public.Login != dataOrder.Owner.Login)
+                            || context.Player.Public.Login != dataOrder.Owner.Login)
                         {
                             return new ModelStatus()
                             {
@@ -93,7 +93,7 @@ namespace ServerOnlineCity.Services
                             //актуализируем
                             order.Created = timeNow;
 
-                            order.Owner = player.Public;
+                            order.Owner = context.Player.Public;
 
                             if (order.PrivatPlayers == null) order.PrivatPlayers = new List<Player>();
                             order.PrivatPlayers = order.PrivatPlayers
@@ -108,13 +108,13 @@ namespace ServerOnlineCity.Services
                                 };
                             }
 
-                            Loger.Log("Server ExchengeEdit " + player.Public.Login + " Edit Id = " + order.Id.ToString());
+                            Loger.Log("Server ExchengeEdit " + context.Player.Public.Login + " Edit Id = " + order.Id.ToString());
                             data.Orders[data.Orders.IndexOf(dataOrder)] = order;
                         }
                         else
                         {
                             //Удаление
-                            Loger.Log("Server ExchengeEdit " + player.Public.Login + " Delete Id = " + order.Id.ToString());
+                            Loger.Log("Server ExchengeEdit " + context.Player.Public.Login + " Delete Id = " + order.Id.ToString());
                             data.Orders.Remove(dataOrder);
                         }
                     }

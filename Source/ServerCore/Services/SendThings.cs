@@ -10,19 +10,19 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 16;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null) return null;
+            if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = sendThings((ModelMailTrade)request.Packet, ref player);
+            result.Packet = sendThings((ModelMailTrade)request.Packet, context);
             return result;
         }
 
-        public ModelStatus sendThings(ModelMailTrade packet, ref PlayerServer player)
+        public ModelStatus sendThings(ModelMailTrade packet, ServiceContext context)
         {
             PlayerServer toPlayer;
 
-            lock (player)
+            lock (context.Player)
             {
                 var data = Repository.GetData;
 

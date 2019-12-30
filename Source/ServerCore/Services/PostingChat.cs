@@ -15,16 +15,16 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => 20;
 
-        public ModelContainer GenerateModelContainer(ModelContainer request, ref PlayerServer player)
+        public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
-            if (player == null)
+            if (context.Player == null)
                 return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = GetModelStatus((ModelPostingChat)request.Packet, ref player);
+            result.Packet = GetModelStatus((ModelPostingChat)request.Packet, context);
             return result;
         }
 
-        public ModelStatus GetModelStatus(ModelPostingChat pc, ref PlayerServer player)
+        public ModelStatus GetModelStatus(ModelPostingChat pc, ServiceContext context)
         {
             var timeNow = DateTime.UtcNow;
             if (string.IsNullOrEmpty(pc.Message))
@@ -36,7 +36,7 @@ namespace ServerOnlineCity.Services
                 };
             }
 
-            var chat = player.Chats.FirstOrDefault(ct => ct.Id == pc.ChatId);
+            var chat = context.Player.Chats.FirstOrDefault(ct => ct.Id == pc.ChatId);
 
             if (chat == null)
             {
@@ -59,11 +59,11 @@ namespace ServerOnlineCity.Services
                 if (ChatManager.ChatCmds.TryGetValue(command, out IChatCmd cmd))
                 {
                     Loger.Log(pc.Message);
-                    cmd.Execute(ref player, chat, argsM);
+                    cmd.Execute(ref context.Player, chat, argsM);
                 }
                 else
                 {
-                    ChatManager.PostCommandPrivatPostActivChat(player, chat, "Command not found: " + command);
+                    ChatManager.PostCommandPrivatPostActivChat(context.Player, chat, "Command not found: " + command);
                     return new ModelStatus()
                     {
                         Status = 2,
@@ -73,14 +73,14 @@ namespace ServerOnlineCity.Services
             }
             else
             {
-                Loger.Log("Server post " + player.Public.Login + ":" + pc.Message);
+                Loger.Log("Server post " + context.Player.Public.Login + ":" + pc.Message);
                 var mmsg = pc.Message;
                 if (mmsg.Length > 2048) mmsg = mmsg.Substring(0, 2048);
                 chat.Posts.Add(new ChatPost()
                 {
                     Time = timeNow,
                     Message = mmsg,
-                    OwnerLogin = player.Public.Login
+                    OwnerLogin = context.Player.Public.Login
                 });
             }
 
