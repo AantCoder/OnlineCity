@@ -1,14 +1,13 @@
 ﻿using HugsLib.Utils;
 using Model;
 using OCUnion;
+using OCUnion.Transfer;
 using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using Transfer;
 using Util;
 using Verse;
@@ -27,11 +26,10 @@ namespace RimWorldOnlineCity
         public static Player My { get; set; }
         public static TimeSpan ServerTimeDelta { get; set; }
 
-
         private const string SaveName = "onlineCityTempLoad";
 
         private static string SaveFullName { get; set; }
-        
+
         /// <summary>
         /// Инициализация при старте игры. Как можно раньше
         /// </summary>
@@ -58,13 +56,10 @@ namespace RimWorldOnlineCity
 
         private static void UpdateWorld(bool firstRun = false)
         {
-            //Loger.Log("Client UpdateWorld 1 ");
             lock (UpdatingWorld)
             {
-                //Loger.Log("Client UpdateWorld 2 ");
                 Command((connect) =>
                 {
-                    //Loger.Log("Client Init " + MainHelper.VersionInfo);
                     //собираем пакет на сервер
                     var toServ = new ModelPlayToServer()
                     {
@@ -77,11 +72,8 @@ namespace RimWorldOnlineCity
                         Data.SaveFileData = null;
                     }
 
-                    //Loger.Log("Client UpdateWorld 3 ");
                     //собираем данные с планеты
                     if (!firstRun) UpdateWorldController.SendToServer(toServ);
-
-                    //Loger.Log("Client UpdateWorld 4 ");
 
                     //запрос на информацию об игроках. Можно будет ограничить редкое получение для тех кто оффлайн
                     if (Data.Chats != null && Data.Chats[0].PartyLogin != null)
@@ -101,7 +93,7 @@ namespace RimWorldOnlineCity
                             , fromServ.WObjectsToDelete == null ? 0 : fromServ.WObjectsToDelete.Count
                             , fromServ.Mails == null ? 0 : fromServ.Mails.Count
                             , toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : ", сейв"
-                            , fromServ.AreAttacking ? " Атакуют!":""
+                            , fromServ.AreAttacking ? " Атакуют!" : ""
                             ));
 
                     //сохраняем время актуальности данных
@@ -195,9 +187,9 @@ namespace RimWorldOnlineCity
                 {
                     Data.LastServerConnectFail = false;
                     Data.LastServerConnect = DateTime.UtcNow;
-                    
+
                     if (test.Value || Data.ChatCountSkipUpdate > 60) // 60 * 500ms = принудительно раз в пол минуты
-                    {                        
+                    {
                         //Loger.Log("Client T4");
                         ModelUpdateChat dc;
                         Loger.Log("Client UpdateChats f0");
@@ -259,6 +251,7 @@ namespace RimWorldOnlineCity
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
             }
+
             return null;
         }
 
@@ -294,6 +287,7 @@ namespace RimWorldOnlineCity
                 Log.Warning(logMsg);
                 InitConnected();
             }
+
             return null;
         }
 
@@ -329,6 +323,7 @@ namespace RimWorldOnlineCity
                 Log.Warning(logMsg);
                 InitConnected();
             }
+
             return null;
         }
 
@@ -360,16 +355,15 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// После успешной регистрации или входа
         /// </summary>
-        /// 
         public static void InitConnected()
         {
             Loger.Log("Client InitConnected()");
             Data = new ClientData();
             TimersStop();
             Timers = new WorkTimer();
-            
+
             var connect = SessionClient.Get;
-            var serverInfo = connect.GetInfo(true);
+            var serverInfo = connect.GetInfo(ServerInfoType.Full);
             My = serverInfo.My;
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
 
@@ -421,10 +415,10 @@ namespace RimWorldOnlineCity
                 GameStarter.AfterStart = CreatePlayerMap;
 
                 GameStarter.GameGeneration(false);
-                
+
                 //выбор места на планете. Код из события завершения выбора параметров планеты Page_CreateWorldParams
                 Loger.Log("Client InitConnected() ExistMap1");
-                
+
 
                 Current.Game = new Game();
                 Current.Game.InitData = new GameInitData();
@@ -463,14 +457,16 @@ namespace RimWorldOnlineCity
 
                 return;
             }
-            
+
             Loger.Log("Client InitConnected() WorldLoad");
 
             var worldData = connect.WorldLoad();
 
             File.WriteAllBytes(SaveFullName, worldData.SaveFileData);
-            Action loadAction = () => {
-                LongEventHandler.QueueLongEvent(delegate {
+            Action loadAction = () =>
+            {
+                LongEventHandler.QueueLongEvent(delegate
+                {
                     Current.Game = new Game { InitData = new GameInitData { gameToLoad = SaveName } };
                     GameLoades.AfterLoad = () =>
                     {
@@ -647,7 +643,7 @@ namespace RimWorldOnlineCity
                     SessionClient.Get.Disconnect();
                 };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ExceptionUtil.ExceptionLog(e, "Client InitGame Error");
                 GameExit.BeforeExit = null;
@@ -656,6 +652,5 @@ namespace RimWorldOnlineCity
                 SessionClient.Get.Disconnect();
             }
         }
-
     }
 }

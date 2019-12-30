@@ -127,6 +127,8 @@ namespace OCUnion.Transfer.Model
         Response30 = 30,
 
         RequestPlayerByToken,
-        ResponsePlayerByToken,
+        ResponsePlayerByToken, 
+        RequestServerInfo,
+        ResponseServerInfo,
     }
 }

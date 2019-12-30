@@ -92,6 +92,7 @@
     <Compile Include="Transfer\ModelStatus.cs" />
     <Compile Include="Transfer\ModelUpdateChat.cs" />
     <Compile Include="Transfer\ModelUpdateTime.cs" />
+    <Compile Include="Transfer\ServerInfoType.cs" />
     <Compile Include="Transfer\SessionClient.cs" />
     <Compile Include="WorkTimer.cs" />
   </ItemGroup>

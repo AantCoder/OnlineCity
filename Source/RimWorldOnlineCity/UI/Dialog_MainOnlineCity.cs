@@ -182,9 +182,6 @@ namespace RimWorldOnlineCity
             var iconWidth = 25f;
             var iconWidthSpase = 30f;
 
-            //StatusTemp = Text.CalcSize("VersionLabel").y.ToString();
-            //Widgets.Label(new Rect(inRect.width - 100f, inRect.height - 30f, inRect.width, inRect.height), StatusTemp + " " + lbCannalsLastSelectedIndex.ToString());
-
             /// -----------------------------------------------------------------------------------------
             /// Список каналов
             /// 
@@ -215,13 +212,7 @@ namespace RimWorldOnlineCity
                 if (lbPlayers == null)
                 {
                     //первый запуск
-                    lbPlayers = new ListBox<ListBoxPlayerItem>();
-                    /*
-                    lbPlayers.Area = new Rect(inRect.x
-                        , inRect.y + iconWidthSpase + lbCannalsHeight + 22f
-                        , 100f
-                        , inRect.height - (iconWidthSpase + lbCannalsHeight + 22f));
-                    */
+                    lbPlayers = new ListBox<ListBoxPlayerItem>();                 
                     lbPlayers.OnClick += (index, item) =>
                     {
                         //убираем выделение
@@ -232,6 +223,7 @@ namespace RimWorldOnlineCity
 
                     lbPlayers.Tooltip = (item) => item.Tooltip;
                 }
+
                 if (DoTab0LastHeight != inRect.height)
                 {
                     DoTab0LastHeight = inRect.height;
@@ -255,6 +247,7 @@ namespace RimWorldOnlineCity
                             + SessionClientController.Data.Chats.Count.ToString()
                             + " players=" + SessionClientController.Data.Players.Count.ToString());
                     }
+
                     //устанавливаем данные
                     lbCannals.DataSource = SessionClientController.Data.Chats
                         //.OrderBy(c => (c.OwnerMaker ? "2" : "1") + c.Name) нелья просто отсортировать, т.к. потом находим по индексу
@@ -285,11 +278,13 @@ namespace RimWorldOnlineCity
                         lbPlayers.DataSource.Add(n);
                         return n;
                     };
+
                     Action<string> addTit = (text) =>
                     {
                         if (lbPlayers.DataSource.Count > 0) addPl(null, " ").GroupTitle = true;
                         addPl(null, " <i>– " + text + " –</i> ").GroupTitle = true;
                     };
+
                     Func<string, bool> isOnline = (login) => login == SessionClientController.My.Login
                         || SessionClientController.Data.Players.ContainsKey(login) && SessionClientController.Data.Players[login].Online;
                     Func<bool, string, string> frameOnline = (online, txt) =>
@@ -370,7 +365,6 @@ namespace RimWorldOnlineCity
                     DataLastChatsTime = SessionClientController.Data.ChatsTime;
                     lbCannalsLastSelectedIndex = -1; //сброс для обновления содержимого окна
                 }
-                // }
 
                 lbCannals.Drow();
                 lbPlayers.Drow();
@@ -412,8 +406,8 @@ namespace RimWorldOnlineCity
                     if (lbCannals.SelectedIndex >= 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                     {
                         var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
-                        if (selectCannal.Posts != null || selectCannal.Posts.Count > 0)
-                        {
+                        //if (selectCannal.Posts != null || selectCannal.Posts.Count > 0)
+                        //{
                             var chatLastPostTime = selectCannal.Posts.Max(p => p.Time);
                             if (ChatLastPostTime != chatLastPostTime)
                             {
@@ -427,11 +421,11 @@ namespace RimWorldOnlineCity
                                     .Aggregate("", (r, i) => getPost(i) + (r == "" ? "" : Environment.NewLine + r));
                                 ChatScrollToDown = true;
                             }
-                            else
-                                ChatBox.Text = "";
-                        }
-                        else
-                            ChatBox.Text = "";
+                           // else
+                             //   ChatBox.Text = "";
+                        //}
+                      //  else
+                           // ChatBox.Text = "";
                     }
                     else
                         ChatBox.Text = "";

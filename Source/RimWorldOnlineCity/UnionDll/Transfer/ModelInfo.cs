@@ -1,8 +1,5 @@
 ﻿using Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Transfer
 {
@@ -10,11 +7,9 @@ namespace Transfer
     public class ModelInfo
     {
         public Player My { get; set; }
-
         public bool IsAdmin { get; set; }
         public string VersionInfo { get; set; }
         public long VersionNum { get; set; }
-
 
         public bool NeedCreateWorld { get; set; }
 
@@ -24,6 +19,11 @@ namespace Transfer
         public int Difficulty { get; set; }
 
         public DateTime ServerTime { get; set; }
+
+        /// <summary>
+        /// Описание сервера, которые читается с настроек, используется в дискорд боте
+        /// </summary>
+        public string Description { get; set; }
 
         /// <summary>
         /// Заполняется только при WorldLoad() GetInfo = 3

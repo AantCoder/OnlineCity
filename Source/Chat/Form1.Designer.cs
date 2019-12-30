@@ -1,4 +1,4 @@
-﻿namespace Chat
+﻿namespace OC.Chat
 {
     partial class Form1
     {
@@ -208,4 +208,3 @@
         private System.Windows.Forms.Button button3;
     }
 }
-

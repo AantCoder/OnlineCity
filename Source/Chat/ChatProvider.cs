@@ -5,18 +5,13 @@ using System.Net;
 using Transfer;
 using Util;
 
-namespace OC.ChatBridgeProvider
+namespace OC.Chat
 {
-    /// <summary>
-    /// Bridge class Chat between FW 3.5 and 4.6.1 
-    /// </summary>
     public class ChatProvider
     {
         public ClientData Data { get; set; }
         public Player My { get; set; }
         public TimeSpan ServerTimeDelta { get; set; }
-
-        public event EventHandler<StringWrapperEventArgument> DisconnectedEvent;
 
         private readonly Transfer.SessionClient _sessionClient;
 
@@ -45,7 +40,6 @@ namespace OC.ChatBridgeProvider
             }
 
             InitConnected();
-
             return null;
         }
 
@@ -58,7 +52,6 @@ namespace OC.ChatBridgeProvider
             if (!_sessionClient.Connect(stringAdress, addr.Port))
             {
                 logMsg = "Connection fail: " + _sessionClient.ErrorMessage;
-                //DiscordBotServer.Helpers.Loger.Log("Chat " + logMsg);
                 return _sessionClient.ErrorMessage;
             }
 
@@ -69,10 +62,8 @@ namespace OC.ChatBridgeProvider
 
         public void Disconnected(string msg = "Error Connection.")
         {
-            var login = _sessionClient.GetInfo(false).My.Login;
-            //DiscordBotServer.Helpers.Loger.Log("Chat Disconected :( " + login);
+            var login = _sessionClient.GetInfo(OCUnion.Transfer.ServerInfoType.Short).My.Login;
             _sessionClient.Disconnect();
-            DisconnectedEvent?.Invoke(this, new StringWrapperEventArgument() { Message = login });
         }
 
         public void UpdateChats()
@@ -106,21 +97,10 @@ namespace OC.ChatBridgeProvider
         /// </summary>
         private void InitConnected()
         {
-            // OC.DiscordBotServer.Helpers.Loger.Log("Chat Connection OK");
-            var serverInfo = _sessionClient.GetInfo(true);
+            var serverInfo = _sessionClient.GetInfo(OCUnion.Transfer.ServerInfoType.Full);
             My = serverInfo.My;
             Data = new ClientData(My.Login, _sessionClient);
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
-
-            // OC.DiscordBotServer.Helpers.Loger.Log("Chat IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed);
         }
-    }
-
-    /// <summary>
-    /// it's litlle smell of code, because FW 3.5 does not support string as argument for Event Delegate
-    /// </summary>
-    public class StringWrapperEventArgument : EventArgs
-    {
-        public string Message { get; internal set; }
     }
 }
