@@ -170,6 +170,7 @@ namespace RimWorldOnlineCity
                     ThingsObjDic = new Dictionary<int, Thing>();
                     AttackerPawns = new Dictionary<Pawn, int>();
                     ToSendCommand = new Dictionary<int, AttackPawnCommand>();
+                    DelayDestroyPawn = new List<Thing>();
                     for (int i = 0; i < response.ThingCell.Count; i++)
                     {
                         var current = response.ThingCell[i].Get();
@@ -259,6 +260,14 @@ namespace RimWorldOnlineCity
             {
                 //Scribe.ForceStop();
                 Find.TickManager.Pause();
+                /*
+                 todo сделать сообщение если пауза не была нажата
+                    GameUtils.ShowDialodOKCancel("OCity_UpdateWorld_Trade".Translate()
+                        , text
+                        , () => DropToWorldObjectDo(place, things, from, text)
+                        , () => Log.Message("Drop Mail from " + from + ": " + text)
+                    );
+                 */
                 if (InTimer) return;
                 InTimer = true;
                 AttackUpdateTick++;
@@ -314,7 +323,7 @@ namespace RimWorldOnlineCity
                             for (int i = 0; i < DelayDestroyPawn.Count; i++)
                             {
                                 Thing thing = DelayDestroyPawn[i];
-                                Loger.Log("Client AttackUpdate 4 DelayDestroyPawn " + toClient.Delete[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                Loger.Log("Client AttackUpdate 4 DelayDestroyPawn thing=" + thing.Label + " ID=" + thing.thingIDNumber);
                                 DestroyThing(thing);
                             }
                             DelayDestroyPawn.Clear();

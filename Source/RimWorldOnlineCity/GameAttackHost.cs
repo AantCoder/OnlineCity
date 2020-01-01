@@ -19,6 +19,12 @@ namespace RimWorldOnlineCity
 {
     public class GameAttackHost
     {
+
+        /// <summary>
+        /// Время в сек между полной синхронизацией пешек, например, чтобы после получаения урона увидеть точное здоровье
+        /// </summary>
+        public int SendDelayedFillPawnsSeconds { get; set; } = 30;
+
         public string AttackerLogin { get; set; }
 
         public long HostPlaceServerId { get; set; }
@@ -61,9 +67,11 @@ namespace RimWorldOnlineCity
         private HashSet<Thing> ToSendNewCorpse = new HashSet<Thing>();
 
         /// <summary>
-        /// К передаче на создание/обновление
+        /// Пешки из этого массива должны быть переданны для полного обновления раз в SendDelayedFillPawnsSeconds сек
         /// </summary>
-        public HashSet<ThingEntry> ToSendAdd { get; set; }
+        public HashSet<int> ToSendDelayedFillPawnsId { get; set; }
+
+        public DateTime SendDelayedFillPawnsLastTime;
 
         /// <summary>
         /// К передаче на корретировку состояния, положения и пр.
@@ -249,6 +257,7 @@ namespace RimWorldOnlineCity
                         ToSendAddId = new HashSet<int>();
                         ToSendThingAdd = new HashSet<Thing>();
                         ToSendNewCorpse = new HashSet<Thing>();
+                        ToSendDelayedFillPawnsId = new HashSet<int>();
                         AttackingPawns = new List<Pawn>();
                         AttackingPawnDic = new Dictionary<int, int>();
                         AttackingPawnJobDic = new Dictionary<int, AttackPawnCommand>();
@@ -343,18 +352,19 @@ namespace RimWorldOnlineCity
                     try
                     {
                         List<Pawn> mapPawns;
+                        HashSet<int> mapPawnsId;
                         AttackHostFromSrv toClient;
                         lock (ToSendListsSync)
                         {
                             //                      Loger.Log("Client HostAttackUpdate 1");
                             //обновляем списки
                             mapPawns = GameMap.mapPawns.AllPawnsSpawned;
-                            var mapPawnsId = new HashSet<int>(mapPawns.Select(p => p.thingIDNumber));
-                            mapPawnsId.SymmetricExceptWith(SendedPawnsId); //новые пешки + те что на сервере, но их уже нет на карте
-
-                            if (mapPawnsId.Count > 0)
+                            mapPawnsId = new HashSet<int>(mapPawns.Select(p => p.thingIDNumber));
+                            var mapPawnsIdExt = new HashSet<int>(mapPawnsId);
+                            mapPawnsIdExt.SymmetricExceptWith(SendedPawnsId); //новые пешки + те что на сервере, но их уже нет на карте
+                            if (mapPawnsIdExt.Count > 0)
                             {
-                                var toSendAddId = new HashSet<int>(mapPawnsId);
+                                var toSendAddId = new HashSet<int>(mapPawnsIdExt);
                                 toSendAddId.ExceptWith(SendedPawnsId); //только новые пешки
                                 if (toSendAddId.Count > 0)
                                 {
@@ -362,13 +372,24 @@ namespace RimWorldOnlineCity
                                     ToSendAddId.AddRange(toSendAddId);
                                 }
 
-                                var toSendDeleteId = new HashSet<int>(mapPawnsId);
+                                var toSendDeleteId = new HashSet<int>(mapPawnsIdExt);
                                 toSendDeleteId.IntersectWith(SendedPawnsId); //только те, что на сервере но их уже нет на карте
                                 if (toSendDeleteId.Count > 0)
                                 {
                                     toSendDeleteId.ExceptWith(ToSendDeleteId); //исключаем те, которые уже есть в списке 
                                     ToSendDeleteId.AddRange(toSendDeleteId);
                                 }
+                            }
+                            if ((DateTime.UtcNow - SendDelayedFillPawnsLastTime).TotalSeconds >= SendDelayedFillPawnsSeconds)
+                            {
+                                SendDelayedFillPawnsLastTime = DateTime.UtcNow;
+                                ToSendDelayedFillPawnsId.IntersectWith(mapPawnsId); //только те, которые на карте
+                                ToSendDelayedFillPawnsId.ExceptWith(ToSendAddId); //исключаем те, которые уже есть в списке
+                                ToSendAddId.AddRange(ToSendDelayedFillPawnsId);
+
+                                Loger.Log("HostAttackUpdate ToSendDelayedFillPawnsId Send Count=" + ToSendDelayedFillPawnsId.Count.ToString());
+                                
+                                ToSendDelayedFillPawnsId.Clear();
                             }
 
                             //посылаем пакеты с данными
@@ -387,6 +408,7 @@ namespace RimWorldOnlineCity
                                 added[i++] = id;
 
                                 var thing = mapPawns.Where(p => p.thingIDNumber == id).FirstOrDefault();
+                                if (thing == null) continue;
                                 var tt = ThingEntry.CreateEntry(thing, 1);
                                 //передаем те, что были исходные у атакуемого (хотя там используется только как признак TransportID != 0 - значит те кто атакует)
                                 if (AttackingPawnDic.ContainsKey(tt.OriginalID)) tt.TransportID = AttackingPawnDic[tt.OriginalID];
@@ -718,14 +740,24 @@ namespace RimWorldOnlineCity
                         var corpse = thing as Corpse;
                         ToSendNewCorpse.Add(corpse.InnerPawn);
                     }
-                    else ToSendThingAdd.Add(thing);
+                    else /*if (!(thing is Pawn)) убрана лишняя проверка, т.к. с newSpawn не запускается для Pawn */ ToSendThingAdd.Add(thing);
                 }
-                else
+                else //здесь остались события посл получения урона
                 {
-                    if (!ToUpdateStateId.Contains(tId))
+                    if (thing is Pawn)
                     {
-                        ToUpdateStateId.Add(tId);
-                        ToUpdateState.Add(thing);
+                        //раз в SendDelayedFillPawnsSeconds сек передаем полное обновление пешек
+                        if (!ToSendDelayedFillPawnsId.Contains(tId)) ToSendDelayedFillPawnsId.Add(tId);
+                        Loger.Log("HostAttackUpdate UIEventChange Damage Pawn");
+                    }
+                    else
+                    {
+                        //обновляем общую информацию у вещей
+                        if (!ToUpdateStateId.Contains(tId))
+                        {
+                            ToUpdateStateId.Add(tId);
+                            ToUpdateState.Add(thing);
+                        }
                     }
                 }
             }
