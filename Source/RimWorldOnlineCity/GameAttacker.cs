@@ -18,6 +18,11 @@ namespace RimWorldOnlineCity
     public class GameAttacker
     {
 
+        /// <summary>
+        /// Время в ms между синхронизациями с сервером
+        /// </summary>
+        public int AttackUpdateDelay { get; } = 200;
+
         public static bool CanStart
         {
             get { return SessionClientController.Data.AttackModule == null; }
@@ -197,7 +202,7 @@ namespace RimWorldOnlineCity
                     AttackUpdateTick = 0;
                     AttackUpdate();
 
-                    TimerObj = SessionClientController.Timers.Add(200, AttackUpdate);
+                    TimerObj = SessionClientController.Timers.Add(AttackUpdateDelay, AttackUpdate);
 
                     //включаем обработку событий выдачи команд 
                     Loger.Log("Client StartCreateClearMap 6");

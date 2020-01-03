@@ -40,7 +40,7 @@ namespace ServerOnlineCity.Services
                         {
                             //передача файла игры, для загрузки WorldLoad();
                             var result = new ModelInfo();
-                            result.SaveFileData = context.Player.SaveDataPacket;
+                            result.SaveFileData = Repository.GetSaveData.LoadPlayerData(context.Player.Public.Login, 1);
                             return result;
                         }
                     case 4:
@@ -98,7 +98,7 @@ namespace ServerOnlineCity.Services
                 MapSize = data.WorldMapSize,
                 PlanetCoverage = data.WorldPlanetCoverage,
                 Difficulty = data.WorldDifficulty,
-                NeedCreateWorld = player.SaveDataPacket == null,
+                NeedCreateWorld = Repository.GetSaveData.GetListPlayerDatas(player.Public.Login).Count == 0,
                 ServerTime = DateTime.UtcNow,
             };
 

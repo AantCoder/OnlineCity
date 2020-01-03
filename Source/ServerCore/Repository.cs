@@ -18,6 +18,7 @@ namespace ServerOnlineCity
         public static Repository Get { get { return Current; } }
 
         public static BaseContainer GetData {  get { return Get.Data; } }
+        public static RepositorySaveData GetSaveData { get { return Get.RepSaveData; } }
 
         public BaseContainer Data;
         public bool ChangeData;
@@ -27,9 +28,12 @@ namespace ServerOnlineCity
         public string SaveFileName;
         public string SaveFolderDataPlayers => Path.Combine(Path.GetDirectoryName(SaveFileName), "DataPlayers");
 
+        private RepositorySaveData RepSaveData;
+
         public Repository()
         {
             Timer = new WorkTimer();
+            RepSaveData = new RepositorySaveData(this);
         }
         
         public void Load()
@@ -72,33 +76,6 @@ namespace ServerOnlineCity
             ChangeData = false;
         }
 
-        public byte[] LoadPlayerData(string login)
-        {
-            var fileName = Path.Combine(SaveFolderDataPlayers, NormalizeLogin(login) + ".dat");
-            
-            var info = new FileInfo(fileName);
-            if (!info.Exists || info.Length < 10) return null;
-            
-            //читаем содержимое
-            bool readAsXml;
-            using (var file = File.OpenRead(fileName))
-            {
-                var buff = new byte[10];
-                file.Read(buff, 0, 10);
-                readAsXml = Encoding.ASCII.GetString(buff, 0, 10).Contains("<?xml");
-            }
-            //считываем текст как xml сейва или как сжатого zip'а
-            var saveFileData = File.ReadAllBytes(fileName);
-            if (readAsXml)
-            {
-                return saveFileData;
-            }
-            else
-            {
-                return GZip.UnzipByteByte(saveFileData);
-            }
-        }
-
         public void Save(bool onlyChangeData = false)
         {
             if (onlyChangeData && !ChangeData) return;
@@ -128,28 +105,12 @@ namespace ServerOnlineCity
 
             Loger.Log("Server Saved");
         }
-        
-        public void SavePlayerData(string login, byte[] data)
-        {
-            var fileName = Path.Combine(SaveFolderDataPlayers, NormalizeLogin(login) + ".dat");
-            if (File.Exists(fileName))
-            {
-                var info = new FileInfo(fileName);
-                if (File.Exists(fileName + ".bak")) File.Delete(fileName + ".bak");
-                File.Move(fileName, fileName + ".bak");
-            }
 
-            if (data == null || data.Length < 10) return;
-
-            File.WriteAllBytes(fileName, data);
-            Loger.Log("Server User " + Path.GetFileNameWithoutExtension(fileName) + " saved.");
-        }
-        
         public static string NormalizeLogin(string login)
         {
             char[] invalidFileChars = Path.GetInvalidFileNameChars();
             foreach (var c in invalidFileChars) if (login.Contains(c)) login = login.Replace(c, '_');
             return login.ToLowerInvariant();
-        }       
+        }
     }
 }

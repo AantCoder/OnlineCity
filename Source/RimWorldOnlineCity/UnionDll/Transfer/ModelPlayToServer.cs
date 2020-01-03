@@ -14,6 +14,7 @@ namespace Transfer
         public List<WorldObjectEntry> WObjects { get; set; }
         public List<WorldObjectEntry> WObjectsToDelete { get; set; }
         public byte[] SaveFileData { get; set; }
+        public bool SingleSave { get; set; }
         public long LastTick { get; set; }
         public List<string> GetPlayersInfo { get; set; }
     }

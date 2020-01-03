@@ -69,6 +69,7 @@ namespace RimWorldOnlineCity
                     if (Data.SaveFileData != null)
                     {
                         toServ.SaveFileData = Data.SaveFileData;
+                        toServ.SingleSave = Data.SingleSave;
                         Data.SaveFileData = null;
                     }
 
@@ -144,6 +145,26 @@ namespace RimWorldOnlineCity
             }, "Autosaving", false, null);
         }
 
+        /// <summary>
+        /// Немедленно сохраняет игру и передает на сервер.
+        /// </summary>
+        /// <param name="single">Будут удалены остальные Варианты сохранений, кроме этого</param>
+        public static void SaveGameNow(bool single = false)
+        {
+            Loger.Log("Client SaveGameNow single=" + single.ToString());
+            SaveGame((content) =>
+            {
+                if (content.Length > 1024)
+                {
+                    Data.SaveFileData = content;
+                    Data.SingleSave = single;
+                    UpdateWorld(false);
+
+                    Loger.Log("Client SaveGameSingle OK");
+                }
+            });
+        }
+
         private static void BackgroundSaveGame()
         {
             var tick = (long)Find.TickManager.TicksGame;
@@ -158,6 +179,7 @@ namespace RimWorldOnlineCity
             SaveGame((content) =>
             {
                 Data.SaveFileData = content;
+                Data.SingleSave = false;
             });
         }
 
@@ -581,6 +603,7 @@ namespace RimWorldOnlineCity
             SaveGame((content) =>
             {
                 Data.SaveFileData = content;
+                Data.SingleSave = true;
                 InitGame();
             });
         }
@@ -636,6 +659,7 @@ namespace RimWorldOnlineCity
                     if (content.Length > 1024)
                     {
                         Data.SaveFileData = content;
+                        Data.SingleSave = false;
                         UpdateWorld(false);
 
                         Loger.Log("Client SaveGameBeforeExit OK");

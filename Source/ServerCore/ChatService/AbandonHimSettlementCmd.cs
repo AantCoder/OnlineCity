@@ -59,7 +59,7 @@ namespace ServerOnlineCity.ChatService
                     }
                 }
 
-                killPlayer.SaveDataPacket = null;
+                Repository.GetSaveData.DeletePlayerData(killPlayer.Public.Login);
                 Repository.Get.ChangeData = true;
                 Loger.Log("Server killhimplease " + killPlayer.Public.Login);
             }

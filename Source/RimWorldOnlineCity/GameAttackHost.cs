@@ -23,7 +23,12 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Время в сек между полной синхронизацией пешек, например, чтобы после получаения урона увидеть точное здоровье
         /// </summary>
-        public int SendDelayedFillPawnsSeconds { get; set; } = 30;
+        public int SendDelayedFillPawnsSeconds { get; } = 30;
+
+        /// <summary>
+        /// Время в ms между синхронизациями с сервером
+        /// </summary>
+        public int AttackUpdateDelay { get; } = 200;
 
         public string AttackerLogin { get; set; }
 
@@ -315,7 +320,7 @@ namespace RimWorldOnlineCity
 
                         CameraJumper.TryJump(cellPawns, cloneMap);
 
-                        TimerObj = SessionClientController.Timers.Add(200, AttackUpdate);
+                        TimerObj = SessionClientController.Timers.Add(AttackUpdateDelay, AttackUpdate);
 
                         //включаем обработку событий урона и уничтожения объектов 
                         GameAttackTrigger_Patch.ActiveAttackHost.Add(GameMap, this);

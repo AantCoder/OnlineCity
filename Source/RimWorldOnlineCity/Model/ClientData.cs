@@ -30,6 +30,8 @@ namespace RimWorldOnlineCity
 
         public byte[] SaveFileData;
 
+        public bool SingleSave;
+
         public long LastSaveTick;
 
         public bool ServerConnected

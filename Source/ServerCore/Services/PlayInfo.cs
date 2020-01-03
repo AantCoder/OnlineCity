@@ -43,7 +43,7 @@ namespace ServerOnlineCity.Services
                 }
                 if (packet.SaveFileData != null && packet.SaveFileData.Length > 0)
                 {
-                    context.Player.SaveDataPacket = packet.SaveFileData;
+                    Repository.GetSaveData.SavePlayerData(context.Player.Public.Login, packet.SaveFileData, packet.SingleSave);
                     context.Player.Public.LastSaveTime = timeNow;
                     Repository.Get.ChangeData = true;
                 }

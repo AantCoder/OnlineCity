@@ -136,6 +136,7 @@ namespace RimWorldOnlineCity
                     foreach (var pawn in caravan.PawnsListForReading)
                     {
                         pawn.Destroy(DestroyMode.Vanish);
+                        Find.WorldPawns.RemovePawn(pawn); //не проверенное полное удаление, чтобы не появлялось клонов пешки после возврата её назад
                     }
 
                     Find.WorldObjects.Remove(caravan);
@@ -151,7 +152,7 @@ namespace RimWorldOnlineCity
                             var pawn = thing as Pawn;
                             //удаляем пешку из игры
                             pawn.Destroy(DestroyMode.Vanish);
-                            //Find.WorldPawns.RemovePawn(pawn); не проверенное не полное удаление, если её вернут назад
+                            Find.WorldPawns.RemovePawn(pawn); //не проверенное полное удаление, чтобы не появлялось клонов пешки после возврата её назад
                         }
                         else
                         {
@@ -161,6 +162,9 @@ namespace RimWorldOnlineCity
                         }
                     }
                 }
+
+                //После передачи сохраняем, чтобы нельзя было обузить
+                SessionClientController.SaveGameNow(true);
             });
             Find.WindowStack.Add(form);
         }

@@ -43,7 +43,7 @@ namespace ServerOnlineCity.ChatService
                     }
                 }
 
-                player.SaveDataPacket = null;
+                Repository.GetSaveData.DeletePlayerData(player.Public.Login);
                 Loger.Log("Server killmyallplease " + player.Public.Login);
                 player = null; ///  значение передается по ссылке, и успешно обнуляет у передающего класса
                 Repository.Get.ChangeData = true;

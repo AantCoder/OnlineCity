@@ -27,18 +27,6 @@ namespace ServerOnlineCity.Model
 
         public DateTime SaveDataPacketTime;
 
-        public byte[] SaveDataPacket
-        {
-            get
-            {
-                return Repository.Get.LoadPlayerData(Public.Login);
-            }
-            set
-            {
-                Repository.Get.SavePlayerData(Public.Login, value);
-            }
-        }
-        
         public DateTime LastUpdateTime;
 
         public List<ModelMailTrade> Mails = new List<ModelMailTrade>();
