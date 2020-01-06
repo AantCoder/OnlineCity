@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
-using OCUnion;
+﻿using OCUnion;
 using ServerCore.Model;
 using ServerOnlineCity.Model;
 using System;
+using System.Text.Json;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -10,6 +12,10 @@ using System.Reflection;
 using System.Threading;
 using Transfer;
 using Util;
+using System.Text;
+using OCUnion.Transfer.Model;
+using OCUnion.Common;
+using OCUnion.Transfer;
 
 namespace ServerOnlineCity
 {
@@ -17,6 +23,9 @@ namespace ServerOnlineCity
     {
         public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
         public static ServerSettings ServerSettings = new ServerSettings();
+        public static IReadOnlyDictionary<string, ModelFileInfo> ModFilesDict;
+        public static IReadOnlyDictionary<string, ModelFileInfo> SteamFilesDict;
+
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
 
@@ -41,31 +50,66 @@ namespace ServerOnlineCity
 
         public void Start(string path, int port = SessionClient.DefaultPort)
         {
-            if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "Settings.json")))
+            //var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
+            var jsonFile = Path.Combine(path, "Settings.json");
+            if (!File.Exists(jsonFile))
             {
-                ServerSettings.Port = port;
-
-                using (StreamWriter file = File.CreateText(Path.Combine(path, "Settings.json")))
+                using (StreamWriter file = File.CreateText(jsonFile))
                 {
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.Formatting = Formatting.Indented;
-                    serializer.Serialize(file, ServerSettings);
+                    var jsonText = JsonSerializer.Serialize(ServerSettings);
+                    file.WriteLine(jsonText);
                 }
+
+                Console.WriteLine("Created Settings.json, server was been stopped");
+                Console.WriteLine($"RU: Настройте сервер, заполните {jsonFile}");
+                Console.WriteLine("Enter some key");
+                Console.ReadKey();
+                return;
             }
             else
             {
-                ServerSettings = JsonConvert.DeserializeObject<ServerSettings>(File.ReadAllText(Path.Combine(path, "Settings.json")));
+                try
+                {
+                    using (var fs = new StreamReader(jsonFile, Encoding.UTF8))
+                    {
+                        var jsonString = fs.ReadToEnd();
+                        ServerSettings = JsonSerializer.Deserialize<ServerSettings>(jsonString);
+                    }
+
+                    ServerSettings.WorkingDirectory = path;
+                    var results = new List<ValidationResult>();
+                    var context = new ValidationContext(ServerSettings);
+                    if (!Validator.TryValidateObject(ServerSettings, context, results, true))
+                    {
+                        foreach (var error in results)
+                        {
+                            Console.WriteLine(error.ErrorMessage);
+                            Loger.Log(error.ErrorMessage);
+                        }
+
+                        Console.ReadKey();
+                        return;
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine($"RU: Проверьте настройки сервера {jsonFile}");
+                    Console.WriteLine("EN: Check Settings.json");
+                    Console.ReadKey();
+                    return;
+                }
             }
 
             Loger.PathLog = path;
             Loger.IsServer = true;
 
-            Loger.Log($"Server starting on port: {ServerSettings.Port}");
-
             var rep = Repository.Get;
             rep.SaveFileName = Path.Combine(path, "World.dat");
             rep.Load();
             CheckDiscrordUser();
+            createFilesDictionary();
 
             //общее обслуживание
             rep.Timer.Add(1000, DoWorld);
@@ -80,7 +124,82 @@ namespace ServerOnlineCity
 
             Connect = new ConnectServer();
             Connect.ConnectionAccepted = ConnectionAccepted;
+
+            Loger.Log($"Server starting on port: {ServerSettings.Port}");
             Connect.Start(null, ServerSettings.Port);
+        }
+
+        private void createFilesDictionary()
+        {
+            if (!ServerSettings.IsModsWhitelisted)
+            {
+                return;
+            }
+
+            // 1. Создаем словарь со всеми файлами
+            Loger.Log($"Calc hash {ServerSettings.ModsDirectory}");
+            var modFiles = FileChecker.GenerateHashFiles(ServerSettings.ModsDirectory, Directory.GetDirectories(ServerSettings.ModsDirectory));
+            Loger.Log($"Calc hash {ServerSettings.SteamWorkShopModsDir}");
+            var steamFiles = FileChecker.GenerateHashFiles(ServerSettings.SteamWorkShopModsDir, Directory.GetDirectories(ServerSettings.SteamWorkShopModsDir));
+
+            var modFilesDict = new Dictionary<string, ModelFileInfo>(modFiles.Count);
+            var steamFilesDict = new Dictionary<string, ModelFileInfo>(steamFiles.Count);
+
+            addFiles(modFilesDict, modFiles);
+            addFiles(steamFilesDict, steamFiles);
+            ModFilesDict = modFilesDict;
+            SteamFilesDict = steamFilesDict;
+
+            ServerSettings.AppovedFolderAndConfig = new ModelModsFiles()
+            {
+                Files = new List<ModelFileInfo>(3), // 0 - list Folders in Mods dir, 1 -list Folders in Steam dir , 3-  ModsConfig.xml  
+                                                    // FoldersTree = new FoldersTree(),
+            };
+
+            // 2. Создаем файлы со списком разрешенных папок, которые отправим клиенту
+            var files = ServerSettings.AppovedFolderAndConfig.Files;
+            var modsFolders = new ModelFileInfo() // 0 
+            {
+                FileName = "ApprovedMods.txt",
+                Hash = FileChecker.CreateListFolder(ServerSettings.ModsDirectory)
+            };
+            files.Add(modsFolders);
+
+            var steamFolders = new ModelFileInfo() // 1 
+            {
+                FileName = "ApprovedSteamWorkShop.txt",
+                Hash = FileChecker.CreateListFolder(ServerSettings.SteamWorkShopModsDir)
+            };
+            files.Add(steamFolders);
+
+            var fName = Path.Combine(ServerSettings.WorkingDirectory, "ModsConfig.xml");
+            files.Add(new ModelFileInfo() // 1 
+            {
+                FileName = "ModsConfig.xml",
+                Hash = Encoding.UTF8.GetBytes(File.ReadAllText(fName))
+            });
+
+            ServerSettings.ModsDirConfig = new ModelModsFiles()
+            {
+                IsSteam = false,
+                Files = new List<ModelFileInfo>() { modsFolders },
+                FoldersTree = FoldersTree.GenerateTree(ServerSettings.ModsDirectory),
+            };
+
+            ServerSettings.SteamDirConfig = new ModelModsFiles()
+            {
+                IsSteam = true,
+                Files = new List<ModelFileInfo>() { steamFolders },
+                FoldersTree = FoldersTree.GenerateTree(ServerSettings.SteamWorkShopModsDir),
+            };
+        }
+
+        private void addFiles(Dictionary<string, ModelFileInfo> dict, List<ModelFileInfo> files)
+        {
+            foreach (var file in files)
+            {
+                dict[file.FileName] = file;
+            }
         }
 
         /// <summary>

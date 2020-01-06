@@ -1,4 +1,6 @@
 ﻿using Model;
+using OCUnion.Transfer;
+using OCUnion.Transfer.Types;
 using System;
 using System.Collections.Generic;
 using Transfer;
@@ -15,6 +17,18 @@ namespace ServerOnlineCity.Model
         public bool IsAdmin;
 
         public Guid DiscordToken;
+
+        /// <summary>
+        /// Причина разрыва соединения
+        /// </summary>
+        [NonSerialized]
+        public DisconnectReason ExitReason;
+
+        /// <summary>
+        /// Разрешаем ли загрузку мира: только если файлы Steam и моды идентичные
+        /// </summary>
+        [NonSerialized]
+        public ApproveLoadWorldReason ApproveLoadWorldReason;
 
         public Chat PublicChat
         {
@@ -33,12 +47,15 @@ namespace ServerOnlineCity.Model
 
         [NonSerialized]
         public AttackServer AttackData;
-
+      
         private PlayerServer()
         { }
 
         public PlayerServer(string login)
         {
+            ExitReason = DisconnectReason.AllGood;
+            ApproveLoadWorldReason = ApproveLoadWorldReason.LoginOk;
+
             Public = new Player()
             {
                 Login = login
@@ -53,7 +70,8 @@ namespace ServerOnlineCity.Model
                 PartyLogin = new List<string>() { login, "system" },
                 Posts = PublicPosts
             };
+
             Chats = new List<Chat>() { publicChat };
-        }        
+        }
     }
 }

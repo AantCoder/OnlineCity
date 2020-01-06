@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using OCUnion;
+using OCUnion.Transfer;
 using ServerCore.Model;
 using ServerOnlineCity.Model;
 using Transfer;
@@ -36,13 +37,30 @@ namespace ServerOnlineCity.Services
                             var result = GetModelInfo(context.Player);
                             return result;
                         }
+
                     case 3:
                         {
-                            //передача файла игры, для загрузки WorldLoad();
                             var result = new ModelInfo();
+                            //передача файла игры, для загрузки WorldLoad();
+                            // файл передать можно только в том случае если файлы прошли проверку
+
+                            //!Для Pvp проверка нужна всегда, в PvE нет
+                            if (ServerManager.ServerSettings.IsModsWhitelisted)
+                            {
+                                if ((int)context.Player.ApproveLoadWorldReason > 0)
+                                {
+                                    context.Player.ExitReason = DisconnectReason.FilesMods;
+                                    Loger.Log($"Login : {context.Player.Public.Login} not all files checked,{context.Player.ApproveLoadWorldReason.ToString() } Disconnect");
+                                    result.SaveFileData = null;
+                                    return result;
+                                }
+                            }
+
+                            Loger.Log($"Load World for {context.Player.Public.Login}");
                             result.SaveFileData = Repository.GetSaveData.LoadPlayerData(context.Player.Public.Login, 1);
                             return result;
                         }
+
                     case 4:
                         {
                             var result = GetModelInfo(context.Player);

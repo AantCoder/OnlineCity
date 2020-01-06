@@ -127,8 +127,32 @@ namespace OCUnion.Transfer.Model
         Response30 = 30,
 
         RequestPlayerByToken,
-        ResponsePlayerByToken, 
+        ResponsePlayerByToken,
         RequestServerInfo,
         ResponseServerInfo,
+        /// <summary>
+        /// Отправка запроса с хешем файлов
+        /// </summary>
+        Request35ListFiles,
+        /// <summary>
+        /// Получение ответа cо списком файлов 
+        /// </summary>
+        Response36ListFiles,
+        /// <summary>
+        /// Запрос на получение списка папок для проверки с сервера
+        /// </summary>
+        Request37GetApproveFolders,
+        /// <summary>
+        /// Ответ содержит файл содержащий список папок с сервера
+        /// </summary>
+        Response38GetApproveFolders,
+        /// <summary>
+        /// Уведомление о дисконнекте
+        /// </summary>
+        Request39Disconnect,
+        /// <summary>
+        /// Ответа на дисконнект
+        /// </summary>
+        Response40Disconnect,
     }
 }

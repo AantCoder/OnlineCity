@@ -201,7 +201,7 @@ namespace Transfer
             }
         }
 
-        private T TransObject2<T>(object objOut, PackageType typeOut, PackageType typeIn)
+        public T TransObject2<T>(object objOut, PackageType typeOut, PackageType typeIn)
             where T : class
         {
             return TransObject<T>(objOut, (int)typeOut, (int)typeIn);
@@ -282,7 +282,6 @@ namespace Transfer
             var stat = TransObject<ModelInfo>(packet, 5, 6);
             return stat;
         }
-
 
         public ModelPlayToClient PlayInfo(ModelPlayToServer info)
         {

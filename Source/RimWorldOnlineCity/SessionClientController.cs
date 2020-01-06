@@ -1,17 +1,21 @@
 ﻿using HugsLib.Utils;
 using Model;
 using OCUnion;
+using OCUnion.Common;
 using OCUnion.Transfer;
 using RimWorld;
 using RimWorld.Planet;
+using RimWorldOnlineCity.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Transfer;
 using Util;
 using Verse;
 using Verse.Profile;
+using Verse.Steam;
 
 namespace RimWorldOnlineCity
 {
@@ -30,11 +34,24 @@ namespace RimWorldOnlineCity
 
         private static string SaveFullName { get; set; }
 
+        private static GetApproveFolders GetApproveFolders { get; set; }
+
         /// <summary>
         /// Инициализация при старте игры. Как можно раньше
         /// </summary>
         public static void Init()
         {
+            GetApproveFolders = new GetApproveFolders(SessionClient.Get);
+            //var ip = StorageData.GlobalData.LastIP.Value;
+            //var modsCheckFileName = GetApproveFolders.GetModsApprovedFoldersFileName(ip);
+            //var steamCheckFileName = GetApproveFolders.GetSteamApprovedFoldersFileName(ip);
+
+            //if ((!string.IsNullOrEmpty(ip) && File.Exists(modsCheckFileName)) && File.Exists(steamCheckFileName))
+            //{
+            //    // Если файлы которые содержат папки для проверки,то При инициализации мода сразу же запускаем подсчет контрольной суммы файлов                
+            //    // ClientHashChecker.StartGenerateHashFiles(modsCheckFileName, steamCheckFileName);
+            //}
+
             SaveFullName = GenFilePaths.FilePathForSavedGame(SaveName);
             MainHelper.CultureFromGame = Prefs.LangFolderName ?? "";
             //if (MainHelper.DebugMode) 
@@ -391,11 +408,19 @@ namespace RimWorldOnlineCity
 
             Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
             Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed + " NeedCreateWorld=" + serverInfo.NeedCreateWorld);
+            Loger.Log("Client Grants = " + serverInfo.My.Grants.ToString());
 
             if (MainHelper.VersionNum < serverInfo.VersionNum)
             {
                 Disconnected("Обновите клиент! Версия для данного сервера: ".NeedTranslate() + serverInfo.VersionInfo);
                 return;
+            }
+
+            if (!CheckFiles())
+            {
+                //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
+                Disconnected("Not all files are resolve hash check, they was been updated, Close and Open Game".NeedTranslate());
+                //ModsConfig.RestartFromChangedMods();
             }
 
             //создаем мир, если мы админ
@@ -410,6 +435,7 @@ namespace RimWorldOnlineCity
                         Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate());
                         return;
                     }
+
                     GameStarter.SetMapSize = int.Parse(form.InputMapSize);
                     GameStarter.SetPlanetCoverage = float.Parse(form.InputPlanetCoverage) / 100f;
                     GameStarter.SetSeed = form.InputSeed;
@@ -419,66 +445,12 @@ namespace RimWorldOnlineCity
                     GameStarter.AfterStart = CreatingWorld;
                     GameStarter.GameGeneration();
                 };
+
                 Find.WindowStack.Add(form);
                 return;
             }
 
-            if (serverInfo.NeedCreateWorld)
-            {
-                Loger.Log("Client InitConnected() ExistMap");
-
-                //создать поселение
-                GameStarter.SetMapSize = serverInfo.MapSize;
-                GameStarter.SetPlanetCoverage = serverInfo.PlanetCoverage;
-                GameStarter.SetSeed = serverInfo.Seed;
-                GameStarter.SetDifficulty = serverInfo.Difficulty;
-                GameStarter.SetScenario = GetScenarioDefault();
-
-                GameStarter.AfterStart = CreatePlayerMap;
-
-                GameStarter.GameGeneration(false);
-
-                //выбор места на планете. Код из события завершения выбора параметров планеты Page_CreateWorldParams
-                Loger.Log("Client InitConnected() ExistMap1");
-
-
-                Current.Game = new Game();
-                Current.Game.InitData = new GameInitData();
-                Current.Game.Scenario = GameStarter.SetScenario;
-                Current.Game.Scenario.PreConfigure();
-                Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
-                    , GameStarter.SetDifficulty == 0 ? DifficultyDefOf.Easy
-                        : DifficultyDefOf.Rough);
-
-                Loger.Log("Client InitConnected() ExistMap2");
-                Current.Game.World = WorldGenerator.GenerateWorld(
-                    GameStarter.SetPlanetCoverage,
-                    GameStarter.SetSeed,
-                    GameStarter.SetOverallRainfall,
-                    GameStarter.SetOverallTemperature);
-
-                Loger.Log("Client InitConnected() ExistMap3");
-                //после создания мира запускаем его обработку, загружаем поселения др. игроков
-                UpdateWorldController.InitGame();
-                UpdateWorld(true);
-
-                Timers.Add(20000, PingServer);
-
-                Loger.Log("Client InitConnected() ExistMap4");
-                var form = GetFirstConfigPage();
-                Find.WindowStack.Add(form);
-
-                Loger.Log("Client InitConnected() ExistMap5");
-
-                MemoryUtility.UnloadUnusedUnityAssets();
-
-                Loger.Log("Client InitConnected() ExistMap6");
-                Find.World.renderer.RegenerateAllLayersNow();
-
-                Loger.Log("Client InitConnected() ExistMap7");
-
-                return;
-            }
+            createWorld(serverInfo);
 
             Loger.Log("Client InitConnected() WorldLoad");
 
@@ -524,6 +496,96 @@ namespace RimWorldOnlineCity
             PreLoadUtility.CheckVersionAndLoad(SaveFullName, ScribeMetaHeaderUtility.ScribeHeaderMode.Map, loadAction);
         }
 
+        private static void createWorld(ModelInfo serverInfo)
+        {
+            if (serverInfo.NeedCreateWorld)
+            {
+                Loger.Log("Client InitConnected() ExistMap");
+
+                //создать поселение
+                GameStarter.SetMapSize = serverInfo.MapSize;
+                GameStarter.SetPlanetCoverage = serverInfo.PlanetCoverage;
+                GameStarter.SetSeed = serverInfo.Seed;
+                GameStarter.SetDifficulty = serverInfo.Difficulty;
+                GameStarter.SetScenario = GetScenarioDefault();
+                GameStarter.AfterStart = CreatePlayerMap;
+
+                GameStarter.GameGeneration(false);
+
+                //выбор места на планете. Код из события завершения выбора параметров планеты Page_CreateWorldParams
+                Loger.Log("Client InitConnected() ExistMap1");
+
+                Current.Game = new Game();
+                Current.Game.InitData = new GameInitData();
+                Current.Game.Scenario = GameStarter.SetScenario;
+                Current.Game.Scenario.PreConfigure();
+                Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
+                    , GameStarter.SetDifficulty == 0 ? DifficultyDefOf.Easy
+                        : DifficultyDefOf.Rough);
+
+                Loger.Log("Client InitConnected() ExistMap2");
+                Current.Game.World = WorldGenerator.GenerateWorld(
+                    GameStarter.SetPlanetCoverage,
+                    GameStarter.SetSeed,
+                    GameStarter.SetOverallRainfall,
+                    GameStarter.SetOverallTemperature);
+
+                Loger.Log("Client InitConnected() ExistMap3");
+                //после создания мира запускаем его обработку, загружаем поселения др. игроков
+                UpdateWorldController.InitGame();
+                UpdateWorld(true);
+
+                Timers.Add(20000, PingServer);
+
+                Loger.Log("Client InitConnected() ExistMap4");
+                var form = GetFirstConfigPage();
+                Find.WindowStack.Add(form);
+
+                Loger.Log("Client InitConnected() ExistMap5");
+
+                MemoryUtility.UnloadUnusedUnityAssets();
+
+                Loger.Log("Client InitConnected() ExistMap6");
+                Find.World.renderer.RegenerateAllLayersNow();
+
+                Loger.Log("Client InitConnected() ExistMap7");
+
+                return;
+            }
+        }
+
+        public static bool CheckFiles()
+        {
+            // 1. Шаг Проверяем что список модов совпадает и получены файлы для проверки
+            var ip = StorageData.GlobalData.LastIP.Value;
+            var ap = new GetApproveFolders(SessionClient.Get);
+            ap.GenerateRequestAndDoJob(ip);
+
+            var modsCheckFileName = GetApproveFolders.GetModsApprovedFoldersFileName(ip);
+            var steamCheckFileName = GetApproveFolders.GetSteamApprovedFoldersFileName(ip);
+
+            Loger.Log(modsCheckFileName);
+            Loger.Log(steamCheckFileName);
+            if ((!string.IsNullOrEmpty(ip) && File.Exists(modsCheckFileName)) && File.Exists(steamCheckFileName))
+            {
+                // 2. Запускаем пересчет хеша после получения папок проверки с сервера.
+                // Если файлы которые содержат папки для проверки,то При инициализации мода сразу же запускаем подсчет контрольной суммы файлов                
+                ClientHashChecker.StartGenerateHashFiles(modsCheckFileName, steamCheckFileName);
+            }
+            else 
+            {
+                Disconnected("Получен список модов, можно закрывать игру, надо залогиниться снова");
+                return false;
+            }
+
+            // 3. Полученный хеш отправляем серверу для проверки
+            var fc = new ClientHashChecker(SessionClient.Get);
+            var res = fc.GenerateRequestAndDoJob(null);
+
+            Loger.Log(res.ToString());
+            return res == 0; ;
+        }
+
         public static Page GetFirstConfigPage()
         {
             //скопированно из Scenario
@@ -545,9 +607,9 @@ namespace RimWorldOnlineCity
                     PageUtility.InitGameStart();
                 };
             }
+
             return page;
         }
-
 
         /// <summary>
         /// Запускается, когда админ первый раз заходит на сервер, выберет параметры нового мира, и 
