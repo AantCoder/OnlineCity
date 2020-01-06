@@ -28,7 +28,7 @@ namespace RimWorldOnlineCity
 
         public Dialog_Registration()
         {
-            InputAddr = StorageData.GlobalData.LastIP.Value;
+            InputAddr = ModBaseData.GlobalData.LastIP.Value;
             if (string.IsNullOrEmpty(InputAddr))
             {
                 InputAddr = MainHelper.DefaultIP;
@@ -79,8 +79,8 @@ namespace RimWorldOnlineCity
                     var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword);
                     if (msgError == null)
                     {
-                        StorageData.GlobalData.LastIP.Value = InputAddr;
-                        StorageData.GlobalData.LastLoginName.Value = InputLogin;
+                        ModBaseData.GlobalData.LastIP.Value = InputAddr;
+                        ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
                         HugsLibController.SettingsManager.SaveChanges();
                         Close();
                     }

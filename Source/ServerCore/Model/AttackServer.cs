@@ -45,6 +45,8 @@ namespace ServerOnlineCity.Model
         public Dictionary<int, AttackThingState> UpdateState { get; set; }
         public Dictionary<int, AttackPawnCommand> UpdateCommand { get; set; }
 
+        public DateTime? SetPauseOnTimeToHost { get; set; }
+
         private object SyncObj = new Object();
 
         public string New(PlayerServer player, PlayerServer hostPlayer, AttackInitiatorToSrv fromClient)
@@ -186,9 +188,11 @@ namespace ServerOnlineCity.Model
                     {
                         State = State,
                         UpdateCommand = UpdateCommand.Values.ToList(),
+                        SetPauseOnTime = SetPauseOnTimeToHost,
                     };
 
                     UpdateCommand = new Dictionary<int, AttackPawnCommand>();
+                    SetPauseOnTimeToHost = null;
                     return res;
                 }
 
@@ -221,6 +225,11 @@ namespace ServerOnlineCity.Model
                 if (fromClient.State == 2 && State >= 2 && fromClient.Pawns != null && fromClient.Pawns.Count > 0)
                 {
                     Pawns = fromClient.Pawns;
+                    //После передачи своих пешек, в ответ передаются данные карты и начинается её длительное создание
+                    //в это время включаем на хосте обязательную паузу
+                    //После загрузки пауза обновлется на 1 минуту, чтобы атакующий огляделся (ищи SetPauseOnTimeToHost в GameAttacker)
+                    SetPauseOnTimeToHost = DateTime.UtcNow.AddMinutes(5);
+
                     return new AttackInitiatorFromSrv()
                     {
                         State = State
@@ -249,6 +258,11 @@ namespace ServerOnlineCity.Model
                 if (fromClient.State == 10)
                 {
 
+                    if (fromClient.SetPauseOnTimeToHost != null)
+                    {
+                        SetPauseOnTimeToHost = DateTime.UtcNow + fromClient.SetPauseOnTimeToHost;
+                    }
+
                     if (fromClient.UpdateCommand != null && fromClient.UpdateCommand.Count > 0)
                     {
                         //объединяем
@@ -267,7 +281,7 @@ namespace ServerOnlineCity.Model
                         NewThings = NewThings,
                         NewThingsId = NewThingsId,
                         Delete = Delete,
-                        UpdateState = UpdateState.Values.ToList()
+                        UpdateState = UpdateState.Values.ToList(),
                     };
                     NewPawns = new List<ThingEntry>();
                     NewPawnsId = new List<int>();

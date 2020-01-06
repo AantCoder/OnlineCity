@@ -19,5 +19,7 @@ namespace Model
 
         public List<ThingEntry> Pawns { get; set; }
         public List<AttackPawnCommand> UpdateCommand { get; set; }
+
+        public TimeSpan? SetPauseOnTimeToHost { get; set; }
     }
 }

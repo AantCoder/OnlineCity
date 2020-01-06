@@ -56,6 +56,9 @@ namespace RimWorldOnlineCity.Services
             // каждый запрос-отклик к серверу ~100-200 мс, получаем за один запрос все файлы
             //var steamApprovedFolders = _sessionClient.TransObject2<ModelModsFiles>(new ModelInt() { Value = 1 }, RequestTypePackage, ResponseTypePackage);
 
+            //Если на сервере настройка не задана, то считаем что проверка пройдена
+            if (approvedFolders == null) return true;
+
             var modsFileName = GetModsApprovedFoldersFileName(ip);
             var steamFileName = GetSteamApprovedFoldersFileName(ip);
             var modsConfigName = Path.Combine(GenFilePaths.ConfigFolderPath, "ModsConfig.xml"); //%appdata%\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config

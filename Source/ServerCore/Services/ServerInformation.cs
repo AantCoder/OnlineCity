@@ -118,6 +118,8 @@ namespace ServerOnlineCity.Services
                 Difficulty = data.WorldDifficulty,
                 NeedCreateWorld = Repository.GetSaveData.GetListPlayerDatas(player.Public.Login).Count == 0,
                 ServerTime = DateTime.UtcNow,
+                IsModsWhitelisted = ServerManager.ServerSettings.IsModsWhitelisted,
+                ServerName = ServerManager.ServerSettings.ServerName,
             };
 
             return result;

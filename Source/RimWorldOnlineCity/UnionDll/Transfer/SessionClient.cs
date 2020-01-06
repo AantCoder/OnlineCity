@@ -189,7 +189,8 @@ namespace Transfer
                 var stat = res.Packet as T;
                 if (res.TypePacket != typeIn
                     || stat == null)
-                    throw new ApplicationException("Unknow server error");
+                    throw new ApplicationException($"Unknow server error TransObject({typeOut} -> {typeIn}) responce: {res.TypePacket} " 
+                        + (res.Packet == null ? "null" : res.Packet.GetType().Name));
                 return stat;
             }
             catch (Exception e)

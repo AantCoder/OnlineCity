@@ -17,5 +17,6 @@ namespace Transfer
         public List<ModelMailTrade> Mails { get; set; }
         public List<Player> PlayersInfo { get; set; }
         public bool AreAttacking { get; set; }
+        public bool NeedSaveAndExit { get; set; }
     }
 }

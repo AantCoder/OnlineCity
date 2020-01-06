@@ -104,7 +104,7 @@ namespace RimWorldOnlineCity
 
                     //Loger.Log("Client UpdateWorld 5 ");
                     Loger.Log("Client " + My.Login + " UpdateWorld "
-                        + string.Format("Отпр. свои {0}, своиDel {1}{5}. Пришло {2}, del {3}, посылок {4}{6}"
+                        + string.Format("Отпр. свои {0}, своиDel {1}{5}. Пришло {2}, del {3}, посылок {4}{6}{7}"
                             , toServ.WObjects == null ? 0 : toServ.WObjects.Count
                             , toServ.WObjectsToDelete == null ? 0 : toServ.WObjectsToDelete.Count
                             , fromServ.WObjects == null ? 0 : fromServ.WObjects.Count
@@ -112,6 +112,7 @@ namespace RimWorldOnlineCity
                             , fromServ.Mails == null ? 0 : fromServ.Mails.Count
                             , toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : ", сейв"
                             , fromServ.AreAttacking ? " Атакуют!" : ""
+                            , fromServ.NeedSaveAndExit ? " Команда на отключение" : ""
                             ));
 
                     //сохраняем время актуальности данных
@@ -141,6 +142,15 @@ namespace RimWorldOnlineCity
                     //обновляем планету
                     UpdateWorldController.LoadFromServer(fromServ, firstRun);
 
+                    //Сохраняем и выходим
+                    if (fromServ.NeedSaveAndExit)
+                    {
+                        SessionClientController.SaveGameNow(false, () =>
+                        {
+                            SessionClientController.Disconnected("От сервера получена команда на отключение. Прогресс был сохранен.".NeedTranslate());
+                        });
+                    }
+
                     //если на нас напали запускаем процесс
                     if (fromServ.AreAttacking && GameAttackHost.AttackMessage())
                     {
@@ -166,7 +176,7 @@ namespace RimWorldOnlineCity
         /// Немедленно сохраняет игру и передает на сервер.
         /// </summary>
         /// <param name="single">Будут удалены остальные Варианты сохранений, кроме этого</param>
-        public static void SaveGameNow(bool single = false)
+        public static void SaveGameNow(bool single = false, Action after = null)
         {
             Loger.Log("Client SaveGameNow single=" + single.ToString());
             SaveGame((content) =>
@@ -177,9 +187,31 @@ namespace RimWorldOnlineCity
                     Data.SingleSave = single;
                     UpdateWorld(false);
 
-                    Loger.Log("Client SaveGameSingle OK");
+                    Loger.Log("Client SaveGameNow OK");
                 }
+                if (after != null) after();
             });
+        }
+
+        /// <summary>
+        /// Немедленно сохраняет игру и передает на сервер. Должно запускаться уже в потоке LongEventHandler.QueueLongEvent, ожидает окончания соханения
+        /// </summary>
+        /// <param name="single">Будут удалены остальные Варианты сохранений, кроме этого</param>
+        public static void SaveGameNowInEvent(bool single = false)
+        {
+            Loger.Log("Client SaveGameNowInEvent single=" + single.ToString());
+            
+            GameDataSaveLoader.SaveGame(SaveName);
+            var content = File.ReadAllBytes(SaveFullName);
+
+            if (content.Length > 1024)
+            {
+                Data.SaveFileData = content;
+                Data.SingleSave = single;
+                UpdateWorld(false);
+
+                Loger.Log("Client SaveGameNowInEvent OK");
+            }
         }
 
         private static void BackgroundSaveGame()
@@ -406,9 +438,10 @@ namespace RimWorldOnlineCity
             My = serverInfo.My;
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
 
+            Loger.Log("Client ServerName=" + serverInfo.ServerName);
             Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
             Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed + " NeedCreateWorld=" + serverInfo.NeedCreateWorld);
-            Loger.Log("Client Grants = " + serverInfo.My.Grants.ToString());
+            Loger.Log("Client Grants=" + serverInfo.My.Grants.ToString());
 
             if (MainHelper.VersionNum < serverInfo.VersionNum)
             {
@@ -416,7 +449,7 @@ namespace RimWorldOnlineCity
                 return;
             }
 
-            if (!CheckFiles())
+            if (serverInfo.IsModsWhitelisted && !CheckFiles())
             {
                 //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
                 Disconnected("Not all files are resolve hash check, they was been updated, Close and Open Game".NeedTranslate());
@@ -557,7 +590,7 @@ namespace RimWorldOnlineCity
         public static bool CheckFiles()
         {
             // 1. Шаг Проверяем что список модов совпадает и получены файлы для проверки
-            var ip = StorageData.GlobalData.LastIP.Value;
+            var ip = ModBaseData.GlobalData.LastIP.Value;
             var ap = new GetApproveFolders(SessionClient.Get);
             ap.GenerateRequestAndDoJob(ip);
 

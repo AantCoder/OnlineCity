@@ -31,6 +31,9 @@ namespace ServerOnlineCity.Model
         public List<WorldObjectEntry> WorldObjectsDeleted { get; set; }
         public List<OrderTrade> Orders { get; set; }
 
+        [NonSerialized]
+        public bool EverybodyLogoff;
+
         public BaseContainer()
         {
             PlayersAll = new List<PlayerServer>()

@@ -23,5 +23,6 @@ namespace Model
 
         public List<AttackPawnCommand> UpdateCommand { get; set; }
 
+        public DateTime? SetPauseOnTime { get; set; }
     }
 }

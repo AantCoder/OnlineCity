@@ -119,6 +119,16 @@ namespace RimWorldOnlineCity
         /// </summary>
         private HashSet<Thing> ThingPrepareChange0 = new HashSet<Thing>();
 
+        /// <summary>
+        /// Должна быть установлена пауза до достижения этого времени
+        /// </summary>
+        public DateTime CurrentPauseToTime;
+
+        /// <summary>
+        /// Должна ли быть установлена пауза прямо сейчас
+        /// </summary>
+        public bool IsPause => CurrentPauseToTime > DateTime.UtcNow;
+
         public static GameAttackHost Get
         {
             get { return SessionClientController.Data.AttackUsModule; }
@@ -136,6 +146,17 @@ namespace RimWorldOnlineCity
                 return true;
             }
             return false;
+        }
+
+        private void PauseMessage()
+        {
+            GameUtils.ShowDialodOKCancel("Ваше поселение атакуют".NeedTranslate()
+                , ("Дождитесь когда атакующий будет готов. После этого скорость автоматически включиться на х1 и её незья будет менять."
+                    + "Если вы хотите закончить и отдать поселение, то нажмите в главном меню ").NeedTranslate()
+                    + "Сдаться".NeedTranslate()
+                , () => { }
+                , null
+            );
         }
 
         /// <summary>
@@ -160,6 +181,15 @@ namespace RimWorldOnlineCity
             HostPlaceServerId = tolient.HostPlaceServerId;
 
             Loger.Log("Client GameAttackHost Start 2 " + tolient.HostPlaceServerId);
+
+            Find.TickManager.Pause();
+            SessionClientController.SaveGameNowInEvent(false);
+            PauseMessage();
+
+            //Устанавливаем паузу сейчас первый раз, 
+            //далее она будет обновлена на 5 минут перед началом создания карты у атакующего игрока (см AttackServer.RequestInitiator())
+            //и последний раз после создания карты на 1 минуту, чтобы дать оглядеться атакующему (ищи SetPauseOnTimeToHost в GameAttacker)
+            CurrentPauseToTime = DateTime.UtcNow.AddMinutes(5);
 
             LongEventHandler.QueueLongEvent(delegate
             {
@@ -352,6 +382,22 @@ namespace RimWorldOnlineCity
                 AttackUpdateTick++;
                 //                Loger.Log("Client HostAttackUpdate #" + AttackUpdateTick.ToString());
 
+                if (IsPause)
+                {
+                    if (!Find.TickManager.Paused)
+                    {
+                        Find.TickManager.Pause();
+                        PauseMessage();
+                    }
+                }
+                else
+                {
+                    if (Find.TickManager.Paused || Find.TickManager.CurTimeSpeed != TimeSpeed.Normal)
+                    {
+                        Find.TickManager.CurTimeSpeed = TimeSpeed.Normal;
+                    }
+                }
+
                 SessionClientController.Command((connect) =>
                 {
                     try
@@ -502,6 +548,14 @@ namespace RimWorldOnlineCity
                             ToSendDeleteId.Clear();
                             ToUpdateStateId.Clear();
                             ToUpdateState.Clear();
+                        }
+
+                        //принимаем настройки паузы
+                        if (toClient.SetPauseOnTime != null)
+                        {
+                            //текущее время сервера: var ntcNowServer = DateTime.UtcNow + SessionClientController.Data.ServetTimeDelta;
+                            //а тут переводим в местное UTC время
+                            CurrentPauseToTime = toClient.SetPauseOnTime.Value - SessionClientController.Data.ServetTimeDelta;
                         }
 
                         //принимаем обновление команд атакующих

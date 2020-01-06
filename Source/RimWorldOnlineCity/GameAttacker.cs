@@ -23,6 +23,11 @@ namespace RimWorldOnlineCity
         /// </summary>
         public int AttackUpdateDelay { get; } = 200;
 
+        /// <summary>
+        /// Время в секундах после всех загрузок, чтобы дать оглядеться атакующиму, по умолчанию минута
+        /// </summary>
+        public int TimeStopBeforeAttack { get; } = 60;
+
         public static bool CanStart
         {
             get { return SessionClientController.Data.AttackModule == null; }
@@ -76,9 +81,13 @@ namespace RimWorldOnlineCity
 
         public void Start(Caravan caravan, BaseOnline attackedBase)
         {
+            //Ожидается что Start будет запукаться с UI
+            SessionClientController.SaveGameNowInEvent(false);
+
             SessionClientController.Command((connect) =>
             {
                 connect.ErrorMessage = null;
+                Find.TickManager.Pause();
 
                 Loger.Log("Client GameAttack State 0");
                 var res = connect.AttackOnlineInitiator(new AttackInitiatorToSrv()
@@ -254,6 +263,7 @@ namespace RimWorldOnlineCity
             foreach (var pair in select)
             {
                 pair.Destroy(DestroyMode.Vanish);
+                Find.WorldPawns.RemovePawn(pair); //не проверенное полное удаление, чтобы не появлялось клонов пешки после возврата её назад
             }
             return sendThings;
         }
@@ -264,19 +274,40 @@ namespace RimWorldOnlineCity
             try
             {
                 //Scribe.ForceStop();
-                Find.TickManager.Pause();
+                if (!Find.TickManager.Paused)
+                {
+                    Find.TickManager.Pause();
+                    GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
+                        , ("В этом режиме пауза должна быть постоянно включена. Несмотря на это "
+                            + "игра продолжается и положение вещей меняется. Если вы хотите завершить "
+                            + "нападение, то отведите тех кого сможете к любому краю карты и в главном меню нажмите ").NeedTranslate()
+                            + "Отступить".NeedTranslate()
+                        , () => { }
+                        , null
+                    );
+
+                }
                 /*
                  todo сделать сообщение если пауза не была нажата
-                    GameUtils.ShowDialodOKCancel("OCity_UpdateWorld_Trade".Translate()
-                        , text
-                        , () => DropToWorldObjectDo(place, things, from, text)
-                        , () => Log.Message("Drop Mail from " + from + ": " + text)
-                    );
                  */
                 if (InTimer) return;
                 InTimer = true;
                 AttackUpdateTick++;
                 Loger.Log("Client AttackUpdate #" + AttackUpdateTick.ToString());
+
+                if (AttackUpdateTick == 3)
+                {
+                    GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
+                        , "Подготовка завершена. У Вас есть минута чтобы осмотреться на карте и атака начнется!".NeedTranslate()
+                            + Environment.NewLine
+                            + ("В этом режиме пауза должна быть постоянно включена. Несмотря на это "
+                            + "игра продолжается и положение вещей меняется. Если вы хотите завершить "
+                            + "нападение, то отведите тех кого сможете к любому краю карты и в главном меню нажмите ").NeedTranslate()
+                            + "Отступить".NeedTranslate()
+                        , () => { }
+                        , null
+                    );
+                }
                 
                 inTimerEvent = true;
                 SessionClientController.Command((connect) =>
@@ -290,6 +321,8 @@ namespace RimWorldOnlineCity
                         {
                             State = 10,
                             UpdateCommand = toSendCommand.Values.ToList(),
+                            //снимаем паузу на загрузку у хоста и устанавливаем после загрузки, чтобы оглядеться атакующиму
+                            SetPauseOnTimeToHost = AttackUpdateTick != 2 ? (TimeSpan?)null : new TimeSpan(0, 0, TimeStopBeforeAttack),
                         });
 
                         Action actUpdateState = () =>

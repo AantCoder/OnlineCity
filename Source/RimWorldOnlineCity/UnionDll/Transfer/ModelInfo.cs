@@ -10,6 +10,8 @@ namespace Transfer
         public bool IsAdmin { get; set; }
         public string VersionInfo { get; set; }
         public long VersionNum { get; set; }
+        public string ServerName { get; set; }
+        public bool IsModsWhitelisted { get; set; }
 
         public bool NeedCreateWorld { get; set; }
 

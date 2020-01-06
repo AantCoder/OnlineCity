@@ -161,6 +161,9 @@ namespace ServerOnlineCity.Services
                 toClient.Mails = context.Player.Mails;
                 context.Player.Mails = new List<ModelMailTrade>();
 
+                //команда выполнить сохранение и отключиться
+                toClient.NeedSaveAndExit = !context.Player.IsAdmin && data.EverybodyLogoff;
+
                 //флаг, что на клиента кто-то напал и он должен запросить подробности
                 toClient.AreAttacking = context.Player.AttackData != null && context.Player.AttackData.Host == context.Player && context.Player.AttackData.State == 1;
 

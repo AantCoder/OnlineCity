@@ -574,12 +574,15 @@ namespace RimWorldOnlineCity
             diaOption.resolveTree = true;
             diaNode.options.Add(diaOption);
 
-            diaOption = new DiaOption("RejectLetter".Translate());
-            //RansomDemand_Reject это "Отказаться"
-            //RejectLetter это Отклонить
-            diaOption.action = ActCancel;
-            diaOption.resolveTree = true;
-            diaNode.options.Add(diaOption);
+            if (ActCancel != null)
+            {
+                diaOption = new DiaOption("RejectLetter".Translate());
+                //RansomDemand_Reject это "Отказаться"
+                //RejectLetter это Отклонить
+                diaOption.action = ActCancel;
+                diaOption.resolveTree = true;
+                diaNode.options.Add(diaOption);
+            }
 
             Find.WindowStack.Add(new Dialog_NodeTreeWithFactionInfo(diaNode, null, true, true, title));
         }
