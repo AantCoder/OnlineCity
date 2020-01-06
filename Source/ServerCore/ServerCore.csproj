@@ -7,9 +7,14 @@
     <StartupObject />
     <AssemblyName>ServerOnlineCity</AssemblyName>
     <RootNamespace>ServerOnlineCity</RootNamespace>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\RimWorldOnlineCityServerOut</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>..\RimWorldOnlineCityServerOut</OutputPath>
   </PropertyGroup>
 
@@ -17,10 +22,9 @@
     <OutputPath>..\RimWorldOnlineCityServerOut</OutputPath>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.6.0" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutputPath>..\RimWorldOnlineCityServerOut</OutputPath>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll.csproj" />

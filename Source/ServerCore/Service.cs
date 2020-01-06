@@ -22,7 +22,7 @@ namespace ServerOnlineCity
 
         public Service(ServiceContext context)
         {
-            Context =context;
+            Context = context;
         }
 
         private static void DependencyInjection()

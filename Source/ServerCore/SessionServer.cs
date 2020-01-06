@@ -69,7 +69,15 @@ namespace ServerOnlineCity
             while (true)
             {
                 var rec = Client.ReceiveBytes();
-                if (context.Player != null) context.Player.Public.LastOnlineTime = DateTime.UtcNow;
+                if (context.Player != null)
+                {
+                    context.Player.Public.LastOnlineTime = DateTime.UtcNow;
+                    if (context.Player.ExitReason!= OCUnion.Transfer.DisconnectReason.AllGood)
+                    {
+                        Loger.Log("Disconnect  . . ." + context.Player.ExitReason.ToString());
+                        break;
+                    }
+                }
 
                 //отдельно обрабатываем пинг
                 if (rec.Length == 1)
@@ -92,13 +100,13 @@ namespace ServerOnlineCity
                 var sendObj = Worker.GetPackage(recObj);
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
-                
+
                 Client.SendMessage(send);
             }
         }
 
         /// <summary>
-        /// Есть ли изменеия. Сейчас используется только для чата
+        /// Есть ли изменения. Сейчас используется только для чата
         /// </summary>
         /// <returns></returns>
         private bool ServiceCheck()
