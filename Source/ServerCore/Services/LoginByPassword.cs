@@ -21,16 +21,17 @@ namespace ServerOnlineCity.Services
         private ModelStatus login(ModelLogin packet, ServiceContext context)
         {
             if (packet.Login == "system") return null;
-            context.Player = Repository.GetData.PlayersAll
+            var player = Repository.GetData.PlayersAll
                 .FirstOrDefault(p => p.Public.Login == packet.Login);
 
-            if (context.Player != null)
+
+            if (player != null)
             {
-                if (context.Player.Pass != packet.Pass) //todo
-                    context.Player = null;
+                if (player.Pass != packet.Pass) //todo
+                    player = null;
             }
 
-            if (context.Player == null)
+            if (player == null)
             {
                 return new ModelStatus()
                 {
@@ -38,6 +39,10 @@ namespace ServerOnlineCity.Services
                     Message = "User or password incorrect"
                 };
             }
+
+            player.ExitReason = OCUnion.Transfer.DisconnectReason.AllGood;
+            player.ApproveLoadWorldReason = OCUnion.Transfer.Types.ApproveLoadWorldReason.LoginOk;
+            context.Player = player;
 
             return new ModelStatus()
             {

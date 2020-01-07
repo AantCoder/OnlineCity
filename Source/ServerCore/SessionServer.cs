@@ -69,15 +69,6 @@ namespace ServerOnlineCity
             while (true)
             {
                 var rec = Client.ReceiveBytes();
-                if (context.Player != null)
-                {
-                    context.Player.Public.LastOnlineTime = DateTime.UtcNow;
-                    if (context.Player.ExitReason!= OCUnion.Transfer.DisconnectReason.AllGood)
-                    {
-                        Loger.Log("Disconnect  . . ." + context.Player.ExitReason.ToString());
-                        break;
-                    }
-                }
 
                 //отдельно обрабатываем пинг
                 if (rec.Length == 1)
@@ -102,6 +93,20 @@ namespace ServerOnlineCity
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
 
                 Client.SendMessage(send);
+
+                if (context.Player != null)
+                {
+                    lock (context.Player)
+                    {
+                        context.Player.Public.LastOnlineTime = DateTime.UtcNow;
+                        if (context.Player.ExitReason != OCUnion.Transfer.DisconnectReason.AllGood)
+                        {
+                            //context.Player.ExitReason = OCUnion.Transfer.DisconnectReason.AllGood;
+                            Loger.Log("Disconnect  . . ." + context.Player.ExitReason.ToString());
+                            break;
+                        }
+                    }
+                }
             }
         }
 

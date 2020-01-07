@@ -87,6 +87,7 @@ namespace OCUnion.Common
             if (string.IsNullOrEmpty(rootFolder) || !Directory.Exists(rootFolder))
             {
                 Loger.Log($"Directory not found {rootFolder}");
+                return result;
             }
 
             // Файл который есть у клиента не найден, проверяем Первую директорию    

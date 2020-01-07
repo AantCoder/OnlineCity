@@ -34,27 +34,22 @@ namespace RimWorldOnlineCity
 
         private static string SaveFullName { get; set; }
 
-        private static GetApproveFolders GetApproveFolders { get; set; }
+        public static string ConfigPath { get; private set; }
 
         /// <summary>
         /// Инициализация при старте игры. Как можно раньше
         /// </summary>
         public static void Init()
         {
-            GetApproveFolders = new GetApproveFolders(SessionClient.Get);
-            //var ip = StorageData.GlobalData.LastIP.Value;
-            //var modsCheckFileName = GetApproveFolders.GetModsApprovedFoldersFileName(ip);
-            //var steamCheckFileName = GetApproveFolders.GetSteamApprovedFoldersFileName(ip);
-
-            //if ((!string.IsNullOrEmpty(ip) && File.Exists(modsCheckFileName)) && File.Exists(steamCheckFileName))
-            //{
-            //    // Если файлы которые содержат папки для проверки,то При инициализации мода сразу же запускаем подсчет контрольной суммы файлов                
-            //    // ClientHashChecker.StartGenerateHashFiles(modsCheckFileName, steamCheckFileName);
-            //}
+            ConfigPath = Path.Combine(GenFilePaths.ConfigFolderPath, "OnlineCity");
+            if (!Directory.Exists(ConfigPath))
+            {
+                Directory.CreateDirectory(ConfigPath);
+            }
 
             SaveFullName = GenFilePaths.FilePathForSavedGame(SaveName);
             MainHelper.CultureFromGame = Prefs.LangFolderName ?? "";
-            //if (MainHelper.DebugMode) 
+
             try
             {
                 var workPath = Path.Combine(
@@ -200,7 +195,7 @@ namespace RimWorldOnlineCity
         public static void SaveGameNowInEvent(bool single = false)
         {
             Loger.Log("Client SaveGameNowInEvent single=" + single.ToString());
-            
+
             GameDataSaveLoader.SaveGame(SaveName);
             var content = File.ReadAllBytes(SaveFullName);
 
@@ -416,7 +411,7 @@ namespace RimWorldOnlineCity
 
             var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
             if (scenarioDefaultMem == null)
-                scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Классика");
+                scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Classic".NeedTranslate());
             if (scenarioDefaultMem == null)
                 scenarioDefaultMem = listS.FirstOrDefault();
 
@@ -451,9 +446,10 @@ namespace RimWorldOnlineCity
 
             if (serverInfo.IsModsWhitelisted && !CheckFiles())
             {
+                var msg = "Not all files are resolve hash check, they was been updated, Close and Open Game".NeedTranslate();
                 //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
-                Disconnected("Not all files are resolve hash check, they was been updated, Close and Open Game".NeedTranslate());
-                //ModsConfig.RestartFromChangedMods();
+                Disconnected(msg, () => ModsConfig.RestartFromChangedMods());
+                return;
             }
 
             //создаем мир, если мы админ
@@ -590,33 +586,26 @@ namespace RimWorldOnlineCity
         public static bool CheckFiles()
         {
             // 1. Шаг Проверяем что список модов совпадает и получены файлы для проверки
-            var ip = ModBaseData.GlobalData.LastIP.Value;
+            var ip = ModBaseData.GlobalData.LastIP.Value.Replace(":", "_");
             var ap = new GetApproveFolders(SessionClient.Get);
-            ap.GenerateRequestAndDoJob(ip);
+            var approveModList = ap.GenerateRequestAndDoJob(ip);
 
             var modsCheckFileName = GetApproveFolders.GetModsApprovedFoldersFileName(ip);
             var steamCheckFileName = GetApproveFolders.GetSteamApprovedFoldersFileName(ip);
 
             Loger.Log(modsCheckFileName);
             Loger.Log(steamCheckFileName);
-            if ((!string.IsNullOrEmpty(ip) && File.Exists(modsCheckFileName)) && File.Exists(steamCheckFileName))
-            {
-                // 2. Запускаем пересчет хеша после получения папок проверки с сервера.
-                // Если файлы которые содержат папки для проверки,то При инициализации мода сразу же запускаем подсчет контрольной суммы файлов                
-                ClientHashChecker.StartGenerateHashFiles(modsCheckFileName, steamCheckFileName);
-            }
-            else 
-            {
-                Disconnected("Получен список модов, можно закрывать игру, надо залогиниться снова");
-                return false;
-            }
+
+            // 2. Запускаем пересчет хеша после получения папок проверки с сервера.
+            // Если файлы которые содержат папки для проверки,то При инициализации мода сразу же запускаем подсчет контрольной суммы файлов                
+            ClientHashChecker.StartGenerateHashFiles(modsCheckFileName, steamCheckFileName);
 
             // 3. Полученный хеш отправляем серверу для проверки
             var fc = new ClientHashChecker(SessionClient.Get);
             var res = fc.GenerateRequestAndDoJob(null);
 
             Loger.Log(res.ToString());
-            return res == 0; ;
+            return approveModList && res == 0;
         }
 
         public static Page GetFirstConfigPage()
@@ -703,8 +692,13 @@ namespace RimWorldOnlineCity
             });
         }
 
-        public static void Disconnected(string msg)
+        public static void Disconnected(string msg, Action actionOnDisctonnect = null)
         {
+            if (actionOnDisctonnect == null)
+            {
+                actionOnDisctonnect = () => GenScene.GoToMainMenu();
+            }
+
             Loger.Log("Client Disconected :( ");
             GameExit.BeforeExit = null;
             TimersStop();
@@ -712,10 +706,7 @@ namespace RimWorldOnlineCity
             if (msg == null)
                 GenScene.GoToMainMenu();
             else
-                Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_Disconnect".Translate(), msg, null, () =>
-            {
-                GenScene.GoToMainMenu();
-            }));
+                Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_Disconnect".Translate(), msg, null, actionOnDisctonnect));
         }
 
         /// <summary>

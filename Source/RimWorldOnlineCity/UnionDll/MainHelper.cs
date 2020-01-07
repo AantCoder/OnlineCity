@@ -10,8 +10,11 @@ namespace OCUnion
 {
     public static class MainHelper
     {
-        public static bool DebugMode = false;
-
+#if DEBUG
+        public static bool DebugMode = true;
+#else
+         public static bool DebugMode = false;
+#endif
         //public static string VersionInfo = $"Version {Assembly.GetExecutingAssembly().FullName}";
         public static string VersionInfo = "Версия 0.02.33a от 2019.11.24";
 
@@ -22,7 +25,7 @@ namespace OCUnion
         public static long VersionNum = 20033;
 
         public static string DefaultIP = DebugMode ? "localhost" : "194.87.95.90"; // rimworld.online
-        
+
         private static CultureInfo CultureValue = null;
         public static string CultureFromGame = null;
         public static CultureInfo Culture
@@ -47,7 +50,7 @@ namespace OCUnion
                 return CultureValue;
             }
         }
-        
+
         public static string NeedTranslate(this string text)
         {
             return text;

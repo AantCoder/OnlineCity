@@ -45,7 +45,6 @@ namespace ServerOnlineCity
         public int ActiveClientCount
         {
             get { return _ActiveClientCount; }
-            private set { _ActiveClientCount = value; }
         }
 
         public void Start(string path, int port = SessionClient.DefaultPort)
@@ -120,7 +119,7 @@ namespace ServerOnlineCity
                 rep.Save(true);
             });
 
-            ActiveClientCount = 0;
+            //ActiveClientCount = 0;
 
             Connect = new ConnectServer();
             Connect.ConnectionAccepted = ConnectionAccepted;
@@ -140,7 +139,12 @@ namespace ServerOnlineCity
             Loger.Log($"Calc hash {ServerSettings.ModsDirectory}");
             var modFiles = FileChecker.GenerateHashFiles(ServerSettings.ModsDirectory, Directory.GetDirectories(ServerSettings.ModsDirectory));
             Loger.Log($"Calc hash {ServerSettings.SteamWorkShopModsDir}");
-            var steamFiles = FileChecker.GenerateHashFiles(ServerSettings.SteamWorkShopModsDir, Directory.GetDirectories(ServerSettings.SteamWorkShopModsDir));
+            ///!!!!!!!!!!!!!!!! STEAM FOLDER CHECK SWITCH HERE  !!!!!!!!!!!!!!!
+            // 1. Если будем использовать steamworkshop диреторию, эти две строчки ниже закомментировать 
+            // 2. remove JsobIgnrore atribbute in ServerSettings  
+            ServerSettings.SteamWorkShopModsDir = Environment.CurrentDirectory;
+            ///!!!!!!!!!!!!!!!! STEAM FOLDER CHECK SWITCH HERE  !!!!!!!!!!!!!!!
+            var steamFiles = FileChecker.GenerateHashFiles(ServerSettings.SteamWorkShopModsDir, new string [0]);
 
             var modFilesDict = new Dictionary<string, ModelFileInfo>(modFiles.Count);
             var steamFilesDict = new Dictionary<string, ModelFileInfo>(steamFiles.Count);
@@ -297,7 +301,6 @@ namespace ServerOnlineCity
             }
 
             Interlocked.Increment(ref _ActiveClientCount);
-            ActiveClientCount++;
             var thread = new Thread(() => DoClient(client));
             thread.IsBackground = true;
             thread.Start();
