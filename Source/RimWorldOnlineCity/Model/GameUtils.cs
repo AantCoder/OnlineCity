@@ -214,7 +214,7 @@ namespace RimWorldOnlineCity
                     QualityUtility.TryGetQuality(t, out qq);
                     return new { thing = t, q = qq };
                 })
-                .OrderBy(t => t.thing.def.defName + "#" + ((int)t.q).ToString() + (10000 - t.thing.HitPoints).ToString() + t.thing.stackCount.ToString().PadLeft(6)) 
+                .OrderBy(t => t.thing.def.defName + "#" + ((int)t.q).ToString() + (10000 - t.thing.HitPoints).ToString() + t.thing.stackCount.ToString().PadLeft(6))
                 .Select(t => t.thing)
                 .ToList();
             foreach (var target in targets)
@@ -251,7 +251,7 @@ namespace RimWorldOnlineCity
                     target.NotTrade = true;
                     //Log.Message("NotTrade " + target.Count.ToString() + " > " + select.CountToTransfer.ToString());
                 }
-                else 
+                else
                 {
                     if (setRect && target.Count * rate > select.CountToTransfer)
                     {
@@ -447,7 +447,7 @@ namespace RimWorldOnlineCity
 
                 var cell = getCell != null ? getCell(thin) : thin.Position;
                 if (i == 0) ret = cell;
-                
+
                 if (MainHelper.DebugMode) try { Loger.Log("Spawn... " + thin.Label); } catch { Loger.Log("Spawn... "); }
                 if (thin is Pawn)
                 {
@@ -460,6 +460,13 @@ namespace RimWorldOnlineCity
                 if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
             }
             return ret;
+        }
+
+
+        public static void PawnDestroy(Pawn pawn)
+        {
+            pawn.Destroy(DestroyMode.Vanish);
+            Find.WorldPawns.RemovePawn(pawn); //не проверенное полное удаление, чтобы не появлялось клонов пешки после возврата её назад
         }
 
         public static void ApplyState(Thing thing, AttackThingState state)
@@ -524,7 +531,7 @@ namespace RimWorldOnlineCity
                     }
                 }
             }
-            
+
         }
         /*
         public static void PawnKill(Pawn pawn)
@@ -547,7 +554,9 @@ namespace RimWorldOnlineCity
             , string text
             , Action ActOK
             , Action ActCancel
-            , GlobalTargetInfo? target = null)
+            , GlobalTargetInfo? target = null
+            , string AltText = null
+            , Action ActAlt = null)
         {
             DiaNode diaNode = new DiaNode(text);
 
@@ -573,6 +582,14 @@ namespace RimWorldOnlineCity
             };*/
             diaOption.resolveTree = true;
             diaNode.options.Add(diaOption);
+
+            if (!string.IsNullOrEmpty(AltText) && ActAlt != null)
+            {
+                diaOption = new DiaOption(AltText);
+                diaOption.action = ActAlt;
+                diaOption.resolveTree = true;
+                diaNode.options.Add(diaOption);
+            }
 
             if (ActCancel != null)
             {

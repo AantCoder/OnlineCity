@@ -28,6 +28,11 @@ namespace RimWorldOnlineCity
         /// </summary>
         public int TimeStopBeforeAttack { get; } = 60;
 
+        /// <summary>
+        /// Расстояние от краев карты за которым пешка мжет сбежать
+        /// </summary>
+        public int MapBorder { get; } = 10;
+
         public static bool CanStart
         {
             get { return SessionClientController.Data.AttackModule == null; }
@@ -37,6 +42,8 @@ namespace RimWorldOnlineCity
         {
             get { return SessionClientController.Data.AttackModule; }
         }
+
+        public bool TestMode { get; set; }
 
         public int AttackUpdateTick { get; set; }
         private object TimerObj;
@@ -68,10 +75,16 @@ namespace RimWorldOnlineCity
         /// </summary>
         private List<Thing> DelayDestroyPawn { get; set; }
 
+        /// <summary>
+        /// Истина, когда атакующий сдается. Флаг для передачи хосту и начала завершения
+        /// </summary>
+        public bool VictoryHostToHost { get; set; }
+
         public static bool Create()
         {
             if (!CanStart) return false;
             SessionClientController.Data.AttackModule = new GameAttacker();
+            SessionClientController.Data.BackgroundSaveGameOff = true;
             return true;
         }
 
@@ -79,7 +92,7 @@ namespace RimWorldOnlineCity
         {
         }
 
-        public void Start(Caravan caravan, BaseOnline attackedBase)
+        public void Start(Caravan caravan, BaseOnline attackedBase, bool testMode)
         {
             //Ожидается что Start будет запукаться с UI
             SessionClientController.SaveGameNowInEvent(false);
@@ -95,7 +108,8 @@ namespace RimWorldOnlineCity
                     State = 0,
                     StartHostPlayer = attackedBase.Player.Public.Login,
                     HostPlaceServerId = attackedBase.OnlineWObject.ServerId,
-                    InitiatorPlaceServerId = UpdateWorldController.GetServerInfo(caravan).ServerId
+                    InitiatorPlaceServerId = UpdateWorldController.GetServerInfo(caravan).ServerId,
+                    TestMode = testMode,
                 });
                 if (!string.IsNullOrEmpty(connect.ErrorMessage))
                 {
@@ -128,16 +142,17 @@ namespace RimWorldOnlineCity
                 var response = connect.AttackOnlineInitiator(new AttackInitiatorToSrv()
                 {
                     State = 2,
-                    Pawns = pawnsToSend
+                    Pawns = pawnsToSend,
                 });
                 if (!string.IsNullOrEmpty(connect.ErrorMessage))
                 {
                     ErrorBreak(connect.ErrorMessage);
                     return;
                 }
+                TestMode = response.TestMode;
 
                 // принимаем карту и создаем
-                Loger.Log("Client GameAttack CreateMap State=" + response.State);
+                Loger.Log("Client GameAttack CreateMap State=" + response.State + " TestMode=" + TestMode);
 
                 Loger.Log("Client GameAttack WaitTo3");
                 s1Time = DateTime.UtcNow;
@@ -262,8 +277,7 @@ namespace RimWorldOnlineCity
             }
             foreach (var pair in select)
             {
-                pair.Destroy(DestroyMode.Vanish);
-                Find.WorldPawns.RemovePawn(pair); //не проверенное полное удаление, чтобы не появлялось клонов пешки после возврата её назад
+                GameUtils.PawnDestroy(pair);
             }
             return sendThings;
         }
@@ -293,7 +307,7 @@ namespace RimWorldOnlineCity
                 if (InTimer) return;
                 InTimer = true;
                 AttackUpdateTick++;
-                Loger.Log("Client AttackUpdate #" + AttackUpdateTick.ToString());
+                Loger.Log("Client AttackUpdate #" + AttackUpdateTick.ToString() + ".");
 
                 if (AttackUpdateTick == 3)
                 {
@@ -314,7 +328,7 @@ namespace RimWorldOnlineCity
                 {
                     try
                     {
-                        Loger.Log("Client AttackUpdate 2");
+                        Loger.Log($"Client AttackUpdate 2 ({AttackUpdateTick})");
                         var toSendCommand = ToSendCommand;
                         ToSendCommand = new Dictionary<int, AttackPawnCommand>();
                         var toClient = connect.AttackOnlineInitiator(new AttackInitiatorToSrv()
@@ -322,7 +336,8 @@ namespace RimWorldOnlineCity
                             State = 10,
                             UpdateCommand = toSendCommand.Values.ToList(),
                             //снимаем паузу на загрузку у хоста и устанавливаем после загрузки, чтобы оглядеться атакующиму
-                            SetPauseOnTimeToHost = AttackUpdateTick != 2 ? (TimeSpan?)null : new TimeSpan(0, 0, TimeStopBeforeAttack),
+                            SetPauseOnTimeToHost = AttackUpdateTick == 2 ? new TimeSpan(0, 0, TimeStopBeforeAttack) : TimeSpan.MinValue,
+                            VictoryHostToHost = VictoryHostToHost,
                         });
 
                         Action actUpdateState = () =>
@@ -517,6 +532,10 @@ namespace RimWorldOnlineCity
 
                             InTimer = false;
                         }
+
+                        //заканчиваем
+                        if (toClient.Finishing) Finish(toClient.VictoryAttacker);
+
                     }
                     catch (Exception ext)
                     {
@@ -539,7 +558,7 @@ namespace RimWorldOnlineCity
                 int id;
                 if (!AttackerPawns.TryGetValue(pawn, out id))
                 {
-                    if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob Out of event " + pawn.Label + " " + pawn.thingIDNumber.ToString());
+                    //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob Out of event " + pawn.Label + " " + pawn.thingIDNumber.ToString());
                     return;
                 }
                 var comm = new AttackPawnCommand()
@@ -554,7 +573,7 @@ namespace RimWorldOnlineCity
                         int tid;
                         if (!ThingsIDDic.TryGetValue(job.targetA.Thing.thingIDNumber, out tid))
                         {
-                            if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob Error " + pawn.Label + " ThingID " + job.targetA.Thing.Label + " " + job.targetA.Thing.thingIDNumber.ToString());
+                            //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob Error " + pawn.Label + " ThingID " + job.targetA.Thing.Label + " " + job.targetA.Thing.thingIDNumber.ToString());
                             return;
                         }
                         comm.TargetID = tid;
@@ -576,19 +595,19 @@ namespace RimWorldOnlineCity
                     }
                     else
                     {
-                        if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore");
+                        //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore");
                         return; //левые команды игнорятся, но перед ними идет отмена предыдущего с job == null
                         //comm.Command = AttackPawnCommand.PawnCommand.Wait_Combat;
                     }
                 }
                 else
                 {
-                    if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore2");
+                    //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore2");
                     return;
                     //comm.Command = AttackPawnCommand.PawnCommand.Wait_Combat;
                 }
 
-                if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> " + comm.Command.ToString());
+                //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> " + comm.Command.ToString());
 
                 ToSendCommand[id] = comm;
             }
@@ -676,6 +695,62 @@ namespace RimWorldOnlineCity
                 }
             }, "GeneratingMapForNewEncounter", false, null);
         }
-        
+
+        private void Finish(bool victoryAttacker)
+        {
+            Find.TickManager.Pause();
+
+            //отключить таймер и признаки, что нас атакуют
+            SessionClientController.Timers.Remove(TimerObj);
+            GameAttackTrigger_Patch.ActiveAttacker.Remove(GameMap);
+            SessionClientController.Data.AttackModule = null;
+            SessionClientController.Data.BackgroundSaveGameOff = false;
+
+            if (TestMode)
+            {
+                GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
+                    , victoryAttacker
+                        ? ("Вы выиграли этот тренировочный бой! :) " + Environment.NewLine +
+                            "Сейчас караван будет восстановлен, Вам нужно будет выполнить вход.").NeedTranslate()
+                        : ("Вы потерпели поражение в этой тренировочной атаке. :( " + Environment.NewLine +
+                            "Сейчас караван будет восстановлен, Вам нужно будет выполнить вход.").NeedTranslate()
+                    , () =>
+                    {
+                        SessionClientController.Disconnected("Готово".NeedTranslate());
+                    }
+                    , null
+                );
+                return;
+            }
+            if (victoryAttacker)
+            {
+                //переделать карту в постоянную?
+            }
+            else
+            {
+                //на этом месте у атакующего: из всех пешек что с краю создать караван, а карту удалить
+                var listPawn = AttackerPawns.Keys
+                    .Where(pawn =>
+                        pawn.health.State == PawnHealthState.Mobile
+                        && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - MapBorder)
+                        && (pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - MapBorder))
+                    .ToList();
+                Caravan caravan = CaravanMaker.MakeCaravan(listPawn, Faction.OfPlayer, GameMap.Tile, false);
+                Find.WorldObjects.Remove(GameMap.Parent);
+            }
+
+            //автосейв с единым сохранением
+            SessionClientController.SaveGameNow(true, () =>
+            {
+                GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
+                    , victoryAttacker
+                        ? "Вы захватили это поселение! :) ".NeedTranslate()
+                        : ("Вы потерпели поражение :(" + Environment.NewLine +
+                            "Оставшиеся колонисты, которые способны передвигаться и которые отступили к краям карты возвращаются.").NeedTranslate()
+                    , () => { }
+                    , null
+                );
+            });
+        }
     }
 }

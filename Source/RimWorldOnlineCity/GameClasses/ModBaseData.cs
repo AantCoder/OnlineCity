@@ -72,5 +72,28 @@ namespace RimWorldOnlineCity
             LastLoginName.Unsaved = false;
 
         }
+
+        public void RunMainThread(Action act)
+        {
+            lock (MainThreadLock)
+            {
+                MainThread.Enqueue(act);
+            }
+        }
+
+        private Queue<Action> MainThread = new Queue<Action>();
+
+        private object MainThreadLock = new object();
+
+        public override void Update()
+        {
+            lock (MainThreadLock)
+            {
+                while (MainThread.Count > 0)
+                {
+                    MainThread.Dequeue()();
+                }
+            }
+        }
     }
 }

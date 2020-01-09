@@ -11,6 +11,8 @@ namespace Model
     {
         public int State { get; set; }
 
+        public bool TestMode { get; set; }
+
         public string StartHostPlayer { get; set; }
 
         public long HostPlaceServerId { get; set; }
@@ -18,8 +20,11 @@ namespace Model
         public long InitiatorPlaceServerId { get; set; }
 
         public List<ThingEntry> Pawns { get; set; }
+
         public List<AttackPawnCommand> UpdateCommand { get; set; }
 
-        public TimeSpan? SetPauseOnTimeToHost { get; set; }
+        public TimeSpan SetPauseOnTimeToHost { get; set; }
+
+        public bool VictoryHostToHost { get; set; }
     }
 }

@@ -59,11 +59,29 @@ namespace RimWorldOnlineCity
             }
             else if (mode == "attack")
             {
+                attack(caravan);
+            }
+        }
+
+        private void attack(Caravan caravan)
+        {
+            Find.TickManager.Pause();
+            Action<bool> att = (testMode) =>
+            {
                 if (GameAttacker.Create())
                 {
-                    GameAttacker.Get.Start(caravan, (BaseOnline)сaravanOnline);
+                    GameAttacker.Get.Start(caravan, (BaseOnline)сaravanOnline, testMode);
                 }
-            }
+            };
+
+            GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate() + " " + сaravanOnline.Label
+                , "Вы дейстивтельно хотите напасть на данное поселение? Можно провести тренировочный бой без последствий".NeedTranslate()
+                , () => att(false)
+                , () => { }
+                , null
+                , "Нет, только тренировка".NeedTranslate()
+                , () => att(true)
+            );
         }
 
         private void exchangeOfGoods(Caravan caravan)
@@ -135,8 +153,7 @@ namespace RimWorldOnlineCity
                     //удаляем пешку из игры
                     foreach (var pawn in caravan.PawnsListForReading)
                     {
-                        pawn.Destroy(DestroyMode.Vanish);
-                        Find.WorldPawns.RemovePawn(pawn); //не проверенное полное удаление, чтобы не появлялось клонов пешки после возврата её назад
+                        GameUtils.PawnDestroy(pawn);
                     }
 
                     Find.WorldObjects.Remove(caravan);
@@ -151,8 +168,7 @@ namespace RimWorldOnlineCity
                         {
                             var pawn = thing as Pawn;
                             //удаляем пешку из игры
-                            pawn.Destroy(DestroyMode.Vanish);
-                            Find.WorldPawns.RemovePawn(pawn); //не проверенное полное удаление, чтобы не появлялось клонов пешки после возврата её назад
+                            GameUtils.PawnDestroy(pawn);
                         }
                         else
                         {
@@ -164,7 +180,8 @@ namespace RimWorldOnlineCity
                 }
 
                 //После передачи сохраняем, чтобы нельзя было обузить
-                SessionClientController.SaveGameNow(true);
+                if (!SessionClientController.Data.BackgroundSaveGameOff)
+                    SessionClientController.SaveGameNow(true);
             });
             Find.WindowStack.Add(form);
         }

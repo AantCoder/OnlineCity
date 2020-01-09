@@ -28,7 +28,9 @@ namespace OCUnion
             return BitConverter.ToString(bs).Replace('-', ' ');
         }
 
-        public static void Log(string msg)
+        private static string LogErr = null;
+
+        private static void LogWrite(string msg, bool withCatch)
         {
             var dn = DateTime.Now;
             var dd = (long)(dn - LastMsg).TotalMilliseconds;
@@ -37,16 +39,30 @@ namespace OCUnion
             var logMsg = dn.ToString(Culture) + " | " + dd.ToString().PadLeft(6) + " | " + msg;
             var date = DateTime.Now.ToString("yyyy-MM-dd");
 
-            Console.WriteLine(logMsg);
+            if (withCatch) Console.WriteLine(logMsg);
             lock (ObjLock)
             {
                 try
                 {
+                    //if (LogMessage != null) LogMessage(logMsg);
                     File.AppendAllText(PathLog + @"Log " + date + ".txt", logMsg + Environment.NewLine, Encoding.UTF8);
                 }
-                catch
-                { }
+                catch (Exception exp)
+                {
+                    if (withCatch) LogErr = "Log exception: " + exp.Message + Environment.NewLine + logMsg;
+                }
             }
+        }
+
+        public static void Log(string msg)
+        {
+            if (LogErr != null)
+            {
+                LogWrite(LogErr, false);
+                LogErr = null;
+            }
+            LogWrite(msg, true);
         }
     }
 }
+

@@ -22,6 +22,7 @@ namespace Transfer
         public int MapSize { get; set; }
         public float PlanetCoverage { get; set; }
         public int Difficulty { get; set; }
+        public int DelaySaveGame { get; set; }
 
         public DateTime ServerTime { get; set; }
 

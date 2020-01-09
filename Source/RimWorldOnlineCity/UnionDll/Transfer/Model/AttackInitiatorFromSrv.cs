@@ -14,6 +14,8 @@ namespace Model
 
         public int State { get; set; }
 
+        public bool TestMode { get; set; }
+
         public IntVec3S MapSize { get; set; }
 
         public List<IntVec3S> TerrainDefNameCell { get; set; }
@@ -28,5 +30,7 @@ namespace Model
         public List<int> NewThingsId { get; set; }
         public List<int> Delete { get; set; }
         public List<AttackThingState> UpdateState { get; set; }
+        public bool Finishing { get; set; }
+        public bool VictoryAttacker { get; set; }
     }
 }

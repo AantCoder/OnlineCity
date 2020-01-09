@@ -140,10 +140,15 @@ namespace RimWorldOnlineCity
                     //Сохраняем и выходим
                     if (fromServ.NeedSaveAndExit)
                     {
-                        SessionClientController.SaveGameNow(false, () =>
+                        if (!SessionClientController.Data.BackgroundSaveGameOff)
                         {
-                            SessionClientController.Disconnected("От сервера получена команда на отключение. Прогресс был сохранен.".NeedTranslate());
-                        });
+                            SessionClientController.SaveGameNow(false, () =>
+                            {
+                                SessionClientController.Disconnected("От сервера получена команда на отключение. Прогресс был сохранен.".NeedTranslate());
+                            });
+                        }
+                        else
+                            SessionClientController.Disconnected("От сервера получена команда на отключение.".NeedTranslate());
                     }
 
                     //если на нас напали запускаем процесс
@@ -194,8 +199,8 @@ namespace RimWorldOnlineCity
         /// <param name="single">Будут удалены остальные Варианты сохранений, кроме этого</param>
         public static void SaveGameNowInEvent(bool single = false)
         {
-            Loger.Log("Client SaveGameNowInEvent single=" + single.ToString());
-
+            Loger.Log($"Client {SessionClientController.My.Login} SaveGameNowInEvent single=" + single.ToString());
+            
             GameDataSaveLoader.SaveGame(SaveName);
             var content = File.ReadAllBytes(SaveFullName);
 
@@ -205,19 +210,21 @@ namespace RimWorldOnlineCity
                 Data.SingleSave = single;
                 UpdateWorld(false);
 
-                Loger.Log("Client SaveGameNowInEvent OK");
+                Loger.Log($"Client {SessionClientController.My.Login} SaveGameNowInEvent OK");
             }
         }
 
         private static void BackgroundSaveGame()
         {
+            if (Data.BackgroundSaveGameOff) return;
+
             var tick = (long)Find.TickManager.TicksGame;
             if (Data.LastSaveTick == tick)
             {
-                Loger.Log("Client BackgroundSaveGame() Cancel in pause");
+                Loger.Log($"Client {SessionClientController.My.Login} BackgroundSaveGame() Cancel in pause");
                 return;
             }
-            Loger.Log("Client BackgroundSaveGame()");
+            Loger.Log($"Client {SessionClientController.My.Login} BackgroundSaveGame()");
             Data.LastSaveTick = tick;
 
             SaveGame((content) =>
@@ -432,10 +439,16 @@ namespace RimWorldOnlineCity
             var serverInfo = connect.GetInfo(ServerInfoType.Full);
             My = serverInfo.My;
             ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
+            Data.DelaySaveGame = serverInfo.DelaySaveGame;
+            if (Data.DelaySaveGame == 0) Data.DelaySaveGame = 15;
+            if (Data.DelaySaveGame < 5) Data.DelaySaveGame = 5;
 
             Loger.Log("Client ServerName=" + serverInfo.ServerName);
             Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
-            Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin + " Seed=" + serverInfo.Seed + " NeedCreateWorld=" + serverInfo.NeedCreateWorld);
+            Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin 
+                + " Seed=" + serverInfo.Seed 
+                + " NeedCreateWorld=" + serverInfo.NeedCreateWorld
+                + " DelaySaveGame=" + Data.DelaySaveGame);
             Loger.Log("Client Grants=" + serverInfo.My.Grants.ToString());
 
             if (MainHelper.VersionNum < serverInfo.VersionNum)
@@ -729,7 +742,7 @@ namespace RimWorldOnlineCity
 
                 Timers.Add(500, UpdateChats);
                 Timers.Add(5000, () => UpdateWorld(false));
-                Timers.Add(60000 * 15, BackgroundSaveGame);
+                Timers.Add(60000 * Data.DelaySaveGame, BackgroundSaveGame);
 
                 //устанавливаем событие на выход из игры
                 GameExit.BeforeExit = () =>
@@ -739,16 +752,19 @@ namespace RimWorldOnlineCity
                     TimersStop();
                     if (Current.Game == null) return;
 
-                    Loger.Log("Client SaveGameBeforeExit " + SaveFullName);
-                    GameDataSaveLoader.SaveGame(SaveName);
-                    var content = File.ReadAllBytes(SaveFullName);
-                    if (content.Length > 1024)
+                    if (!Data.BackgroundSaveGameOff)
                     {
-                        Data.SaveFileData = content;
-                        Data.SingleSave = false;
-                        UpdateWorld(false);
+                        Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit " + SaveFullName);
+                        GameDataSaveLoader.SaveGame(SaveName);
+                        var content = File.ReadAllBytes(SaveFullName);
+                        if (content.Length > 1024)
+                        {
+                            Data.SaveFileData = content;
+                            Data.SingleSave = false;
+                            UpdateWorld(false);
 
-                        Loger.Log("Client SaveGameBeforeExit OK");
+                            Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit OK");
+                        }
                     }
                     SessionClient.Get.Disconnect();
                 };

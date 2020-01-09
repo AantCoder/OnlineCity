@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Model;
+using OCUnion;
 using OCUnion.Transfer.Model;
 
 namespace ServerOnlineCity.Model
@@ -21,9 +22,16 @@ namespace ServerOnlineCity.Model
         */
         public int State { get; set; }
 
+        public bool TestMode { get; set; }
+
         public PlayerServer Attacker { get; set; }
 
         public PlayerServer Host { get; set; }
+
+        /// <summary>
+        /// Признак победы. Вычисляется и принимается от Хоста. После передачи этого значение Атакующему вызывается завершение.
+        /// </summary>
+        public bool? VictoryAttacker { get; set; }
 
         public long HostPlaceServerId { get; set; }
 
@@ -46,11 +54,13 @@ namespace ServerOnlineCity.Model
         public Dictionary<int, AttackPawnCommand> UpdateCommand { get; set; }
 
         public DateTime? SetPauseOnTimeToHost { get; set; }
+        public bool VictoryHostToHost { get; set; }
 
         private object SyncObj = new Object();
 
-        public string New(PlayerServer player, PlayerServer hostPlayer, AttackInitiatorToSrv fromClient)
+        public string New(PlayerServer player, PlayerServer hostPlayer, AttackInitiatorToSrv fromClient, bool testMode)
         {
+            TestMode = testMode;
             Attacker = player;
             Host = hostPlayer;
             Attacker.AttackData = this;
@@ -70,6 +80,7 @@ namespace ServerOnlineCity.Model
         
         public AttackHostFromSrv RequestHost(AttackHostToSrv fromClient)
         {
+            //Loger.Log($"Server AttackOnlineHost RequestHost State: {State} -> {fromClient.State}");
             lock (SyncObj)
             {
                 if (fromClient.State < State)
@@ -88,7 +99,8 @@ namespace ServerOnlineCity.Model
                         State = State,
                         HostPlaceServerId = HostPlaceServerId,
                         InitiatorPlaceServerId = InitiatorPlaceServerId,
-                        StartInitiatorPlayer = Attacker.Public.Login
+                        StartInitiatorPlayer = Attacker.Public.Login,
+                        TestMode = TestMode,
                     };
                 }
 
@@ -119,6 +131,8 @@ namespace ServerOnlineCity.Model
                 if (fromClient.State == 10)
                 {
                     State = 10;
+
+                    if (VictoryAttacker == null) VictoryAttacker = fromClient.VictoryAttacker;
 
                     if (fromClient.NewPawnsId.Count > 0
                         || fromClient.NewThingsId.Count > 0
@@ -188,10 +202,14 @@ namespace ServerOnlineCity.Model
                     {
                         State = State,
                         UpdateCommand = UpdateCommand.Values.ToList(),
-                        SetPauseOnTime = SetPauseOnTimeToHost,
+                        SetPauseOnTime = SetPauseOnTimeToHost == null ? DateTime.MinValue : SetPauseOnTimeToHost.Value,
+                        VictoryHost = VictoryHostToHost
                     };
 
                     UpdateCommand = new Dictionary<int, AttackPawnCommand>();
+
+                    if (SetPauseOnTimeToHost != null) Loger.Log("Server Send SetPauseOnTimeToHost=" + SetPauseOnTimeToHost.Value.ToGoodUtcString());
+
                     SetPauseOnTimeToHost = null;
                     return res;
                 }
@@ -210,6 +228,7 @@ namespace ServerOnlineCity.Model
                 if (fromClient.State == 0 && fromClient.StartHostPlayer != null)
                 {
                     State = 1;
+                    TestMode = fromClient.TestMode;
                     return new AttackInitiatorFromSrv()
                     {
                         State = State
@@ -229,10 +248,12 @@ namespace ServerOnlineCity.Model
                     //в это время включаем на хосте обязательную паузу
                     //После загрузки пауза обновлется на 1 минуту, чтобы атакующий огляделся (ищи SetPauseOnTimeToHost в GameAttacker)
                     SetPauseOnTimeToHost = DateTime.UtcNow.AddMinutes(5);
+                    Loger.Log("Server Set 1 SetPauseOnTimeToHost=" + SetPauseOnTimeToHost.Value.ToGoodUtcString());
 
                     return new AttackInitiatorFromSrv()
                     {
-                        State = State
+                        State = State,
+                        TestMode = TestMode,
                     };
                 }
                 if (fromClient.State == 3 && State >= 3)
@@ -258,9 +279,10 @@ namespace ServerOnlineCity.Model
                 if (fromClient.State == 10)
                 {
 
-                    if (fromClient.SetPauseOnTimeToHost != null)
+                    if (fromClient.SetPauseOnTimeToHost != TimeSpan.MinValue)
                     {
                         SetPauseOnTimeToHost = DateTime.UtcNow + fromClient.SetPauseOnTimeToHost;
+                        Loger.Log("Server Set 2 SetPauseOnTimeToHost=" + SetPauseOnTimeToHost.Value.ToGoodUtcString());
                     }
 
                     if (fromClient.UpdateCommand != null && fromClient.UpdateCommand.Count > 0)
@@ -282,6 +304,8 @@ namespace ServerOnlineCity.Model
                         NewThingsId = NewThingsId,
                         Delete = Delete,
                         UpdateState = UpdateState.Values.ToList(),
+                        Finishing = VictoryAttacker != null,
+                        VictoryAttacker = VictoryAttacker != null ? VictoryAttacker.Value : false,
                     };
                     NewPawns = new List<ThingEntry>();
                     NewPawnsId = new List<int>();
@@ -289,6 +313,9 @@ namespace ServerOnlineCity.Model
                     NewThingsId = new List<int>();
                     Delete = new List<int>();
                     UpdateState = new Dictionary<int, AttackThingState>();
+
+                    if (VictoryAttacker != null) Finish(VictoryAttacker.Value);
+
                     return res;
                 }
 
@@ -297,6 +324,12 @@ namespace ServerOnlineCity.Model
                     ErrorText = "Unexpected request " + fromClient.State.ToString() + "! Was expected" + State.ToString()
                 };
             }
+        }
+
+        private void Finish(bool victoryAttacker)
+        {
+            Attacker.AttackData = null;
+            Host.AttackData = null;
         }
     }
 }

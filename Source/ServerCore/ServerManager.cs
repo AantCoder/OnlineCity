@@ -47,7 +47,7 @@ namespace ServerOnlineCity
             get { return _ActiveClientCount; }
         }
 
-        public void Start(string path, int port = SessionClient.DefaultPort)
+        public void Start(string path)
         {
             //var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
             var jsonFile = Path.Combine(path, "Settings.json");
@@ -90,7 +90,6 @@ namespace ServerOnlineCity
                         return;
                     }
                 }
-
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);

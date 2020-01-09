@@ -53,7 +53,7 @@ namespace ServerOnlineCity.Services
                     }
 
                     var att = new AttackServer();
-                    var err = att.New(context.Player, hostPlayer, fromClient);
+                    var err = att.New(context.Player, hostPlayer, fromClient, fromClient.TestMode);
                     if (err != null)
                     {
                         res.ErrorText = err;

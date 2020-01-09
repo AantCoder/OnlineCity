@@ -120,6 +120,7 @@ namespace ServerOnlineCity.Services
                 ServerTime = DateTime.UtcNow,
                 IsModsWhitelisted = ServerManager.ServerSettings.IsModsWhitelisted,
                 ServerName = ServerManager.ServerSettings.ServerName,
+                DelaySaveGame = player.SettingDelaySaveGame,
             };
 
             return result;

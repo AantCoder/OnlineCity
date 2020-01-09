@@ -87,7 +87,25 @@ namespace RimWorldOnlineCity
                             Dialog_MainOnlineCity.ShowHide();
                         }, null);
                         optList.Add(item);
-                            
+
+                        if (SessionClientController.Data.AttackModule != null)
+                        {
+                            item = new ListableOption("Отступить".NeedTranslate(), delegate
+                            {
+                                SessionClientController.Data.AttackModule.VictoryHostToHost = true;
+                            }, null);
+                            optList.Add(item);
+                        }
+
+                        if (SessionClientController.Data.AttackUsModule != null)
+                        {
+                            item = new ListableOption("Сдаться".NeedTranslate(), delegate
+                            {
+                                SessionClientController.Data.AttackUsModule.ConfirmedVictoryAttacker = true;
+                            }, null);
+                            optList.Add(item);
+                        }
+
                         item = new ListableOption("QuitToMainMenu".Translate(), delegate
                         {
                             if (GameExit.BeforeExit != null)

@@ -26,5 +26,6 @@ namespace Model
         public List<int> NewThingsId { get; set; }
         public List<int> Delete { get; set; }
         public List<AttackThingState> UpdateState { get; set; }
+        public bool? VictoryAttacker { get; set; }
     }
 }

@@ -52,12 +52,16 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Если не null, значит сейчас режим атаки на другое поселение online
         /// </summary>
-        public GameAttacker AttackModule = null;
+        public GameAttacker AttackModule { get; set; } = null;
 
         /// <summary>
         /// Если не null, значит сейчас режим атаки кого-то на наше поселение online
         /// </summary>
-        public GameAttackHost AttackUsModule = null;
+        public GameAttackHost AttackUsModule { get; set; } = null;
+
+        public int DelaySaveGame = 15;
+
+        public bool BackgroundSaveGameOff;
 
         public Faction FactionPirate
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Model;
+using OCUnion;
 using ServerOnlineCity.Model;
 using Transfer;
 
@@ -31,6 +32,7 @@ namespace ServerOnlineCity.Services
 
                 if (context.Player.AttackData == null)
                 {
+                    Loger.Log("Server AttackOnlineHost Unexpected error, no data");
                     res.ErrorText = "Unexpected error, no data";
                     return res;
                 }

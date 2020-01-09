@@ -47,7 +47,12 @@ namespace ServerOnlineCity.Model
 
         [NonSerialized]
         public AttackServer AttackData;
-      
+
+        /// <summary>
+        /// По умолчанию когда =0 - принимается 15 минут
+        /// </summary>
+        public int SettingDelaySaveGame; 
+
         private PlayerServer()
         { }
 
