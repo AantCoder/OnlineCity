@@ -14,25 +14,20 @@ namespace RimWorldOnlineCity.Services
         public PackageType ResponseTypePackage => PackageType.Response38GetApproveFolders;
 
         private readonly Transfer.SessionClient _sessionClient;
-        public static string ConfigPath => Path.Combine(GenFilePaths.ConfigFolderPath, "OnlineCity");
 
         public GetApproveFolders(Transfer.SessionClient sessionClient)
         {
             _sessionClient = sessionClient;
-            if (!Directory.Exists(ConfigPath))
-            {
-                Directory.CreateDirectory(ConfigPath);
-            }
         }
 
         public static string GetModsApprovedFoldersFileName(string ip)
         {
-            return Path.Combine(ConfigPath, ip + "_mods.txt");
+            return Path.Combine(SessionClientController.ConfigPath, ip + "_mods.txt");
         }
 
         public static string GetSteamApprovedFoldersFileName(string ip)
         {
-            return Path.Combine(ConfigPath, ip + "_steam.txt");
+            return Path.Combine(SessionClientController.ConfigPath, ip + "_steam.txt");
         }
 
         /// <summary>

@@ -70,18 +70,29 @@ namespace RimWorldOnlineCity.Services
             Loger.Log("Start Hash:" + steamFileName);
             // может быть есть лучше вариант, как указать папку модов со steam ???
             SteamFolder = GenFilePaths.CoreModsFolderPath.Replace("common\\RimWorld\\Mods", "workshop\\content\\294100");
-            if (!Directory.Exists(SteamFolder))
+            Loger.Log("GenFilePaths.ModsConfigFilePath = " + GenFilePaths.ModsConfigFilePath);
+            if (SteamFolder.Equals(GenFilePaths.CoreModsFolderPath) || !Directory.Exists(SteamFolder))
             {
-                Log.Message($"Directory {SteamFolder} not found, multiplayer doesn't support not License Copy of Game");
-                SteamFolder = String.Empty;
+                var steamFolder = Path.Combine(SessionClientController.ConfigPath, "workshop");
+                Log.Message($"Directory {SteamFolder} not found, using {steamFolder}");
+                if (!Directory.Exists(steamFolder))
+                {
+                    Log.Message($"Create {steamFolder}");
+                    Log.Message("Таян наверное расстроится, скорее всего используется пиратская версия игры");
+                    Directory.CreateDirectory(steamFolder);
+                }
+
+                SteamFolder = steamFolder;
             }
+
+            Loger.Log("SteamFolder=" + SteamFolder);
 
             CheckHashModsThread = new Thread(() =>
            {
-               ClientHashChecker.ModsFiles = FileChecker.GenerateHashFiles(GenFilePaths.CoreModsFolderPath, modsListFolder);
                Loger.Log($"GenerateHashFiles {GenFilePaths.CoreModsFolderPath}");
-               ClientHashChecker.SteamFiles = FileChecker.GenerateHashFiles(SteamFolder, steamListFolder);
+               ClientHashChecker.ModsFiles = FileChecker.GenerateHashFiles(GenFilePaths.CoreModsFolderPath, modsListFolder);
                Loger.Log($"GenerateHashFiles {SteamFolder}");
+               ClientHashChecker.SteamFiles = FileChecker.GenerateHashFiles(SteamFolder, steamListFolder);               
            });
 
             CheckHashModsThread.IsBackground = true;
@@ -92,6 +103,7 @@ namespace RimWorldOnlineCity.Services
         {
             if (CheckHashModsThread.ThreadState != ThreadState.Stopped)
             {
+                Loger.Log("Wait . . . ");
                 CheckHashModsThread.Join();
             }
 

@@ -46,7 +46,8 @@ namespace ServerCore.Model
         /// <summary>
         /// For using steam workshop folder
         /// </summary>
-        public string SteamWorkShopModsDir { get; set; }
+        [JsonIgnore]
+        public string SteamWorkShopModsDir { get; set; } 
 
         public ServerSettings() { }
 
@@ -87,10 +88,10 @@ namespace ServerCore.Model
                     errors.Add(new ValidationResult($"Mods directory doesn't exist ModsDirectory={obj.ModsDirectory}"));
                 }
 
-                if (!Directory.Exists(obj.SteamWorkShopModsDir))
-                {
-                    errors.Add(new ValidationResult($"Steam Mods directory doesn't exist SteamWorkShopModsDir={obj.SteamWorkShopModsDir}"));
-                }
+                //if (!Directory.Exists(obj.SteamWorkShopModsDir))
+                //{
+                //    errors.Add(new ValidationResult($"Steam Mods directory doesn't exist SteamWorkShopModsDir={obj.SteamWorkShopModsDir}"));
+                //}
             }
 
             return errors;
