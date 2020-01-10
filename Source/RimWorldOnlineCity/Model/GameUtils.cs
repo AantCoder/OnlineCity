@@ -436,29 +436,33 @@ namespace RimWorldOnlineCity
                     ?? Find.FactionManager.OfAncientsHostile; //SessionClientController.Data.FactionPirate;
 
             IntVec3 ret = new IntVec3();
-            Thing thinXZ;
-            for (int i = 0; i < pawns.Count; i++)
-            {
-                var thing = pawns[i];
-                //GenSpawn.Spawn(pawn, cell, map, Rot4.Random, WipeMode.Vanish, false);
-
-                if (MainHelper.DebugMode) Loger.Log("Prepare...");
-                var thin = UpdateWorldController.PrepareSpawnThingEntry(thing, factionPirate, getPirate(thing));
-
-                var cell = getCell != null ? getCell(thin) : thin.Position;
-                if (i == 0) ret = cell;
-
-                if (MainHelper.DebugMode) try { Loger.Log("Spawn... " + thin.Label); } catch { Loger.Log("Spawn... "); }
-                if (thin is Pawn)
+            //ModBaseData.RunMainThreadSync(() =>
+            //{
+                Thing thinXZ;
+                for (int i = 0; i < pawns.Count; i++)
                 {
-                    if (MainHelper.DebugMode) Loger.Log("Pawn... " + thin.Position.x + " " + thin.Position.y);
-                    GenSpawn.Spawn((Pawn)thin, cell, map);
+                    var thing = pawns[i];
+                    //GenSpawn.Spawn(pawn, cell, map, Rot4.Random, WipeMode.Vanish, false);
+
+                    if (MainHelper.DebugMode) Loger.Log("Prepare...");
+                    var thin = UpdateWorldController.PrepareSpawnThingEntry(thing, factionPirate, getPirate(thing));
+
+                    var cell = getCell != null ? getCell(thin) : thin.Position;
+                    if (i == 0) ret = cell;
+
+                    if (MainHelper.DebugMode) try { Loger.Log("Spawn... " + thin.Label); } catch { Loger.Log("Spawn... "); }
+                    if (thin is Pawn)
+                    {
+                        if (MainHelper.DebugMode) Loger.Log("Pawn... " + thin.Position.x + " " + thin.Position.y);
+                        GenSpawn.Spawn((Pawn)thin, cell, map);
+                    }
+                    else
+                        GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
+                    if (spawn != null) spawn(thin, thing);
+                    if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
                 }
-                else
-                    GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
-                if (spawn != null) spawn(thin, thing);
-                if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
-            }
+
+            //});
             return ret;
         }
 

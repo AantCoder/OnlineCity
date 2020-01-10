@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace OCUnion
 {
@@ -12,7 +13,7 @@ namespace OCUnion
         //public static event Action<string> LogMessage;
 
         private static string _PathLog;
-        private static DateTime LastMsg;
+        private static Dictionary<int, DateTime> LastMsg = new Dictionary<int, DateTime>();
         public static CultureInfo Culture = CultureInfo.GetCultureInfo("ru-RU");
         private static Object ObjLock = new Object();
         public static bool IsServer;
@@ -29,14 +30,16 @@ namespace OCUnion
         }
 
         private static string LogErr = null;
+        private static int LogErrThr = 0;
 
-        private static void LogWrite(string msg, bool withCatch)
+        private static void LogWrite(string msg, bool withCatch, int threadId = 0)
         {
+            var thn = threadId != 0 ? threadId : Thread.CurrentThread.ManagedThreadId;
             var dn = DateTime.Now;
-            var dd = (long)(dn - LastMsg).TotalMilliseconds;
-            LastMsg = dn;
+            var dd = !LastMsg.ContainsKey(thn) ? 0 : (long)(dn - LastMsg[thn]).TotalMilliseconds;
+            LastMsg[thn] = dn;
             if (dd >= 1000000) dd = 0;
-            var logMsg = dn.ToString(Culture) + " | " + dd.ToString().PadLeft(6) + " | " + msg;
+            var logMsg = dn.ToString(Culture) + " |" + dd.ToString().PadLeft(6) + " |" + thn.ToString().PadLeft(4) + " | " + msg;
             var date = DateTime.Now.ToString("yyyy-MM-dd");
 
             if (withCatch) Console.WriteLine(logMsg);
@@ -49,7 +52,11 @@ namespace OCUnion
                 }
                 catch (Exception exp)
                 {
-                    if (withCatch) LogErr = "Log exception: " + exp.Message + Environment.NewLine + logMsg;
+                    if (withCatch)
+                    {
+                        LogErr = "Log exception: " + exp.Message + Environment.NewLine + logMsg;
+                        LogErrThr = thn;
+                    }
                 }
             }
         }
@@ -58,7 +65,7 @@ namespace OCUnion
         {
             if (LogErr != null)
             {
-                LogWrite(LogErr, false);
+                LogWrite(LogErr, false, LogErrThr);
                 LogErr = null;
             }
             LogWrite(msg, true);

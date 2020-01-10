@@ -10,6 +10,8 @@ using HugsLib.Utils;
 using Verse;
 using HugsLib.Quickstart;
 using HugsLib.Settings;
+using System.Threading;
+using OCUnion;
 
 namespace RimWorldOnlineCity
 {
@@ -73,25 +75,84 @@ namespace RimWorldOnlineCity
 
         }
 
-        public void RunMainThread(Action act)
+        public static void RunMainThreadSync(Action act)
         {
-            lock (MainThreadLock)
+            /*
+            if (GlobalData.MainThreadNum == Thread.CurrentThread.ManagedThreadId)
+                act();
+            else
+            */
             {
-                MainThread.Enqueue(act);
+                var num = RunMainThread(act);
+                int i = 0;
+                while (GlobalData.ActionNumReady < num && i++ < 20) Thread.Sleep(1);
+
+                if (GlobalData.ActionNumReady < num)
+                {
+                    var end = DateTime.UtcNow.AddSeconds(10);
+                    while (GlobalData.ActionNumReady < num && DateTime.UtcNow < end) Thread.Sleep(10);
+
+                    if (GlobalData.ActionNumReady < num)
+                    {
+                        Loger.Log("Client RunMainThread Timeout Exception");
+                        throw new ApplicationException("Client RunMainThread Timeout");
+                    }
+                }
+
+                Loger.Log($"Client RunMainThreadSync end i={i}");
+            }
+        }
+        
+        public static long RunMainThread(Action act)
+        {
+            lock (GlobalData.MainThreadLock)
+            {
+                var qa = new QueueActionModel()
+                {
+                    Num = ++GlobalData.ActionNumNext,
+                    Act = act
+                };
+                GlobalData.MainThread.Enqueue(qa);
+                return qa.Num;
             }
         }
 
-        private Queue<Action> MainThread = new Queue<Action>();
+        private class QueueActionModel
+        {
+            public Action Act;
+            public long Num;
+        }
+
+        private long ActionNumNext = 0;
+        private long ActionNumReady = 0;
+
+        private Queue<QueueActionModel> MainThread = new Queue<QueueActionModel>();
 
         private object MainThreadLock = new object();
 
+        public int MainThreadNum = int.MinValue;
+
         public override void Update()
         {
+            if (MainThreadNum == int.MinValue)
+            {
+                MainThreadNum = Thread.CurrentThread.ManagedThreadId;
+            }
+
             lock (MainThreadLock)
             {
                 while (MainThread.Count > 0)
                 {
-                    MainThread.Dequeue()();
+                    var qa = MainThread.Dequeue();
+                    try
+                    {
+                        qa.Act();
+                    }
+                    catch(Exception ext)
+                    {
+                        Loger.Log("Client RunMainThread Exception " + ext.ToString());
+                    }
+                    ActionNumReady = qa.Num;
                 }
             }
         }

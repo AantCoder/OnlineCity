@@ -62,6 +62,8 @@ namespace RimWorldOnlineCity
 
             Loger.Log("Client Init " + MainHelper.VersionInfo);
             Loger.Log("Client Language: " + Prefs.LangFolderName);
+
+            Loger.Log("Client MainThreadNum=" + ModBaseData.GlobalData.MainThreadNum.ToString());
         }
 
         private static object UpdatingWorld = new Object();
