@@ -88,7 +88,19 @@ namespace ServerOnlineCity
 
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
                 var recObj = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
-                var sendObj = Worker.GetPackage(recObj);
+                ModelContainer sendObj;
+                try
+                {
+                    sendObj = Worker.GetPackage(recObj);
+                }
+                catch (Exception ext)
+                {
+                    Loger.Log("Exception GetPackage: " + ext.ToString());
+                    sendObj = new ModelContainer()
+                    {
+                        TypePacket = 0
+                    };
+                }
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
 

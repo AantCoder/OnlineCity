@@ -437,7 +437,7 @@ namespace RimWorldOnlineCity
 
             IntVec3 ret = new IntVec3();
             //ModBaseData.RunMainThreadSync(() =>
-            //{
+            {
                 Thing thinXZ;
                 for (int i = 0; i < pawns.Count; i++)
                 {
@@ -462,7 +462,7 @@ namespace RimWorldOnlineCity
                     if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
                 }
 
-            //});
+            }//);
             return ret;
         }
 

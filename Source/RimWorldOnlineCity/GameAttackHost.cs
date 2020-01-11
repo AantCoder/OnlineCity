@@ -946,7 +946,7 @@ namespace RimWorldOnlineCity
             }
             if (victoryAttacker)
             {
-                //удалить свою колонию //todo  на этом месте у атакующего: переделать карту в постоянную
+                //удалить свою колонию
                 Find.WorldObjects.Remove(GameMap.Parent);
             }
             else
@@ -954,14 +954,14 @@ namespace RimWorldOnlineCity
                 //удалить всех чужих пешек с краев карты (они сбежали)
                 foreach (var pawn in AttackingPawns)
                 {
-                    if (pawn.health.State == PawnHealthState.Mobile
-                        && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - MapBorder)
-                        && (pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - MapBorder))
+                    if (!pawn.Dead 
+                        && !pawn.Downed
+                        && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - MapBorder
+                            || pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - MapBorder))
                     {
                         GameUtils.PawnDestroy(pawn);
                     }
                 }
-                //todo  на этом месте у атакующего: из всех пешек что с краю создать караван, а карту удалить
             }
 
             //автосейв с единым сохранением

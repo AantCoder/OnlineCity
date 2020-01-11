@@ -219,9 +219,6 @@ namespace RimWorldOnlineCity
                         + " CountThingsRev=" + ThingsIDDicRev.Count.ToString() 
                         + " CountThingsObj=" + ThingsObjDic.Count.ToString());
 
-                    //режим вечной паузы
-                    //todo
-                    
                     Loger.Log("Client StartCreateClearMap 5");
                     AttackUpdateTick = 0;
                     AttackUpdate();
@@ -301,9 +298,7 @@ namespace RimWorldOnlineCity
                     );
 
                 }
-                /*
-                 todo сделать сообщение если пауза не была нажата
-                 */
+
                 if (InTimer) return;
                 InTimer = true;
                 AttackUpdateTick++;
@@ -631,7 +626,7 @@ namespace RimWorldOnlineCity
 
                     Loger.Log("Client CreateClearMap 2");
                     //todo проверить что временный родитель mapParent будет удален 
-                    var mapParent = (MapParent)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Ambush); //WorldObjectDefOf.AttackedNonPlayerCaravan
+                    var mapParent = (MapParent)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Ambush); //WorldObjectDefOf.Ambush  WorldObjectDefOf.AttackedNonPlayerCaravan
                     mapParent.Tile = tile;
                     Loger.Log("Client CreateClearMap 3");
                     Find.WorldObjects.Add(mapParent);
@@ -725,15 +720,21 @@ namespace RimWorldOnlineCity
             if (victoryAttacker)
             {
                 //переделать карту в постоянную?
+                foreach (var pawn in GameMap.mapPawns.AllPawns)
+                {
+                    if (pawn.RaceProps.Humanlike || pawn.Faction == null || pawn.Faction.IsPlayer) continue;
+                    pawn.SetFaction(null);
+                }
             }
             else
             {
                 //на этом месте у атакующего: из всех пешек что с краю создать караван, а карту удалить
                 var listPawn = AttackerPawns.Keys
                     .Where(pawn =>
-                        pawn.health.State == PawnHealthState.Mobile
-                        && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - MapBorder)
-                        && (pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - MapBorder))
+                        !pawn.Dead
+                        && !pawn.Downed
+                        && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - MapBorder
+                            || pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - MapBorder))
                     .ToList();
                 Caravan caravan = CaravanMaker.MakeCaravan(listPawn, Faction.OfPlayer, GameMap.Tile, false);
                 Find.WorldObjects.Remove(GameMap.Parent);

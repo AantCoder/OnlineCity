@@ -211,6 +211,7 @@ namespace ServerOnlineCity.Model
                     if (SetPauseOnTimeToHost != null) Loger.Log("Server Send SetPauseOnTimeToHost=" + SetPauseOnTimeToHost.Value.ToGoodUtcString());
 
                     SetPauseOnTimeToHost = null;
+                    VictoryHostToHost = false;
                     return res;
                 }
 
@@ -278,6 +279,10 @@ namespace ServerOnlineCity.Model
                 }
                 if (fromClient.State == 10)
                 {
+                    if (fromClient.VictoryHostToHost)
+                    {
+                        VictoryHostToHost = fromClient.VictoryHostToHost;
+                    }
 
                     if (fromClient.SetPauseOnTimeToHost != TimeSpan.MinValue)
                     {

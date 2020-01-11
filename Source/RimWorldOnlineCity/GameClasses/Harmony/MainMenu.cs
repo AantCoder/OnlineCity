@@ -92,6 +92,7 @@ namespace RimWorldOnlineCity
                         {
                             item = new ListableOption("Отступить".NeedTranslate(), delegate
                             {
+                                Loger.Log("Client MainMenu VictoryHost");
                                 SessionClientController.Data.AttackModule.VictoryHostToHost = true;
                             }, null);
                             optList.Add(item);
@@ -101,6 +102,7 @@ namespace RimWorldOnlineCity
                         {
                             item = new ListableOption("Сдаться".NeedTranslate(), delegate
                             {
+                                Loger.Log("Client MainMenu VictoryAttacker");
                                 SessionClientController.Data.AttackUsModule.ConfirmedVictoryAttacker = true;
                             }, null);
                             optList.Add(item);
