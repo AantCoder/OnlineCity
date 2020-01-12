@@ -23,6 +23,14 @@ namespace Model
 
         public long LastTick { get; set; }
 
+        public bool EnablePVP { get; set; }
+
+        public string DiscordUserName { get; set; }
+
+        public string EMail { get; set; }
+
+        public string AboutMyText { get; set; }
+
         public Grants Grants { get; set; }
     }
 }

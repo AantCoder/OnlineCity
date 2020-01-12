@@ -15,6 +15,10 @@ namespace RimWorldOnlineCity.GameClasses
 {
     public static class GameAttackTrigger_Patch
     {
+        /// <summary>
+        /// Принудительно устанавливает коэффициент скорости. Отключено, если меньше 0
+        /// </summary>
+        public static float ForceSpeed = -1f;
         public static Dictionary<Map, GameAttacker> ActiveAttacker = new Dictionary<Map, GameAttacker>();
         public static Dictionary<Map, GameAttackHost> ActiveAttackHost = new Dictionary<Map, GameAttackHost>();
 
@@ -50,6 +54,7 @@ namespace RimWorldOnlineCity.GameClasses
         public static void Prefix(Thing __instance)
         {
             if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
             if (__instance is Plant) return;
@@ -75,6 +80,7 @@ namespace RimWorldOnlineCity.GameClasses
         public static void Prefix(Thing __instance)
         {
             if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
             if (__instance is Plant) return;
@@ -99,6 +105,7 @@ namespace RimWorldOnlineCity.GameClasses
         public static void Postfix(Thing __instance, DamageInfo dinfo, float totalDamageDealt)
         {
             if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
             if (__instance is Plant) return;
@@ -122,6 +129,7 @@ namespace RimWorldOnlineCity.GameClasses
         public static void Postfix(Thing __instance, DamageInfo dinfo, float totalDamageDealt)
         {
             if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
             if (__instance is Plant) return;
@@ -145,6 +153,7 @@ namespace RimWorldOnlineCity.GameClasses
         public static void Postfix(Thing __instance, Map map, bool respawningAfterLoad)
         {
             if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
             if (__instance is Plant) return;
@@ -218,6 +227,42 @@ namespace RimWorldOnlineCity.GameClasses
             }
         }
     }
+
+    /// <summary>
+    /// Прехватываем управление коэффициентом скорости игры
+    /// </summary>
+    [HarmonyPatch(typeof(TickManager))]
+    [HarmonyPatch("TickRateMultiplier", MethodType.Getter)]
+    public static class TickManager_TickRateMultiplier
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref float __result)
+        {
+            if (GameAttackTrigger_Patch.ForceSpeed < 0f) return;
+            __result = GameAttackTrigger_Patch.ForceSpeed;
+        }
+    }
+
+    /// <summary>
+    /// Перехватываем скорость передвижения пешки 
+    /// </summary>
+    [HarmonyPatch(typeof(Pawn))]
+    [HarmonyPatch("TicksPerMove")]
+    public static class Pawn_TicksPerMove
+    {
+        [HarmonyPostfix]
+        public static void Postfix(Pawn __instance, ref int __result)
+        {
+            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+
+            GameAttackHost clientHost;
+            if (GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(__instance.Map, out clientHost))
+            {
+                clientHost.ControlPawnMoveSpeed(__instance, ref __result);
+            }
+        }
+    }
+
 
     /*
     /// <summary>

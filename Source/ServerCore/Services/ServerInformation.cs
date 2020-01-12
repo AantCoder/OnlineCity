@@ -121,6 +121,9 @@ namespace ServerOnlineCity.Services
                 IsModsWhitelisted = ServerManager.ServerSettings.IsModsWhitelisted,
                 ServerName = ServerManager.ServerSettings.ServerName,
                 DelaySaveGame = player.SettingDelaySaveGame,
+                DisableDevMode = ServerManager.ServerSettings.DisableDevMode,
+                EnableFileLog = player.SettingEnableFileLog,
+                EnablePVPChangeTime = player.EnablePVPChangeTime,
             };
 
             return result;

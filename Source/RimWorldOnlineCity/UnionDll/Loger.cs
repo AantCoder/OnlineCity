@@ -63,6 +63,8 @@ namespace OCUnion
 
         public static void Log(string msg)
         {
+            if (MainHelper.OffAllLog) return;
+
             if (LogErr != null)
             {
                 LogWrite(LogErr, false, LogErrThr);

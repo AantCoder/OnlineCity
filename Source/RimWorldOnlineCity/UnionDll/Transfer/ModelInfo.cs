@@ -23,6 +23,9 @@ namespace Transfer
         public float PlanetCoverage { get; set; }
         public int Difficulty { get; set; }
         public int DelaySaveGame { get; set; }
+        public bool DisableDevMode { get; set; }
+        public bool EnableFileLog { get; set; }
+        public DateTime EnablePVPChangeTime { get; set; }
 
         public DateTime ServerTime { get; set; }
 

@@ -446,13 +446,16 @@ namespace RimWorldOnlineCity
             Data.DelaySaveGame = serverInfo.DelaySaveGame;
             if (Data.DelaySaveGame == 0) Data.DelaySaveGame = 15;
             if (Data.DelaySaveGame < 5) Data.DelaySaveGame = 5;
+            Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
+            MainHelper.OffAllLog = serverInfo.EnableFileLog;
 
             Loger.Log("Client ServerName=" + serverInfo.ServerName);
             Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
             Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin 
                 + " Seed=" + serverInfo.Seed 
                 + " NeedCreateWorld=" + serverInfo.NeedCreateWorld
-                + " DelaySaveGame=" + Data.DelaySaveGame);
+                + " DelaySaveGame=" + Data.DelaySaveGame
+                + " DisableDevMode=" + Data.DisableDevMode);
             Loger.Log("Client Grants=" + serverInfo.My.Grants.ToString());
 
             if (MainHelper.VersionNum < serverInfo.VersionNum)
@@ -732,6 +735,18 @@ namespace RimWorldOnlineCity
                 Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_Disconnect".Translate(), msg, null, actionOnDisctonnect));
         }
 
+        private static void UpdateFastTimer()
+        {
+            if (Current.Game == null) return;
+            if (!SessionClient.Get.IsLogined) return;
+
+            if (SessionClientController.Data.DisableDevMode)
+            {
+                if (Prefs.DevMode) Prefs.DevMode = false;
+                // также ещё можно подписаться в метод PrefsData.Apply() и следить за изменениями оттуда
+            }
+        }
+
         /// <summary>
         /// Инициализация после получения всех данных и уже запущенной игре
         /// </summary>
@@ -750,6 +765,7 @@ namespace RimWorldOnlineCity
 
                 Data.LastServerConnect = DateTime.MinValue;
 
+                Timers.Add(100, UpdateFastTimer);
                 Timers.Add(500, UpdateChats);
                 Timers.Add(5000, () => UpdateWorld(false));
                 Timers.Add(60000 * Data.DelaySaveGame, BackgroundSaveGame);

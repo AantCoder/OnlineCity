@@ -10,10 +10,17 @@ namespace OCUnion
 {
     public static class MainHelper
     {
-        public static bool DebugMode = true;
+        /// <summary>
+        /// Активирует разрабатваемые блоки и дополнительное логирования
+        /// </summary>
+        public static bool DebugMode = false;
+        /// <summary>
+        /// Отключить все логи в файл и консоль. Сервер всегда меняет значение на false
+        /// </summary>
+        public static bool OffAllLog = false;
 
         //public static string VersionInfo = $"Version {Assembly.GetExecutingAssembly().FullName}";
-        public static string VersionInfo = "Версия 0.03.33a от 2020.01.08";
+        public static string VersionInfo = "Версия 0.03.33a от 2020.01.12";
 
         /// <summary>
         /// Для автоматической проверки: версия клиента должна быть больше или равна версии сервера

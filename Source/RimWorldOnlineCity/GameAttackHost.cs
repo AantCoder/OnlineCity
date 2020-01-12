@@ -19,28 +19,37 @@ namespace RimWorldOnlineCity
 {
     public class GameAttackHost
     {
+        /// <summary>
+        /// Время в ms между синхронизациями с сервером
+        /// </summary>
+        public int AttackUpdateDelay { get; } = 50;
 
         /// <summary>
         /// Время в сек между полной синхронизацией пешек, например, чтобы после получаения урона увидеть точное здоровье
         /// </summary>
         public int SendDelayedFillPawnsSeconds { get; } = 30;
 
-        /// <summary>
-        /// Время в ms между синхронизациями с сервером
-        /// </summary>
-        public int AttackUpdateDelay { get; } = 200;
 
         /// <summary>
         /// Сколько секунд ждать после подения последней пешки прежде чем засчитывать победу
         /// </summary>
-        public int CheckVictoryDelay { get; } = 10;
+        public int CheckVictoryDelay { get; } = 20;
 
         /// <summary>
         /// Расстояние от краев карты за которым пешка мжет сбежать
         /// </summary>
         public int MapBorder { get; } = 10;
 
+        /// <summary>
+        /// Установить заданную скорость вместо нормальной 1
+        /// </summary>
+        public float TickTimeSpeed { get; } = 0.5f;
 
+        /// <summary>
+        /// Насколько изменяется скорость всех пешек кроме атакующих (для баланса)
+        /// </summary>
+        public float HostPawnMoveSpeed { get; } = 0.5f;
+        
         public bool TestMode { get; set; }
 
         public string AttackerLogin { get; set; }
@@ -143,6 +152,18 @@ namespace RimWorldOnlineCity
         public bool IsPause => CurrentPauseToTime > DateTime.UtcNow;
 
         /// <summary>
+        /// Замедлять защищающихся после минуты игры
+        /// </summary>
+        public bool HostPawnMoveSpeedActive => 
+            TimeStartGameAttack != DateTime.MinValue 
+            && TimeStartGameAttack.AddMinutes(1) < DateTime.UtcNow;
+
+        /// <summary>
+        /// Начало нападения, снятия с паузы
+        /// </summary>
+        public DateTime TimeStartGameAttack = DateTime.MinValue;
+
+        /// <summary>
         /// Когда было обнаружено условие победы (все пешки одной из сторон недееспособны).
         /// Равно DateTime.MaxValue, если в текущий момент такого нет.
         /// </summary>
@@ -219,6 +240,8 @@ namespace RimWorldOnlineCity
             Loger.Log("Client GameAttackHost Start 2 " + tolient.HostPlaceServerId + " TestMode=" + TestMode);
 
             SessionClientController.SaveGameNowInEvent(false);
+            Find.TickManager.Pause();
+            GameAttackTrigger_Patch.ForceSpeed = 0f;
             PauseMessage();
 
             //Устанавливаем паузу сейчас первый раз, 
@@ -422,6 +445,7 @@ namespace RimWorldOnlineCity
                     if (!Find.TickManager.Paused)
                     {
                         Find.TickManager.Pause();
+                        GameAttackTrigger_Patch.ForceSpeed = 0f;
                         PauseMessage();
                     }
                 }
@@ -430,6 +454,8 @@ namespace RimWorldOnlineCity
                     if (Find.TickManager.Paused || Find.TickManager.CurTimeSpeed != TimeSpeed.Normal)
                     {
                         Find.TickManager.CurTimeSpeed = TimeSpeed.Normal;
+                        GameAttackTrigger_Patch.ForceSpeed = TickTimeSpeed;
+                        if (TimeStartGameAttack == DateTime.MinValue) TimeStartGameAttack = DateTime.UtcNow;
                     }
                 }
 
@@ -888,6 +914,22 @@ namespace RimWorldOnlineCity
             }
         }
 
+        /// <summary>
+        /// Изменяем скрость пешек от 1 до 450 (смотри Pawn.TicksPerMove)
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="speed"></param>
+        public void ControlPawnMoveSpeed(Pawn pawn, ref int speed)
+        {
+            if (!HostPawnMoveSpeedActive) return;
+
+            if (!AttackingPawnDic.ContainsKey(pawn.thingIDNumber))
+            {
+                speed = (int)(speed / HostPawnMoveSpeed);
+                if (speed > 450) speed = 450;
+            }
+        }
+
         private bool? CheckAttackerVictory()
         {
             bool existHostPawn = false;
@@ -925,6 +967,7 @@ namespace RimWorldOnlineCity
             GameAttackTrigger_Patch.ActiveAttackHost.Remove(GameMap);
             SessionClientController.Data.AttackUsModule = null;
             SessionClientController.Data.BackgroundSaveGameOff = false;
+            GameAttackTrigger_Patch.ForceSpeed = -1f;
 
             if (TestMode)
             {

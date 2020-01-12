@@ -24,6 +24,13 @@ namespace ServerCore.Model
         public bool IsModsWhitelisted { get; set; }
 
         /// <summary>
+        /// Disable DevMode
+        /// </summary>
+        public bool DisableDevMode { get; set; }
+
+        public int MinutesIntervalBetweenPVP { get; set; }
+
+        /// <summary>
         /// Рабочая директория
         /// </summary>
         [JsonIgnore]

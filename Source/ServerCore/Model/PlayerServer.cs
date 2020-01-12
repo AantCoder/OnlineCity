@@ -53,6 +53,21 @@ namespace ServerOnlineCity.Model
         /// </summary>
         public int SettingDelaySaveGame;
 
+        /// <summary>
+        /// Записывать ли логи в файл на клиенте, по умолчанию отключено, для быстродействия
+        /// </summary>
+        public bool SettingEnableFileLog;
+
+        /// <summary>
+        /// Когда последний раз менял галку "Учавствую в PVP"
+        /// </summary>
+        public DateTime EnablePVPChangeTime;
+
+        /// <summary>
+        /// Когда последний раз нападали
+        /// </summary>
+        public DateTime PVPHostLastTime;
+
         private PlayerServer()
         {
             ExitReason = DisconnectReason.AllGood;

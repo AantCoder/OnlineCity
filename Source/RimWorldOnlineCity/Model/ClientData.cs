@@ -61,6 +61,8 @@ namespace RimWorldOnlineCity
 
         public int DelaySaveGame = 15;
 
+        public bool DisableDevMode;
+
         public bool BackgroundSaveGameOff;
 
         public Faction FactionPirate

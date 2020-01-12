@@ -100,6 +100,7 @@ namespace ServerOnlineCity
                 }
             }
 
+            MainHelper.OffAllLog = false;
             Loger.PathLog = path;
             Loger.IsServer = true;
 

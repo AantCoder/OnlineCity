@@ -21,7 +21,7 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Время в ms между синхронизациями с сервером
         /// </summary>
-        public int AttackUpdateDelay { get; } = 200;
+        public int AttackUpdateDelay { get; } = 50;
 
         /// <summary>
         /// Время в секундах после всех загрузок, чтобы дать оглядеться атакующиму, по умолчанию минута
@@ -175,6 +175,7 @@ namespace RimWorldOnlineCity
                     }
                 }
                 Find.TickManager.Pause();
+                GameAttackTrigger_Patch.ForceSpeed = 0f;
                 CreateClearMap(attackedBase.Tile, response.MapSize.Get(), (map, mapParent) =>
                 {
                     GameMap = map;
@@ -722,6 +723,7 @@ namespace RimWorldOnlineCity
             GameAttackTrigger_Patch.ActiveAttacker.Remove(GameMap);
             SessionClientController.Data.AttackModule = null;
             SessionClientController.Data.BackgroundSaveGameOff = false;
+            GameAttackTrigger_Patch.ForceSpeed = -1f;
 
             if (TestMode)
             {
