@@ -9,6 +9,9 @@ using OC.DiscordBotServer.Models;
 using OC.DiscordBotServer.Repositories;
 using Microsoft.EntityFrameworkCore;
 using OC.DiscordBotServer.Commands;
+using System.IO;
+using System.Text;
+using System.Linq;
 
 //https://discord.foxbot.me/docs/api/
 namespace OC.DiscordBotServer
@@ -18,7 +21,7 @@ namespace OC.DiscordBotServer
         private DiscordSocketClient _discordClient;
         private CommandService _commands;
         private IServiceProvider _services;
-        private ApplicationContext _appContext;
+       // private ApplicationContext _appContext;
         private MessageParser _messageParser;
 
         /// <summary>
@@ -46,8 +49,17 @@ namespace OC.DiscordBotServer
             new Program().RunBotAsync(args[0]).GetAwaiter().GetResult();
         }
 
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            var date = DateTime.Now.ToString("yyyy-MM-dd-hh-mm");
+            var fileName = Path.Combine(path, "!UnhandledException" + date + ".log");
+            File.WriteAllText(fileName, e.ExceptionObject.ToString(), Encoding.UTF8);
+        }
+
         public async Task RunBotAsync(string botToken)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             _discordClient = new DiscordSocketClient();
             _commands = new CommandService();
             var optionsBuilder = new DbContextOptionsBuilder<BotDataContext>();
@@ -58,11 +70,11 @@ namespace OC.DiscordBotServer
             var services = new ServiceCollection()
                 .AddSingleton<DiscordSocketClient>(_discordClient)
                 .AddSingleton<ApplicationContext>()
-                .AddSingleton<BotDataContext>(new BotDataContext(options));
-
-            services
+                .AddSingleton<BotDataContext>(new BotDataContext(options))
+                .AddSingleton<CommandService>(_commands)
                 .AddSingleton<OCUserRepository>()
                 .AddSingleton<Chanel2ServerRepository>()
+                .AddSingleton<DiscordManager>()
                 .AddSingleton<IRepository<OCUser>>(x => x.GetService<OCUserRepository>())
             .AddSingleton<IRepository<Chanel2Server>>(x => x.GetService<Chanel2ServerRepository>());
 
@@ -72,18 +84,15 @@ namespace OC.DiscordBotServer
                 {
                     continue;
                 }
-
-                if (type.GetInterface("ICommand") != null)
+                
+                if (type.GetInterfaces().Any(x => x == typeof(ICommand)))
                 {
                     services.AddSingleton(type);
                 }
             }
             _services = services
-              //  .AddSingleton(_commands)
-                .AddSingleton<ChatListener>()
-                .AddTransient<ChannelDestroyedCommand>()                
+                .AddSingleton<Listener>()
                 .BuildServiceProvider();
-
 
             _discordClient.Log += _discordClient_Log;
             _discordClient.ChannelDestroyed += _discordClient_ChannelDestroyed;
@@ -92,7 +101,7 @@ namespace OC.DiscordBotServer
             await _discordClient.LoginAsync(Discord.TokenType.Bot, botToken);
             await _discordClient.StartAsync();
 
-            var listener = _services.GetService<ChatListener>();
+            var listener = _services.GetService<Listener>();
             const int WAIT_LOGIN_DISCORD_TIME = 3000;
             const int REFRESH_TIME = 500;
             var t = new System.Threading.Timer((a) => { listener.UpdateChats(); }, null, WAIT_LOGIN_DISCORD_TIME, REFRESH_TIME);
@@ -102,8 +111,8 @@ namespace OC.DiscordBotServer
 
         private Task _discordClient_ChannelDestroyed(SocketChannel channel)
         {
-            var cmd = _services.GetService<ChannelDestroyedCommand>();
-            cmd.Execute(channel.Id);
+            var cmd = _services.GetService<DiscordManager>();
+            cmd.ChannelDestroyedCommand(channel.Id);
             return Task.CompletedTask;
         }
 
@@ -124,9 +133,9 @@ namespace OC.DiscordBotServer
         }
 
         public async Task RegisterCommandAsync()
-        {           
-            _messageParser = new MessageParser(_services);
-            _discordClient.MessageReceived += _messageParser.Execute;
+        {
+             _messageParser = new MessageParser(_services);
+             _discordClient.MessageReceived += _messageParser.Execute;
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
     }

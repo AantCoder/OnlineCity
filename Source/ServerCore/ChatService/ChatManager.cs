@@ -1,10 +1,12 @@
 ﻿using Model;
+using OCUnion.Transfer.Types;
 using ServerOnlineCity.ChatService;
 using ServerOnlineCity.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Transfer;
 
 namespace ServerOnlineCity.Services
 {
@@ -35,57 +37,65 @@ namespace ServerOnlineCity.Services
 
         public const string InvalidCommand = "The command is not available";
 
-        //[Obsolete ("нет необходимости передавать PlayerServer и Chat, используйте PostPrivateChat в дальнейшем")]
-        public static void PostCommandPrivatPostActivChat( PlayerServer player, Chat chat, string msg)
+        public static ModelStatus PostCommandPrivatPostActivChat(ChatCmdResult reason, string login, Chat chat, string msg)
         {
             chat.Posts.Add(new ChatPost()
             {
                 Time = DateTime.UtcNow,
                 Message = msg,
                 OwnerLogin = "system",
-                OnlyForPlayerLogin = player.Public.Login
+                OnlyForPlayerLogin = login
             });
+
+            return new ModelStatus()
+            {
+                Status = (int)reason,
+                Message = msg,
+            };
         }
 
-        public static void PostCommandAddPlayer(PlayerServer player, Chat chat, string who)
+        public static ModelStatus PostCommandAddPlayer(PlayerServer player, Chat chat, string who)
         {
+            // проверка на корректность данных: это не системный чат, мы хозяин чата, такой пользователь существует.
+            var myLogin = player.Public.Login;
             if (chat.PartyLogin.Any(p => p == who))
             {
-                PostCommandPrivatPostActivChat(player, chat, "The player is already here");
-                return;
+                return PostCommandPrivatPostActivChat(ChatCmdResult.PlayerHere, myLogin, chat, "The player is already here");
             }
 
-            var newPlayer = Repository.GetData.PlayersAll
-                .FirstOrDefault(p => p.Public.Login == who);
+            var newPlayer = Repository.GetPlayerByLogin(who);
             if (newPlayer == null)
-                PostCommandPrivatPostActivChat(player, chat, "User " + who + " not found");
-            else if (!player.PublicChat.PartyLogin.Any(p => p == who))
-                PostCommandPrivatPostActivChat(player, chat, "Can not access " + who + " player");
-            else if (!chat.OwnerMaker)
-                PostCommandPrivatPostActivChat(player, chat, "People can not be added to a shared channel");
-            else if (chat.OwnerLogin != player.Public.Login && !player.IsAdmin)
-                PostCommandPrivatPostActivChat(player, chat, "You can not add people");
-            else
-            {
-                chat.Posts.Add(new ChatPost()
-                {
-                    Time = DateTime.UtcNow,
-                    Message = "User " + newPlayer.Public.Login + " entered the channel.",
-                    OwnerLogin = "system"
-                });
+                return PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, myLogin, chat, "User " + who + " not found");
 
-                chat.PartyLogin.Add(newPlayer.Public.Login);
-                newPlayer.Chats.Add(chat);
-                Repository.Get.ChangeData = true;
-            }
+            if (!player.PublicChat.PartyLogin.Any(p => p == who))
+                return PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, myLogin, chat, "Can not access " + who + " player");
+
+            if (!chat.OwnerMaker) // Вопрос к автору, что это такое ?
+                return PostCommandPrivatPostActivChat(ChatCmdResult.CantAccess, myLogin, chat, "People can not be added to a shared channel");
+
+            if (chat.OwnerLogin != player.Public.Login && !player.IsAdmin)
+                return PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "You can not add people");
+
+            var msg = "User " + newPlayer.Public.Login + " entered the channel.";
+            chat.Posts.Add(new ChatPost()
+            {
+                Time = DateTime.UtcNow,
+                Message = msg,
+                OwnerLogin = "system"
+            });
+
+            chat.PartyLogin.Add(newPlayer.Public.Login);
+            newPlayer.Chats.Add(chat);
+            Repository.Get.ChangeData = true;
+
+            return new ModelStatus()
+            {
+                Status = 0,
+                Message = msg,
+            };
         }
 
         private List<ChatPost> chatPosts;
-
-        private void PostPrivateChat(string message)
-        {
-
-        }
 
         /// <summary>
         /// Добавляем сообщение в чат 
@@ -122,44 +132,52 @@ namespace ServerOnlineCity.Services
             // public static void PostCommandAddPlayer(PlayerServer player, Chat chat, string who)
         }
 
-        public void TryAddPlayer(PlayerServer player, Chat chat, string who)
+        /// <summary>
+        /// Check User (for compability with a Discord) user Grants and Run Cmd
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="cmd"></param>
+        /// <returns></returns>        
+        public static ModelStatus TryGetCmdForUser(string login, string command, out IChatCmd result)
         {
-            // проверка на корректность данных: это не системный чат, мы хозяин чата, такой пользователь существует.
-            var newPlayer = Repository.GetData.PlayersAll
-                .FirstOrDefault(p => p.Public.Login == who);
-
-            if (newPlayer == null)
-                PostCommandPrivatPostActivChat(player, chat, "User " + who + " not found");
-
-
-            if (chat.PartyLogin.Any(p => p == who))
+            result = null;
+            var user = Repository.GetPlayerByLogin(login);
+            if (user == null)
             {
-                PostCommandPrivatPostActivChat(player, chat, "The player is already here");
-            }
-
-
-
-
-            else if (!player.PublicChat.PartyLogin.Any(p => p == who))
-                PostCommandPrivatPostActivChat(player, chat, "Can not access " + who + " player");
-            else if (!chat.OwnerMaker)
-                PostCommandPrivatPostActivChat(player, chat, "People can not be added to a shared channel");
-            else if (chat.OwnerLogin != player.Public.Login && !player.IsAdmin)
-                PostCommandPrivatPostActivChat(player, chat, "You can not add people");
-            else
-            {
-                chat.Posts.Add(new ChatPost()
+                return new ModelStatus()
                 {
-                    Time = DateTime.UtcNow,
-                    Message = "User " + newPlayer.Public.Login + " entered the channel.",
-                    OwnerLogin = "system"
-                });
-
-                chat.PartyLogin.Add(newPlayer.Public.Login);
-                newPlayer.Chats.Add(chat);
-                Repository.Get.ChangeData = true;
+                    Message = $"user for login {login} not found",
+                    Status = (int)ChatCmdResult.UserNotFound,
+                };
             }
+
+            if (ChatManager.ChatCmds.TryGetValue(command, out IChatCmd cmd))
+            {
+                if (((int)cmd.GrantsForRun & (int)user.Public.Grants) > 0)
+                {
+                    result = cmd;
+
+                    return new ModelStatus()
+                    {
+                        Status = 0,
+                        Message = string.Empty
+                    };
+                }
+                else
+                {
+                    return new ModelStatus()
+                    {
+                        Status = (int)ChatCmdResult.AccessDeny,
+                        Message = $"user {user.Public.Login} does not have permission for run " + command,
+                    };
+                }
+            }
+
+            return new ModelStatus()
+            {
+                Status = (int)ChatCmdResult.CommandNotFound,
+                Message = "Command not found: " + command
+            };
         }
     }
 }
-

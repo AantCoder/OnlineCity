@@ -37,7 +37,7 @@ namespace OC.UnitTest
             Assert.IsNotNull(f2);
             var f3 = _sessionClient.GetInfo(ServerInfoType.FullWithDescription);
             Assert.IsNotNull(f3);
-            Assert.IsFalse(string.IsNullOrEmpty(f3.Description));
+            //Assert.IsFalse(string.IsNullOrEmpty(f3.Description));
         }
 
         [TestMethod]
@@ -45,6 +45,19 @@ namespace OC.UnitTest
         {
             checkGetToken("/Discord", 0);
             checkGetToken("/Discord servertoken", 1);
+        }
+
+        [TestMethod]
+        public void CheckGrants()
+        {
+            var res2 = _sessionClient.PostingChat(1, "/grants type Nobody");
+            Assert.IsFalse(res2);
+            var res3 = _sessionClient.PostingChat(1, "/grants add 222 2");
+            Assert.IsTrue(res3);
+            var res4 = _sessionClient.PostingChat(1, "/grants revoke 222 2");
+            Assert.IsTrue(res4);
+            var res5 = _sessionClient.PostingChat(1, "/grants type 222");
+            Assert.IsTrue(res5);
         }
 
         private void checkGetToken(string msg, int index)

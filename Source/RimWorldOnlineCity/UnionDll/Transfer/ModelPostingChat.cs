@@ -11,5 +11,10 @@ namespace Transfer
         public long ChatId;
 
         public string Message;
+
+        /// <summary>
+        /// Use it only in Discord, for mark owner login message
+        /// </summary>
+        public string Owner;
     }
 }

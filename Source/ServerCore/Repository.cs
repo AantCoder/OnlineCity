@@ -17,7 +17,7 @@ namespace ServerOnlineCity
         private static Repository Current = new Repository();
         public static Repository Get { get { return Current; } }
 
-        public static BaseContainer GetData {  get { return Get.Data; } }
+        public static BaseContainer GetData { get { return Get.Data; } }
         public static RepositorySaveData GetSaveData { get { return Get.RepSaveData; } }
 
         public BaseContainer Data;
@@ -30,12 +30,36 @@ namespace ServerOnlineCity
 
         private RepositorySaveData RepSaveData;
 
+        public static PlayerServer GetPlayerByLogin(string login)
+        {
+            // Подумать как сделать это быстрее, может быть использовать ConcurentDictonary, но надо переписать регистрацию, сохранение и загрузку, удаление поселения 
+            // Think how make this faster
+            return Repository.GetData.PlayersAll.FirstOrDefault(p => p.Public.Login == login);
+        }
+
+        public static void DropUserFromMap(string login)
+        {
+            var data = Repository.GetData;
+            lock (data)
+            {
+                for (int i = 0; i < data.WorldObjects.Count; i++)
+                {
+                    var item = data.WorldObjects[i];
+                    if (item.LoginOwner != login) continue;
+                    //удаление из базы
+                    item.UpdateTime = DateTime.UtcNow;
+                    data.WorldObjects.Remove(item);
+                    data.WorldObjectsDeleted.Add(item);
+                }
+            }
+        }
+
         public Repository()
         {
             Timer = new WorkTimer();
             RepSaveData = new RepositorySaveData(this);
         }
-        
+
         public void Load()
         {
             bool needResave = false;
@@ -57,9 +81,9 @@ namespace ServerOnlineCity
                     //var dataVersion = Data.VersionNum;
                     Loger.Log("Server Version data: " + Data.Version + " Current version: " + MainHelper.VersionInfo);
 
-                    if (Data.Version != MainHelper.VersionInfo)
+                    if (Data.Version != MainHelper.VersionInfo || Data.VersionNum < MainHelper.VersionNum + 1)
                     {
-                        Data.Version = MainHelper.VersionInfo;
+                        convertToLastVersion();
                         needResave = true;
                     }
 
@@ -74,6 +98,22 @@ namespace ServerOnlineCity
             if (needResave)
                 Save();
             ChangeData = false;
+        }
+
+        private void convertToLastVersion()
+        {
+            if (Data.VersionNum <= 20033)
+            {
+                foreach (var player in Data.PlayersAll)
+                {
+                    player.Public.Grants = player.Public.Grants | Grants.UsualUser;
+                    if (player.IsAdmin)
+                        player.Public.Grants = player.Public.Grants | Grants.SuperAdmin;
+                }
+            }
+
+            Data.Version = MainHelper.VersionInfo;
+            Data.VersionNum = MainHelper.VersionNum;
         }
 
         public void Save(bool onlyChangeData = false)
@@ -93,7 +133,7 @@ namespace ServerOnlineCity
                     var bf = new BinaryFormatter();
                     bf.Serialize(fs, Data);
                 }
-                
+
                 ChangeData = false;
             }
             catch

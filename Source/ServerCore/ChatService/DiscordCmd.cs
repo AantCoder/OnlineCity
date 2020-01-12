@@ -1,10 +1,12 @@
 ﻿using Model;
 using OCUnion;
+using OCUnion.Transfer.Types;
 using ServerOnlineCity.Model;
 using ServerOnlineCity.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Transfer;
 
 namespace ServerOnlineCity.ChatService
 {
@@ -16,43 +18,39 @@ namespace ServerOnlineCity.ChatService
 
         public string Help => ChatManager.prefix + "discord : Request Discord token";
 
-        public void Execute(ref PlayerServer player, Chat chat, List<string> argsM)
+        public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
-            var login = player.Public.Login;
-            if ("discord".Equals(login.ToLower()))
+            var myLogin = player.Public.Login;
+            if ("discord".Equals(myLogin.ToLower()))
             {
-                ChatManager.PostCommandPrivatPostActivChat(player, chat, ChatManager.InvalidCommand);
-                return;
+                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "impossible get information for this user");
             }
 
             if (argsM.Count == 0)
             {
                 Loger.Log($"User {player.Public.Login} request Discord token");
-                var playerServer = Repository.GetData.PlayersAll.Where(p1 => p1.Public.Login.Equals(login)).FirstOrDefault();
+                var playerServer = Repository.GetPlayerByLogin(myLogin);
                 if (playerServer.DiscordToken.Equals(Guid.Empty))
                 {
                     playerServer.DiscordToken = Guid.NewGuid();
                 }
 
-                ChatManager.PostCommandPrivatPostActivChat(player, chat, playerServer.DiscordToken.ToString());
-                return;
+                return ChatManager.PostCommandPrivatPostActivChat(0, myLogin, chat, playerServer.DiscordToken.ToString());
             }
 
-            if (!player.IsAdmin)
+            if (!player.Public.Grants.HasFlag(Grants.SuperAdmin))
             {
-                ChatManager.PostCommandPrivatPostActivChat(player, chat, "Command only for admin");
-                return;
+                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "Command only for admin");
             }
 
             if (argsM[0] == "servertoken")
             {
                 Loger.Log($"User {player.Public.Login} request DiscordServer token");
-                var ServerToken = Repository.GetData.PlayersAll.FirstOrDefault(p => "discord".Equals(p.Public.Login.ToLower()))?.Pass;
-                ChatManager.PostCommandPrivatPostActivChat(player, chat, ServerToken);
-                return;
+                var serverToken = Repository.GetPlayerByLogin("discord").DiscordToken;
+                return ChatManager.PostCommandPrivatPostActivChat(0, myLogin, chat, serverToken.ToString());
             }
 
-            ChatManager.PostCommandPrivatPostActivChat(player, chat, ChatManager.InvalidCommand);
+            return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.CommandNotFound, myLogin, chat, ChatManager.InvalidCommand);
         }
     }
 }

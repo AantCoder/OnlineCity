@@ -6,6 +6,7 @@ using Model;
 using OCUnion;
 using ServerOnlineCity.Model;
 using ServerOnlineCity.ChatService;
+using OCUnion.Transfer.Types;
 
 namespace ServerOnlineCity.Services
 {
@@ -55,21 +56,30 @@ namespace ServerOnlineCity.Services
                 //разбираем аргументы в кавычках '. Удвоенная кавычка указывает на её символ.
                 var argsM = SplitBySpace(args);
 
+                PlayerServer player;
                 // обработка команд чата 
-                if (ChatManager.ChatCmds.TryGetValue(command, out IChatCmd cmd))
+                if ("discord".Equals(context.Player.Public.Login.ToLower()))
                 {
-                    Loger.Log(pc.Message);
-                    cmd.Execute(ref context.Player, chat, argsM);
+                    player = Repository.GetPlayerByLogin(pc.Owner);
+                    if (player == null)
+                    {
+                        return new ModelStatus()
+                        {
+                            Status = (int)ChatCmdResult.UserNotFound,
+                            Message = $"user {pc.Owner} not found",
+                        };
+                    }
                 }
                 else
                 {
-                    ChatManager.PostCommandPrivatPostActivChat(context.Player, chat, "Command not found: " + command);
-                    return new ModelStatus()
-                    {
-                        Status = 2,
-                        Message = "Command not found: " + command
-                    };
+                    player = context.Player;
                 }
+
+                var result = ChatManager.TryGetCmdForUser(player.Public.Login, command, out IChatCmd cmd);
+                if (result.Status > 0)
+                    return result;
+
+                return cmd.Execute(ref player, chat, argsM);
             }
             else
             {
