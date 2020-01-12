@@ -200,6 +200,7 @@ namespace RimWorldOnlineCity
             Find.TickManager.Pause();
 
             Loger.Log("Client GameAttackHost Start 1");
+            //Loger.PathLog = "E:\\RWT";
             var tolient = connect.AttackOnlineHost(new AttackHostToSrv()
             {
                 State = 2

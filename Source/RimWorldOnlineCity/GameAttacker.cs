@@ -321,11 +321,13 @@ namespace RimWorldOnlineCity
                 inTimerEvent = true;
                 SessionClientController.Command((connect) =>
                 {
+                    var errNums = "1 ";
                     try
                     {
                         Loger.Log($"Client AttackUpdate 2 ({AttackUpdateTick})");
                         var toSendCommand = ToSendCommand;
                         ToSendCommand = new Dictionary<int, AttackPawnCommand>();
+                        errNums += "2 ";
                         var toClient = connect.AttackOnlineInitiator(new AttackInitiatorToSrv()
                         {
                             State = 10,
@@ -335,6 +337,7 @@ namespace RimWorldOnlineCity
                             VictoryHostToHost = VictoryHostToHost,
                         });
 
+                        errNums += "3 ";
                         Action actUpdateState = () =>
                         {
                             Loger.Log("Client AttackUpdate 4. UpdateState=" + toClient.UpdateState.Count);
@@ -410,9 +413,10 @@ namespace RimWorldOnlineCity
                             
                         };
 
+                        errNums += "4 ";
                         if (toClient.NewPawns.Count > 0 || toClient.NewThings.Count > 0)
                         {
-                            LongEventHandler.QueueLongEvent(delegate
+                            //LongEventHandler.QueueLongEvent(delegate
                             {
                                 try
                                 {
@@ -420,6 +424,7 @@ namespace RimWorldOnlineCity
 
                                     if (toClient.NewPawns.Count > 0)
                                     {
+                                        errNums += "5 ";
                                         //удаляем пешки NewPawnsId (здесь список thingIDNumber от хоста), которые сейчас обновим
                                         for (int i = 0; i < toClient.NewPawnsId.Count; i++)
                                         {
@@ -443,6 +448,7 @@ namespace RimWorldOnlineCity
                                             DestroyThing(thing, hostid);
                                         }
 
+                                        errNums += "6 ";
                                         //создаем список пешек toClient.NewPawns
                                         GameUtils.SpawnList(GameMap, toClient.NewPawns, false
                                             , (p) => p.TransportID == 0 //если без нашего ID, то у нас как пират
@@ -478,6 +484,7 @@ namespace RimWorldOnlineCity
                                             });
                                     }
 
+                                    errNums += "7 ";
                                     Loger.Log("Client AttackUpdate 3. NewThings=" + toClient.NewThings.Count);
 
                                     if (toClient.NewThings.Count > 0)
@@ -501,17 +508,27 @@ namespace RimWorldOnlineCity
                                             });
                                     }
 
+                                    errNums += "8 ";
                                     actUpdateState();
 
+                                    errNums += "9 ";
                                     Loger.Log("Client AttackUpdate 5");
 
                                     //после первого массового спавна всех пешек
                                     if (AttackUpdateTick == 1)
                                     {
-                                        //проверка обзора и переключение на карту
-                                        FloodFillerFog.DebugRefogMap(GameMap);
-                                        CameraJumper.TryJump(GameMap.Center, GameMap);
+                                        errNums += "10 ";
+                                        ModBaseData.RunMainThreadSync(() =>
+                                        {
+                                            errNums += "11 ";
+                                            //проверка обзора и переключение на карту
+                                            FloodFillerFog.DebugRefogMap(GameMap);
+                                            CameraJumper.TryJump(GameMap.Center, GameMap);
+                                            errNums += "12 ";
+                                        });
+                                        errNums += "13 ";
                                         GameAttackTrigger_Patch.ActiveAttacker.Add(GameMap, this);
+                                        errNums += "14 ";
                                     }
                                 }
                                 catch (Exception ext)
@@ -519,23 +536,27 @@ namespace RimWorldOnlineCity
                                     Loger.Log("Client AttackUpdate SpawnListEvent Exception " + ext.ToString());
                                 }
                                 InTimer = false;
-                            }, "", false, null); //".."
+                            }//, "", false, null); //".."
+                            errNums += "15 ";
                         }
                         else
                         {
+                            errNums += "16 ";
                             actUpdateState();
 
                             InTimer = false;
                         }
 
+                        errNums += "17 ";
                         //заканчиваем
                         if (toClient.Finishing) Finish(toClient.VictoryAttacker);
+                        errNums += "18 ";
 
                     }
                     catch (Exception ext)
                     {
                         InTimer = false;
-                        Loger.Log("Client AttackUpdate SpawnList Exception " + ext.ToString());
+                        Loger.Log("Client AttackUpdate SpawnList Exception " + ext.ToString() + " ErrNums:" + errNums);
                     }
                 });
             }
@@ -694,6 +715,7 @@ namespace RimWorldOnlineCity
         private void Finish(bool victoryAttacker)
         {
             Find.TickManager.Pause();
+            Loger.Log("Client AttackerFinish");
 
             //отключить таймер и признаки, что нас атакуют
             SessionClientController.Timers.Remove(TimerObj);
@@ -719,12 +741,17 @@ namespace RimWorldOnlineCity
             }
             if (victoryAttacker)
             {
-                //переделать карту в постоянную?
-                foreach (var pawn in GameMap.mapPawns.AllPawns)
+                ModBaseData.RunMainThreadSync(() =>
                 {
-                    if (pawn.RaceProps.Humanlike || pawn.Faction == null || pawn.Faction.IsPlayer) continue;
-                    pawn.SetFaction(null);
-                }
+                    //переделать карту в постоянную?
+                    foreach (var pawn in GameMap.mapPawns.AllPawns.ToList())
+                    {
+                        //Loger.Log($"Client AttackerFinish {pawn.Label} CanHaveFaction {pawn.def.CanHaveFaction}, Humanlike {pawn.RaceProps.Humanlike}, Faction " + (pawn.Faction == null ? "null" : pawn.Faction.Name + " " + pawn.Faction.IsPlayer));
+                        if (!pawn.def.CanHaveFaction || pawn.RaceProps.Humanlike || pawn.Faction == null || pawn.Faction.IsPlayer) continue;
+                        //Loger.Log($"Client AttackerFinish SetFaction null {pawn.Label}");
+                        pawn.SetFaction(null);
+                    }
+                });
             }
             else
             {
@@ -738,6 +765,14 @@ namespace RimWorldOnlineCity
                     .ToList();
                 Caravan caravan = CaravanMaker.MakeCaravan(listPawn, Faction.OfPlayer, GameMap.Tile, false);
                 Find.WorldObjects.Remove(GameMap.Parent);
+                //добавляем пешки в мир, чтобы их не уничтожили
+                foreach(var pawn in listPawn)
+                {
+                    if (!pawn.IsWorldPawn())
+                    {
+                        Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Decide);
+                    }
+                }
             }
 
             //автосейв с единым сохранением
@@ -752,6 +787,8 @@ namespace RimWorldOnlineCity
                     , null
                 );
             });
+
+            Loger.Log("Client AttackerFinish end");
         }
     }
 }

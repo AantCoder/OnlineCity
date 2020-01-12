@@ -77,12 +77,11 @@ namespace RimWorldOnlineCity
 
         public static void RunMainThreadSync(Action act)
         {
-            /*
             if (GlobalData.MainThreadNum == Thread.CurrentThread.ManagedThreadId)
                 act();
             else
-            */
             {
+                //Loger.Log($"Client RunMainThreadSync begin");
                 var num = RunMainThread(act);
                 int i = 0;
                 while (GlobalData.ActionNumReady < num && i++ < 20) Thread.Sleep(1);
@@ -99,7 +98,7 @@ namespace RimWorldOnlineCity
                     }
                 }
 
-                Loger.Log($"Client RunMainThreadSync end i={i}");
+                //Loger.Log($"Client RunMainThreadSync end i={i}");
             }
         }
         

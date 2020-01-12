@@ -89,7 +89,14 @@ namespace Model
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnB" + (++nnnn).ToString() + ".xml", Data);
 
             bool col = Data.Contains("<kindDef>Colonist</kindDef>");
-            if (!Data.Contains("<lastJobGiverThinkTree>Animal</lastJobGiverThinkTree>"))
+            bool isAnimal = Data.Contains("<lastJobGiverThinkTree>Animal</lastJobGiverThinkTree>");
+            if (!isAnimal)
+            {
+                isAnimal =
+                    !Data.Contains("<lastJobGiverThinkTree>Humanlike</lastJobGiverThinkTree>")
+                    && GameXMLUtils.GetByTag(Data, "def") == GameXMLUtils.GetByTag(Data, "kindDef");
+            }
+            if (!isAnimal)
             {
                 string fraction = fractionColonist; //col ? fractionColonist : fractionPirate;
                 Data = GameXMLUtils.ReplaceByTag(Data, "faction", fraction);

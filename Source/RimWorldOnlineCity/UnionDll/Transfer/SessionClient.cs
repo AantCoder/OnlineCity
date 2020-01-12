@@ -39,6 +39,7 @@ namespace Transfer
 
         public bool Connect(string addr, int port = 0)
         {
+            ErrorMessage = null;
             if (port == 0) port = DefaultPort;
             try
             {
@@ -107,6 +108,7 @@ namespace Transfer
             {
                 lock (LockObj)
                 {
+                    ErrorMessage = null;
                     Client.SendMessage(new byte[1] { 0x00 });
 
                     var rec = Client.ReceiveBytes();
@@ -133,6 +135,7 @@ namespace Transfer
             {
                 lock (LockObj)
                 {
+                    ErrorMessage = null;
                     Client.SendMessage(new byte[1] { 0x01 });
 
                     var rec = Client.ReceiveBytes();
@@ -156,6 +159,7 @@ namespace Transfer
         {
             lock (LockObj)
             {
+                ErrorMessage = null;
                 //Loger.Log("Client T1");
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
                 //Loger.Log("Client Push " + Loger.Bytes(ob));
