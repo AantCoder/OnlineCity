@@ -416,11 +416,13 @@ namespace RimWorldOnlineCity
 
         public static Scenario GetScenarioDefault()
         {
-            var listS = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef);
+            var listS = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef).ToList();
 
             var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
             if (scenarioDefaultMem == null)
                 scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Classic".NeedTranslate());
+            if (scenarioDefaultMem == null)
+                scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Классика");
             if (scenarioDefaultMem == null)
                 scenarioDefaultMem = listS.FirstOrDefault();
 
@@ -486,7 +488,7 @@ namespace RimWorldOnlineCity
                     GameStarter.SetDifficulty = int.Parse(form.InputDifficulty);
                     GameStarter.SetScenario = GetScenarioDefault();
 
-                    GameStarter.AfterStart = CreatingWorld;
+                    GameStarter.AfterStart = CreatingServerWorld;
                     GameStarter.GameGeneration();
                 };
 
@@ -494,10 +496,20 @@ namespace RimWorldOnlineCity
                 return;
             }
 
-            createWorld(serverInfo);
+            if (serverInfo.NeedCreateWorld)
+            {
+                CreatePlayerWorld(serverInfo);
+                return;
+            }
 
-            Loger.Log("Client InitConnected() WorldLoad");
+            LoadPlayerWorld();
+        }
 
+        private static void LoadPlayerWorld()
+        {
+            Loger.Log("Client LoadPlayerWorld");
+
+            var connect = SessionClient.Get;
             var worldData = connect.WorldLoad();
 
             File.WriteAllBytes(SaveFullName, worldData.SaveFileData);
@@ -540,62 +552,58 @@ namespace RimWorldOnlineCity
             PreLoadUtility.CheckVersionAndLoad(SaveFullName, ScribeMetaHeaderUtility.ScribeHeaderMode.Map, loadAction);
         }
 
-        private static void createWorld(ModelInfo serverInfo)
+        private static void CreatePlayerWorld(ModelInfo serverInfo)
         {
-            if (serverInfo.NeedCreateWorld)
-            {
-                Loger.Log("Client InitConnected() ExistMap");
+            Loger.Log("Client InitConnected() ExistMap");
 
-                //создать поселение
-                GameStarter.SetMapSize = serverInfo.MapSize;
-                GameStarter.SetPlanetCoverage = serverInfo.PlanetCoverage;
-                GameStarter.SetSeed = serverInfo.Seed;
-                GameStarter.SetDifficulty = serverInfo.Difficulty;
-                GameStarter.SetScenario = GetScenarioDefault();
-                GameStarter.AfterStart = CreatePlayerMap;
+            //создать поселение
+            GameStarter.SetMapSize = serverInfo.MapSize;
+            GameStarter.SetPlanetCoverage = serverInfo.PlanetCoverage;
+            GameStarter.SetSeed = serverInfo.Seed;
+            GameStarter.SetDifficulty = serverInfo.Difficulty;
+            GameStarter.SetScenario = GetScenarioDefault();
+            GameStarter.AfterStart = CreatePlayerMap;
 
-                GameStarter.GameGeneration(false);
+            GameStarter.GameGeneration(false);
 
-                //выбор места на планете. Код из события завершения выбора параметров планеты Page_CreateWorldParams
-                Loger.Log("Client InitConnected() ExistMap1");
+            //выбор места на планете. Код из события завершения выбора параметров планеты Page_CreateWorldParams
+            Loger.Log("Client InitConnected() ExistMap1");
 
-                Current.Game = new Game();
-                Current.Game.InitData = new GameInitData();
-                Current.Game.Scenario = GameStarter.SetScenario;
-                Current.Game.Scenario.PreConfigure();
-                Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
-                    , GameStarter.SetDifficulty == 0 ? DifficultyDefOf.Easy
-                        : DifficultyDefOf.Rough);
+            Current.Game = new Game();
+            Current.Game.InitData = new GameInitData();
+            Current.Game.Scenario = GameStarter.SetScenario;
+            Current.Game.Scenario.PreConfigure();
+            Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
+                , GameStarter.SetDifficulty == 0 ? DifficultyDefOf.Easy
+                    : DifficultyDefOf.Rough);
 
-                Loger.Log("Client InitConnected() ExistMap2");
-                Current.Game.World = WorldGenerator.GenerateWorld(
-                    GameStarter.SetPlanetCoverage,
-                    GameStarter.SetSeed,
-                    GameStarter.SetOverallRainfall,
-                    GameStarter.SetOverallTemperature);
+            Loger.Log("Client InitConnected() ExistMap2");
+            Current.Game.World = WorldGenerator.GenerateWorld(
+                GameStarter.SetPlanetCoverage,
+                GameStarter.SetSeed,
+                GameStarter.SetOverallRainfall,
+                GameStarter.SetOverallTemperature);
 
-                Loger.Log("Client InitConnected() ExistMap3");
-                //после создания мира запускаем его обработку, загружаем поселения др. игроков
-                UpdateWorldController.InitGame();
-                UpdateWorld(true);
+            Loger.Log("Client InitConnected() ExistMap3");
+            //после создания мира запускаем его обработку, загружаем поселения др. игроков
+            UpdateWorldController.InitGame();
+            UpdateWorld(true);
 
-                Timers.Add(20000, PingServer);
+            Timers.Add(20000, PingServer);
 
-                Loger.Log("Client InitConnected() ExistMap4");
-                var form = GetFirstConfigPage();
-                Find.WindowStack.Add(form);
+            Loger.Log("Client InitConnected() ExistMap4");
+            var form = GetFirstConfigPage();
+            Find.WindowStack.Add(form);
 
-                Loger.Log("Client InitConnected() ExistMap5");
+            Loger.Log("Client InitConnected() ExistMap5");
 
-                MemoryUtility.UnloadUnusedUnityAssets();
+            MemoryUtility.UnloadUnusedUnityAssets();
 
-                Loger.Log("Client InitConnected() ExistMap6");
-                Find.World.renderer.RegenerateAllLayersNow();
+            Loger.Log("Client InitConnected() ExistMap6");
+            Find.World.renderer.RegenerateAllLayersNow();
 
-                Loger.Log("Client InitConnected() ExistMap7");
+            Loger.Log("Client InitConnected() ExistMap7");
 
-                return;
-            }
         }
 
         public static bool CheckFiles()
@@ -653,9 +661,9 @@ namespace RimWorldOnlineCity
         /// первое поселение этого мира стартовало.
         /// Здесь происходит чтение созданного мира и сохранение его на сервере, само поселение игнорируется.
         /// </summary>
-        private static void CreatingWorld()
+        private static void CreatingServerWorld()
         {
-            Loger.Log("Client CreatingWorld()");
+            Loger.Log("Client CreatingServerWorld()");
             //todo Удаление лишнего, добавление того, что нужно в пустом новом мире на сервере
 
             //to do
