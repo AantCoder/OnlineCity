@@ -1,4 +1,5 @@
 ﻿using Model;
+using OCUnion;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace ServerOnlineCity.Model
     public class BaseContainer
     {
         public string Version { get; set; }
+        public long VersionNum { get; set; }
 
         //public long VersionNum => long.Parse((Version ?? "0").Where(c => Char.IsDigit(c)).Aggregate("0", (r, i) => r + i));
 
@@ -47,6 +49,7 @@ namespace ServerOnlineCity.Model
             MaxIdChat = 1; //Id = 1 Занят на общий чат, 0 - системный приватный чат
 
             ChatPosts = new List<ChatPost>();
+            VersionNum = MainHelper.VersionNum;
         }
 
         public long GetChatId()

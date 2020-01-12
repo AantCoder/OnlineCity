@@ -2,6 +2,7 @@
 using OCUnion;
 using ServerOnlineCity.Model;
 using System.Collections.Generic;
+using Transfer;
 
 namespace ServerOnlineCity.ChatService
 {
@@ -13,6 +14,6 @@ namespace ServerOnlineCity.ChatService
 
         string Help { get; }
 
-        void Execute(ref PlayerServer player, Chat chat, List<string> argsM);
+        ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM);
     }
 }

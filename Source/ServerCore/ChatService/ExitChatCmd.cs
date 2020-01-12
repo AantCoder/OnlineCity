@@ -1,9 +1,11 @@
 ﻿using Model;
 using OCUnion;
+using OCUnion.Transfer.Types;
 using ServerOnlineCity.Model;
 using ServerOnlineCity.Services;
 using System;
 using System.Collections.Generic;
+using Transfer;
 
 namespace ServerOnlineCity.ChatService
 {
@@ -15,27 +17,27 @@ namespace ServerOnlineCity.ChatService
 
         string IChatCmd.Help => ChatManager.prefix + "exitchat : exit from a private chat";
 
-        public void Execute(ref PlayerServer player, Chat chat, List<string> param)
+        public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> param)
         {
-            //Loger.Log("Server exitChat OwnerMaker=" + (chat.OwnerMaker ? "1" : "0"));
+            var myLogin = player.Public.Login;
             if (!chat.OwnerMaker)
             {
-                ChatManager.PostCommandPrivatPostActivChat(player, chat, "From a shared channel, you can not leave");
+                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "From a shared channel, you can not leave");
             }
-            else
-            {
-                chat.Posts.Add(new ChatPost()
-                {
-                    Time = DateTime.UtcNow,
-                    Message = "User " + player.Public.Login + " left the channel.",
-                    OwnerLogin = "system"
-                });
 
-                chat.PartyLogin.Remove(player.Public.Login);
-                var r = player.Chats.Remove(chat);
-                Loger.Log("Server exitChat remove" + (r ? "1" : "0"));
-                Repository.Get.ChangeData = true;
-            }
+            chat.Posts.Add(new ChatPost()
+            {
+                Time = DateTime.UtcNow,
+                Message = "User " + myLogin + " left the channel.",
+                OwnerLogin = "system"
+            });
+
+            chat.PartyLogin.Remove(myLogin);
+            var r = player.Chats.Remove(chat);
+            Loger.Log("Server exitChat remove" + (r ? "1" : "0"));
+            Repository.Get.ChangeData = true;
+
+            return new ModelStatus();
         }
     }
 }

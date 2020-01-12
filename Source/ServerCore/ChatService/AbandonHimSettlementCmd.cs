@@ -1,10 +1,12 @@
 ﻿using Model;
 using OCUnion;
+using OCUnion.Transfer.Types;
 using ServerOnlineCity.Model;
 using ServerOnlineCity.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Transfer;
 
 namespace ServerOnlineCity.ChatService
 {
@@ -12,57 +14,46 @@ namespace ServerOnlineCity.ChatService
     {
         public string CmdID => "killhimplease";
 
-        public Grants GrantsForRun => Grants.SuperAdmin;
+        public Grants GrantsForRun => Grants.SuperAdmin | Grants.Moderator | Grants.DiscordBot;
 
         public string Help => ChatManager.prefix + "killhimplease {UserLogin}: Drop user Settlement and delete him from a server";
 
-        public void Execute(ref PlayerServer player, Chat chat, List<string> argsM)
+        public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
-            //Loger.Log("Server killhimplease OwnerMaker=" + (chat.OwnerMaker ? "1" : "0"));
-            if (!player.IsAdmin)
-            {
-                ChatManager.PostCommandPrivatPostActivChat(player, chat, "Command only for admin");
-                return;
-            }
+            var ownLogin = player.Public.Login;
+
+            // to do remove it: permision for run cmd check before run cmd
+            //if (!player.IsAdmin)
+            //{
+            //    return ChatManager.PostCommandPrivatPostActivChat(ownLogin, chat, "Command only for admin");
+            //}
 
             if (argsM.Count < 1)
             {
-                ChatManager.PostCommandPrivatPostActivChat(player, chat, "Player name is empty");
-                return;
+                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.PlayerNameEmpty, ownLogin, chat, "Player name is empty");
             }
 
-
-            var killPlayer = Repository.GetData.PlayersAll
-                .FirstOrDefault(p => p.Public.Login == argsM[0]);
+            var killPlayer = Repository.GetPlayerByLogin(argsM[0]);
             if (killPlayer == null)
-                ChatManager.PostCommandPrivatPostActivChat(player, chat, "User " + argsM[0] + " not found");
-            else
             {
-                chat.Posts.Add(new ChatPost()
-                {
-                    Time = DateTime.UtcNow,
-                    Message = "User " + killPlayer.Public.Login + " deleted settlements.",
-                    OwnerLogin = "system"
-                });
-
-                var data = Repository.GetData;
-                lock (data)
-                {
-                    for (int i = 0; i < data.WorldObjects.Count; i++)
-                    {
-                        var item = data.WorldObjects[i];
-                        if (item.LoginOwner != killPlayer.Public.Login) continue;
-                        //удаление из базы
-                        item.UpdateTime = DateTime.UtcNow;
-                        data.WorldObjects.Remove(item);
-                        data.WorldObjectsDeleted.Add(item);
-                    }
-                }
-
-                Repository.GetSaveData.DeletePlayerData(killPlayer.Public.Login);
-                Repository.Get.ChangeData = true;
-                Loger.Log("Server killhimplease " + killPlayer.Public.Login);
+                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[0] + " not found");
             }
+
+            var msg = "User " + killPlayer.Public.Login + " deleted settlements.";
+            chat.Posts.Add(new ChatPost()
+            {
+                Time = DateTime.UtcNow,
+                Message = msg,
+                OwnerLogin = "system"
+            });
+
+
+            Repository.DropUserFromMap(killPlayer.Public.Login);
+            Repository.GetSaveData.DeletePlayerData(killPlayer.Public.Login);
+            Repository.Get.ChangeData = true;
+            Loger.Log("Server killhimplease " + killPlayer.Public.Login);
+
+            return new ModelStatus() { Status = 0 };
         }
     }
 }

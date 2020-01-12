@@ -5,6 +5,7 @@ using ServerOnlineCity.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Transfer;
 
 namespace ServerOnlineCity.ChatService
 {
@@ -12,11 +13,11 @@ namespace ServerOnlineCity.ChatService
     {
         public string CmdID => ChatManager.prefix + "help";
 
-        public Grants GrantsForRun => Grants.UsualUser;
+        public Grants GrantsForRun => Grants.UsualUser | Grants.DiscordBot;
 
         public string Help => "list of all commands";
 
-        public void Execute(ref PlayerServer player, Chat chat, List<string> param)
+        public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> param)
         {
             var userGrants = player.Public.Grants;
 
@@ -29,7 +30,7 @@ namespace ServerOnlineCity.ChatService
                 }
             }
 
-            ChatManager.PostCommandPrivatPostActivChat(player, chat, sb.ToString());
+            return ChatManager.PostCommandPrivatPostActivChat(0, player.Public.Login, chat, sb.ToString());
         }
     }
 }

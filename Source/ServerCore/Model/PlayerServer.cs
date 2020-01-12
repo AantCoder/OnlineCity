@@ -51,16 +51,16 @@ namespace ServerOnlineCity.Model
         /// <summary>
         /// По умолчанию когда =0 - принимается 15 минут
         /// </summary>
-        public int SettingDelaySaveGame; 
+        public int SettingDelaySaveGame;
 
         private PlayerServer()
-        { }
-
-        public PlayerServer(string login)
         {
             ExitReason = DisconnectReason.AllGood;
             ApproveLoadWorldReason = ApproveLoadWorldReason.LoginOk;
+        }
 
+        public PlayerServer(string login)
+        {
             Public = new Player()
             {
                 Login = login

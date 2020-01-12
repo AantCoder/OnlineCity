@@ -49,7 +49,7 @@ namespace OC.DiscordBotServer.Commands
                     _userRepository.AddNewItem(user);
 
                     // to do register user  
-                    return string.Format(Translator.InfFoundUser, player.Login, player.ServerName);
+                    return string.Format(Translator.InfUserFound, player.Login);
                 }
             }
 
