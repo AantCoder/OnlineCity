@@ -57,7 +57,7 @@ namespace RimWorldOnlineCity.GameClasses
             if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
-            if (__instance is Plant) return;
+            //if (__instance is Plant) return;
             if (__instance is Filth) return;
 
             var that = __instance;
@@ -83,7 +83,7 @@ namespace RimWorldOnlineCity.GameClasses
             if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
-            if (__instance is Plant) return;
+            //if (__instance is Plant) return;
             if (__instance is Filth) return;
 
             if (__instance is Corpse) return;
@@ -156,7 +156,7 @@ namespace RimWorldOnlineCity.GameClasses
             if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
-            if (__instance is Plant) return;
+            //if (__instance is Plant) return;
             if (__instance is Filth) return;
 
             if (__instance is Pawn) return; //есть отдельный цикл по всем пешкам

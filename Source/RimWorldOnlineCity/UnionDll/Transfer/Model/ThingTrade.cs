@@ -224,8 +224,18 @@ namespace Model
 
             that.DefName = thing.def.defName;
             that.StuffName = thing.Stuff == null ? null : thing.Stuff.defName;
-            that.HitPoints = thing.HitPoints;
-            that.MaxHitPoints = thing.MaxHitPoints;
+
+            var pawn = thing as Pawn;
+            if (pawn == null)
+            {
+                that.HitPoints = thing.HitPoints;
+                that.MaxHitPoints = thing.MaxHitPoints;
+            }
+            else
+            {
+                that.HitPoints = (int)(pawn.health.summaryHealth.SummaryHealthPercent * 100f);
+                that.MaxHitPoints = 100;
+            }
             
             QualityCategory qq;
             if (QualityUtility.TryGetQuality(thing, out qq)) that.Quality = (int)qq;

@@ -500,10 +500,17 @@ namespace RimWorldOnlineCity
                 }
             }
 
-            if (thing.def.useHitPoints)
+            if (thing is Fire)
             {
-                Loger.Log("Client ApplyState Set HitPoints " + thing.HitPoints.ToString() + " -> " + state.HitPoints.ToString());
-                thing.HitPoints = state.HitPoints;
+                (thing as Fire).fireSize = (float)state.HitPoints / 10000f;
+            }
+            else
+            {
+                if (thing.def.useHitPoints)
+                {
+                    Loger.Log("Client ApplyState Set HitPoints " + thing.HitPoints.ToString() + " -> " + state.HitPoints.ToString());
+                    thing.HitPoints = state.HitPoints;
+                }
             }
 
             if (thing is Pawn)

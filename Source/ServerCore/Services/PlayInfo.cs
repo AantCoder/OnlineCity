@@ -34,12 +34,13 @@ namespace ServerOnlineCity.Services
                 if (packet.GetPlayersInfo != null && packet.GetPlayersInfo.Count > 0)
                 {
                     var pSee = StaticHelper.PartyLoginSee(context.Player);
-                    var pGet = pSee.Where(s => packet.GetPlayersInfo.Any(p => s == p)).ToList();
-                    toClient.PlayersInfo = Repository.GetData.PlayersAll
-                        .Where(p => pGet.Any(g => g == p.Public.Login))
-                        .Select(p => p.Public)
+                    var pGet = new HashSet<string>(packet.GetPlayersInfo);
+                    pGet.IntersectWith(pSee);
+
+                    toClient.PlayersInfo = pGet
+                        .Where(l => Repository.GetData.PlayersAllDic.ContainsKey(l))
+                        .Select(l => Repository.GetData.PlayersAllDic[l].Public)
                         .ToList();
-                    if (pGet.Any(p => p == null)) Loger.Log("nulllllll");
                 }
                 if (packet.SaveFileData != null && packet.SaveFileData.Length > 0)
                 {

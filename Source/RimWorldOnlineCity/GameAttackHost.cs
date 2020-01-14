@@ -25,6 +25,11 @@ namespace RimWorldOnlineCity
         public int AttackUpdateDelay { get; } = 50;
 
         /// <summary>
+        /// Для быстрой передачи не передавать растения (Кроме деревьев они всегда передаются)
+        /// </summary>
+        public bool PlantNotSend { get; } = false;
+        
+        /// <summary>
         /// Время в сек между полной синхронизацией пешек, например, чтобы после получаения урона увидеть точное здоровье
         /// </summary>
         public int SendDelayedFillPawnsSeconds { get; } = 30;
@@ -62,10 +67,16 @@ namespace RimWorldOnlineCity
         /// Список уже переданных пешек, сверемся с ним и передаем тех которых тут нет. И наборот, если тут есть, а пешки уже нет, то в список к удалению
         /// </summary>
         public HashSet<int> SendedPawnsId { get; set; }
+
         /// <summary>
         /// Переданные последний раз данные (их хеш) по ID
         /// </summary>
         public Dictionary<int, int> SendedState { get; set; }
+        /// <summary>
+        /// Переданные последний раз данные по здоровью по ID
+        /// </summary>
+        public Dictionary<int, int> SendedXP { get; set; }
+
 
         /// <summary>
         /// Вещи, информацию по которым нужно обновить
@@ -87,6 +98,11 @@ namespace RimWorldOnlineCity
         /// К передаче на создание не пешек
         /// </summary>
         public HashSet<Thing> ToSendThingAdd { get; set; }
+
+        /// <summary>
+        /// Список огня на карте, который нужно обновлять регулярно раз в SendDelayedFillPawnsSeconds
+        /// </summary>
+        public HashSet<Thing> FireList { get; set; }
 
         /// <summary>
         /// Новые трупы (отличаются от ToSendThingAdd тем, что берем содержимое контейнера Corpse)
@@ -289,8 +305,13 @@ namespace RimWorldOnlineCity
                         {
                             if (thc is Pawn) continue;
 
+                            if (thc is Fire) FireList.Add(thc as Fire);
+
                             //из растений оставляем только деревья
-                            if (thc.def.category == ThingCategory.Plant && !thc.def.plant.IsTree) continue;
+                            if (PlantNotSend)
+                            {
+                                if (thc.def.category == ThingCategory.Plant && !thc.def.plant.IsTree) continue;
+                            }
 
                             if (thc.Position != current) continue;
 
@@ -345,11 +366,13 @@ namespace RimWorldOnlineCity
                         //Потом добавляем список к отправке
                         SendedPawnsId = new HashSet<int>();
                         SendedState = new Dictionary<int, int>();
+                        SendedXP = new Dictionary<int, int>();
                         ToUpdateStateId = new List<int>();
                         ToUpdateState = new List<Thing>();
                         ToSendDeleteId = new HashSet<int>();
                         ToSendAddId = new HashSet<int>();
                         ToSendThingAdd = new HashSet<Thing>();
+                        FireList = new HashSet<Thing>();
                         ToSendNewCorpse = new HashSet<Thing>();
                         ToSendDelayedFillPawnsId = new HashSet<int>();
                         AttackingPawns = new List<Pawn>();
@@ -437,6 +460,10 @@ namespace RimWorldOnlineCity
             {
                 if (InTimer) return;
                 InTimer = true;
+
+                double AU1ms = 0;
+                DateTime AUSTime = DateTime.UtcNow;
+
                 AttackUpdateTick++;
                 //                Loger.Log("Client HostAttackUpdate #" + AttackUpdateTick.ToString());
 
@@ -463,7 +490,7 @@ namespace RimWorldOnlineCity
                 {
                     try
                     {
-                        List<Pawn> mapPawns;
+                        Dictionary<int, Pawn> mapPawns;
                         HashSet<int> mapPawnsId;
                         AttackHostFromSrv toClient;
                         lock (ToSendListsSync)
@@ -493,9 +520,8 @@ namespace RimWorldOnlineCity
 
                             //                      Loger.Log("Client HostAttackUpdate 1");
                             //обновляем списки
-                            mapPawns = GameMap.mapPawns.AllPawnsSpawned;
-                            mapPawnsId = new HashSet<int>(mapPawns.Select(p => p.thingIDNumber));
-                            var mapPawnsIdExt = new HashSet<int>(mapPawnsId);
+                            mapPawns = GameMap.mapPawns.AllPawnsSpawned.ToDictionary(p => p.thingIDNumber);
+                            var mapPawnsIdExt = new HashSet<int>(mapPawns.Keys);
                             mapPawnsIdExt.SymmetricExceptWith(SendedPawnsId); //новые пешки + те что на сервере, но их уже нет на карте
                             if (mapPawnsIdExt.Count > 0)
                             {
@@ -515,10 +541,37 @@ namespace RimWorldOnlineCity
                                     ToSendDeleteId.AddRange(toSendDeleteId);
                                 }
                             }
+                            //отложенная отправка полных данных по пешкам
                             if ((DateTime.UtcNow - SendDelayedFillPawnsLastTime).TotalSeconds >= SendDelayedFillPawnsSeconds)
                             {
+                                //проверяется XP пешек и записывалось в новый словарь. Если отличается добавлять в ToSendDelayedFillPawnsId
+                                foreach (var mpp in mapPawns)
+                                {
+                                    var mp = mpp.Value;
+                                    var mpID = mpp.Key;
+                                    if (ToSendDelayedFillPawnsId.Contains(mpID)) continue;
+
+                                    var mpXPnew = (int)(mp.health.summaryHealth.SummaryHealthPercent * 10000f);
+                                    int mpXP;
+                                    if (!SendedXP.TryGetValue(mpID, out mpXP))
+                                    {
+                                        //при первом добавлении не обновляем, только при изменении
+                                        SendedXP[mpID] = mpXPnew;
+                                    }
+                                    else if (mpXP != mpXPnew)
+                                    {
+                                        SendedXP[mpID] = mpXPnew;
+                                        ToSendDelayedFillPawnsId.Add(mpID);
+                                    }
+                                }
+
+                                //отправляем обновляться огонь
+                                FireList.ExceptWith(ToUpdateState);
+                                ToUpdateState.AddRange(FireList);
+
+                                //отправляем те, которые к отложенной отправке
                                 SendDelayedFillPawnsLastTime = DateTime.UtcNow;
-                                ToSendDelayedFillPawnsId.IntersectWith(mapPawnsId); //только те, которые на карте
+                                ToSendDelayedFillPawnsId.IntersectWith(mapPawns.Keys); //только те, которые на карте
                                 ToSendDelayedFillPawnsId.ExceptWith(ToSendAddId); //исключаем те, которые уже есть в списке
                                 ToSendAddId.AddRange(ToSendDelayedFillPawnsId);
 
@@ -526,6 +579,7 @@ namespace RimWorldOnlineCity
                                 
                                 ToSendDelayedFillPawnsId.Clear();
                             }
+
 
                             //посылаем пакеты с данными
                             //                      Loger.Log("Client HostAttackUpdate 2");
@@ -542,8 +596,8 @@ namespace RimWorldOnlineCity
                                 if (i >= cnt) break;
                                 added[i++] = id;
 
-                                var thing = mapPawns.Where(p => p.thingIDNumber == id).FirstOrDefault();
-                                if (thing == null) continue;
+                                Pawn thing;
+                                if (!mapPawns.TryGetValue(id, out thing)) continue;
                                 var tt = ThingEntry.CreateEntry(thing, 1);
                                 //передаем те, что были исходные у атакуемого (хотя там используется только как признак TransportID != 0 - значит те кто атакует)
                                 if (AttackingPawnDic.ContainsKey(tt.OriginalID)) tt.TransportID = AttackingPawnDic[tt.OriginalID];
@@ -561,22 +615,22 @@ namespace RimWorldOnlineCity
                                 SendedPawnsId.Remove(id);
                             }
 
-                            //вещи
+                            //новые вещи
                             var newThings = ToSendThingAdd
-                                .Where(thing => !ToSendDeleteId.Any(d => thing.thingIDNumber == d))
+                                .Where(thing => !ToSendDeleteId.Contains(thing.thingIDNumber))
                                 .Select(thing => ThingEntry.CreateEntry(thing, thing.stackCount))
                                 .ToList();
 
-                            //передаем изменение местоположения и пр. по ID хоста
+                            //передаем изменение местоположеня пешек (по ID хоста)
                             var toSendState = new List<AttackThingState>();
                             var toSendStateId = new List<int>();
-                            for (int imp = 0; imp < mapPawns.Count; imp++)
+                            foreach (var mpp in mapPawns)
                             {
-                                var mp = mapPawns[imp];
-                                var mpID = mp.thingIDNumber;
+                                var mp = mpp.Value;
+                                var mpID = mpp.Key;
                                 if (ToUpdateStateId.Contains(mpID)) continue;
 
-                                var mpHash = AttackThingState.GetHash(mp);
+                                var mpHash = AttackThingState.GetHash(mp); //тут у пешек используется только позиция 
                                 int mpHS;
                                 if (!SendedState.TryGetValue(mpID, out mpHS) || mpHS != mpHash)
                                 {
@@ -584,6 +638,7 @@ namespace RimWorldOnlineCity
                                     toSendState.Add(new AttackThingState(mp));
                                 }
                             }
+                            //передаем обычные вещи, по которым прошел урон или другие события
                             for (int imp = 0; imp < ToUpdateState.Count; imp++)
                             {
                                 var mp = ToUpdateState[imp];
@@ -592,7 +647,7 @@ namespace RimWorldOnlineCity
 
                                 if (mp is Pawn)
                                 {
-                                    var mpHash = AttackThingState.GetHash(mp);
+                                    var mpHash = AttackThingState.GetHash(mp); //тут у пешек используется только позиция 
                                     SendedState[mpID] = mpHash; //заносим только для проверки выше
                                 }
                                 toSendState.Add(new AttackThingState(mp));
@@ -611,12 +666,16 @@ namespace RimWorldOnlineCity
                             ThingPrepareChange1 = new HashSet<Thing>();
 
                             //трупы
+                            //todo выспомнить и написать зачем сюда трупы то
                             foreach (var mp in ToSendNewCorpse)
                             {
                                 toSendState.Add(new AttackThingState(mp));
                             }
 
                             //Loger.Log("Client HostAttackUpdate 3");
+
+                            DateTime AUSTime1 = DateTime.UtcNow;
+
                             toClient = connect.AttackOnlineHost(new AttackHostToSrv()
                             {
                                 State = 10,
@@ -628,6 +687,9 @@ namespace RimWorldOnlineCity
                                 UpdateState = toSendState,
                                 VictoryAttacker = ConfirmedVictoryAttacker,
                             });
+                            
+                            AU1ms = (DateTime.UtcNow - AUSTime1).TotalMilliseconds;
+
                             ToSendThingAdd.Clear();
                             ToSendNewCorpse.Clear();
                             ToSendDeleteId.Clear();
@@ -651,15 +713,16 @@ namespace RimWorldOnlineCity
                         }
 
                         //принимаем обновление команд атакующих
-                            if (toClient.UpdateCommand.Count > 0)
+                        if (toClient.UpdateCommand.Count > 0)
                         {
                             Loger.Log("HostAttackUpdate UpdateCommand Count=" + toClient.UpdateCommand.Count.ToString());
                             UIEventNewJobDisable = true;
                             for (int ii = 0; ii < toClient.UpdateCommand.Count; ii++)
                             {
                                 var comm = toClient.UpdateCommand[ii];
-                                var pawn = mapPawns.Where(p => p.thingIDNumber == comm.HostPawnID).FirstOrDefault() as Pawn;
-                                if (pawn == null)
+
+                                Pawn pawn;
+                                if (!mapPawns.TryGetValue(comm.HostPawnID, out pawn))
                                 {
                                     Loger.Log("HostAttackUpdate UpdateCommand pawn == null " + comm.HostPawnID.ToString());
                                     continue;
@@ -684,6 +747,8 @@ namespace RimWorldOnlineCity
                         InTimer = false;
                     }
                 });
+
+                Loger.Log($"HostAttackUpdate TimeCPU={(DateTime.UtcNow - AUSTime).TotalMilliseconds - AU1ms} TimeNet={AU1ms}");
 
             }
             catch (Exception ext)
@@ -867,6 +932,8 @@ namespace RimWorldOnlineCity
         /// </summary>
         public void UIEventChange(Thing thing, bool distroy = false, bool newSpawn = false)
         {
+            if (PlantNotSend && thing is Plant && !thing.def.plant.IsTree) return;
+
             Loger.Log("HostAttackUpdate UIEventChange " + thing.GetType().ToString() + " " + thing.Label + " id=" + thing.thingIDNumber
                 + (distroy ? " distroy!" : "")
                 + (newSpawn ? " newSpawn!" : "")
@@ -878,6 +945,8 @@ namespace RimWorldOnlineCity
                 if (distroy)
                 {
                     if (!ToSendDeleteId.Contains(tId)) ToSendDeleteId.Add(tId);
+                    var fi = thing as Fire;
+                    if (fi != null && FireList.Contains(fi)) FireList.Remove(fi);
                 }
                 else if (newSpawn)
                 {
@@ -886,12 +955,17 @@ namespace RimWorldOnlineCity
                         //трупы обрабатываем отдельно: передаем труп не как объект, а как редактирование состояния пешки - 
                         //  она сама станет трупом + после изменеия состояния удалить из словарей, чтобы её не удалили 
                         //  (да ID созданного трупа будет не синхронизированно, но считаем что с ними ничего не будут делать)
-                        //todo здесь, а также изменить у атакующего: когда пришла команда удалить пешку, то 
+                        // здесь, а также изменить у атакующего: когда пришла команда удалить пешку, то 
                         //  задержать команду на 1 цикл (новый массив)
                         var corpse = thing as Corpse;
                         ToSendNewCorpse.Add(corpse.InnerPawn);
                     }
-                    else /*if (!(thing is Pawn)) убрана лишняя проверка, т.к. с newSpawn не запускается для Pawn */ ToSendThingAdd.Add(thing);
+                    else /*if (!(thing is Pawn)) убрана лишняя проверка, т.к. с newSpawn не запускается для Pawn */
+                    {
+                        ToSendThingAdd.Add(thing);
+                        var fi = thing as Fire;
+                        if (fi != null && !FireList.Contains(fi)) FireList.Add(fi);
+                    }
                 }
                 else //здесь остались события посл получения урона
                 {

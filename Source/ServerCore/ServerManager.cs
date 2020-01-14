@@ -238,23 +238,28 @@ namespace ServerOnlineCity
         /// </summary>
         private void DoWorld()
         {
+            HashSet<string> allLogins = null;
+            //Есть ли какие-то изменения в списках пользователей
+            bool changeInPlayers = false;
             ///Обновляем кто кого видит
             foreach (var player in Repository.GetData.PlayersAll)
             {
                 var pl = player.PublicChat.PartyLogin;
                 if (pl.Count == Repository.GetData.PlayersAll.Count) continue;
 
+                changeInPlayers = true;
+
                 if (player.IsAdmin
                     || true //todo переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
                     )
                 {
+                    if (allLogins == null) allLogins = new HashSet<string>(Repository.GetData.PlayersAll.Select(p => p.Public.Login));
                     lock (player)
                     {
                         ///админы видят всех: добавляем кого не хватает
-                        var plAdd = Repository.GetData.PlayersAll
-                            .Select(p => p.Public.Login)
-                            .Where(p => !pl.Any(pp => pp == p))
-                            .ToList();
+                        var plAdd = new HashSet<string>(allLogins);
+                        plAdd.ExceptWith(player.PublicChat.PartyLogin);
+
                         if (plAdd.Count > 0) pl.AddRange(plAdd);
                     }
                 }
@@ -284,6 +289,11 @@ namespace ServerOnlineCity
                         pl.AddRange(plNeed.Where(p => !pl.Any(pp => p == pp)));
                     }
                 }
+            }
+
+            if (changeInPlayers)
+            {
+                Repository.GetData.UpdatePlayersAllDic();
             }
         }
 

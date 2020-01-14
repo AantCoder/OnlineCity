@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Transfer;
+using System.Linq;
 
 namespace ServerOnlineCity.Model
 {
@@ -17,6 +18,22 @@ namespace ServerOnlineCity.Model
 
         //[Obsolete("Перебирать 1000+ пользователей, для поиска одного единственного и не повторимого, не очень хорошая идея, предлагаю подумать")]
         public List<PlayerServer> PlayersAll { get; set; }
+
+        [NonSerialized]
+        private Dictionary<string, PlayerServer> PlayersAllDic_p;
+        public Dictionary<string, PlayerServer> PlayersAllDic 
+        {
+            get 
+            {
+                if (PlayersAllDic_p == null) UpdatePlayersAllDic();
+                return PlayersAllDic_p;
+            }
+        }
+
+        public void UpdatePlayersAllDic()
+        {
+            PlayersAllDic_p = PlayersAll.ToDictionary(p => p.Public.Login);
+        }
 
         public List<ChatPost> ChatPosts { get; set; }
 
