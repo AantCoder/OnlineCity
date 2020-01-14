@@ -20,19 +20,11 @@ namespace ServerOnlineCity.Model
         public List<PlayerServer> PlayersAll { get; set; }
 
         [NonSerialized]
-        private Dictionary<string, PlayerServer> PlayersAllDic_p;
-        public Dictionary<string, PlayerServer> PlayersAllDic 
-        {
-            get 
-            {
-                if (PlayersAllDic_p == null) UpdatePlayersAllDic();
-                return PlayersAllDic_p;
-            }
-        }
+        public ConcurrentDictionary<string, PlayerServer> PlayersAllDic;
 
         public void UpdatePlayersAllDic()
         {
-            PlayersAllDic_p = PlayersAll.ToDictionary(p => p.Public.Login);
+            PlayersAllDic = new ConcurrentDictionary<string, PlayerServer>(PlayersAll.ToDictionary(p => p.Public.Login));
         }
 
         public List<ChatPost> ChatPosts { get; set; }

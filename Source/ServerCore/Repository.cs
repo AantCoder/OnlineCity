@@ -32,9 +32,9 @@ namespace ServerOnlineCity
 
         public static PlayerServer GetPlayerByLogin(string login)
         {
-            // Подумать как сделать это быстрее, может быть использовать ConcurentDictonary, но надо переписать регистрацию, сохранение и загрузку, удаление поселения 
-            // Think how make this faster
-            return Repository.GetData.PlayersAll.FirstOrDefault(p => p.Public.Login == login);
+            PlayerServer res;
+            if (!Repository.GetData.PlayersAllDic.TryGetValue(login, out res)) return null;
+            return res;
         }
 
         public static void DropUserFromMap(string login)
@@ -89,6 +89,8 @@ namespace ServerOnlineCity
 
                     PlayerServer.PublicPosts = Data.PlayersAll[0].PublicChat.Posts;
                     if (Data.Orders == null) Data.Orders = new List<OrderTrade>();
+
+                    Data.UpdatePlayersAllDic();
 
                     Loger.Log("Server Load done. Users " + Data.PlayersAll.Count.ToString() + ": "
                         + Data.PlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
