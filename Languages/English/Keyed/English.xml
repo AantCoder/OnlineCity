@@ -131,6 +131,9 @@
 	<OCity_PlayerClient_marketValuePawn>Wealh of people and animals: {6}</OCity_PlayerClient_marketValuePawn>
 	<OCity_PlayerClient_LastSaveTimeNon>did not participate</OCity_PlayerClient_LastSaveTimeNon>
 	
+	<!-- Test -->
+
+	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
