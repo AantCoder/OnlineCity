@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	
+
 	<!-- MainMenu.cs -->
 	<OCity_LAN_btn>Multiplayer</OCity_LAN_btn>
-	
+
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
 	<OCity_Caravan_GoTrade>We are going to exchange goods with {0}</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
 	<OCity_Caravan_LOGNoData>No server data about the trade object</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>Caravan exchange: selectAllCaravan</OCity_Caravan_LOGSwap>
-	
+
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} player {1}</OCity_Caravan_Player>
 	<OCity_Caravan_PriceThing>The price of things: {2}</OCity_Caravan_PriceThing>
@@ -17,23 +17,23 @@
 	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
 	<OCity_Caravan_FreeWeight>Remaining load capacity: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Trade with {0}</OCity_Caravan_Trade>
-	
+
 	<!-- DevelopTest.cs -->
 	<OCity_DevTest_Test>Test</OCity_DevTest_Test>
 	<OCity_DevTest_NameTestPlayer>NameTestPlayer</OCity_DevTest_NameTestPlayer>
-	
+
 	<!-- GameStarter.cs -->
 	<OCity_Starter_CityNotBuild>This place is occupied by another player</OCity_Starter_CityNotBuild>
-	
+
 	<!-- StorageTest.cs -->
 	<OCity_StorageTest_CreateGrass>Plant grass in the spring (fix)</OCity_StorageTest_CreateGrass>
 	<OCity_StorageTest_CreateGrassDescrip>Once a year, on each card, when the temperature rises above 5 degrees, a new cell will be planted on each unoccupied, growing cell at a distance of 10 from the grass.</OCity_StorageTest_CreateGrassDescrip>
 	<OCity_StorageTest_LastIP>Last IP</OCity_StorageTest_LastIP>
-	
+
 	<!-- OnlineCity_ClientData.cs -->
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
 	<OCity_ClientData_Chat>Chat </OCity_ClientData_Chat>
-	
+
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
 	<OCity_Dialog_ListChat>Chat</OCity_Dialog_ListChat>
@@ -66,7 +66,7 @@
 	<OCity_Dialog_DeleteData>Delete all game data</OCity_Dialog_DeleteData>
 	<OCity_Dialog_DeleteDataCheck>Do you really want to completely remove the game and start over?</OCity_Dialog_DeleteDataCheck>
 	<OCity_Dialog_DeletedData>The game has been deleted. Sign in again to create a new one.</OCity_Dialog_DeletedData>
-	
+
 	<!-- OnlineCity_Dialog_CreateWorld.cs -->
 	<OCity_Dialog_CreateWorld_Create>Create a world</OCity_Dialog_CreateWorld_Create>
 	<OCity_Dialog_CreateWorld_BtnOk>OK</OCity_Dialog_CreateWorld_BtnOk>
@@ -77,7 +77,7 @@
 	<OCity_Dialog_CreateWorld_Difficulty>Difficulty. Integer from 0 (very simple) to 2 (difficult)</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Size of the local map (200 - small, 400 - ludeonicrous)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>Percentage of surface generation of the planet (from 5 to 100)</OCity_Dialog_CreateWorld_PercentWorld>
-	
+
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>Log in</OCity_LoginForm_BtnEnter>
 	<OCity_LoginForm_Register>Register</OCity_LoginForm_Register>
@@ -86,7 +86,7 @@
 	<OCity_LoginForm_Server>Server:</OCity_LoginForm_Server>
 	<OCity_LoginForm_Login>Login:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>Password:</OCity_LoginForm_Pass>
-	
+
 	<!-- SessionClientController.cs -->
 	<OCity_SessionCC_ConnectionFailTitle>Connection fail</OCity_SessionCC_ConnectionFailTitle>
 	<OCity_SessionCC_LoginFailTitle>Login fail</OCity_SessionCC_LoginFailTitle>
@@ -97,15 +97,15 @@
 	<OCity_SessionCC_MsgCreatingServer>Creating a server</OCity_SessionCC_MsgCreatingServer>
 	<OCity_SessionCC_Disconnected>Disconnected.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Disconnect</OCity_SessionCC_Disconnect>
-	
+
 	<!-- UpdateWorldController.cs -->
 	<OCity_UpdateWorld_Trade>Trade</OCity_UpdateWorld_Trade>
 	<OCity_UpdateWorld_TradeDetails>The player {0} to {1} transferred items: {2}</OCity_UpdateWorld_TradeDetails>
-	
+
 	<!-- Dialog_Input.cs -->
 	<OCity_DialogInput_Ok>OK</OCity_DialogInput_Ok>
 	<OCity_DialogInput_Cancele>Cancel</OCity_DialogInput_Cancele>
-	
+
 	<!-- Dialog_Registration.cs -->
 	<OCity_Dialog_Registration_Close>Close</OCity_Dialog_Registration_Close>
 	<OCity_Dialog_Registration_BtnReg>Register</OCity_Dialog_Registration_BtnReg>
@@ -114,14 +114,14 @@
 	<OCity_Dialog_Registration_Login>Login:</OCity_Dialog_Registration_Login>
 	<OCity_Dialog_Registration_Pass>Password:</OCity_Dialog_Registration_Pass>
 	<OCity_Dialog_Registration_Check>Confirm:</OCity_Dialog_Registration_Check>
-	
+
 	<!-- Dialog_TradeOnline.cs -->
 	<OCity_Dialog_TradeOnline_Trade>Transfer of goods</OCity_Dialog_TradeOnline_Trade>
-	
+
 	<!-- GrassFix.cs -->
 	<OCity_GrassFix_Plant>Planted </OCity_GrassFix_Plant>
 	<OCity_GrassFix_Grass> grass</OCity_GrassFix_Grass>
-	
+
 	<!-- PlayerClient.cs -->
 	<OCity_PlayerClient_LastTick>Playing for years: {0}, days: {1}.</OCity_PlayerClient_LastTick>
 	<OCity_PlayerClient_LastSaveTime>Was in the game: {2}</OCity_PlayerClient_LastSaveTime>
@@ -130,14 +130,24 @@
 	<OCity_PlayerClient_marketValue>Wealth of items: {5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>Wealh of people and animals: {6}</OCity_PlayerClient_marketValuePawn>
 	<OCity_PlayerClient_LastSaveTimeNon>did not participate</OCity_PlayerClient_LastSaveTimeNon>
-	
-	<!-- Test -->
 
-	
+	<!-- GameAttacker.cs -->
+	<OCity_GameAttacker_Dialog_ErrorMessage>Error attack</OCity_GameAttacker_Dialog_ErrorMessage>
+	<OCity_GameAttacker_Dialog_Settlement_Attack>You are attacking the settlement</OCity_GameAttacker_Dialog_Settlement_Attack>
+	<OCity_GameAttacker_Withdraw>Withdraw</OCity_GameAttacker_Withdraw>
+
+
+	<OCity_GameAttacker_Main_Dialog>
+	In this mode, the pause must be permanently activated. In spite of this the game continues and things change.
+	If you want to finish attack, then take those you can to any edge of the map and in the main menu press withdraw.
+	</OCity_GameAttacker_Main_Dialog>
+	<OCity_GameAttacker_Main_Preparation_Dialog>Preparation is complete. You have one minute to look around the map and the attack will begin.</OCity_GameAttacker_Main_Preparation_Dialog>
+
+
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
-	
+
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> Author Vasily Ivanov aka Aant.</OCity_AboutTabText>
@@ -216,5 +226,5 @@ To get a server set up, follow these steps:
 
 To recreate the world, close the server console, delete the data file, and start the console again.
 </OCity_AboutGeneralText>
-	
+
 </LanguageData>
