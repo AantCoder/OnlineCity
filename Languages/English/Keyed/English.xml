@@ -131,18 +131,33 @@
 	<OCity_PlayerClient_marketValuePawn>Wealh of people and animals: {6}</OCity_PlayerClient_marketValuePawn>
 	<OCity_PlayerClient_LastSaveTimeNon>did not participate</OCity_PlayerClient_LastSaveTimeNon>
 
+	<!-- Kor -->
 	<!-- GameAttacker.cs -->
 	<OCity_GameAttacker_Dialog_ErrorMessage>Error attack</OCity_GameAttacker_Dialog_ErrorMessage>
 	<OCity_GameAttacker_Dialog_Settlement_Attack>You are attacking the settlement</OCity_GameAttacker_Dialog_Settlement_Attack>
 	<OCity_GameAttacker_Withdraw>Withdraw</OCity_GameAttacker_Withdraw>
-
-
 	<OCity_GameAttacker_Main_Dialog>
 	In this mode, the pause must be permanently activated. In spite of this the game continues and things change.
 	If you want to finish attack, then take those you can to any edge of the map and in the main menu press withdraw.
 	</OCity_GameAttacker_Main_Dialog>
 	<OCity_GameAttacker_Main_Preparation_Dialog>Preparation is complete. You have one minute to look around the map and the attack will begin.</OCity_GameAttacker_Main_Preparation_Dialog>
+	<Ocity_GameAttacker_TrainingFight_Won>You won this training fight! :) </Ocity_GameAttacker_TrainingFight_Won>
+	</Ocity_GameAttacker_TrainingFight_Caravan_Restore>The caravan will now be restored, you'll need to log in.</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
+	<Ocity_GameAttacker_TrainingFight_Lost>You have been defeated in this training attack. :(</Ocity_GameAttacker_TrainingFight_Lost>
+	<OCity_GameAttacker_Done>Done</OCity_GameAttacker_Done>
+	<OCity_GameAttacker_Settlement_TakenOver>You have taken over this settlement! :)</OCity_GameAttacker_Settlement_TakenOver>
+	<OCity_GameAttacker_Defeated>You have been defeated :( </OCity_GameAttacker_Defeated>
+	<OCity_GameAttacker_Colonist_Return>The remaining colonists who are able to move and who have retreated to the edges of the map will return.</OCity_GameAttacker_Colonist_Return>
 
+	<!-- Kor -->
+	<!-- GameAttackHost.cs -->
+	<OCity_GameAttack_Host_Test_Attack>{0} is conducting a test attack on your settlement</OCity_GameAttacker_Test_Attack>
+	<OCity_GameAttack_Host_Settlement_Attacking>Your settlement is attacking {0}</OCity_GameAttacker_Settlement_Attacking>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>Wait until the attacker is ready. After that, the speed will automatically turn on the x1 and it will not change.</OCity_GameAttacker_GameSpeed_Lock_Dialog>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>If you want to finish and give up the settlement, click in the main menu.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
+	<OCity_GameAttack_Host_Cancel_Action> If you want to finish and cancel the action, click on the main menu.</OCity_GameAttack_Host_Cancel_Action>
+	<OCity_GameAttack_Host_Surrender>Surrender</OCity_GameAttack_Host_Surrender>
+	<OCity_GameAttack_Host_Error_Message_Attack>Error attack</OCity_GameAttack_Host_Error_Message_Attack>
 
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>

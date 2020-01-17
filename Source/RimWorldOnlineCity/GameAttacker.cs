@@ -723,15 +723,15 @@ namespace RimWorldOnlineCity
 
             if (TestMode)
             {
-                GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
+                GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
                     , victoryAttacker
-                        ? ("Вы выиграли этот тренировочный бой! :) " + Environment.NewLine +
-                            "Сейчас караван будет восстановлен, Вам нужно будет выполнить вход.").NeedTranslate()
-                        : ("Вы потерпели поражение в этой тренировочной атаке. :( " + Environment.NewLine +
-                            "Сейчас караван будет восстановлен, Вам нужно будет выполнить вход.").NeedTranslate()
+                        ? ("Ocity_GameAttacker_TrainingFight_Won" + Environment.NewLine +
+                            "Ocity_GameAttacker_TrainingFight_Caravan_Restore").Translate()
+                        : ("Ocity_GameAttacker_TrainingFight_Lost" + Environment.NewLine +
+                            "Ocity_GameAttacker_TrainingFight_Caravan_Restore").Translate()
                     , () =>
                     {
-                        SessionClientController.Disconnected("Готово".NeedTranslate());
+                        SessionClientController.Disconnected("OCity_GameAttacker_Done".Translate());
                     }
                     , null
                 );
@@ -776,11 +776,11 @@ namespace RimWorldOnlineCity
             //автосейв с единым сохранением
             SessionClientController.SaveGameNow(true, () =>
             {
-                GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
+                GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
                     , victoryAttacker
-                        ? "Вы захватили это поселение! :) ".NeedTranslate()
-                        : ("Вы потерпели поражение :(" + Environment.NewLine +
-                            "Оставшиеся колонисты, которые способны передвигаться и которые отступили к краям карты возвращаются.").NeedTranslate()
+                        ? "OCity_GameAttacker_Settlement_TakenOver".Translate()
+                        : ("OCity_GameAttacker_Defeated" + Environment.NewLine +
+                            "OCity_GameAttacker_Colonist_Return").Translate()
                     , () => { }
                     , null
                 );
