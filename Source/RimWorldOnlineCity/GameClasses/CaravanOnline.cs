@@ -122,7 +122,7 @@ namespace RimWorldOnlineCity
             //{
                 if (this is BaseOnline && GameAttacker.CanStart)
                 {
-                    yield return new FloatMenuOption(string.Format("Атаковать {0}".NeedTranslate()
+                    yield return new FloatMenuOption(string.Format("OCity_Caravan_Attack".Translate()
                         , OnlinePlayerLogin + " " + OnlineName
                     ), delegate
                     {

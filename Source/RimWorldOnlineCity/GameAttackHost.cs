@@ -1051,12 +1051,12 @@ namespace RimWorldOnlineCity
                         : "OCity_GameAttack_Host_Settlement_Attacking".Translate(AttackerLogin)
                     , victoryAttacker
                         ? ("Ocity_GameAttacker_TrainingFight_Lost" + Environment.NewLine +
-                            "Сейчас карта будет восстановлена, Вам нужно будет выполнить вход.").NeedTranslate()
-                        : ("Вы отбили эту тренировочную атаку! :) " + Environment.NewLine +
-                            "Сейчас карта будет восстановлена, Вам нужно будет выполнить вход.").NeedTranslate()
+                            "OCity_GameAttack_Host_Card_Restored").Translate()
+                        : ("OCity_GameAttack_Host_Training_Attack_Repulsed" + Environment.NewLine +
+                            "OCity_GameAttack_Host_Card_Restored").Translate()
                     , () =>
                     {
-                        SessionClientController.Disconnected("Готово".NeedTranslate());
+                        SessionClientController.Disconnected("OCity_GameAttacker_Done".Translate());
                     }
                     , null
                 );
@@ -1087,12 +1087,12 @@ namespace RimWorldOnlineCity
             {
                 GameUtils.ShowDialodOKCancel(
                     TestMode
-                        ? "{0} проводит тестовую атаку на Ваше поселение".NeedTranslate(AttackerLogin)
-                        : "Ваше поселение атакует {0}".NeedTranslate(AttackerLogin)
+                        ? "OCity_GameAttack_Host_Test_Attack".Translate(AttackerLogin)
+                        : "OCity_GameAttack_Host_Settlement_Attacking".Translate(AttackerLogin)
                     , victoryAttacker
-                        ? "Вы потерпели поражение и поселение переходит к новому владельцу :(".NeedTranslate()
-                        : ("Вы отбили эту атаку! :) " + Environment.NewLine +
-                            "Враги, которые не сумели уйти останутся на карте, но они потеряли связь со своим командиром.").NeedTranslate()
+                        ? "OCity_GameAttack_Host_Caravan_TransferToNewOwner".Translate()
+                        : ("OCity_GameAttack_Host_Atack_Repulsed" + Environment.NewLine +
+                            "OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch").Translate()
                     , () => { }
                     , null
                 );

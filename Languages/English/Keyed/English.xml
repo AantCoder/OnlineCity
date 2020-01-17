@@ -3,12 +3,20 @@
 
 	<!-- MainMenu.cs -->
 	<OCity_LAN_btn>Multiplayer</OCity_LAN_btn>
+	<!-- Kor -->
+	<OCity_MainMenu_Online>Online</OCity_MainMenu_Online>
+	<OCity_MainMenu_Withdraw>Withdraw</OCity_MainMenu_Withdraw>
+	<OCity_MainMenu_Surrender>Surrender</OCity_MainMenu_Surrender>
 
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
 	<OCity_Caravan_GoTrade>We are going to exchange goods with {0}</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
 	<OCity_Caravan_LOGNoData>No server data about the trade object</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>Caravan exchange: selectAllCaravan</OCity_Caravan_LOGSwap>
+	<!-- Kor -->
+	<OCity_Caravan_Go_Attack_Target>Attack {0}</OCity_Caravan_Go_Attack_Target>
+	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Do you really want to attack this settlement? It's possible to have a training battle without consequences</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
+	<OCity_Caravan_Practive>No, just practice.</OCity_Caravan_Practive>
 
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} player {1}</OCity_Caravan_Player>
@@ -17,6 +25,8 @@
 	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
 	<OCity_Caravan_FreeWeight>Remaining load capacity: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Trade with {0}</OCity_Caravan_Trade>
+	<!-- Kor -->
+	<OCity_Caravan_Attack>Attack {0}</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
 	<OCity_DevTest_Test>Test</OCity_DevTest_Test>
@@ -97,6 +107,66 @@
 	<OCity_SessionCC_MsgCreatingServer>Creating a server</OCity_SessionCC_MsgCreatingServer>
 	<OCity_SessionCC_Disconnected>Disconnected.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Disconnect</OCity_SessionCC_Disconnect>
+	<!-- Kor -->
+	<OCity_SessionCC_Shutdown_Command_ProgressSaved>We received a shutdown command from the server. The progress has been saved.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
+	<OCity_SessionCC_Shutdown_Command>The server has received a command to shut down</OCity_SessionCC_Shutdown_Command>
+	<OCity_SessionCC_Scenario_Classic>Classic</OCity_SessionCC_Scenario_Classic>
+	<OCity_SessionCC_Client_UpdateNeeded>Upgrade the client! Version for this server: </OCity_SessionCC_Client_UpdateNeeded>
+
+	<!-- Kor -->
+	<!-- Dialog_Exchenge.cs -->
+	<OCity_Dialog_Exchenge_Close>Close</OCity_Dialog_Exchenge_Close>
+	<OCity_Dialog_Exchenge_Edit>Edit</OCity_Dialog_Exchenge_Edit>
+	<OCity_Dialog_Exchenge_Trade_Orders>Trade orders</OCity_Dialog_Exchenge_Trade_Orders>
+	<OCity_Dialog_Exchenge_Viewing_Orders>Viewing order</OCity_Dialog_Exchenge_Viewing_Orders>
+	<OCity_Dialog_Exchenge_Deal_Open_Everyone>The deal is available to everyone.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
+	<OCity_Dialog_Exchenge_Deal_Open_Specific>The deal is only available for: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
+	<OCity_Dialog_Exchenge_Seller>Seller</OCity_Dialog_Exchenge_Seller>
+	<OCity_Dialog_Exchenge_BeenOnline>has been online</OCity_Dialog_Exchenge_BeenOnline>
+	<OCity_Dialog_Exchenge_Location>Location</OCity_Dialog_Exchenge_Location>
+	<OCity_Dialog_Exchenge_Days>days</OCity_Dialog_Exchenge_Days>
+	<OCity_Dialog_Exchenge_In>in</OCity_Dialog_Exchenge_In>
+	<OCity_Dialog_Exchenge_Location_Goods>Location of goods:</OCity_Dialog_Exchenge_Location_Goods>
+	<OCity_Dialog_Exchenge_Number>Number</OCity_Dialog_Exchenge_Number>
+	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>Maximum repetition of the transaction:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
+	<OCity_Dialog_Exchenge_Acquire>Acquire</OCity_Dialog_Exchenge_Acquire>
+	<OCity_Dialog_Exchenge_GiveTo>Give it to</OCity_Dialog_Exchenge_GiveTo>
+	<OCity_Dialog_Exchenge_No_Warrants>No warrants</OCity_Dialog_Exchenge_No_Warrants>
+	<OCity_Dialog_Exchenge_Active_Orders>Active orders {0}</OCity_Dialog_Exchenge_Active_Orders>
+	<OCity_Dialog_Exchenge_Update>Update</OCity_Dialog_Exchenge_Update>
+	<OCity_Dialog_Exchenge_Select_For_Sale>Selection for sale from {0} </OCity_Dialog_Exchenge_Select_For_Sale>
+	<OCity_Dialog_Exchenge_Choose>Choose</OCity_Dialog_Exchenge_Choose>
+	<OCity_Dialog_Exchenge_Order_Create>Create new order</OCity_Dialog_Exchenge_Order_Create>
+	<OCity_Dialog_Exchenge_Save>Save</OCity_Dialog_Exchenge_Save>
+	<OCity_Dialog_Exchenge_Create>Create</OCity_Dialog_Exchenge_Create>
+	<OCity_Dialog_Exchenge_Trade>Trade</OCity_Dialog_Exchenge_Trade>
+	<OCity_Dialog_Exchenge_Counterproposal>Counterproposal</OCity_Dialog_Exchenge_Counterproposal>
+	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>Action not carried out</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
+	<OCity_Dialog_Exchenge_Delete>Delete</OCity_Dialog_Exchenge_Delete>
+	<OCity_Dialog_Exchenge_Order_New>New order</OCity_Dialog_Exchenge_Order_New>
+	<OCity_Dialog_Exchenge_No_Exchanges>No such exchanges:</OCity_Dialog_Exchenge_No_Exchanges>
+	<OCity_Dialog_Exchenge_No_Available_Exchange>Nothing else is available for exchange.</OCity_Dialog_Exchenge_No_Available_Exchange>
+	<OCity_Dialog_Exchenge_Done_Once>It`s done once:</OCity_Dialog_Exchenge_Done_Once>
+	<OCity_Dialog_Exchenge_We_Give>We give</OCity_Dialog_Exchenge_We_Give>
+	<OCity_Dialog_Exchenge_We_Give2>We give {0} :</OCity_Dialog_Exchenge_We_Give2>
+	<OCity_Dialog_Exchenge_We_Get>We get</OCity_Dialog_Exchenge_We_Get>
+	<OCity_Dialog_Exchenge_No_User_Restrictions>There are no user restrictions.</OCity_Dialog_Exchenge_No_User_Restrictions>
+	<OCity_Dialog_Exchenge_User_Restrictions>Deal available only to users:</OCity_Dialog_Exchenge_User_Restrictions>
+	<OCity_Dialog_Exchenge_Add_User>+ add user</OCity_Dialog_Exchenge_Add_User>
+	<OCity_Dialog_Exchenge_Specific_Facility_Assigned>A specific facility has been assigned</OCity_Dialog_Exchenge_Specific_Facility_Assigned>
+	<OCity_Dialog_Exchenge_Add>+ add</OCity_Dialog_Exchenge_Add>
+	<OCity_Dialog_Exchenge_Whole_On>A whole on {0} of {1} ({2}%).</OCity_Dialog_Exchenge_Whole_On>
+	<OCity_Dialog_Exchenge_Quality>Quality</OCity_Dialog_Exchenge_Quality>
+	<OCity_Dialog_Exchenge_Whole_Less_Than>whole no less than</OCity_Dialog_Exchenge_Whole_Less_Than>
+	<OCity_Dialog_Exchenge_QualityNo_Less_Than>The quality is no less than</OCity_Dialog_Exchenge_QualityNo_Less_Than>
+	<OCity_Dialog_Exchenge_All>all</OCity_Dialog_Exchenge_All>
+
+	<!-- Kor -->
+	<!-- ThingTrade.cs -->
+	<OCity_ThingTrade_Quality_Strength>Quality {0}. Strength {1} of {2}</OCity_ThingTrade_Quality_Strength>
+	<OCity_ThingTrade_Cut_Body_Off>Cut off the body.</OCity_Cut_Body_Off>
+	<OCity_ThingTrade_QualityBetter_StrengthMore>Quality {0} and better. Strength {1}% and more</OCity_ThingTrade_QualityBetter_StrengthMore>
+	<OCity_ThingTrade_CouldTake_OffCorpse>Could be taken off a corpse.</OCity_ThingTrade_CouldTake_OffCorpse>
 
 	<!-- UpdateWorldController.cs -->
 	<OCity_UpdateWorld_Trade>Trade</OCity_UpdateWorld_Trade>
@@ -132,6 +202,11 @@
 	<OCity_PlayerClient_LastSaveTimeNon>did not participate</OCity_PlayerClient_LastSaveTimeNon>
 
 	<!-- Kor -->
+	<!-- GameUtils.cs -->
+	<OCity_GameUtils_From>from </OCity_GameUtils_From>
+	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>
+
+	<!-- Kor -->
 	<!-- GameAttacker.cs -->
 	<OCity_GameAttacker_Dialog_ErrorMessage>Error attack</OCity_GameAttacker_Dialog_ErrorMessage>
 	<OCity_GameAttacker_Dialog_Settlement_Attack>You are attacking the settlement</OCity_GameAttacker_Dialog_Settlement_Attack>
@@ -158,12 +233,22 @@
 	<OCity_GameAttack_Host_Cancel_Action> If you want to finish and cancel the action, click on the main menu.</OCity_GameAttack_Host_Cancel_Action>
 	<OCity_GameAttack_Host_Surrender>Surrender</OCity_GameAttack_Host_Surrender>
 	<OCity_GameAttack_Host_Error_Message_Attack>Error attack</OCity_GameAttack_Host_Error_Message_Attack>
+	<OCity_GameAttack_Host_Card_Restored>The card will now be restored, you will need to login.</OCity_GameAttack_Host_Card_Restored>
+	<OCity_GameAttack_Host_Training_Attack_Repulsed>You repulsed this training attack! :)</OCity_GameAttack_Host_Training_Attack_Repulsed>
+	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>You have been defeated and the settlement passes to the new owner :(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
+	<OCity_GameAttack_Host_Atack_Repulsed>You repulsed that attack! :)</OCity_GameAttack_Host_Atack_Repulsed>
+	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>The enemies who couldn't get away will stay on the map, but they've lost touch with their commander.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
 
 	<!-- Dialog_MainOnlineCity.cs -->
+	<!-- Kor -->
+	<OCity_Dialog_Exchenge_Chat>Chat</OCity_Dialog_Exchenge_Chat>
+	<OCity_Dialog_Exchenge_Gamers>gamers</OCity_Dialog_Exchenge_Gamers>
+	<OCity_Dialog_Exchenge_What_Point>What's the point</OCity_Dialog_Exchenge_What_Point>
+
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> Author Vasily Ivanov aka Aant.</OCity_AboutTabText>
 	<OCity_AboutGeneralText>Greetings, colonizer!

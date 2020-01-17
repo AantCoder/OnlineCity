@@ -82,7 +82,7 @@ namespace RimWorldOnlineCity
                                 optList.RemoveAt(i--);
                             }
                         }
-                        var item = new ListableOption("Онлайн".NeedTranslate(), delegate
+                        var item = new ListableOption("OCity_MainMenu_Online".Translate(), delegate
                         {
                             Dialog_MainOnlineCity.ShowHide();
                         }, null);
@@ -90,7 +90,7 @@ namespace RimWorldOnlineCity
 
                         if (SessionClientController.Data.AttackModule != null)
                         {
-                            item = new ListableOption("Отступить".NeedTranslate(), delegate
+                            item = new ListableOption("OCity_MainMenu_Withdraw".Translate(), delegate
                             {
                                 Loger.Log("Client MainMenu VictoryHost");
                                 SessionClientController.Data.AttackModule.VictoryHostToHost = true;
@@ -100,7 +100,7 @@ namespace RimWorldOnlineCity
 
                         if (SessionClientController.Data.AttackUsModule != null)
                         {
-                            item = new ListableOption("Сдаться".NeedTranslate(), delegate
+                            item = new ListableOption("OCity_MainMenu_Surrender".Translate(), delegate
                             {
                                 Loger.Log("Client MainMenu VictoryAttacker");
                                 SessionClientController.Data.AttackUsModule.ConfirmedVictoryAttacker = true;
@@ -128,7 +128,7 @@ namespace RimWorldOnlineCity
                         }, null);
                         optList.Add(item);
 
-                        
+
                     }
                 }
             }
@@ -138,5 +138,5 @@ namespace RimWorldOnlineCity
             SessionClientController.Init();
         }
     }
-   
+
 }
