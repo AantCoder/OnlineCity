@@ -28,7 +28,7 @@ namespace RimWorldOnlineCity
         /// Для быстрой передачи не передавать растения (Кроме деревьев они всегда передаются)
         /// </summary>
         public bool PlantNotSend { get; } = false;
-        
+
         /// <summary>
         /// Время в сек между полной синхронизацией пешек, например, чтобы после получаения урона увидеть точное здоровье
         /// </summary>
@@ -54,7 +54,7 @@ namespace RimWorldOnlineCity
         /// Насколько изменяется скорость всех пешек кроме атакующих (для баланса)
         /// </summary>
         public float HostPawnMoveSpeed { get; } = 0.5f;
-        
+
         public bool TestMode { get; set; }
 
         public string AttackerLogin { get; set; }
@@ -170,8 +170,8 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Замедлять защищающихся после минуты игры
         /// </summary>
-        public bool HostPawnMoveSpeedActive => 
-            TimeStartGameAttack != DateTime.MinValue 
+        public bool HostPawnMoveSpeedActive =>
+            TimeStartGameAttack != DateTime.MinValue
             && TimeStartGameAttack.AddMinutes(1) < DateTime.UtcNow;
 
         /// <summary>
@@ -213,16 +213,16 @@ namespace RimWorldOnlineCity
         private void PauseMessage()
         {
             GameUtils.ShowDialodOKCancel(
-                TestMode 
-                    ? "{0} проводит тестовую атаку на Ваше поселение".NeedTranslate(AttackerLogin)
-                    : "Ваше поселение атакует {0}".NeedTranslate(AttackerLogin)
+                TestMode
+                    ? "OCity_GameAttacker_Test_Attack".Translate(AttackerLogin)
+                    : "OCity_GameAttacker_Settlement_Attacking".Translate(AttackerLogin)
                 , TestMode
-                    ? ("Дождитесь когда атакующий будет готов. После этого скорость автоматически включиться на х1 и её нелзья будет менять."
-                        + "Если вы хотите закончить и отменить тренировку, то нажмите в главном меню ").NeedTranslate()
-                        + "Сдаться".NeedTranslate()
-                    : ("Дождитесь когда атакующий будет готов. После этого скорость автоматически включиться на х1 и её нелзья будет менять."
-                        + "Если вы хотите закончить и отдать поселение, то нажмите в главном меню ").NeedTranslate()
-                        + "Сдаться".NeedTranslate()
+                    ? ("OCity_GameAttacker_GameSpeed_Lock_Dialog"
+                        + "OCity_GameAttack_Host_Cancel_Action ").Translate()
+                        + "OCity_GameAttack_Host_Surrender".Translate()
+                    : ("OCity_GameAttack_Host_GameSpeed_Lock_Dialog."
+                        + "OCity_GameAttack_Host_GameSpeed_Lock_Dialog2").Translate()
+                        + "OCity_GameAttack_Host_Surrender".Translate()
                 , () => { }
                 , null
             );
@@ -252,7 +252,7 @@ namespace RimWorldOnlineCity
             InitiatorPlaceServerId = tolient.InitiatorPlaceServerId;
             HostPlaceServerId = tolient.HostPlaceServerId;
             TestMode = tolient.TestMode;
-            
+
             Loger.Log("Client GameAttackHost Start 2 " + tolient.HostPlaceServerId + " TestMode=" + TestMode);
 
             SessionClientController.SaveGameNowInEvent(false);
@@ -260,7 +260,7 @@ namespace RimWorldOnlineCity
             GameAttackTrigger_Patch.ForceSpeed = 0f;
             PauseMessage();
 
-            //Устанавливаем паузу сейчас первый раз, 
+            //Устанавливаем паузу сейчас первый раз,
             //далее она будет обновлена на 5 минут перед началом создания карты у атакующего игрока (см AttackServer.RequestInitiator())
             //и последний раз после создания карты на 1 минуту, чтобы дать оглядеться атакующему (ищи SetPauseOnTimeToHost в GameAttacker)
             CurrentPauseToTime = DateTime.UtcNow.AddMinutes(5);
@@ -421,7 +421,7 @@ namespace RimWorldOnlineCity
                                         }
                                     });
                                     th.IsBackground = true;
-                                    th.Start();                                    
+                                    th.Start();
                                 }
                                 */
                             });
@@ -433,7 +433,7 @@ namespace RimWorldOnlineCity
 
                         TimerObj = SessionClientController.Timers.Add(AttackUpdateDelay, AttackUpdate);
 
-                        //включаем обработку событий урона и уничтожения объектов 
+                        //включаем обработку событий урона и уничтожения объектов
                         GameAttackTrigger_Patch.ActiveAttackHost.Add(GameMap, this);
 
                         Loger.Log("Client GameAttackHost Start 11");
@@ -450,7 +450,7 @@ namespace RimWorldOnlineCity
         {
             Loger.Log("Client GameAttackHost error" + msg);
             //todo
-            Find.WindowStack.Add(new Dialog_Message("Error attak".NeedTranslate(), msg, null, () => { }));
+            Find.WindowStack.Add(new Dialog_Message("OCity_GameAttack_Host_Error_Message_Attack".Translate(), msg, null, () => { }));
         }
 
         private void AttackUpdate()
@@ -537,7 +537,7 @@ namespace RimWorldOnlineCity
                                 toSendDeleteId.IntersectWith(SendedPawnsId); //только те, что на сервере но их уже нет на карте
                                 if (toSendDeleteId.Count > 0)
                                 {
-                                    toSendDeleteId.ExceptWith(ToSendDeleteId); //исключаем те, которые уже есть в списке 
+                                    toSendDeleteId.ExceptWith(ToSendDeleteId); //исключаем те, которые уже есть в списке
                                     ToSendDeleteId.AddRange(toSendDeleteId);
                                 }
                             }
@@ -576,7 +576,7 @@ namespace RimWorldOnlineCity
                                 ToSendAddId.AddRange(ToSendDelayedFillPawnsId);
 
                                 Loger.Log("HostAttackUpdate ToSendDelayedFillPawnsId Send Count=" + ToSendDelayedFillPawnsId.Count.ToString());
-                                
+
                                 ToSendDelayedFillPawnsId.Clear();
                             }
 
@@ -630,7 +630,7 @@ namespace RimWorldOnlineCity
                                 var mpID = mpp.Key;
                                 if (ToUpdateStateId.Contains(mpID)) continue;
 
-                                var mpHash = AttackThingState.GetHash(mp); //тут у пешек используется только позиция 
+                                var mpHash = AttackThingState.GetHash(mp); //тут у пешек используется только позиция
                                 int mpHS;
                                 if (!SendedState.TryGetValue(mpID, out mpHS) || mpHS != mpHash)
                                 {
@@ -647,7 +647,7 @@ namespace RimWorldOnlineCity
 
                                 if (mp is Pawn)
                                 {
-                                    var mpHash = AttackThingState.GetHash(mp); //тут у пешек используется только позиция 
+                                    var mpHash = AttackThingState.GetHash(mp); //тут у пешек используется только позиция
                                     SendedState[mpID] = mpHash; //заносим только для проверки выше
                                 }
                                 toSendState.Add(new AttackThingState(mp));
@@ -687,7 +687,7 @@ namespace RimWorldOnlineCity
                                 UpdateState = toSendState,
                                 VictoryAttacker = ConfirmedVictoryAttacker,
                             });
-                            
+
                             AU1ms = (DateTime.UtcNow - AUSTime1).TotalMilliseconds;
 
                             ToSendThingAdd.Clear();
@@ -881,7 +881,7 @@ namespace RimWorldOnlineCity
 
                 //помимо главной обработки события изменения задания помечаем цель задачи для обновления её состояния позже, когда задача пешки завершиться
                 //это всё для того, чтобы поймать, что кол-во какой-то вещи изменилось
-                //добавляем тут намерение пешки взять вещь в новый словарь если Job не null, 
+                //добавляем тут намерение пешки взять вещь в новый словарь если Job не null,
                 //а если null (когда джоб завершился) помещаем в предварительный массив к отправке
                 //в момент отправки из предварительного массива данные переносятся в массив к отправке, а те что там были отправляются атакующиму с их текущим количеством стака
                 Thing jobThing;
@@ -952,10 +952,10 @@ namespace RimWorldOnlineCity
                 {
                     if (thing is Corpse && (thing as Corpse).InnerPawn != null)
                     {
-                        //трупы обрабатываем отдельно: передаем труп не как объект, а как редактирование состояния пешки - 
-                        //  она сама станет трупом + после изменеия состояния удалить из словарей, чтобы её не удалили 
+                        //трупы обрабатываем отдельно: передаем труп не как объект, а как редактирование состояния пешки -
+                        //  она сама станет трупом + после изменеия состояния удалить из словарей, чтобы её не удалили
                         //  (да ID созданного трупа будет не синхронизированно, но считаем что с ними ничего не будут делать)
-                        // здесь, а также изменить у атакующего: когда пришла команда удалить пешку, то 
+                        // здесь, а также изменить у атакующего: когда пришла команда удалить пешку, то
                         //  задержать команду на 1 цикл (новый массив)
                         var corpse = thing as Corpse;
                         ToSendNewCorpse.Add(corpse.InnerPawn);
@@ -1020,14 +1020,14 @@ namespace RimWorldOnlineCity
                 }
                 if (!existHostPawn
                     && pawn.IsColonist
-                    && !pawn.Dead 
+                    && !pawn.Dead
                     && !pawn.Downed)
                 {
                     existHostPawn = true;
                 }
             }
             Loger.Log($"CheckAttackerVictory GameMap.mapPawns.AllPawns {GameMap.mapPawns.AllPawns.Count()}");
-            return existHostPawn && existArrackerPawn 
+            return existHostPawn && existArrackerPawn
                 ? (bool?)null
                 : existArrackerPawn;
         }
@@ -1047,16 +1047,16 @@ namespace RimWorldOnlineCity
             {
                 GameUtils.ShowDialodOKCancel(
                     TestMode
-                        ? "{0} проводит тестовую атаку на Ваше поселение".NeedTranslate(AttackerLogin)
-                        : "Ваше поселение атакует {0}".NeedTranslate(AttackerLogin)
-                    , victoryAttacker 
-                        ? ("Вы потерпели поражение в этой тренировочной атаке. :( " + Environment.NewLine +
-                            "Сейчас карта будет восстановлена, Вам нужно будет выполнить вход.").NeedTranslate()
-                        : ("Вы отбили эту тренировочную атаку! :) " + Environment.NewLine +
-                            "Сейчас карта будет восстановлена, Вам нужно будет выполнить вход.").NeedTranslate()
-                    , () => 
+                        ? "OCity_GameAttack_Host_Test_Attack".Translate(AttackerLogin)
+                        : "OCity_GameAttack_Host_Settlement_Attacking".Translate(AttackerLogin)
+                    , victoryAttacker
+                        ? ("Ocity_GameAttacker_TrainingFight_Lost" + Environment.NewLine +
+                            "OCity_GameAttack_Host_Card_Restored").Translate()
+                        : ("OCity_GameAttack_Host_Training_Attack_Repulsed" + Environment.NewLine +
+                            "OCity_GameAttack_Host_Card_Restored").Translate()
+                    , () =>
                     {
-                        SessionClientController.Disconnected("Готово".NeedTranslate());
+                        SessionClientController.Disconnected("OCity_GameAttacker_Done".Translate());
                     }
                     , null
                 );
@@ -1072,7 +1072,7 @@ namespace RimWorldOnlineCity
                 //удалить всех чужих пешек с краев карты (они сбежали)
                 foreach (var pawn in AttackingPawns)
                 {
-                    if (!pawn.Dead 
+                    if (!pawn.Dead
                         && !pawn.Downed
                         && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - MapBorder
                             || pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - MapBorder))
@@ -1087,12 +1087,12 @@ namespace RimWorldOnlineCity
             {
                 GameUtils.ShowDialodOKCancel(
                     TestMode
-                        ? "{0} проводит тестовую атаку на Ваше поселение".NeedTranslate(AttackerLogin)
-                        : "Ваше поселение атакует {0}".NeedTranslate(AttackerLogin)
+                        ? "OCity_GameAttack_Host_Test_Attack".Translate(AttackerLogin)
+                        : "OCity_GameAttack_Host_Settlement_Attacking".Translate(AttackerLogin)
                     , victoryAttacker
-                        ? "Вы потерпели поражение и поселение переходит к новому владельцу :(".NeedTranslate()
-                        : ("Вы отбили эту атаку! :) " + Environment.NewLine +
-                            "Враги, которые не сумели уйти останутся на карте, но они потеряли связь со своим командиром.").NeedTranslate()
+                        ? "OCity_GameAttack_Host_Caravan_TransferToNewOwner".Translate()
+                        : ("OCity_GameAttack_Host_Atack_Repulsed" + Environment.NewLine +
+                            "OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch").Translate()
                     , () => { }
                     , null
                 );

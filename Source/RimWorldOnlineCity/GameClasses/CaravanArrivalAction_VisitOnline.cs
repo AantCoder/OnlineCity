@@ -16,7 +16,7 @@ namespace RimWorldOnlineCity
         private CaravanOnline сaravanOnline;
 
         private string mode;
-        
+
         public CaravanArrivalAction_VisitOnline()
         {
         }
@@ -33,8 +33,8 @@ namespace RimWorldOnlineCity
             get
             {
                 if (сaravanOnline == null) return "";
-                return string.Format(mode == "exchangeOfGoods" ? "OCity_Caravan_GoTrade".Translate() 
-                        : mode == "attack" ? "Атака {0}".NeedTranslate()
+                return string.Format(mode == "exchangeOfGoods" ? "OCity_Caravan_GoTrade".Translate()
+                        : mode == "attack" ? "OCity_Caravan_Go_Attack_Target".Translate()
                         : "OCity_Caravan_GoTrade2".Translate()
                     , сaravanOnline.Label);
             }
@@ -74,18 +74,18 @@ namespace RimWorldOnlineCity
                 }
             };
 
-            GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate() + " " + сaravanOnline.Label
-                , "Вы дейстивтельно хотите напасть на данное поселение? Можно провести тренировочный бой без последствий".NeedTranslate()
+            GameUtils.ShowDialodOKCancel("OCity_Caravan_Go_Attack_Target".Translate() + " " + сaravanOnline.Label
+                , "OCity_Caravan_Confirm_Attack_TestBattle_Possible".Translate()
                 , () => att(false)
                 , () => { }
                 , null
-                , "Нет, только тренировка".NeedTranslate()
+                , "OCity_Caravan_Practive".Translate()
                 , () => att(true)
             );
         }
 
         private void exchangeOfGoods(Caravan caravan)
-        { 
+        {
             //Pawn bestNegotiator = CaravanVisitUtility.BestNegotiator(caravan);
             ThingOwner<Thing> сontainer = new ThingOwner<Thing>();
             Dialog_TradeOnline form = null;
@@ -96,7 +96,7 @@ namespace RimWorldOnlineCity
             }
 
             var goods = GameUtils.GetAllThings(caravan);
-                
+
             form = new Dialog_TradeOnline(goods
                 , сaravanOnline.OnlinePlayerLogin
                 , сaravanOnline.OnlineWObject.FreeWeight

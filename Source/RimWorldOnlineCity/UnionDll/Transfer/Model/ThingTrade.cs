@@ -30,7 +30,7 @@ namespace Model
         /// </summary>
         public string StuffName { get; set; }
         /// <summary>
-        /// Текущая прочность, если 0 считается масксимальной 
+        /// Текущая прочность, если 0 считается масксимальной
         /// Либо минимально требуемая прочность (при Concrete == false)
         /// </summary>
         public int HitPoints { get; set; }
@@ -116,10 +116,10 @@ namespace Model
             {
                 return Name + (Count > 1 ? " x" + Count.ToString(): "") + Environment.NewLine
                     + (Concrete
-                        ? "Качество {0}. Прочность {1} из {2}".NeedTranslate(((QualityCategory)Quality).GetLabel(), HitPoints, MaxHitPoints)
-                            + (WornByCorpse ? " Снято с трупа".NeedTranslate() : "")
-                        : "Качество {0} и лучше. Прочность {1}% и больше".NeedTranslate(((QualityCategory)Quality).GetLabel(), HitPoints)
-                            + (WornByCorpse ? " Может быть снято с трупа".NeedTranslate() : "")
+                        ? "OCity_ThingTrade_Quality_Strength".Translate(((QualityCategory)Quality).GetLabel(), HitPoints, MaxHitPoints)
+                            + (WornByCorpse ? " OCity_Cut_Body_Off".Translate() : "")
+                        : "OCity_ThingTrade_QualityBetter_StrengthMore".Translate(((QualityCategory)Quality).GetLabel(), HitPoints)
+                            + (WornByCorpse ? " OCity_ThingTrade_CouldTake_OffCorpse".Translate() : "")
                         )
                     ;
             }
@@ -190,7 +190,7 @@ namespace Model
             else
                 return true;
         }
-        
+
         public static ThingTrade CreateTrade(ThingDef thingDef, float minHitPointsPercents, QualityCategory minQualities, int count)
         {
             var that = new ThingTrade();
@@ -236,7 +236,7 @@ namespace Model
                 that.HitPoints = (int)(pawn.health.summaryHealth.SummaryHealthPercent * 100f);
                 that.MaxHitPoints = 100;
             }
-            
+
             QualityCategory qq;
             if (QualityUtility.TryGetQuality(thing, out qq)) that.Quality = (int)qq;
 

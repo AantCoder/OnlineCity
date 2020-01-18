@@ -194,7 +194,7 @@ namespace RimWorldOnlineCity
                     }
 
                     Loger.Log("Client StartCreateClearMap 3");
-                    //скалы, преграды и строения без пешек и без растений не деревьев    
+                    //скалы, преграды и строения без пешек и без растений не деревьев
                     ThingsIDDicRev = new Dictionary<int, int>();
                     ThingsIDDic = new Dictionary<int, int>();
                     ThingsObjDic = new Dictionary<int, Thing>();
@@ -216,8 +216,8 @@ namespace RimWorldOnlineCity
                         }
                     }
 
-                    Loger.Log("Client StartCreateClearMap 4 CountThings=" + ThingsIDDic.Count.ToString() 
-                        + " CountThingsRev=" + ThingsIDDicRev.Count.ToString() 
+                    Loger.Log("Client StartCreateClearMap 4 CountThings=" + ThingsIDDic.Count.ToString()
+                        + " CountThingsRev=" + ThingsIDDicRev.Count.ToString()
                         + " CountThingsObj=" + ThingsObjDic.Count.ToString());
 
                     Loger.Log("Client StartCreateClearMap 5");
@@ -226,7 +226,7 @@ namespace RimWorldOnlineCity
 
                     TimerObj = SessionClientController.Timers.Add(AttackUpdateDelay, AttackUpdate);
 
-                    //включаем обработку событий выдачи команд 
+                    //включаем обработку событий выдачи команд
                     Loger.Log("Client StartCreateClearMap 6");
                 });
 
@@ -247,7 +247,7 @@ namespace RimWorldOnlineCity
         {
             Loger.Log("Client GameAttack error" + msg);
             //todo
-            Find.WindowStack.Add(new Dialog_Message("Error attak".NeedTranslate(), msg, null, () => { }));
+            Find.WindowStack.Add(new Dialog_Message("OCity_GameAttacker_Dialog_ErrorMessage".Translate(), msg, null, () => { }));
         }
 
         private List<ThingEntry> GetPawnsAndDeleteCaravan(Caravan caravan)
@@ -289,11 +289,9 @@ namespace RimWorldOnlineCity
                 if (!Find.TickManager.Paused)
                 {
                     Find.TickManager.Pause();
-                    GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
-                        , ("В этом режиме пауза должна быть постоянно включена. Несмотря на это "
-                            + "игра продолжается и положение вещей меняется. Если вы хотите завершить "
-                            + "нападение, то отведите тех кого сможете к любому краю карты и в главном меню нажмите ").NeedTranslate()
-                            + "Отступить".NeedTranslate()
+                    GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
+                        , ("OCity_GameAttacker_Main_Dialog").Translate()
+                            + "OCity_GameAttacker_Withdraw".Translate()
                         , () => { }
                         , null
                     );
@@ -307,18 +305,16 @@ namespace RimWorldOnlineCity
 
                 if (AttackUpdateTick == 3)
                 {
-                    GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
-                        , "Подготовка завершена. У Вас есть минута чтобы осмотреться на карте и атака начнется!".NeedTranslate()
+                    GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
+                        , "OCity_GameAttacker_Main_Preparation_Dialog".Translate()
                             + Environment.NewLine
-                            + ("В этом режиме пауза должна быть постоянно включена. Несмотря на это "
-                            + "игра продолжается и положение вещей меняется. Если вы хотите завершить "
-                            + "нападение, то отведите тех кого сможете к любому краю карты и в главном меню нажмите ").NeedTranslate()
-                            + "Отступить".NeedTranslate()
+                            + ("OCity_GameAttacker_Main_Dialog").Translate()
+                            + "OCity_GameAttacker_Withdraw".Translate()
                         , () => { }
                         , null
                     );
                 }
-                
+
                 inTimerEvent = true;
                 SessionClientController.Command((connect) =>
                 {
@@ -411,7 +407,7 @@ namespace RimWorldOnlineCity
                                     DestroyThing(thing, toClient.Delete[i]);
                                 }
                             }
-                            
+
                         };
 
                         errNums += "4 ";
@@ -647,7 +643,7 @@ namespace RimWorldOnlineCity
                     Rand.Seed = seed;
 
                     Loger.Log("Client CreateClearMap 2");
-                    //todo проверить что временный родитель mapParent будет удален 
+                    //todo проверить что временный родитель mapParent будет удален
                     var mapParent = (MapParent)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Ambush); //WorldObjectDefOf.Ambush  WorldObjectDefOf.AttackedNonPlayerCaravan
                     mapParent.Tile = tile;
                     Loger.Log("Client CreateClearMap 3");
@@ -727,15 +723,15 @@ namespace RimWorldOnlineCity
 
             if (TestMode)
             {
-                GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
+                GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
                     , victoryAttacker
-                        ? ("Вы выиграли этот тренировочный бой! :) " + Environment.NewLine +
-                            "Сейчас караван будет восстановлен, Вам нужно будет выполнить вход.").NeedTranslate()
-                        : ("Вы потерпели поражение в этой тренировочной атаке. :( " + Environment.NewLine +
-                            "Сейчас караван будет восстановлен, Вам нужно будет выполнить вход.").NeedTranslate()
+                        ? ("Ocity_GameAttacker_TrainingFight_Won" + Environment.NewLine +
+                            "Ocity_GameAttacker_TrainingFight_Caravan_Restore").Translate()
+                        : ("Ocity_GameAttacker_TrainingFight_Lost" + Environment.NewLine +
+                            "Ocity_GameAttacker_TrainingFight_Caravan_Restore").Translate()
                     , () =>
                     {
-                        SessionClientController.Disconnected("Готово".NeedTranslate());
+                        SessionClientController.Disconnected("OCity_GameAttacker_Done".Translate());
                     }
                     , null
                 );
@@ -780,11 +776,11 @@ namespace RimWorldOnlineCity
             //автосейв с единым сохранением
             SessionClientController.SaveGameNow(true, () =>
             {
-                GameUtils.ShowDialodOKCancel("Вы атакуете поселение".NeedTranslate()
+                GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
                     , victoryAttacker
-                        ? "Вы захватили это поселение! :) ".NeedTranslate()
-                        : ("Вы потерпели поражение :(" + Environment.NewLine +
-                            "Оставшиеся колонисты, которые способны передвигаться и которые отступили к краям карты возвращаются.").NeedTranslate()
+                        ? "OCity_GameAttacker_Settlement_TakenOver".Translate()
+                        : ("OCity_GameAttacker_Defeated" + Environment.NewLine +
+                            "OCity_GameAttacker_Colonist_Return").Translate()
                     , () => { }
                     , null
                 );

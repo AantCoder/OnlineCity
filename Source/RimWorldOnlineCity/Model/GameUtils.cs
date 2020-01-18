@@ -58,7 +58,7 @@ namespace RimWorldOnlineCity
             }
             else
             {
-                TooltipHandler.TipRegion(rect, thing.Def.LabelCap + " из ".NeedTranslate() + thing.StuffDef.LabelAsStuff);
+                TooltipHandler.TipRegion(rect, thing.Def.LabelCap + " OCity_GameUtils_From ".Translate() + thing.StuffDef.LabelAsStuff);
                 GUI.color = labelColor;
                 if (withInfo) Widgets.InfoCardButton(rect.x + 24f, rect.y, thing.Def, thing.StuffDef);
                 GUI.color = Color.white;
@@ -291,7 +291,7 @@ namespace RimWorldOnlineCity
 
         public static void ShortSetupForQuickTestPlay()
         {
-            //частичная копия 
+            //частичная копия
             Current.Game = new Game();
             Current.Game.InitData = new GameInitData();
             Current.Game.Scenario = ScenarioDefOf.Crashlanded.scenario;
@@ -359,7 +359,7 @@ namespace RimWorldOnlineCity
 
         /// <summary>
         /// Получаем координаты ячейки куда сгружать груз для указанной карты.
-        /// Ячейка - центр склада. Выбирается склад как лучший по: 
+        /// Ячейка - центр склада. Выбирается склад как лучший по:
         /// имеет в названии слово "торг" или "trad", не свалка с именем поумолчанию, самый большой, по названию
         /// </summary>
         public static IntVec3 GetTradeCell(Map map)
@@ -581,7 +581,7 @@ namespace RimWorldOnlineCity
                 diaNode.options.Add(diaOptionT);
             }
 
-            DiaOption diaOption = new DiaOption("OK".NeedTranslate()); //OK -> Принять передачу
+            DiaOption diaOption = new DiaOption("OCity_GameUtils_Ok".Translation()); //OK -> Принять передачу
             diaOption.action = ActOK;
             /*{ спавн пешки бегущей "на помощь"
                 GenSpawn.Spawn(refugee, spawnSpot, map, WipeMode.Vanish);
@@ -589,7 +589,7 @@ namespace RimWorldOnlineCity
                 CameraJumper.TryJump(refugee);
                 QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDefOf.RaidEnemy, null, raidParms), Find.TickManager.TicksGame + IncidentWorker_RefugeeChased.RaidDelay.RandomInRange, 0);
                 Find.Storyteller.incidentQueue.Add(qi);
-                
+
             };*/
             diaOption.resolveTree = true;
             diaNode.options.Add(diaOption);

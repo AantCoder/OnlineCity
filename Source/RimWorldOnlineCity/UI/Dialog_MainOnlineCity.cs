@@ -184,7 +184,7 @@ namespace RimWorldOnlineCity
 
             /// -----------------------------------------------------------------------------------------
             /// Список каналов
-            /// 
+            ///
             if (SessionClientController.Data.Chats != null)
             {
                 if (SessionClientController.Data.ChatNotReadPost > 0) SessionClientController.Data.ChatNotReadPost = 0;
@@ -212,7 +212,7 @@ namespace RimWorldOnlineCity
                 if (lbPlayers == null)
                 {
                     //первый запуск
-                    lbPlayers = new ListBox<ListBoxPlayerItem>();                 
+                    lbPlayers = new ListBox<ListBoxPlayerItem>();
                     lbPlayers.OnClick += (index, item) =>
                     {
                         //убираем выделение
@@ -297,13 +297,13 @@ namespace RimWorldOnlineCity
                         var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
 
                         // в чате создатель
-                        addTit("в чате".NeedTranslate());
+                        addTit("OCity_Dialog_Exchenge_Chat".Translate());
                         var n = addPl(selectCannal.OwnerLogin
                             , frameOnline(isOnline(selectCannal.OwnerLogin), "★ " + selectCannal.OwnerLogin));
                         n.Tooltip += "OCity_Dialog_ChennelOwn".Translate();
                         n.InChat = true;
 
-                        // в чате 
+                        // в чате
                         var offlinePartyLogin = new List<string>();
                         for (int i = 0; i < selectCannal.PartyLogin.Count; i++)
                         {
@@ -338,7 +338,7 @@ namespace RimWorldOnlineCity
                     if (other.Count > 0)
                     {
                         // игроки
-                        addTit("игроки".NeedTranslate());
+                        addTit("OCity_Dialog_Exchenge_Gamers".Translate());
                         var offlinePartyLogin = new List<string>();
                         for (int i = 0; i < other.Count; i++)
                         {

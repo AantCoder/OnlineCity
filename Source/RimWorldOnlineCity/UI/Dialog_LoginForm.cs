@@ -27,7 +27,7 @@ namespace RimWorldOnlineCity
         {
             InputAddr = ModBaseData.GlobalData.LastIP.Value;
             InputLogin = ModBaseData.GlobalData.LastLoginName.Value;
-            
+
             if (string.IsNullOrEmpty(InputAddr))
             {
                 InputAddr = MainHelper.DefaultIP;
@@ -103,11 +103,11 @@ namespace RimWorldOnlineCity
             Text.Font = GameFont.Small;
             mainListing.GapLine();
             mainListing.Gap();
-            
+
             var iresct = mainListing.GetRect(20f);
 
             //что к чему
-            ListableOption item = new ListableOption_WebLink("Что к чему".NeedTranslate(), () => 
+            ListableOption item = new ListableOption_WebLink("OCity_Dialog_Exchenge_What_Point".Translate(), () => 
             {
                 var textForm = new Dialog_TextOut(Dialog_MainOnlineCity.AboutGeneralText);
                 Find.WindowStack.Add(textForm);
@@ -119,7 +119,7 @@ namespace RimWorldOnlineCity
 
             TextInput(mainListing, "OCity_LoginForm_Server".Translate(),
                 (sub, rect) =>
-                {                    
+                {
                     InputAddr = GUI.TextField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputAddr, 100);
                 });
 
@@ -136,7 +136,7 @@ namespace RimWorldOnlineCity
                     InputPassword = GUI.PasswordField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputPassword, "*"[0], 100);
 
                 });
-            
+
             if (NeedFockus)
             {
                 NeedFockus = false;

@@ -20,7 +20,7 @@ using Verse.Steam;
 namespace RimWorldOnlineCity
 {
     /// <summary>
-    /// Контейнер общих данных и 
+    /// Контейнер общих данных и
     /// стандартные повторяющиеся инструкции при работе с классом SessionClient.
     /// </summary>
     public static class SessionClientController
@@ -146,11 +146,11 @@ namespace RimWorldOnlineCity
                         {
                             SessionClientController.SaveGameNow(false, () =>
                             {
-                                SessionClientController.Disconnected("От сервера получена команда на отключение. Прогресс был сохранен.".NeedTranslate());
+                                SessionClientController.Disconnected("OCity_SessionCC_Shutdown_Command_ProgressSaved".Translate());
                             });
                         }
                         else
-                            SessionClientController.Disconnected("От сервера получена команда на отключение.".NeedTranslate());
+                            SessionClientController.Disconnected("OCity_SessionCC_Shutdown_Command".Translate());
                     }
 
                     //если на нас напали запускаем процесс
@@ -202,7 +202,7 @@ namespace RimWorldOnlineCity
         public static void SaveGameNowInEvent(bool single = false)
         {
             Loger.Log($"Client {SessionClientController.My.Login} SaveGameNowInEvent single=" + single.ToString());
-            
+
             GameDataSaveLoader.SaveGame(SaveName);
             var content = File.ReadAllBytes(SaveFullName);
 
@@ -331,7 +331,7 @@ namespace RimWorldOnlineCity
         }
 
         /// <summary>
-        /// Подключаемся. 
+        /// Подключаемся.
         /// </summary>
         /// <returns>null, или текст произошедшей ошибки</returns>
         public static string Login(string addr, string login, string password)
@@ -420,7 +420,7 @@ namespace RimWorldOnlineCity
 
             var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
             if (scenarioDefaultMem == null)
-                scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Classic".NeedTranslate());
+                scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "OCity_SessionCC_Scenario_Classic".Translate());
             if (scenarioDefaultMem == null)
                 scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Классика");
             if (scenarioDefaultMem == null)
@@ -451,8 +451,8 @@ namespace RimWorldOnlineCity
 
             Loger.Log("Client ServerName=" + serverInfo.ServerName);
             Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
-            Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin 
-                + " Seed=" + serverInfo.Seed 
+            Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin
+                + " Seed=" + serverInfo.Seed
                 + " NeedCreateWorld=" + serverInfo.NeedCreateWorld
                 + " DelaySaveGame=" + Data.DelaySaveGame
                 + " DisableDevMode=" + Data.DisableDevMode);
@@ -460,7 +460,7 @@ namespace RimWorldOnlineCity
 
             if (MainHelper.VersionNum < serverInfo.VersionNum)
             {
-                Disconnected("Обновите клиент! Версия для данного сервера: ".NeedTranslate() + serverInfo.VersionInfo);
+                Disconnected("OCity_SessionCC_Client_UpdateNeeded".Translate() + serverInfo.VersionInfo);
                 return;
             }
 
@@ -528,7 +528,7 @@ namespace RimWorldOnlineCity
                         //Непосредственно после загрузки игры
                         InitGame();
                     };
-                    /* вместо этого сделал через гармонику 
+                    /* вместо этого сделал через гармонику
                     LongEventHandler.ExecuteWhenFinished(() =>
                     {
                         var th = new Thread(() =>
@@ -623,7 +623,7 @@ namespace RimWorldOnlineCity
             Loger.Log(steamCheckFileName);
 
             // 2. Запускаем пересчет хеша после получения папок проверки с сервера.
-            // Если файлы которые содержат папки для проверки,то При инициализации мода сразу же запускаем подсчет контрольной суммы файлов                
+            // Если файлы которые содержат папки для проверки,то При инициализации мода сразу же запускаем подсчет контрольной суммы файлов
             ClientHashChecker.StartGenerateHashFiles(modsCheckFileName, steamCheckFileName);
 
             // 3. Полученный хеш отправляем серверу для проверки
@@ -660,7 +660,7 @@ namespace RimWorldOnlineCity
         }
 
         /// <summary>
-        /// Запускается, когда админ первый раз заходит на сервер, выберет параметры нового мира, и 
+        /// Запускается, когда админ первый раз заходит на сервер, выберет параметры нового мира, и
         /// первое поселение этого мира стартовало.
         /// Здесь происходит чтение созданного мира и сохранение его на сервере, само поселение игнорируется.
         /// </summary>

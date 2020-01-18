@@ -187,7 +187,7 @@ namespace RimWorldOnlineCity.UI
             var buttonYStart = inRect.height - btnSize.y;
             Text.Font = GameFont.Small;
 
-            if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x, 0, btnSize.x, btnSize.y), "Закрыть".NeedTranslate()))
+            if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x, 0, btnSize.x, btnSize.y), "OCity_Dialog_Exchenge_Close".Translate()))
             {
                 Close();
             }
@@ -195,7 +195,7 @@ namespace RimWorldOnlineCity.UI
             Rect rect = new Rect(0f, 0f, inRect.width, btnSize.y);
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect, "Торговые ордера".NeedTranslate());
+            Widgets.Label(rect, "OCity_Dialog_Exchenge_Trade_Orders".Translate());
 
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
@@ -267,9 +267,9 @@ namespace RimWorldOnlineCity.UI
                 {
                     SetEditOrder(item);
                     if (EditOrderIsMy)
-                        EditOrderTitle = "Редактировать".NeedTranslate();
+                        EditOrderTitle = "OCity_Dialog_Exchenge_Edit".Translate();
                     else
-                        EditOrderTitle = "Просмотр ордера ".NeedTranslate() + item.Owner.Login;
+                        EditOrderTitle = "OCity_Dialog_Exchenge_Viewing_Orders ".Translate() + item.Owner.Login;
                 };
                 OrdersMenu = null;
                 OrdersGrid.OnDrawLine = (int line, OrderTrade item, Rect rectLine) =>
@@ -286,8 +286,8 @@ namespace RimWorldOnlineCity.UI
                         currentWidth -= 24f;
                         var flag = item.PrivatPlayers == null || item.PrivatPlayers.Count == 0;
                         TooltipHandler.TipRegion(rect2, flag
-                            ? "Сделка доступна всем".NeedTranslate()
-                            : "Сделка доступна только: {0}".NeedTranslate(string.Join(", ", item.PrivatPlayers.Select(p => p.Login).ToArray())));
+                            ? "OCity_Dialog_Exchenge_Deal_Open_Everyone".Translate()
+                            : "OCity_Dialog_Exchenge_Deal_Open_Specific".Translate(string.Join(", ", item.PrivatPlayers.Select(p => p.Login).ToArray())));
                         Widgets.Checkbox(rect2.position, ref flag, 24f, false);
 
                         //Ник продавца
@@ -296,10 +296,10 @@ namespace RimWorldOnlineCity.UI
                         {
                             OrdersMenu = new Dictionary<Rect, string>();
                             var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
-                            OrdersMenu.Add(rect2t, "Продавец".NeedTranslate());
+                            OrdersMenu.Add(rect2t, "OCity_Dialog_Exchenge_Seller".Translate());
                         }
                         currentWidth -= 200f;
-                        TooltipHandler.TipRegion(rect2, item.Owner.Login + Environment.NewLine + "был в сети ".NeedTranslate() + item.Owner.LastSaveTime.ToGoodUtcString());
+                        TooltipHandler.TipRegion(rect2, item.Owner.Login + Environment.NewLine + "OCity_Dialog_Exchenge_BeenOnline ".Translate() + item.Owner.LastSaveTime.ToGoodUtcString());
                         Widgets.Label(rect2, item.Owner.Login);
 
                         //Расстояние где торгуют (todo), название места
@@ -307,12 +307,12 @@ namespace RimWorldOnlineCity.UI
                         if (showTop)
                         {
                             var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
-                            OrdersMenu.Add(rect2t, "Место".NeedTranslate());
+                            OrdersMenu.Add(rect2t, "OCity_Dialog_Exchenge_Location".Translate());
                         }
                         currentWidth -= 200f;
-                        var text = (item.Place.DayPath > 0 ? item.Place.DayPath.ToStringDecimalIfSmall() + " дней".NeedTranslate() : "")
-                            + " в ".NeedTranslate() + item.Place.Name;
-                        TooltipHandler.TipRegion(rect2, "Месторасположение товара:".NeedTranslate() + Environment.NewLine + text);
+                        var text = (item.Place.DayPath > 0 ? item.Place.DayPath.ToStringDecimalIfSmall() + " OCity_Dialog_Exchenge_Days".Translate() : "")
+                            + " OCity_Dialog_Exchenge_In ".Translate() + item.Place.Name;
+                        TooltipHandler.TipRegion(rect2, "OCity_Dialog_Exchenge_Location_Goods".Translate() + Environment.NewLine + text);
                         Widgets.Label(rect2, text);
 
                         //Кол-во повторов
@@ -320,19 +320,19 @@ namespace RimWorldOnlineCity.UI
                         if (showTop)
                         {
                             var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
-                            OrdersMenu.Add(rect2t, "Кол-во".NeedTranslate());
+                            OrdersMenu.Add(rect2t, "OCity_Dialog_Exchenge_Number".Translate());
                         }
                         currentWidth -= 60f;
                         text = item.CountReady.ToString();
-                        TooltipHandler.TipRegion(rect2, "Максимум повоторов реализации сделки:".NeedTranslate() + Environment.NewLine + text);
+                        TooltipHandler.TipRegion(rect2, "OCity_Dialog_Exchenge_Max_Repetition_Transaction".Translate() + Environment.NewLine + text);
                         Widgets.Label(rect2, text);
 
-                        //Иконки и перечень (описание в подсказке) 
+                        //Иконки и перечень (описание в подсказке)
                         rect2 = new Rect(rectLine.x, rectLine.y, currentWidth / 2f, rectLine.height); //от 0 до половины остатка
                         if (showTop)
                         {
                             var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
-                            OrdersMenu.Add(rect2t, "Приобрести".NeedTranslate());
+                            OrdersMenu.Add(rect2t, "OCity_Dialog_Exchenge_Acquire".Translate());
                         }
                         var rect3 = new Rect(rect2.x, rect2.y, rectLine.height, rectLine.height);
                         for (int i = 0; i < item.SellThings.Count; i++)
@@ -351,7 +351,7 @@ namespace RimWorldOnlineCity.UI
                         if (showTop)
                         {
                             var rect2t = new Rect(rect2.x, 0f, rect2.width, rect2.height);
-                            OrdersMenu.Add(rect2t, "Отдать".NeedTranslate());
+                            OrdersMenu.Add(rect2t, "OCity_Dialog_Exchenge_GiveTo".Translate());
                         }
                         //Дальше отличается от блока выше только SellThings -> BuyThings
                         rect3 = new Rect(rect2.x, rect2.y, rectLine.height, rectLine.height);
@@ -379,12 +379,12 @@ namespace RimWorldOnlineCity.UI
             inRect.yMin += rect.height;
             Text.Font = GameFont.Tiny; // высота Tiny 18
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect, (Orders == null || Orders.Count == 0) ? "Ордеров нет".NeedTranslate() : "Активных ордеров {0}".NeedTranslate(Orders.Count.ToString()));
+            Widgets.Label(rect, (Orders == null || Orders.Count == 0) ? "OCity_Dialog_Exchenge_No_Warrants".Translate() : "OCity_Dialog_Exchenge_Active_Orders".Translate(Orders.Count.ToString()));
 
             //кнопка "Выбрать"
             rect.xMin += inRect.width - 140f;
             Text.Anchor = TextAnchor.MiddleCenter;
-            if (Widgets.ButtonText(rect.ContractedBy(1f), "Обновить".NeedTranslate(), true, false, true))
+            if (Widgets.ButtonText(rect.ContractedBy(1f), "OCity_Dialog_Exchenge_Update".Translate(), true, false, true))
             {
                 SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
 
@@ -457,7 +457,7 @@ namespace RimWorldOnlineCity.UI
                         if (!item.HasAnyThing) return;
                         float currentWidth = rectLine.width;
 
-                        //ввод кол-во и кнопки < > 
+                        //ввод кол-во и кнопки < >
                         currentWidth -= 60f + rectLine.height * 2f;
                         Rect rect3 = new Rect(rectLine.width - 60f - rectLine.height, 0f, 60f, rectLine.height);
                         int num2 = GenUI.CurrentAdjustmentMultiplier(); //зажали кнопку для прибавления по 10/100
@@ -515,12 +515,12 @@ namespace RimWorldOnlineCity.UI
             inRect.yMin += rect.height;
             Text.Font = GameFont.Tiny; // высота Tiny 18
             Text.Anchor = TextAnchor.UpperCenter;
-            Widgets.Label(rect, "Выбор на продажу из {0}".NeedTranslate(PlaceCurrent.Name));
+            Widgets.Label(rect, "OCity_Dialog_Exchenge_Select_For_Sale".Translate(PlaceCurrent.Name));
 
             //кнопка "Выбрать"
             rect.xMin += inRect.width - 150f;
             Text.Anchor = TextAnchor.MiddleCenter;
-            if (Widgets.ButtonText(rect.ContractedBy(1f), "Выбрать".NeedTranslate(), true, false, true))
+            if (Widgets.ButtonText(rect.ContractedBy(1f), "OCity_Dialog_Exchenge_Choose".Translate(), true, false, true))
             {
                 SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
                 AddThingListApply();
@@ -576,7 +576,7 @@ namespace RimWorldOnlineCity.UI
             if (EditOrder == null)
             {
                 //Действие не выбрано: по умолчанию настраиваем панельна создание нового ордера
-                EditOrderTitle = "Создать новый ордер".NeedTranslate();
+                EditOrderTitle = "OCity_Dialog_Exchenge_Order_Create".Translate();
                 var editOrder = new OrderTrade();
                 editOrder.Owner = SessionClientController.My;
                 editOrder.Place = PlaceCurrent;
@@ -610,8 +610,8 @@ namespace RimWorldOnlineCity.UI
             if (!EditOrderToTrade) GUI.color = Color.red;
             if (Widgets.ButtonText(rect.ContractedBy(1f)
                 , EditOrderIsMy
-                    ? existInServer ? "Сохранить".NeedTranslate() : "Создать".NeedTranslate()
-                    : "ТОРГОВАТЬ".NeedTranslate()
+                    ? existInServer ? "OCity_Dialog_Exchenge_Save".Translate() : "OCity_Dialog_Exchenge_Create".Translate()
+                    : "OCity_Dialog_Exchenge_Trade".Translate()
                 , true, false, true))
             {
                 GUI.color = Color.white;
@@ -633,7 +633,7 @@ namespace RimWorldOnlineCity.UI
                         if (!connect.ExchengeEdit(EditOrder))
                         {
                             Loger.Log("Client ExchengeEdit error: " + connect.ErrorMessage);
-                            Find.WindowStack.Add(new Dialog_Message("Действие не выполнено".NeedTranslate(), connect.ErrorMessage));
+                            Find.WindowStack.Add(new Dialog_Message("OCity_Dialog_Exchenge_Action_Not_CarriedOut".Translate(), connect.ErrorMessage));
                         }
                         else
                         {
@@ -655,7 +655,7 @@ namespace RimWorldOnlineCity.UI
             {
                 rect = new Rect(160f, 20f, inRect.width - 160f - 160f, 24);
                 if (Widgets.ButtonText(rect.ContractedBy(1f)
-                    , "Встречное предложение".NeedTranslate()
+                    , "OCity_Dialog_Exchenge_Counterproposal".Translate()
                     , true, false, true))
                 {
                     SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
@@ -669,7 +669,7 @@ namespace RimWorldOnlineCity.UI
             {
                 rect = new Rect(160f, 20f, 100f, 24);
                 if (Widgets.ButtonText(rect.ContractedBy(1f)
-                    , "Удалить".NeedTranslate()
+                    , "OCity_Dialog_Exchenge_Delete".Translate()
                     , true, false, true))
                 {
                     SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
@@ -683,7 +683,7 @@ namespace RimWorldOnlineCity.UI
                         {
                             EditOrder.Id = -EditOrder.Id;
                             Loger.Log("Client ExchengeEdit error: " + connect.ErrorMessage);
-                            Find.WindowStack.Add(new Dialog_Message("Действие не выполнено".NeedTranslate(), connect.ErrorMessage));
+                            Find.WindowStack.Add(new Dialog_Message("OCity_Dialog_Exchenge_Action_Not_CarriedOut".Translate(), connect.ErrorMessage));
                         }
                         else
                         {
@@ -699,7 +699,7 @@ namespace RimWorldOnlineCity.UI
 
             rect = new Rect(0, 20f, 150f, 24f);
             if (Widgets.ButtonText(rect.ContractedBy(1f)
-                , "Новый ордер".NeedTranslate()
+                , "OCity_Dialog_Exchenge_Order_New".Translate()
                 , true, false, true))
             {
                 SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
@@ -716,7 +716,7 @@ namespace RimWorldOnlineCity.UI
 
             if (EditOrderIsMy)
             {
-                Widgets.Label(rect, "Кол-во таких обменов:".NeedTranslate());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_No_Exchanges".Translate());
                 var rect2 = new Rect(rect.x + 250f, rect.y, 70f, rect.height);
 
                 int countToTransfer = EditOrder.CountBeginMax;
@@ -732,46 +732,46 @@ namespace RimWorldOnlineCity.UI
 
                 rect.y += 24f;
             }
-            
-            Widgets.Label(rect, "Кол-во ещё доступно для обмена: ".NeedTranslate() + EditOrder.CountReady.ToString());
+
+            Widgets.Label(rect, "OCity_Dialog_Exchenge_No_Available_Exchange".Translate() + EditOrder.CountReady.ToString());
             if (EditOrderIsMy)
             {
                 rect.xMin += 250;
-                Widgets.Label(rect, "Совершено раз: ".NeedTranslate() + EditOrder.CountFnished.ToString());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_Done_Once".Translate() + EditOrder.CountFnished.ToString());
                 rect.xMin = 0;
             }
             rect.y += 24f;
 
             if (EditOrderIsMy)
             {
-                Widgets.Label(rect, "Мы отдаем:".NeedTranslate());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Give:".Translate());
                 rect.y += 24f;
                 EditOrderShowSellThings(ref rect);
 
-                Widgets.Label(rect, "Мы получаем:".NeedTranslate());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Get:".Transalte());
                 rect.y += 24f;
                 EditOrderShowBuyThings(ref rect);
             }
             else
             {
-                Widgets.Label(rect, "Мы получаем:".NeedTranslate());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Get:".Translate());
                 rect.y += 24f;
                 EditOrderShowBuyThings(ref rect);
 
-                Widgets.Label(rect, "Мы отдаем {0}:".NeedTranslate(EditOrder.Owner.Login));
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Give2".Translate(EditOrder.Owner.Login));
                 rect.y += 24f;
                 EditOrderShowSellThings(ref rect);
             }
 
             if (EditOrder.PrivatPlayers == null || EditOrder.PrivatPlayers.Count == 0)
             {
-                Widgets.Label(rect, "Ограичений по пользователям нет".NeedTranslate());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_No_User_Restrictions".Translate());
                 rect.y += 24f;
             }
             else
             {
 
-                Widgets.Label(rect, "Сделка доступна только пользователям:".NeedTranslate());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_User_Restrictions".Translate());
                 rect.y += 24f;
                 for (int i = 0; i < EditOrder.PrivatPlayers.Count; i++)
                 {
@@ -789,7 +789,7 @@ namespace RimWorldOnlineCity.UI
             var rect4 = new Rect(rect);
             rect4.width = 150f;
             if (Widgets.ButtonText(rect4.ContractedBy(1f)
-                , "+ добавить пользователя".NeedTranslate()
+                , "OCity_Dialog_Exchenge_Add_User".Translate()
                 , true, false, true))
             {
                 SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
@@ -916,7 +916,7 @@ namespace RimWorldOnlineCity.UI
                 Widgets.Label(rect3, th.Concrete ? "* x" : "x");
                 Text.Anchor = TextAnchor.MiddleLeft;
                 if (th.Concrete)
-                    TooltipHandler.TipRegion(rect3, "Задан конкретный объект".NeedTranslate());
+                    TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_Specific_Facility_Assigned".Translate());
 
                 //кол-во Count
                 rect3 = new Rect(xl, rect.y, 50f, 24f);
@@ -938,7 +938,7 @@ namespace RimWorldOnlineCity.UI
                 {
                     Widgets.Label(rect3, th.Count.ToString());
                 }
-                
+
                 //множитель кол-во повторов
                 textCntW = 40f;
                 Text.Anchor = TextAnchor.MiddleLeft;
@@ -962,7 +962,7 @@ namespace RimWorldOnlineCity.UI
 
                 //с трупа WornByCorpse, прочность HitPoints из MaxHitPoints и качество Quality
                 EditOrderShowHitAndQ(ref rect, ref xr, th);
-                
+
                 //название
                 rect3 = new Rect(xl, rect.y, xr - xl, 24f);
                 Widgets.Label(rect3, th.Name);
@@ -974,7 +974,7 @@ namespace RimWorldOnlineCity.UI
                 var rect4 = new Rect(rect);
                 rect4.width = 150f;
                 if (Widgets.ButtonText(rect4.ContractedBy(1f)
-                    , "+ добавить".NeedTranslate()
+                    , "OCity_Dialog_Exchenge_Add".Translate()
                     , true, false, true))
                 {
                     SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
@@ -1025,7 +1025,7 @@ namespace RimWorldOnlineCity.UI
                 var textCntW = Text.CalcSize("888/888 ").x;
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
-                TooltipHandler.TipRegion(rect3, "Цело на {0} из {1} ({2}%)".NeedTranslate(th.HitPoints, th.MaxHitPoints
+                TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_Whole_On)".Translate(th.HitPoints, th.MaxHitPoints
                     , (th.HitPoints * 100 / th.MaxHitPoints).ToString()));
                 Widgets.Label(rect3, th.HitPoints + "/" + th.MaxHitPoints);
 
@@ -1033,7 +1033,7 @@ namespace RimWorldOnlineCity.UI
                 textCntW = EditOrderQualityWidth + 10f;
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
-                TooltipHandler.TipRegion(rect3, "Качество ".NeedTranslate() + ((QualityCategory)th.Quality).GetLabel());
+                TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_Quality ".Translate() + ((QualityCategory)th.Quality).GetLabel());
                 Widgets.Label(rect3, ((QualityCategory)th.Quality).GetLabelShort() + "+");
             }
             else
@@ -1042,16 +1042,16 @@ namespace RimWorldOnlineCity.UI
                 var textCntW = Text.CalcSize("188% ").x;
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
-                TooltipHandler.TipRegion(rect3, "Цело не меньше чем ".NeedTranslate() + (th.HitPoints * 100 / th.MaxHitPoints).ToString() + "%");
+                TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_Whole_Less_Than".Translate() + (th.HitPoints * 100 / th.MaxHitPoints).ToString() + "%");
                 Widgets.Label(rect3, (th.HitPoints * 100 / th.MaxHitPoints).ToString() + "%");
 
                 //качество Quality
                 textCntW = EditOrderQualityWidth + 10f;
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
-                TooltipHandler.TipRegion(rect3, "Качество не меньше чем ".NeedTranslate() + ((QualityCategory)th.Quality).GetLabel());
+                TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_QualityNo_Less_Than".Translate() + ((QualityCategory)th.Quality).GetLabel());
                 Widgets.Label(rect3, th.Quality == 0
-                    ? "все".NeedTranslate()
+                    ? "OCity_Dialog_Exchenge_All".Translate()
                     : ((QualityCategory)th.Quality).GetLabelShort() + "+"
                     );
             }
