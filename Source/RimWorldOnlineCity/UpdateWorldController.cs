@@ -309,6 +309,17 @@ namespace RimWorldOnlineCity
             return storeWO;
         }
 
+        public static WorldObjectEntry GetMyByLocalId(int id)
+        {
+            WorldObjectEntry storeWO;
+            if (MyWorldObjectEntry == null
+                || !MyWorldObjectEntry.TryGetValue(id, out storeWO))
+            {
+                return null;
+            }
+            return storeWO;
+        }
+
         public static CaravanOnline GetOtherByServerId(long serverId, List<WorldObject> allWorldObjects = null)
         {
             int objId;

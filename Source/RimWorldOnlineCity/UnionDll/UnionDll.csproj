@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttackUtils.cs" />
     <Compile Include="ClientData.cs" />
     <Compile Include="Common\FileChecker.cs" />
     <Compile Include="Common\Grants.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Loger.cs" />
     <Compile Include="Transfer\ConnectSaver.cs" />
     <Compile Include="Transfer\FolderTree.cs" />
+    <Compile Include="Transfer\Model\IPlayerEx.cs" />
     <Compile Include="Transfer\Model\ModelFileInfo.cs" />
     <Compile Include="Transfer\Types\ApproveLoadWorldReason.cs" />
     <Compile Include="Transfer\Types\DisconnectReason.cs" />

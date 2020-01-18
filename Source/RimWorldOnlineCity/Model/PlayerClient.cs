@@ -8,10 +8,11 @@ using Verse;
 
 namespace RimWorldOnlineCity
 {
-    public class PlayerClient
+    public class PlayerClient : IPlayerEx
     {
-        public Player Public;
+        public Player Public { get; set; }
 
+        //повторить логику на сервере тут: PlayerServer
         public bool Online =>
             Public.LastOnlineTime == DateTime.MinValue ? Public.LastSaveTime > DateTime.UtcNow.AddMinutes(-17) :
             Public.LastOnlineTime > (DateTime.UtcNow + SessionClientController.Data.ServetTimeDelta).AddSeconds(-10);
@@ -31,28 +32,31 @@ namespace RimWorldOnlineCity
         private string TextInfo = "";
         private DateTime TextInfoTime = DateTime.MinValue;
 
-        private string GetTextInfoCalc()
+        public WorldObjectsValues CostWorldObjects(long serverId = 0)
         {
-            float marketValue = 0;
-            float marketValuePawn = 0;
-            int baseCount = 0;
-            int caravanCount = 0;
-            string listOut = "";
+            var values = new WorldObjectsValues();
             if (WObjects != null)
             {
                 foreach (var wo in WObjects)
                 {
-                    marketValue += wo.OnlineWObject.MarketValue;
-                    marketValuePawn += wo.OnlineWObject.MarketValuePawn;
+                    if (serverId != 0 && wo.OnlineWObject.ServerId != serverId) continue;
+                    values.MarketValue += wo.OnlineWObject.MarketValue;
+                    values.MarketValuePawn += wo.OnlineWObject.MarketValuePawn;
                     if (wo is BaseOnline)
                     {
-                        baseCount++;
+                        values.BaseCount++;
                     }
                     else
-                        caravanCount++;
-                    listOut += Environment.NewLine + Environment.NewLine + wo.GetInspectString();
+                        values.CaravanCount++;
+                    values.Details += Environment.NewLine + Environment.NewLine + wo.GetInspectString();
                 }
             }
+            return values;
+        }
+
+        private string GetTextInfoCalc()
+        {
+            var values = CostWorldObjects();
             var info = (
                 "OCity_PlayerClient_LastTick".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_LastSaveTime".Translate() + Environment.NewLine
@@ -65,12 +69,12 @@ namespace RimWorldOnlineCity
                         Public.LastTick / 3600000
                         , Public.LastTick / 60000
                         , Public.LastSaveTime == DateTime.MinValue ? "OCity_PlayerClient_LastSaveTimeNon".Translate() : Public.LastSaveTime.ToGoodUtcString()
-                        , baseCount
-                        , caravanCount
-                        , marketValue.ToStringMoney()
-                        , marketValuePawn.ToStringMoney()
+                        , values.BaseCount
+                        , values.CaravanCount
+                        , values.MarketValue.ToStringMoney()
+                        , values.MarketValuePawn.ToStringMoney()
                     });
-            return info + listOut;
+            return info + values.Details;
         }
     }
 }

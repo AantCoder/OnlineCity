@@ -28,6 +28,22 @@ namespace RimWorldOnlineCity
 
         public Dictionary<string, PlayerClient> Players = new Dictionary<string, PlayerClient>();
 
+        private PlayerClient MyEx_p = null;
+
+        public PlayerClient MyEx
+        {
+            get 
+            {
+                if (MyEx_p == null)
+                {
+                    if (SessionClientController.My == null
+                        || !Players.TryGetValue(SessionClientController.My.Login, out MyEx_p)
+                        ) return null;
+                }
+                return MyEx_p;
+            }
+        }
+
         public byte[] SaveFileData;
 
         public bool SingleSave;

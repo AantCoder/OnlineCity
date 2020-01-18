@@ -44,7 +44,6 @@ namespace ServerOnlineCity.Model
         public List<ThingTrade> Thing { get; set; }
         public List<IntVec3S> ThingCell { get; set; }
 
-
         public List<ThingEntry> NewPawns { get; set; }
         public List<int> NewPawnsId { get; set; }
         public List<ThingEntry> NewThings { get; set; }
@@ -60,6 +59,10 @@ namespace ServerOnlineCity.Model
 
         public string New(PlayerServer player, PlayerServer hostPlayer, AttackInitiatorToSrv fromClient, bool testMode)
         {
+            if (!player.Online || !hostPlayer.Online) return "Attack not possible: player offline";
+            var err = AttackUtils.CheckPossibilityAttack(player, hostPlayer, fromClient.InitiatorPlaceServerId, fromClient.HostPlaceServerId);
+            if (err != null) return err;
+
             TestMode = testMode;
             Attacker = player;
             Host = hostPlayer;
@@ -329,6 +332,32 @@ namespace ServerOnlineCity.Model
                     ErrorText = "Unexpected request " + fromClient.State.ToString() + "! Was expected" + State.ToString()
                 };
             }
+        }
+
+        /// <summary>
+        /// Проверка и действия при сбоях.
+        /// Если отключился атакующий до State == 10 или меньше 1 мин, то отмена.
+        /// Если отключился атакующий при State == 10 и больше 1 мин, то уничтожение каравана, поселение остается как есть.
+        /// Если отключился хост до State == 10, то уничтожение поселения хоста и отмена у атакующего.
+        /// Если отключился хост после State == 10, то уничтожение поселения хоста и поселение переходит к атакующему.
+        /// </summary>
+        /// <param name="attacker">Это запрос атакующего, иначе хоста</param>
+        /// <returns></returns>
+        private bool CheckConnect(bool attacker)
+        {
+            bool fail = false;
+            if (attacker)
+            {
+                fail = !Host.Online;
+            }
+            else
+            {
+                fail = !Attacker.Online;
+            }
+
+            //todo
+
+            return fail;
         }
 
         private void Finish(bool victoryAttacker)

@@ -243,11 +243,19 @@ namespace RimWorldOnlineCity
             thing.Destroy();
         }
 
+        /// <summary>
+        /// Ошибка при создании карты
+        /// </summary>
+        /// <param name="msg"></param>
         private void ErrorBreak(string msg)
         {
             Loger.Log("Client GameAttack error" + msg);
-            //todo
+
+            SessionClientController.Disconnected("OCity_GameAttacker_Dialog_ErrorMessage".Translate());
+            /*
+            if (AttackerPawns != null && AttackerPawns.Count > 0) Finish(false);
             Find.WindowStack.Add(new Dialog_Message("OCity_GameAttacker_Dialog_ErrorMessage".Translate(), msg, null, () => { }));
+            */
         }
 
         private List<ThingEntry> GetPawnsAndDeleteCaravan(Caravan caravan)
@@ -715,7 +723,7 @@ namespace RimWorldOnlineCity
             Loger.Log("Client AttackerFinish");
 
             //отключить таймер и признаки, что нас атакуют
-            SessionClientController.Timers.Remove(TimerObj);
+            if (TimerObj != null) SessionClientController.Timers.Remove(TimerObj);
             GameAttackTrigger_Patch.ActiveAttacker.Remove(GameMap);
             SessionClientController.Data.AttackModule = null;
             SessionClientController.Data.BackgroundSaveGameOff = false;

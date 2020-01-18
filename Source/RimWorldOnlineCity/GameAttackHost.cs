@@ -449,8 +449,11 @@ namespace RimWorldOnlineCity
         private void ErrorBreak(string msg)
         {
             Loger.Log("Client GameAttackHost error" + msg);
-            //todo
-            Find.WindowStack.Add(new Dialog_Message("OCity_GameAttack_Host_Error_Message_Attack".Translate(), msg, null, () => { }));
+
+            SessionClientController.Disconnected("OCity_GameAttacker_Dialog_ErrorMessage".Translate());
+            /*
+            Find.WindowStack.Add(new Dialog_Message("OCity_GameAttacker_Dialog_ErrorMessage".Translate(), msg, null, () => { }));
+            */
         }
 
         private void AttackUpdate()
@@ -915,7 +918,7 @@ namespace RimWorldOnlineCity
                     }
                 }
                 */
-                UIEventNewJobDisable = true;
+            UIEventNewJobDisable = true;
                 //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("HostAttackUpdate UIEventNewJob StartJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> <...> " + stack);
                 ApplyAttackingPawnJob(pawn);
 

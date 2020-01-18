@@ -8,9 +8,14 @@ using Transfer;
 namespace ServerOnlineCity.Model
 {
     [Serializable]
-    public class PlayerServer
+    public class PlayerServer : IPlayerEx
     {
-        public Player Public;
+        public Player Public { get; set; }
+
+        //повторить логику на сервере тут: PlayerClient
+        public bool Online =>
+            Public.LastOnlineTime == DateTime.MinValue ? Public.LastSaveTime > DateTime.UtcNow.AddMinutes(-17) :
+            Public.LastOnlineTime > (DateTime.UtcNow).AddSeconds(-10);
 
         public string Pass;
 
@@ -92,6 +97,28 @@ namespace ServerOnlineCity.Model
             };
 
             Chats = new List<Chat>() { publicChat };
+        }
+
+        public WorldObjectsValues CostWorldObjects(long serverId = 0)
+        {
+            var values = new WorldObjectsValues();
+
+            var data = Repository.GetData;
+
+            for (int i = 0; i < data.WorldObjects.Count; i++)
+            {
+                if (data.WorldObjects[i].LoginOwner != Public.Login) continue;
+                if (serverId != 0 && data.WorldObjects[i].ServerId != serverId) continue;
+
+                values.MarketValue += data.WorldObjects[i].MarketValue;
+                values.MarketValuePawn += data.WorldObjects[i].MarketValuePawn;
+                if (data.WorldObjects[i].Type == WorldObjectEntryType.Base)
+                    values.BaseCount++;
+                else
+                    values.CaravanCount++;
+            }
+
+            return values;
         }
     }
 }

@@ -118,10 +118,17 @@ namespace RimWorldOnlineCity
                 caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
             }, MenuOptionPriority.Default, null, null, 0f, null, this);
 
-            //if (MainHelper.DebugMode) //todo: убрать при релизи pvp
-            //{
-                if (this is BaseOnline && GameAttacker.CanStart)
-                {
+            if (SessionClientController.My.EnablePVP
+                && this is BaseOnline 
+                && GameAttacker.CanStart)
+            {
+                if (AttackUtils.CheckPossibilityAttack(SessionClientController.Data.MyEx
+                    , this.Player
+                    , UpdateWorldController.GetMyByLocalId(caravan.ID).ServerId
+                    , this.OnlineWObject.ServerId
+                    ) == null
+                    )
+                { 
                     yield return new FloatMenuOption(string.Format("OCity_Caravan_Attack".Translate()
                         , OnlinePlayerLogin + " " + OnlineName
                     ), delegate
@@ -129,6 +136,7 @@ namespace RimWorldOnlineCity
                         caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "attack"), true);
                     }, MenuOptionPriority.Default, null, null, 0f, null, this);
                 }
+            }
             //}
         }
 
