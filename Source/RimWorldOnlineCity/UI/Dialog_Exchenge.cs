@@ -748,7 +748,7 @@ namespace RimWorldOnlineCity.UI
                 rect.y += 24f;
                 EditOrderShowSellThings(ref rect);
 
-                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Get:".Transalte());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Get:".Translate());
                 rect.y += 24f;
                 EditOrderShowBuyThings(ref rect);
             }

@@ -581,7 +581,7 @@ namespace RimWorldOnlineCity
                 diaNode.options.Add(diaOptionT);
             }
 
-            DiaOption diaOption = new DiaOption("OCity_GameUtils_Ok".Translation()); //OK -> Принять передачу
+            DiaOption diaOption = new DiaOption("OCity_GameUtils_Ok".Translate()); //OK -> Принять передачу
             diaOption.action = ActOK;
             /*{ спавн пешки бегущей "на помощь"
                 GenSpawn.Spawn(refugee, spawnSpot, map, WipeMode.Vanish);

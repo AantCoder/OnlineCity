@@ -4,9 +4,9 @@
 	<!-- MainMenu.cs -->
 	<OCity_LAN_btn>Сетевая игра</OCity_LAN_btn>
 	<!-- Kor -->
-	<OCity_MainMenu_Online>Online</OCity_MainMenu_Online>
-	<OCity_MainMenu_Withdraw>Withdraw</OCity_MainMenu_Withdraw>
-	<OCity_MainMenu_Surrender>Surrender</OCity_MainMenu_Surrender>
+	<OCity_MainMenu_Online>Онлайн</OCity_MainMenu_Online>
+	<OCity_MainMenu_Withdraw>Отступить</OCity_MainMenu_Withdraw>
+	<OCity_MainMenu_Surrender>Сдаться</OCity_MainMenu_Surrender>
 
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
 	<OCity_Caravan_GoTrade>Идем обмениваться товарами c {0}</OCity_Caravan_GoTrade>
@@ -14,9 +14,9 @@
 	<OCity_Caravan_LOGNoData>Нет данных сервера об объекте торговли</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>Караван обмен: selectAllCaravan</OCity_Caravan_LOGSwap>
 	<!-- Kor -->
-	<OCity_Caravan_Go_Attack_Target>Attack {0}</OCity_Caravan_Go_Attack_Target>
-	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Do you really want to attack this settlement? It's possible to have a training battle without consequences</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
-	<OCity_Caravan_Practive>No, just practice.</OCity_Caravan_Practive>
+	<OCity_Caravan_Go_Attack_Target>Атака {0}</OCity_Caravan_Go_Attack_Target>
+	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Вы дейстивтельно хотите напасть на данное поселение? Можно провести тренировочный бой без последствий</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
+	<OCity_Caravan_Practive>Нет, только тренировка.</OCity_Caravan_Practive>
 
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} игрока {1}</OCity_Caravan_Player>
@@ -26,7 +26,7 @@
 	<OCity_Caravan_FreeWeight>Оставшаяся грузоподъемность: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Обмен товарами c {0}</OCity_Caravan_Trade>
 	<!-- Kor -->
-	<OCity_Caravan_Attack>Attack {0}</OCity_Caravan_Attack>
+	<OCity_Caravan_Attack>Атаковать {0}</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
 	<OCity_DevTest_Test>Тест</OCity_DevTest_Test>
@@ -108,65 +108,65 @@
 	<OCity_SessionCC_Disconnected>Ошибка соединения.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Игра прервана</OCity_SessionCC_Disconnect>
 	<!-- Kor -->
-	<OCity_SessionCC_Shutdown_Command_ProgressSaved>We received a shutdown command from the server. The progress has been saved.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
-	<OCity_SessionCC_Shutdown_Command>The server has received a command to shut down</OCity_SessionCC_Shutdown_Command>
-	<OCity_SessionCC_Scenario_Classic>Classic</OCity_SessionCC_Scenario_Classic>
-	<OCity_SessionCC_Client_UpdateNeeded>Upgrade the client! Version for this server: </OCity_SessionCC_Client_UpdateNeeded>
+	<OCity_SessionCC_Shutdown_Command_ProgressSaved>От сервера получена команда на отключение. Прогресс был сохранен.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
+	<OCity_SessionCC_Shutdown_Command>От сервера получена команда на отключение.</OCity_SessionCC_Shutdown_Command>
+	<OCity_SessionCC_Scenario_Classic>Классика</OCity_SessionCC_Scenario_Classic>
+	<OCity_SessionCC_Client_UpdateNeeded>Обновите клиент! Версия для данного сервера: </OCity_SessionCC_Client_UpdateNeeded>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
-	<OCity_Dialog_Exchenge_Close>Close</OCity_Dialog_Exchenge_Close>
-	<OCity_Dialog_Exchenge_Edit>Edit</OCity_Dialog_Exchenge_Edit>
-	<OCity_Dialog_Exchenge_Trade_Orders>Trade orders</OCity_Dialog_Exchenge_Trade_Orders>
-	<OCity_Dialog_Exchenge_Viewing_Orders>Viewing order</OCity_Dialog_Exchenge_Viewing_Orders>
-	<OCity_Dialog_Exchenge_Deal_Open_Everyone>The deal is available to everyone.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
-	<OCity_Dialog_Exchenge_Deal_Open_Specific>The deal is only available for: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
-	<OCity_Dialog_Exchenge_Seller>Seller</OCity_Dialog_Exchenge_Seller>
-	<OCity_Dialog_Exchenge_BeenOnline>has been online</OCity_Dialog_Exchenge_BeenOnline>
-	<OCity_Dialog_Exchenge_Location>Location</OCity_Dialog_Exchenge_Location>
-	<OCity_Dialog_Exchenge_Days>days</OCity_Dialog_Exchenge_Days>
-	<OCity_Dialog_Exchenge_In>in</OCity_Dialog_Exchenge_In>
-	<OCity_Dialog_Exchenge_Location_Goods>Location of goods:</OCity_Dialog_Exchenge_Location_Goods>
-	<OCity_Dialog_Exchenge_Number>Number</OCity_Dialog_Exchenge_Number>
-	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>Maximum repetition of the transaction:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
-	<OCity_Dialog_Exchenge_Acquire>Acquire</OCity_Dialog_Exchenge_Acquire>
-	<OCity_Dialog_Exchenge_GiveTo>Give it to</OCity_Dialog_Exchenge_GiveTo>
-	<OCity_Dialog_Exchenge_No_Warrants>No warrants</OCity_Dialog_Exchenge_No_Warrants>
-	<OCity_Dialog_Exchenge_Active_Orders>Active orders {0}</OCity_Dialog_Exchenge_Active_Orders>
-	<OCity_Dialog_Exchenge_Update>Update</OCity_Dialog_Exchenge_Update>
-	<OCity_Dialog_Exchenge_Select_For_Sale>Selection for sale from {0} </OCity_Dialog_Exchenge_Select_For_Sale>
-	<OCity_Dialog_Exchenge_Choose>Choose</OCity_Dialog_Exchenge_Choose>
-	<OCity_Dialog_Exchenge_Order_Create>Create new order</OCity_Dialog_Exchenge_Order_Create>
-	<OCity_Dialog_Exchenge_Save>Save</OCity_Dialog_Exchenge_Save>
-	<OCity_Dialog_Exchenge_Create>Create</OCity_Dialog_Exchenge_Create>
-	<OCity_Dialog_Exchenge_Trade>Trade</OCity_Dialog_Exchenge_Trade>
-	<OCity_Dialog_Exchenge_Counterproposal>Counterproposal</OCity_Dialog_Exchenge_Counterproposal>
-	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>Action not carried out</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
-	<OCity_Dialog_Exchenge_Delete>Delete</OCity_Dialog_Exchenge_Delete>
-	<OCity_Dialog_Exchenge_Order_New>New order</OCity_Dialog_Exchenge_Order_New>
-	<OCity_Dialog_Exchenge_No_Exchanges>No such exchanges:</OCity_Dialog_Exchenge_No_Exchanges>
-	<OCity_Dialog_Exchenge_No_Available_Exchange>Nothing else is available for exchange.</OCity_Dialog_Exchenge_No_Available_Exchange>
-	<OCity_Dialog_Exchenge_Done_Once>It`s done once:</OCity_Dialog_Exchenge_Done_Once>
-	<OCity_Dialog_Exchenge_We_Give>We give</OCity_Dialog_Exchenge_We_Give>
-	<OCity_Dialog_Exchenge_We_Give2>We give {0} :</OCity_Dialog_Exchenge_We_Give2>
-	<OCity_Dialog_Exchenge_We_Get>We get</OCity_Dialog_Exchenge_We_Get>
-	<OCity_Dialog_Exchenge_No_User_Restrictions>There are no user restrictions.</OCity_Dialog_Exchenge_No_User_Restrictions>
-	<OCity_Dialog_Exchenge_User_Restrictions>Deal available only to users:</OCity_Dialog_Exchenge_User_Restrictions>
-	<OCity_Dialog_Exchenge_Add_User>+ add user</OCity_Dialog_Exchenge_Add_User>
-	<OCity_Dialog_Exchenge_Specific_Facility_Assigned>A specific facility has been assigned</OCity_Dialog_Exchenge_Specific_Facility_Assigned>
-	<OCity_Dialog_Exchenge_Add>+ add</OCity_Dialog_Exchenge_Add>
-	<OCity_Dialog_Exchenge_Whole_On>A whole on {0} of {1} ({2}%).</OCity_Dialog_Exchenge_Whole_On>
-	<OCity_Dialog_Exchenge_Quality>Quality</OCity_Dialog_Exchenge_Quality>
-	<OCity_Dialog_Exchenge_Whole_Less_Than>whole no less than</OCity_Dialog_Exchenge_Whole_Less_Than>
-	<OCity_Dialog_Exchenge_QualityNo_Less_Than>The quality is no less than</OCity_Dialog_Exchenge_QualityNo_Less_Than>
-	<OCity_Dialog_Exchenge_All>all</OCity_Dialog_Exchenge_All>
+	<OCity_Dialog_Exchenge_Close>Закрыть</OCity_Dialog_Exchenge_Close>
+	<OCity_Dialog_Exchenge_Edit>Редактировать</OCity_Dialog_Exchenge_Edit>
+	<OCity_Dialog_Exchenge_Trade_Orders>Торговые ордера</OCity_Dialog_Exchenge_Trade_Orders>
+	<OCity_Dialog_Exchenge_Viewing_Orders>Просмотр ордера</OCity_Dialog_Exchenge_Viewing_Orders>
+	<OCity_Dialog_Exchenge_Deal_Open_Everyone>Сделка доступна всем.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
+	<OCity_Dialog_Exchenge_Deal_Open_Specific>Сделка доступна только: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
+	<OCity_Dialog_Exchenge_Seller>Продавец</OCity_Dialog_Exchenge_Seller>
+	<OCity_Dialog_Exchenge_BeenOnline>был в сети </OCity_Dialog_Exchenge_BeenOnline>
+	<OCity_Dialog_Exchenge_Location>Место</OCity_Dialog_Exchenge_Location>
+	<OCity_Dialog_Exchenge_Days>дней</OCity_Dialog_Exchenge_Days>
+	<OCity_Dialog_Exchenge_In>в</OCity_Dialog_Exchenge_In>
+	<OCity_Dialog_Exchenge_Location_Goods>Месторасположение товара:</OCity_Dialog_Exchenge_Location_Goods>
+	<OCity_Dialog_Exchenge_Number>Кол-во</OCity_Dialog_Exchenge_Number>
+	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>Максимум повоторов реализации сделки:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
+	<OCity_Dialog_Exchenge_Acquire>Приобрести</OCity_Dialog_Exchenge_Acquire>
+	<OCity_Dialog_Exchenge_GiveTo>Отдать</OCity_Dialog_Exchenge_GiveTo>
+	<OCity_Dialog_Exchenge_No_Warrants>Ордеров нет</OCity_Dialog_Exchenge_No_Warrants>
+	<OCity_Dialog_Exchenge_Active_Orders>Активных ордеров {0}</OCity_Dialog_Exchenge_Active_Orders>
+	<OCity_Dialog_Exchenge_Update>Обновить</OCity_Dialog_Exchenge_Update>
+	<OCity_Dialog_Exchenge_Select_For_Sale>Выбор на продажу из {0} </OCity_Dialog_Exchenge_Select_For_Sale>
+	<OCity_Dialog_Exchenge_Choose>Выбрать</OCity_Dialog_Exchenge_Choose>
+	<OCity_Dialog_Exchenge_Order_Create>Создать новый ордер</OCity_Dialog_Exchenge_Order_Create>
+	<OCity_Dialog_Exchenge_Save>Сохранить</OCity_Dialog_Exchenge_Save>
+	<OCity_Dialog_Exchenge_Create>Создать</OCity_Dialog_Exchenge_Create>
+	<OCity_Dialog_Exchenge_Trade>ТОРГОВАТЬ</OCity_Dialog_Exchenge_Trade>
+	<OCity_Dialog_Exchenge_Counterproposal>Встречное предложение</OCity_Dialog_Exchenge_Counterproposal>
+	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>Встречное предложение</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
+	<OCity_Dialog_Exchenge_Delete>Удалить</OCity_Dialog_Exchenge_Delete>
+	<OCity_Dialog_Exchenge_Order_New>Новый ордер</OCity_Dialog_Exchenge_Order_New>
+	<OCity_Dialog_Exchenge_No_Exchanges>Кол-во таких обменов:</OCity_Dialog_Exchenge_No_Exchanges>
+	<OCity_Dialog_Exchenge_No_Available_Exchange>Кол-во ещё доступно для обмена.</OCity_Dialog_Exchenge_No_Available_Exchange>
+	<OCity_Dialog_Exchenge_Done_Once>Совершено раз:</OCity_Dialog_Exchenge_Done_Once>
+	<OCity_Dialog_Exchenge_We_Give>Мы отдаем</OCity_Dialog_Exchenge_We_Give>
+	<OCity_Dialog_Exchenge_We_Give2>Мы отдаем {0} :</OCity_Dialog_Exchenge_We_Give2>
+	<OCity_Dialog_Exchenge_We_Get>Мы получаем</OCity_Dialog_Exchenge_We_Get>
+	<OCity_Dialog_Exchenge_No_User_Restrictions>Ограичений по пользователям нет.</OCity_Dialog_Exchenge_No_User_Restrictions>
+	<OCity_Dialog_Exchenge_User_Restrictions>Сделка доступна только пользователям:</OCity_Dialog_Exchenge_User_Restrictions>
+	<OCity_Dialog_Exchenge_Add_User>+ добавить пользователя</OCity_Dialog_Exchenge_Add_User>
+	<OCity_Dialog_Exchenge_Specific_Facility_Assigned>Задан конкретный объект</OCity_Dialog_Exchenge_Specific_Facility_Assigned>
+	<OCity_Dialog_Exchenge_Add>+ добавить</OCity_Dialog_Exchenge_Add>
+	<OCity_Dialog_Exchenge_Whole_On>Цело на {0} из {1} ({2}%).</OCity_Dialog_Exchenge_Whole_On>
+	<OCity_Dialog_Exchenge_Quality>Качество </OCity_Dialog_Exchenge_Quality>
+	<OCity_Dialog_Exchenge_Whole_Less_Than>Цело не меньше чем </OCity_Dialog_Exchenge_Whole_Less_Than>
+	<OCity_Dialog_Exchenge_QualityNo_Less_Than>Качество не меньше чем</OCity_Dialog_Exchenge_QualityNo_Less_Than>
+	<OCity_Dialog_Exchenge_All>все</OCity_Dialog_Exchenge_All>
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
-	<OCity_ThingTrade_Quality_Strength>Quality {0}. Strength {1} of {2}</OCity_ThingTrade_Quality_Strength>
-	<OCity_ThingTrade_Cut_Body_Off>Cut off the body.</OCity_Cut_Body_Off>
-	<OCity_ThingTrade_QualityBetter_StrengthMore>Quality {0} and better. Strength {1}% and more</OCity_ThingTrade_QualityBetter_StrengthMore>
-	<OCity_ThingTrade_CouldTake_OffCorpse>Could be taken off a corpse.</OCity_ThingTrade_CouldTake_OffCorpse>
+	<OCity_ThingTrade_Quality_Strength>Качество {0}. Прочность {1} из {2}</OCity_ThingTrade_Quality_Strength>
+	<OCity_ThingTrade_Cut_Body_Off>Снято с трупа.</OCity_ThingTrade_Cut_Body_Off>
+	<OCity_ThingTrade_QualityBetter_StrengthMore>Качество {0} и лучше. Прочность {1}% и больше</OCity_ThingTrade_QualityBetter_StrengthMore>
+	<OCity_ThingTrade_CouldTake_OffCorpse>Может быть снято с трупа.</OCity_ThingTrade_CouldTake_OffCorpse>
 
 	<!-- UpdateWorldController.cs -->
 	<OCity_UpdateWorld_Trade>Передача</OCity_UpdateWorld_Trade>
@@ -203,41 +203,38 @@
 
 	<!-- Kor -->
 	<!-- GameUtils.cs -->
-	<OCity_GameUtils_From>from </OCity_GameUtils_From>
+	<OCity_GameUtils_From> из </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>
 
 	<!-- Kor -->
 	<!-- GameAttacker.cs -->
 	<OCity_GameAttacker_Dialog_ErrorMessage>Error attack</OCity_GameAttacker_Dialog_ErrorMessage>
-	<OCity_GameAttacker_Dialog_Settlement_Attack>You are attacking the settlement</OCity_GameAttacker_Dialog_Settlement_Attack>
-	<OCity_GameAttacker_Withdraw>Withdraw</OCity_GameAttacker_Withdraw>
-	<OCity_GameAttacker_Main_Dialog>
-	In this mode, the pause must be permanently activated. In spite of this the game continues and things change.
-	If you want to finish attack, then take those you can to any edge of the map and in the main menu press withdraw.
-	</OCity_GameAttacker_Main_Dialog>
-	<OCity_GameAttacker_Main_Preparation_Dialog>Preparation is complete. You have one minute to look around the map and the attack will begin.</OCity_GameAttacker_Main_Preparation_Dialog>
-	<Ocity_GameAttacker_TrainingFight_Won>You won this training fight! :) </Ocity_GameAttacker_TrainingFight_Won>
-	</Ocity_GameAttacker_TrainingFight_Caravan_Restore>The caravan will now be restored, you'll need to log in.</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
-	<Ocity_GameAttacker_TrainingFight_Lost>You have been defeated in this training attack. :(</Ocity_GameAttacker_TrainingFight_Lost>
-	<OCity_GameAttacker_Done>Done</OCity_GameAttacker_Done>
-	<OCity_GameAttacker_Settlement_TakenOver>You have taken over this settlement! :)</OCity_GameAttacker_Settlement_TakenOver>
-	<OCity_GameAttacker_Defeated>You have been defeated :( </OCity_GameAttacker_Defeated>
-	<OCity_GameAttacker_Colonist_Return>The remaining colonists who are able to move and who have retreated to the edges of the map will return.</OCity_GameAttacker_Colonist_Return>
+	<OCity_GameAttacker_Dialog_Settlement_Attack>Вы атакуете поселение</OCity_GameAttacker_Dialog_Settlement_Attack>
+	<OCity_GameAttacker_Withdraw>Отступить</OCity_GameAttacker_Withdraw>
+	<OCity_GameAttacker_Main_Dialog>В этом режиме пауза должна быть постоянно включена. Несмотря на это игра продолжается и положение вещей меняется. Если вы хотите завершить нападение, то отведите тех кого сможете к любому краю карты и в главном меню нажмите </OCity_GameAttacker_Main_Dialog>
+	<OCity_GameAttacker_Main_Preparation_Dialog>Подготовка завершена. У Вас есть минута чтобы осмотреться на карте и атака начнется!</OCity_GameAttacker_Main_Preparation_Dialog>
+	<Ocity_GameAttacker_TrainingFight_Won>Вы выиграли этот тренировочный бой! :)</Ocity_GameAttacker_TrainingFight_Won>
+	<Ocity_GameAttacker_TrainingFight_Caravan_Restore>Сейчас караван будет восстановлен, Вам нужно будет выполнить вход.</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
+	<Ocity_GameAttacker_TrainingFight_Lost>Вы потерпели поражение в этой тренировочной атаке. :(</Ocity_GameAttacker_TrainingFight_Lost>
+	<OCity_GameAttacker_Done>Готово</OCity_GameAttacker_Done>
+	<OCity_GameAttacker_Settlement_TakenOver>Вы захватили это поселение! :) </OCity_GameAttacker_Settlement_TakenOver>
+	<OCity_GameAttacker_Defeated>Вы потерпели поражение :(</OCity_GameAttacker_Defeated>
+	<OCity_GameAttacker_Colonist_Return>Оставшиеся колонисты, которые способны передвигаться и которые отступили к краям карты возвращаются.</OCity_GameAttacker_Colonist_Return>
 
 	<!-- Kor -->
 	<!-- GameAttackHost.cs -->
-	<OCity_GameAttack_Host_Test_Attack>{0} is conducting a test attack on your settlement</OCity_GameAttacker_Test_Attack>
-	<OCity_GameAttack_Host_Settlement_Attacking>Your settlement is attacking {0}</OCity_GameAttacker_Settlement_Attacking>
-	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>Wait until the attacker is ready. After that, the speed will automatically turn on the x1 and it will not change.</OCity_GameAttacker_GameSpeed_Lock_Dialog>
-	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>If you want to finish and give up the settlement, click in the main menu.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
-	<OCity_GameAttack_Host_Cancel_Action> If you want to finish and cancel the action, click on the main menu.</OCity_GameAttack_Host_Cancel_Action>
-	<OCity_GameAttack_Host_Surrender>Surrender</OCity_GameAttack_Host_Surrender>
+	<OCity_GameAttack_Host_Test_Attack>{0} проводит тестовую атаку на Ваше поселение</OCity_GameAttack_Host_Test_Attack>
+	<OCity_GameAttack_Host_Settlement_Attacking>Ваше поселение атакует {0}</OCity_GameAttack_Host_Settlement_Attacking>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>Дождитесь когда атакующий будет готов. После этого скорость автоматически включиться на х1 и её нелзья будет менять.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>Если вы хотите закончить и отдать поселение, то нажмите в главном меню.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
+	<OCity_GameAttack_Host_Cancel_Action> Если вы хотите закончить и отменить тренировку, то нажмите в главном меню </OCity_GameAttack_Host_Cancel_Action>
+	<OCity_GameAttack_Host_Surrender>Сдаться</OCity_GameAttack_Host_Surrender>
 	<OCity_GameAttack_Host_Error_Message_Attack>Error attack</OCity_GameAttack_Host_Error_Message_Attack>
-	<OCity_GameAttack_Host_Card_Restored>The card will now be restored, you will need to login.</OCity_GameAttack_Host_Card_Restored>
-	<OCity_GameAttack_Host_Training_Attack_Repulsed>You repulsed this training attack! :)</OCity_GameAttack_Host_Training_Attack_Repulsed>
-	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>You have been defeated and the settlement passes to the new owner :(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
-	<OCity_GameAttack_Host_Atack_Repulsed>You repulsed that attack! :)</OCity_GameAttack_Host_Atack_Repulsed>
-	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>The enemies who couldn't get away will stay on the map, but they've lost touch with their commander.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
+	<OCity_GameAttack_Host_Card_Restored>Сейчас карта будет восстановлена, Вам нужно будет выполнить вход.</OCity_GameAttack_Host_Card_Restored>
+	<OCity_GameAttack_Host_Training_Attack_Repulsed>Вы отбили эту тренировочную атаку! :)</OCity_GameAttack_Host_Training_Attack_Repulsed>
+	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>Вы потерпели поражение и поселение переходит к новому владельцу :(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
+	<OCity_GameAttack_Host_Atack_Repulsed>Вы отбили эту атаку! :) </OCity_GameAttack_Host_Atack_Repulsed>
+	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>Враги, которые не сумели уйти останутся на карте, но они потеряли связь со своим командиром.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Ошибка соединения.</OCity_SCC_Disconnected>
@@ -245,9 +242,9 @@
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<!-- Kor -->
-	<OCity_Dialog_Exchenge_Chat>Chat</OCity_Dialog_Exchenge_Chat>
-	<OCity_Dialog_Exchenge_Gamers>gamers</OCity_Dialog_Exchenge_Gamers>
-	<OCity_Dialog_Exchenge_What_Point>What's the point</OCity_Dialog_Exchenge_What_Point>
+	<OCity_Dialog_Exchenge_Chat>в чате</OCity_Dialog_Exchenge_Chat>
+	<OCity_Dialog_Exchenge_Gamers>игроки</OCity_Dialog_Exchenge_Gamers>
+	<OCity_Dialog_Exchenge_What_Point>Что к чему</OCity_Dialog_Exchenge_What_Point>
 
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText>Автор Василий Иванов aka Aant.</OCity_AboutTabText>
