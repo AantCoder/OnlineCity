@@ -159,8 +159,18 @@ namespace ServerOnlineCity.Services
                 }
 
                 //прикрепляем письма
-                toClient.Mails = context.Player.Mails;
-                context.Player.Mails = new List<ModelMailTrade>();
+                //если есть команда на отключение без сохранения, то посылаем только одно это письмо
+                var md = context.Player.Mails.FirstOrDefault(m => m.Type == ModelMailTradeType.AttackCancel);
+                if (md == null)
+                {
+                    toClient.Mails = context.Player.Mails;
+                    context.Player.Mails = new List<ModelMailTrade>();
+                }
+                else
+                {
+                    toClient.Mails = new List<ModelMailTrade>() { md };
+                    context.Player.Mails.Remove(md);
+                }
 
                 //команда выполнить сохранение и отключиться
                 toClient.NeedSaveAndExit = !context.Player.IsAdmin && data.EverybodyLogoff;

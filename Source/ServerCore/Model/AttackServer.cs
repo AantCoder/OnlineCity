@@ -5,6 +5,7 @@ using System.Text;
 using Model;
 using OCUnion;
 using OCUnion.Transfer.Model;
+using Transfer;
 
 namespace ServerOnlineCity.Model
 {
@@ -36,6 +37,7 @@ namespace ServerOnlineCity.Model
         public long HostPlaceServerId { get; set; }
 
         public long InitiatorPlaceServerId { get; set; }
+        public int InitiatorPlaceTile { get; set; }
 
         public IntVec3S MapSize { get; set; }
         public List<ThingEntry> Pawns { get; set; }
@@ -53,6 +55,7 @@ namespace ServerOnlineCity.Model
         public Dictionary<int, AttackPawnCommand> UpdateCommand { get; set; }
 
         public DateTime? SetPauseOnTimeToHost { get; set; }
+        public DateTime StartTime { get; set; }
         public bool VictoryHostToHost { get; set; }
 
         private object SyncObj = new Object();
@@ -68,8 +71,11 @@ namespace ServerOnlineCity.Model
             Host = hostPlayer;
             Attacker.AttackData = this;
             Host.AttackData = this;
-            InitiatorPlaceServerId = fromClient.InitiatorPlaceServerId;
             HostPlaceServerId = fromClient.HostPlaceServerId;
+            InitiatorPlaceServerId = fromClient.InitiatorPlaceServerId;
+            var data = Repository.GetData;
+            var woip = data.WorldObjects.FirstOrDefault(wo => wo.ServerId == InitiatorPlaceServerId);
+            if (woip != null) InitiatorPlaceTile = woip.Tile;
 
             NewPawns = new List<ThingEntry>();
             NewPawnsId = new List<int>();
@@ -78,6 +84,8 @@ namespace ServerOnlineCity.Model
             Delete = new List<int>();
             UpdateState = new Dictionary<int, AttackThingState>();
             UpdateCommand = new Dictionary<int, AttackPawnCommand>();
+
+            Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} New");
             return null;
         }
         
@@ -86,6 +94,13 @@ namespace ServerOnlineCity.Model
             //Loger.Log($"Server AttackOnlineHost RequestHost State: {State} -> {fromClient.State}");
             lock (SyncObj)
             {
+                if (CheckConnect(false))
+                {
+                    return new AttackHostFromSrv()
+                    {
+                        State = State
+                    };
+                }
                 if (fromClient.State < State)
                 {
                     return new AttackHostFromSrv()
@@ -229,6 +244,13 @@ namespace ServerOnlineCity.Model
         {
             lock (SyncObj)
             {
+                if (CheckConnect(true))
+                { 
+                    return new AttackInitiatorFromSrv()
+                    {
+                        State = State
+                    };
+                }
                 if (fromClient.State == 0 && fromClient.StartHostPlayer != null)
                 {
                     State = 1;
@@ -282,6 +304,12 @@ namespace ServerOnlineCity.Model
                 }
                 if (fromClient.State == 10)
                 {
+                    if (StartTime == DateTime.MinValue)
+                    {
+                        Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} Start");
+                        StartTime = DateTime.UtcNow;
+                    }
+
                     if (fromClient.VictoryHostToHost)
                     {
                         VictoryHostToHost = fromClient.VictoryHostToHost;
@@ -322,7 +350,7 @@ namespace ServerOnlineCity.Model
                     Delete = new List<int>();
                     UpdateState = new Dictionary<int, AttackThingState>();
 
-                    if (VictoryAttacker != null) Finish(VictoryAttacker.Value);
+                    if (VictoryAttacker != null) Finish();
 
                     return res;
                 }
@@ -352,16 +380,181 @@ namespace ServerOnlineCity.Model
             }
             else
             {
-                fail = !Attacker.Online;
+                //атакующий может подвиснуть при создании карты, но когда максимум ожидания (=пауза у хоста) кончилось, то всё равно проверяем
+                if (StartTime != DateTime.MinValue
+                    || SetPauseOnTimeToHost != DateTime.MinValue && SetPauseOnTimeToHost < DateTime.UtcNow)
+                {
+                    fail = !Attacker.Online;
+                }
             }
 
-            //todo
+            if (fail)
+            {
+                var data = Repository.GetData;
+
+                if (TestMode)
+                {   //При тестовом режиме всех участников отключаем
+                    Loger.Log("Server AttackServer Fail TestMode");
+
+                    //команда хосту
+                    var packet = new ModelMailTrade()
+                    {
+                        Type = ModelMailTradeType.AttackCancel,
+                        From = data.PlayersAll[0].Public,
+                        To = Host.Public,
+                    };
+                    lock (Host)
+                    {
+                        Host.Mails.Add(packet);
+                    }
+                    //команда атакующему
+                    packet = new ModelMailTrade()
+                    {
+                        Type = ModelMailTradeType.AttackCancel,
+                        From = data.PlayersAll[0].Public,
+                        To = Attacker.Public,
+                    };
+                    lock (Attacker)
+                    {
+                        Attacker.Mails.Add(packet);
+                    }
+                }
+                else if (!attacker)
+                {   //Если отключился атакующий
+                    //до State == 10 или меньше 1 мин, то отмена 
+                    if (StartTime == DateTime.MinValue || (DateTime.UtcNow - StartTime).TotalSeconds < 60) // State == 10 проверяется косвенно: StartTime устанавливается только при State == 10
+                    {
+                        Loger.Log("Server AttackServer Fail attacker off in start"); 
+
+                        //команда хосту
+                        var packet = new ModelMailTrade()
+                        {
+                            Type = ModelMailTradeType.AttackCancel,
+                            From = data.PlayersAll[0].Public,
+                            To = Host.Public,
+                        };
+                        lock (Host)
+                        {
+                            Host.Mails.Add(packet);
+                        }
+                        //команда атакующему
+                        packet = new ModelMailTrade()
+                        {
+                            Type = ModelMailTradeType.AttackCancel,
+                            From = data.PlayersAll[0].Public,
+                            To = Attacker.Public,
+                        };
+                        lock (Attacker)
+                        {
+                            Attacker.Mails.Add(packet);
+                        }
+                    }
+                    //при State == 10 и больше 1 мин, то уничтожение каравана, поселение остается как есть.
+                    else
+                    {
+                        Loger.Log("Server AttackServer Fail attacker off in progress");
+
+                        //команда хосту
+                        var packet = new ModelMailTrade()
+                        {
+                            Type = ModelMailTradeType.AttackTechnicalVictory,
+                            From = data.PlayersAll[0].Public,
+                            To = Host.Public,
+                        };
+                        lock (Host)
+                        {
+                            Host.Mails.Add(packet);
+                        }
+                        //команда атакующему
+                        packet = new ModelMailTrade()
+                        {
+                            Type = ModelMailTradeType.AttackCancel,
+                            From = data.PlayersAll[0].Public,
+                            To = Attacker.Public,
+                        };
+                        var packet2 = new ModelMailTrade()
+                        {
+                            Type = ModelMailTradeType.DeleteByServerId,
+                            From = data.PlayersAll[0].Public,
+                            To = Attacker.Public,
+                            PlaceServerId = InitiatorPlaceServerId,
+                            Tile = InitiatorPlaceTile,
+                        };
+                        lock (Attacker)
+                        {
+                            Attacker.Mails.Add(packet);
+                            Attacker.Mails.Add(packet2);
+                        }
+                    }
+                }
+                else
+                {   //Если отключился хост
+                    //то уничтожение поселения хоста
+                    var packet1 = new ModelMailTrade()
+                    {
+                        Type = ModelMailTradeType.AttackCancel,
+                        From = data.PlayersAll[0].Public,
+                        To = Host.Public,
+                    };
+                    var packet2 = new ModelMailTrade()
+                    {
+                        Type = ModelMailTradeType.DeleteByServerId,
+                        From = data.PlayersAll[0].Public,
+                        To = Host.Public,
+                        PlaceServerId = HostPlaceServerId,
+                    };
+                    lock (Host)
+                    {
+                        Host.Mails.Add(packet1);
+                        Host.Mails.Add(packet2);
+                    }
+
+                    //до State == 10, отмена у атакующего
+                    if (StartTime == DateTime.MinValue) // State == 10 проверяется косвенно: StartTime устанавливается только при State == 10
+                    {
+                        Loger.Log("Server AttackServer Fail host off in start");
+
+                        //команда атакующему
+                        var packet = new ModelMailTrade()
+                        {
+                            Type = ModelMailTradeType.AttackCancel,
+                            From = data.PlayersAll[0].Public,
+                            To = Attacker.Public,
+                        };
+                        lock (Attacker)
+                        {
+                            Attacker.Mails.Add(packet);
+                        }
+                    }
+                    //после State == 10, поселение переходит к атакующему
+                    else
+                    {
+                        Loger.Log("Server AttackServer Fail host off in progress");
+
+                        //команда атакующему
+                        var packet = new ModelMailTrade()
+                        {
+                            Type = ModelMailTradeType.AttackTechnicalVictory,
+                            From = data.PlayersAll[0].Public,
+                            To = Attacker.Public,
+                        };
+                        lock (Attacker)
+                        {
+                            Attacker.Mails.Add(packet);
+                        }
+                    }
+
+                }
+                Finish();
+            }
 
             return fail;
         }
 
-        private void Finish(bool victoryAttacker)
+        private void Finish()
         {
+            Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} Finish StartTime sec = " 
+                + (StartTime == DateTime.MinValue ? "-" : (DateTime.UtcNow - StartTime).TotalSeconds.ToString()));
             Attacker.AttackData = null;
             Host.AttackData = null;
         }

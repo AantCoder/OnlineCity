@@ -445,7 +445,7 @@ namespace RimWorldOnlineCity
                     //GenSpawn.Spawn(pawn, cell, map, Rot4.Random, WipeMode.Vanish, false);
 
                     if (MainHelper.DebugMode) Loger.Log("Prepare...");
-                    var thin = UpdateWorldController.PrepareSpawnThingEntry(thing, factionPirate, getPirate(thing));
+                    var thin = PrepareSpawnThingEntry(thing, factionPirate, getPirate(thing));
 
                     var cell = getCell != null ? getCell(thin) : thin.Position;
                     if (i == 0) ret = cell;
@@ -464,6 +464,59 @@ namespace RimWorldOnlineCity
 
             });
             return ret;
+        }
+
+        /// <summary>
+        /// Создает игровой объект. 
+        /// Если это пешка не колонист, то делаем его пиратом заключённым.
+        /// Если freePirate=true, то делаем враждебными пиратами всех из фракции игрока.
+        /// revertPirate=true включает freePirate, если это бы не пират, и делает игроком, если был пиратом
+        /// </summary>
+        public static Thing PrepareSpawnThingEntry(ThingEntry thing, Faction factionPirate, bool freePirate = false/*, bool revertPirate = false*/)
+        {
+            var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
+            var factionPirateLoadID = factionPirate.GetUniqueLoadID();
+
+            var prisoner = thing.SetFaction(factionColonistLoadID, factionPirateLoadID);
+            Thing thin;
+            thin = thing.CreateThing(false);
+            if (MainHelper.DebugMode) Loger.Log("SetFaction...");
+            if (thin.def.CanHaveFaction)
+            {
+                if (MainHelper.DebugMode) Loger.Log("SetFaction...1");
+                /*
+                if (revertPirate)
+                {
+                    if (thin is Pawn && thin.Faction == Find.FactionManager.OfPlayer)
+                    {
+                        thin.SetFaction(factionPirate);
+                        var p = thin as Pawn;
+                        if (!freePirate) p.guest.SetGuestStatus(factionPirate, true);
+                    }
+                    else
+                        thin.SetFaction(Find.FactionManager.OfPlayer);
+                }
+                else*/
+                {
+                    if (thin is Pawn && (prisoner || freePirate && (/*((Pawn)thin).RaceProps.Humanlike ||*/ thin.Faction == Find.FactionManager.OfPlayer)))
+                    {
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...2");
+                        thin.SetFaction(factionPirate);
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...3");
+                        var p = thin as Pawn;
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...4");
+                        if (!freePirate && p.guest != null) p.guest.SetGuestStatus(factionPirate, true);
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...5");
+                    }
+                    else
+                    {
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...6");
+                        thin.SetFaction(Find.FactionManager.OfPlayer);
+                        if (MainHelper.DebugMode) Loger.Log("SetFaction...7");
+                    }
+                }
+            }
+            return thin;
         }
 
 

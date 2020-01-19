@@ -21,7 +21,7 @@ namespace RimWorldOnlineCity
 
         public string GetTextInfo()
         {
-            if (TextInfoTime < DateTime.UtcNow.AddSeconds(-30))
+            if (TextInfoTime < DateTime.UtcNow.AddSeconds(-5))
             {
                 TextInfoTime = DateTime.UtcNow;
                 TextInfo = GetTextInfoCalc();

@@ -42,6 +42,10 @@ namespace RimWorldOnlineCity
                 }
                 return MyEx_p;
             }
+            set
+            {
+                MyEx_p = value;
+            }
         }
 
         public byte[] SaveFileData;

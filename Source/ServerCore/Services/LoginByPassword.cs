@@ -42,6 +42,17 @@ namespace ServerOnlineCity.Services
 
             player.ExitReason = OCUnion.Transfer.DisconnectReason.AllGood;
             player.ApproveLoadWorldReason = OCUnion.Transfer.Types.ApproveLoadWorldReason.LoginOk;
+            //удаление всех писем с командой на перезагрузку
+            if (player.Mails != null)
+            {
+                for (int i = 0; i < player.Mails.Count; i++)
+                {
+                    if (player.Mails[i].Type == ModelMailTradeType.AttackCancel)
+                    {
+                        player.Mails.RemoveAt(i--);
+                    }
+                }
+            }
             context.Player = player;
 
             return new ModelStatus()

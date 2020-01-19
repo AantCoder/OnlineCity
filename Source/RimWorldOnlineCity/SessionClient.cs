@@ -55,6 +55,7 @@ namespace RimWorldOnlineCity
             Loger.Log("Client SendThings");
             var packet = new ModelMailTrade()
             {
+                Type = ModelMailTradeType.CreateThings,
                 From = new Player() { Login = myLogin },
                 To = new Player() { Login = onlinePlayerLogin },
                 Tile = tile,

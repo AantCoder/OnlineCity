@@ -87,6 +87,7 @@
     <Compile Include="GameClasses\CaravanOnline.cs" />
     <Compile Include="CommonUtils.cs" />
     <Compile Include="GameClasses\Harmony\GamePatch.cs" />
+    <Compile Include="MailController.cs" />
     <Compile Include="Services\GetApproveFolders.cs" />
     <Compile Include="Services\ClientHashChecker.cs" />
     <Compile Include="Services\IOnlineCityClientService.cs" />

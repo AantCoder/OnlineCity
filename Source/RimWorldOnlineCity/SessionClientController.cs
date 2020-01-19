@@ -94,6 +94,8 @@ namespace RimWorldOnlineCity
                     if (Data.Chats != null && Data.Chats[0].PartyLogin != null)
                     {
                         toServ.GetPlayersInfo = Data.Chats[0].PartyLogin;
+                        //Loger.Log("Client " + My.Login + " UpdateWorld* " + (toServ.GetPlayersInfo.Count.ToString()) 
+                        //    + " " + (toServ.GetPlayersInfo.Any(p => p == SessionClientController.My.Login) ? "1" : "0"));
                     }
 
                     //отправляем на сервер, получаем ответ
@@ -121,12 +123,21 @@ namespace RimWorldOnlineCity
                         foreach (var pi in fromServ.PlayersInfo)
                         {
                             if (pi.Login == null) continue;
-                            if (Data.Players.ContainsKey(pi.Login))
-                                Data.Players[pi.Login] = new PlayerClient() { Public = pi };
-                            else
-                                Data.Players.Add(pi.Login, new PlayerClient() { Public = pi });
+                            Data.Players[pi.Login] = new PlayerClient() { Public = pi };
+                            if (pi.Login == My.Login)
+                            {
+                                My = pi;
+                                Data.MyEx = Data.Players[pi.Login];
+                                //Loger.Log("Client " + My.Login + " UpdateWorld* " + My.LastOnlineTime.ToString("o") + " " + DateTime.UtcNow.ToString("o")
+                                //   + " " + (toServ.GetPlayersInfo.Any(p => p == My.Login) ? "1" : "0"));
+                            }
                         }
                     }
+
+                    //обновляем планету
+                    UpdateWorldController.LoadFromServer(fromServ, firstRun);
+
+                    //обновляем инфу по поселениям
                     var allWObjects = Find.WorldObjects.AllWorldObjects
                         .Select(o => o as CaravanOnline)
                         .Where(o => o != null)
@@ -135,9 +146,16 @@ namespace RimWorldOnlineCity
                     {
                         pi.Value.WObjects = allWObjects.Where(wo => wo.OnlinePlayerLogin == pi.Key).ToList();
                     }
-
-                    //обновляем планету
-                    UpdateWorldController.LoadFromServer(fromServ, firstRun);
+                    //свои поселения заполняем отдельно фиктивными CaravanOnline
+                    if (Data.Players.ContainsKey(My.Login))
+                    {
+                        Data.Players[My.Login].WObjects = UpdateWorldController.MyWorldObjectEntrys
+                            .Select(wo => wo.Type == WorldObjectEntryType.Base
+                                ? (CaravanOnline)new BaseOnline() { Tile = wo.Tile, OnlineWObject = wo }
+                                : new CaravanOnline() { Tile = wo.Tile, OnlineWObject = wo })
+                            .ToList();
+                        //todo test it (Нет цены своих колоний)
+                    }
 
                     //Сохраняем и выходим
                     if (fromServ.NeedSaveAndExit)

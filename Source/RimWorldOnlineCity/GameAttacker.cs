@@ -717,17 +717,25 @@ namespace RimWorldOnlineCity
             }, "GeneratingMapForNewEncounter", false, null);
         }
 
-        private void Finish(bool victoryAttacker)
+        /// <summary>
+        /// Принудительная остановка режима pvp
+        /// </summary>
+        public void Clear()
         {
-            Find.TickManager.Pause();
-            Loger.Log("Client AttackerFinish");
-
             //отключить таймер и признаки, что нас атакуют
             if (TimerObj != null) SessionClientController.Timers.Remove(TimerObj);
             GameAttackTrigger_Patch.ActiveAttacker.Remove(GameMap);
             SessionClientController.Data.AttackModule = null;
             SessionClientController.Data.BackgroundSaveGameOff = false;
             GameAttackTrigger_Patch.ForceSpeed = -1f;
+        }
+
+        public void Finish(bool victoryAttacker)
+        {
+            Find.TickManager.Pause();
+            Loger.Log("Client AttackerFinish");
+
+            Clear();
 
             if (TestMode)
             {

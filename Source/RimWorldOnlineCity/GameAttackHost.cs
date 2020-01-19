@@ -214,10 +214,10 @@ namespace RimWorldOnlineCity
         {
             GameUtils.ShowDialodOKCancel(
                 TestMode
-                    ? "OCity_GameAttacker_Test_Attack".Translate(AttackerLogin)
-                    : "OCity_GameAttacker_Settlement_Attacking".Translate(AttackerLogin)
+                    ? "OCity_GameAttack_Host_Test_Attack".Translate(AttackerLogin)
+                    : "OCity_GameAttack_Host_Settlement_Attacking".Translate(AttackerLogin)
                 , TestMode
-                    ? ("OCity_GameAttacker_GameSpeed_Lock_Dialog"
+                    ? ("OCity_GameAttacker_GameSpeed_Lock_Dialog."
                         + "OCity_GameAttack_Host_Cancel_Action ").Translate()
                         + "OCity_GameAttack_Host_Surrender".Translate()
                     : ("OCity_GameAttack_Host_GameSpeed_Lock_Dialog."
@@ -1035,16 +1035,24 @@ namespace RimWorldOnlineCity
                 : existArrackerPawn;
         }
 
-        private void Finish(bool victoryAttacker)
+        /// <summary>
+        /// Принудительная остановка режима pvp
+        /// </summary>
+        public void Clear()
         {
-            Find.TickManager.Pause();
-
             //отключить таймер и признаки, что нас атакуют
-            SessionClientController.Timers.Remove(TimerObj);
+            if (TimerObj != null) SessionClientController.Timers.Remove(TimerObj);
             GameAttackTrigger_Patch.ActiveAttackHost.Remove(GameMap);
             SessionClientController.Data.AttackUsModule = null;
             SessionClientController.Data.BackgroundSaveGameOff = false;
             GameAttackTrigger_Patch.ForceSpeed = -1f;
+        }
+
+        public void Finish(bool victoryAttacker)
+        {
+            Find.TickManager.Pause();
+
+            Clear();
 
             if (TestMode)
             {
