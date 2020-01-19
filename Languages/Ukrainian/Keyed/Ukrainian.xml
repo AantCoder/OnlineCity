@@ -124,8 +124,8 @@
 	<OCity_Dialog_Exchenge_Seller>Seller</OCity_Dialog_Exchenge_Seller>
 	<OCity_Dialog_Exchenge_BeenOnline>has been online</OCity_Dialog_Exchenge_BeenOnline>
 	<OCity_Dialog_Exchenge_Location>Location</OCity_Dialog_Exchenge_Location>
-	<OCity_Dialog_Exchenge_Days>days</OCity_Dialog_Exchenge_Days>
-	<OCity_Dialog_Exchenge_In>in</OCity_Dialog_Exchenge_In>
+	<OCity_Dialog_Exchenge_Days> days </OCity_Dialog_Exchenge_Days>
+	<OCity_Dialog_Exchenge_In> in </OCity_Dialog_Exchenge_In>
 	<OCity_Dialog_Exchenge_Location_Goods>Location of goods:</OCity_Dialog_Exchenge_Location_Goods>
 	<OCity_Dialog_Exchenge_Number>Number</OCity_Dialog_Exchenge_Number>
 	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>Maximum repetition of the transaction:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
@@ -164,7 +164,7 @@
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
 	<OCity_ThingTrade_Quality_Strength>Quality {0}. Strength {1} of {2}</OCity_ThingTrade_Quality_Strength>
-	<OCity_ThingTrade_Cut_Body_Off>Cut off the body.</OCity_Cut_Body_Off>
+	<OCity_ThingTrade_Cut_Body_Off>Cut off the body.</OCity_ThingTrade_Cut_Body_Off>
 	<OCity_ThingTrade_QualityBetter_StrengthMore>Quality {0} and better. Strength {1}% and more</OCity_ThingTrade_QualityBetter_StrengthMore>
 	<OCity_ThingTrade_CouldTake_OffCorpse>Could be taken off a corpse.</OCity_ThingTrade_CouldTake_OffCorpse>
 
@@ -203,7 +203,7 @@
 
 	<!-- Kor -->
 	<!-- GameUtils.cs -->
-	<OCity_GameUtils_From>from </OCity_GameUtils_From>
+	<OCity_GameUtils_From> from </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>
 
 	<!-- Kor -->
@@ -226,9 +226,9 @@
 
 	<!-- Kor -->
 	<!-- GameAttackHost.cs -->
-	<OCity_GameAttack_Host_Test_Attack>{0} is conducting a test attack on your settlement</OCity_GameAttacker_Test_Attack>
-	<OCity_GameAttack_Host_Settlement_Attacking>Your settlement is attacking {0}</OCity_GameAttacker_Settlement_Attacking>
-	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>Wait until the attacker is ready. After that, the speed will automatically turn on the x1 and it will not change.</OCity_GameAttacker_GameSpeed_Lock_Dialog>
+	<OCity_GameAttack_Host_Test_Attack>{0} is conducting a test attack on your settlement</OCity_GameAttack_Host_Test_Attack>
+	<OCity_GameAttack_Host_Settlement_Attacking>Your settlement is attacking {0}</OCity_GameAttack_Host_Settlement_Attacking>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>Wait until the attacker is ready. After that, the speed will automatically turn on the x1 and it will not change.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog>
 	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>If you want to finish and give up the settlement, click in the main menu.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
 	<OCity_GameAttack_Host_Cancel_Action> If you want to finish and cancel the action, click on the main menu.</OCity_GameAttack_Host_Cancel_Action>
 	<OCity_GameAttack_Host_Surrender>Surrender</OCity_GameAttack_Host_Surrender>

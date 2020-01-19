@@ -45,11 +45,7 @@ namespace RimWorldOnlineCity
         {
             get
             {
-                return "OCity_Caravan_Player".Translate().Translate(new object[]
-                    {
-                        OnlineName,
-                        OnlinePlayerLogin
-                    });
+                return "OCity_Caravan_Player".Translate(OnlineName, OnlinePlayerLogin);
                 /*
                 return "Караван {0}".Translate(new object[]
                     {
@@ -62,20 +58,14 @@ namespace RimWorldOnlineCity
         public override string GetInspectString()
         {
             if (OnlineWObject == null)
-                return ("OCity_Caravan_Player".Translate() + Environment.NewLine
-                    ).Translate(new object[]
-                    {
-                        OnlineName
-                        , OnlinePlayerLogin
-                    });
+                return "OCity_Caravan_Player".Translate(OnlineName, OnlinePlayerLogin) + Environment.NewLine;
             else
             {
                 return ("OCity_Caravan_Player".Translate() + Environment.NewLine
                     + "OCity_Caravan_PriceThing".Translate() + Environment.NewLine
                     + "OCity_Caravan_PriceAnimalsPeople".Translate()
                     + "OCity_Caravan_Other".Translate()
-                    ).Translate(new object[]
-                    {
+                    ).Translate(
                         OnlineName
                         , OnlinePlayerLogin + (IsOnline ? " Online!" : "") + " (sId:" + OnlineWObject.ServerId +")"
                         , OnlineWObject.MarketValue.ToStringMoney()
@@ -84,7 +74,7 @@ namespace RimWorldOnlineCity
                             ? Environment.NewLine + "OCity_Caravan_FreeWeight".Translate() + OnlineWObject.FreeWeight.ToStringMass()
                             : ""
                         , "" //todo Environment.NewLine + GameUtils.PlayerTextInfo(OnlineWObject.)
-                    });
+                    );
             }
         }
 
@@ -110,10 +100,7 @@ namespace RimWorldOnlineCity
                 yield return o;
             }
 
-            yield return new FloatMenuOption("OCity_Caravan_Trade".Translate(new object[]
-            {
-                OnlinePlayerLogin + " " + OnlineName
-            }), delegate
+            yield return new FloatMenuOption("OCity_Caravan_Trade".Translate(OnlinePlayerLogin + " " + OnlineName), delegate
             {
                 caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
             }, MenuOptionPriority.Default, null, null, 0f, null, this);

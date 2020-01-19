@@ -298,7 +298,7 @@ namespace RimWorldOnlineCity
                 {
                     Find.TickManager.Pause();
                     GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
-                        , ("OCity_GameAttacker_Main_Dialog").Translate()
+                        , "OCity_GameAttacker_Main_Dialog".Translate() + Environment.NewLine
                             + "OCity_GameAttacker_Withdraw".Translate()
                         , () => { }
                         , null
@@ -314,9 +314,8 @@ namespace RimWorldOnlineCity
                 if (AttackUpdateTick == 3)
                 {
                     GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
-                        , "OCity_GameAttacker_Main_Preparation_Dialog".Translate()
-                            + Environment.NewLine
-                            + ("OCity_GameAttacker_Main_Dialog").Translate()
+                        , "OCity_GameAttacker_Main_Preparation_Dialog".Translate() + Environment.NewLine
+                            + "OCity_GameAttacker_Main_Dialog".Translate() + Environment.NewLine
                             + "OCity_GameAttacker_Withdraw".Translate()
                         , () => { }
                         , null
@@ -741,10 +740,10 @@ namespace RimWorldOnlineCity
             {
                 GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
                     , victoryAttacker
-                        ? ("Ocity_GameAttacker_TrainingFight_Won" + Environment.NewLine +
-                            "Ocity_GameAttacker_TrainingFight_Caravan_Restore").Translate()
-                        : ("Ocity_GameAttacker_TrainingFight_Lost" + Environment.NewLine +
-                            "Ocity_GameAttacker_TrainingFight_Caravan_Restore").Translate()
+                        ? "Ocity_GameAttacker_TrainingFight_Won".Translate() + Environment.NewLine +
+                            "Ocity_GameAttacker_TrainingFight_Caravan_Restore".Translate()
+                        : "Ocity_GameAttacker_TrainingFight_Lost".Translate() + Environment.NewLine +
+                            "Ocity_GameAttacker_TrainingFight_Caravan_Restore".Translate()
                     , () =>
                     {
                         SessionClientController.Disconnected("OCity_GameAttacker_Done".Translate());
@@ -795,8 +794,8 @@ namespace RimWorldOnlineCity
                 GameUtils.ShowDialodOKCancel("OCity_GameAttacker_Dialog_Settlement_Attack".Translate()
                     , victoryAttacker
                         ? "OCity_GameAttacker_Settlement_TakenOver".Translate()
-                        : ("OCity_GameAttacker_Defeated" + Environment.NewLine +
-                            "OCity_GameAttacker_Colonist_Return").Translate()
+                        : "OCity_GameAttacker_Defeated".Translate() + Environment.NewLine +
+                            "OCity_GameAttacker_Colonist_Return".Translate()
                     , () => { }
                     , null
                 );

@@ -117,9 +117,9 @@ namespace Model
                 return Name + (Count > 1 ? " x" + Count.ToString(): "") + Environment.NewLine
                     + (Concrete
                         ? "OCity_ThingTrade_Quality_Strength".Translate(((QualityCategory)Quality).GetLabel(), HitPoints, MaxHitPoints)
-                            + (WornByCorpse ? " OCity_Cut_Body_Off".Translate() : "")
+                            + (WornByCorpse ? "OCity_ThingTrade_Cut_Body_Off".Translate() : "")
                         : "OCity_ThingTrade_QualityBetter_StrengthMore".Translate(((QualityCategory)Quality).GetLabel(), HitPoints)
-                            + (WornByCorpse ? " OCity_ThingTrade_CouldTake_OffCorpse".Translate() : "")
+                            + (WornByCorpse ? "OCity_ThingTrade_CouldTake_OffCorpse".Translate() : "")
                         )
                     ;
             }

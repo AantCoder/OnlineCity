@@ -64,8 +64,7 @@ namespace RimWorldOnlineCity
                 + "OCity_PlayerClient_caravanCount".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_marketValue".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_marketValuePawn".Translate()
-                ).Translate(new object[]
-                    {
+                ).Translate(
                         Public.LastTick / 3600000
                         , Public.LastTick / 60000
                         , Public.LastSaveTime == DateTime.MinValue ? "OCity_PlayerClient_LastSaveTimeNon".Translate() : Public.LastSaveTime.ToGoodUtcString()
@@ -73,7 +72,7 @@ namespace RimWorldOnlineCity
                         , values.CaravanCount
                         , values.MarketValue.ToStringMoney()
                         , values.MarketValuePawn.ToStringMoney()
-                    });
+                    );
             return info + values.Details;
         }
     }

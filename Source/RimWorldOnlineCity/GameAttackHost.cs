@@ -217,11 +217,11 @@ namespace RimWorldOnlineCity
                     ? "OCity_GameAttack_Host_Test_Attack".Translate(AttackerLogin)
                     : "OCity_GameAttack_Host_Settlement_Attacking".Translate(AttackerLogin)
                 , TestMode
-                    ? ("OCity_GameAttacker_GameSpeed_Lock_Dialog."
-                        + "OCity_GameAttack_Host_Cancel_Action ").Translate()
+                    ? "OCity_GameAttack_Host_GameSpeed_Lock_Dialog".Translate() + Environment.NewLine
+                        + "OCity_GameAttack_Host_Cancel_Action".Translate() + Environment.NewLine
                         + "OCity_GameAttack_Host_Surrender".Translate()
-                    : ("OCity_GameAttack_Host_GameSpeed_Lock_Dialog."
-                        + "OCity_GameAttack_Host_GameSpeed_Lock_Dialog2").Translate()
+                    : "OCity_GameAttack_Host_GameSpeed_Lock_Dialog".Translate() + Environment.NewLine
+                        + "OCity_GameAttack_Host_GameSpeed_Lock_Dialog2".Translate() + Environment.NewLine
                         + "OCity_GameAttack_Host_Surrender".Translate()
                 , () => { }
                 , null
@@ -1061,10 +1061,10 @@ namespace RimWorldOnlineCity
                         ? "OCity_GameAttack_Host_Test_Attack".Translate(AttackerLogin)
                         : "OCity_GameAttack_Host_Settlement_Attacking".Translate(AttackerLogin)
                     , victoryAttacker
-                        ? ("Ocity_GameAttacker_TrainingFight_Lost" + Environment.NewLine +
-                            "OCity_GameAttack_Host_Card_Restored").Translate()
-                        : ("OCity_GameAttack_Host_Training_Attack_Repulsed" + Environment.NewLine +
-                            "OCity_GameAttack_Host_Card_Restored").Translate()
+                        ? "Ocity_GameAttacker_TrainingFight_Lost".Translate() + Environment.NewLine +
+                            "OCity_GameAttack_Host_Card_Restored".Translate()
+                        : "OCity_GameAttack_Host_Training_Attack_Repulsed".Translate() + Environment.NewLine +
+                            "OCity_GameAttack_Host_Card_Restored".Translate()
                     , () =>
                     {
                         SessionClientController.Disconnected("OCity_GameAttacker_Done".Translate());
@@ -1102,8 +1102,8 @@ namespace RimWorldOnlineCity
                         : "OCity_GameAttack_Host_Settlement_Attacking".Translate(AttackerLogin)
                     , victoryAttacker
                         ? "OCity_GameAttack_Host_Caravan_TransferToNewOwner".Translate()
-                        : ("OCity_GameAttack_Host_Atack_Repulsed" + Environment.NewLine +
-                            "OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch").Translate()
+                        : "OCity_GameAttack_Host_Atack_Repulsed".Translate() + Environment.NewLine +
+                            "OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch".Translate()
                     , () => { }
                     , null
                 );

@@ -206,11 +206,10 @@ namespace RimWorldOnlineCity
             {
                 GUI.color = Color.gray;
             }
-            string text = "MassUsageInfo".Translate(new object[]
-            {
+            string text = "MassUsageInfo".Translate(
                 usedMass.ToString("0.##"),
                 availableMass.ToString("0.##")
-            });
+            );
             Vector2 vector = Text.CalcSize(text);
             Rect rect2;
             if (alignRight)

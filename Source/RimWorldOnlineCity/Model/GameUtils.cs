@@ -58,7 +58,7 @@ namespace RimWorldOnlineCity
             }
             else
             {
-                TooltipHandler.TipRegion(rect, thing.Def.LabelCap + " OCity_GameUtils_From ".Translate() + thing.StuffDef.LabelAsStuff);
+                TooltipHandler.TipRegion(rect, thing.Def.LabelCap + "OCity_GameUtils_From".Translate() + thing.StuffDef.LabelAsStuff);
                 GUI.color = labelColor;
                 if (withInfo) Widgets.InfoCardButton(rect.x + 24f, rect.y, thing.Def, thing.StuffDef);
                 GUI.color = Color.white;

@@ -124,8 +124,8 @@
 	<OCity_Dialog_Exchenge_Seller>Продавец</OCity_Dialog_Exchenge_Seller>
 	<OCity_Dialog_Exchenge_BeenOnline>был в сети </OCity_Dialog_Exchenge_BeenOnline>
 	<OCity_Dialog_Exchenge_Location>Место</OCity_Dialog_Exchenge_Location>
-	<OCity_Dialog_Exchenge_Days>дней</OCity_Dialog_Exchenge_Days>
-	<OCity_Dialog_Exchenge_In>в</OCity_Dialog_Exchenge_In>
+	<OCity_Dialog_Exchenge_Days> дней </OCity_Dialog_Exchenge_Days>
+	<OCity_Dialog_Exchenge_In> в </OCity_Dialog_Exchenge_In>
 	<OCity_Dialog_Exchenge_Location_Goods>Месторасположение товара:</OCity_Dialog_Exchenge_Location_Goods>
 	<OCity_Dialog_Exchenge_Number>Кол-во</OCity_Dialog_Exchenge_Number>
 	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>Максимум повоторов реализации сделки:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>

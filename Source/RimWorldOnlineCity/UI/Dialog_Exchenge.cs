@@ -269,7 +269,7 @@ namespace RimWorldOnlineCity.UI
                     if (EditOrderIsMy)
                         EditOrderTitle = "OCity_Dialog_Exchenge_Edit".Translate();
                     else
-                        EditOrderTitle = "OCity_Dialog_Exchenge_Viewing_Orders ".Translate() + item.Owner.Login;
+                        EditOrderTitle = "OCity_Dialog_Exchenge_Viewing_Orders".Translate() + item.Owner.Login;
                 };
                 OrdersMenu = null;
                 OrdersGrid.OnDrawLine = (int line, OrderTrade item, Rect rectLine) =>
@@ -299,7 +299,7 @@ namespace RimWorldOnlineCity.UI
                             OrdersMenu.Add(rect2t, "OCity_Dialog_Exchenge_Seller".Translate());
                         }
                         currentWidth -= 200f;
-                        TooltipHandler.TipRegion(rect2, item.Owner.Login + Environment.NewLine + "OCity_Dialog_Exchenge_BeenOnline ".Translate() + item.Owner.LastSaveTime.ToGoodUtcString());
+                        TooltipHandler.TipRegion(rect2, item.Owner.Login + Environment.NewLine + "OCity_Dialog_Exchenge_BeenOnline".Translate() + item.Owner.LastSaveTime.ToGoodUtcString());
                         Widgets.Label(rect2, item.Owner.Login);
 
                         //Расстояние где торгуют (todo), название места
@@ -310,8 +310,8 @@ namespace RimWorldOnlineCity.UI
                             OrdersMenu.Add(rect2t, "OCity_Dialog_Exchenge_Location".Translate());
                         }
                         currentWidth -= 200f;
-                        var text = (item.Place.DayPath > 0 ? item.Place.DayPath.ToStringDecimalIfSmall() + " OCity_Dialog_Exchenge_Days".Translate() : "")
-                            + " OCity_Dialog_Exchenge_In ".Translate() + item.Place.Name;
+                        var text = (item.Place.DayPath > 0 ? item.Place.DayPath.ToStringDecimalIfSmall() + "OCity_Dialog_Exchenge_Days".Translate() : "")
+                            + "OCity_Dialog_Exchenge_In".Translate() + item.Place.Name;
                         TooltipHandler.TipRegion(rect2, "OCity_Dialog_Exchenge_Location_Goods".Translate() + Environment.NewLine + text);
                         Widgets.Label(rect2, text);
 
@@ -744,17 +744,17 @@ namespace RimWorldOnlineCity.UI
 
             if (EditOrderIsMy)
             {
-                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Give:".Translate());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Give".Translate());
                 rect.y += 24f;
                 EditOrderShowSellThings(ref rect);
 
-                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Get:".Translate());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Get".Translate());
                 rect.y += 24f;
                 EditOrderShowBuyThings(ref rect);
             }
             else
             {
-                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Get:".Translate());
+                Widgets.Label(rect, "OCity_Dialog_Exchenge_We_Get".Translate());
                 rect.y += 24f;
                 EditOrderShowBuyThings(ref rect);
 
@@ -1025,7 +1025,7 @@ namespace RimWorldOnlineCity.UI
                 var textCntW = Text.CalcSize("888/888 ").x;
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
-                TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_Whole_On)".Translate(th.HitPoints, th.MaxHitPoints
+                TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_Whole_On".Translate(th.HitPoints, th.MaxHitPoints
                     , (th.HitPoints * 100 / th.MaxHitPoints).ToString()));
                 Widgets.Label(rect3, th.HitPoints + "/" + th.MaxHitPoints);
 
@@ -1033,7 +1033,7 @@ namespace RimWorldOnlineCity.UI
                 textCntW = EditOrderQualityWidth + 10f;
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
-                TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_Quality ".Translate() + ((QualityCategory)th.Quality).GetLabel());
+                TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_Quality".Translate() + ((QualityCategory)th.Quality).GetLabel());
                 Widgets.Label(rect3, ((QualityCategory)th.Quality).GetLabelShort() + "+");
             }
             else
