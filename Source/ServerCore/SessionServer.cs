@@ -86,8 +86,14 @@ namespace ServerOnlineCity
                     continue;
                 }
 
+                var time1 = DateTime.UtcNow;
+
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
                 var recObj = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
+
+                if (rec2.Length > 1024 * 512) Loger.Log($"Server Network taken {rec.Length} unzip {GZip.LastSizeObj} ");
+                var time2 = DateTime.UtcNow;
+
                 ModelContainer sendObj;
                 try
                 {
@@ -101,10 +107,26 @@ namespace ServerOnlineCity
                         TypePacket = 0
                     };
                 }
+
+                var time3 = DateTime.UtcNow;
+
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
 
+                if (ob.Length > 1024 * 512) Loger.Log($"Server Network pass {send.Length} unzip {GZip.LastSizeObj} ");
+                var time4 = DateTime.UtcNow;
+
                 Client.SendMessage(send);
+
+                var time5 = DateTime.UtcNow;
+
+                if ((time5 - time1).TotalMilliseconds > 900)
+                {
+                    Loger.Log($"Server Network timeDeserialize {(time2 - time1).TotalMilliseconds}" +
+                        $" timeWorker {(time3 - time2).TotalMilliseconds}" +
+                        $" timeSerialize {(time4 - time3).TotalMilliseconds}" +
+                        $" timeSend {(time5 - time4).TotalMilliseconds}");
+                }
 
                 if (context.Player != null)
                 {
