@@ -116,9 +116,7 @@ namespace RimWorldOnlineCity
                     ) == null
                     )
                 { 
-                    yield return new FloatMenuOption(string.Format("OCity_Caravan_Attack".Translate()
-                        , OnlinePlayerLogin + " " + OnlineName
-                    ), delegate
+                    yield return new FloatMenuOption("OCity_Caravan_Attack".Translate(OnlinePlayerLogin + " " + OnlineName), delegate
                     {
                         caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "attack"), true);
                     }, MenuOptionPriority.Default, null, null, 0f, null, this);

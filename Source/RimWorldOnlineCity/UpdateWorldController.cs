@@ -275,7 +275,7 @@ namespace RimWorldOnlineCity
                     worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
 
                     worldObjectEntry.MarketValuePawn = 0;
-                    foreach (Pawn current in map.mapPawns.FreeColonists)
+                    foreach (Pawn current in map.mapPawns.FreeColonists.ToList())
                     {
                         worldObjectEntry.MarketValuePawn += current.MarketValue;
                     }

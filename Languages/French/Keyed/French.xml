@@ -14,7 +14,7 @@
 	<OCity_Caravan_LOGNoData>Aucune information serveur sur l'objet de l'échange</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>Echange de caravane: selectAllCaravan</OCity_Caravan_LOGSwap>
 	<!-- Kor -->
-	<OCity_Caravan_Go_Attack_Target>Attack {0}</OCity_Caravan_Go_Attack_Target>
+	<OCity_Caravan_Go_Attack_Target>Attack</OCity_Caravan_Go_Attack_Target>
 	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Do you really want to attack this settlement? It's possible to have a training battle without consequences</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
 	<OCity_Caravan_Practive>No, just practice.</OCity_Caravan_Practive>
 

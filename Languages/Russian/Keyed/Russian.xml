@@ -14,7 +14,7 @@
 	<OCity_Caravan_LOGNoData>Нет данных сервера об объекте торговли</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>Караван обмен: selectAllCaravan</OCity_Caravan_LOGSwap>
 	<!-- Kor -->
-	<OCity_Caravan_Go_Attack_Target>Атака {0}</OCity_Caravan_Go_Attack_Target>
+	<OCity_Caravan_Go_Attack_Target>Атака</OCity_Caravan_Go_Attack_Target>
 	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Вы дейстивтельно хотите напасть на данное поселение? Можно провести тренировочный бой без последствий</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
 	<OCity_Caravan_Practive>Нет, только тренировка.</OCity_Caravan_Practive>
 

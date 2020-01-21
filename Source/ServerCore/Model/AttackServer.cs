@@ -374,9 +374,11 @@ namespace ServerOnlineCity.Model
         private bool CheckConnect(bool attacker)
         {
             bool fail = false;
+            string logDet;
             if (attacker)
             {
                 fail = !Host.Online;
+                logDet = " (is attacker)";
             }
             else
             {
@@ -386,6 +388,7 @@ namespace ServerOnlineCity.Model
                 {
                     fail = !Attacker.Online;
                 }
+                logDet = " (is host)";
             }
 
             if (fail)
@@ -394,7 +397,7 @@ namespace ServerOnlineCity.Model
 
                 if (TestMode)
                 {   //При тестовом режиме всех участников отключаем
-                    Loger.Log("Server AttackServer Fail TestMode");
+                    Loger.Log("Server AttackServer Fail TestMode" + logDet);
 
                     //команда хосту
                     var packet = new ModelMailTrade()
@@ -424,7 +427,7 @@ namespace ServerOnlineCity.Model
                     //до State == 10 или меньше 1 мин, то отмена 
                     if (StartTime == DateTime.MinValue || (DateTime.UtcNow - StartTime).TotalSeconds < 60) // State == 10 проверяется косвенно: StartTime устанавливается только при State == 10
                     {
-                        Loger.Log("Server AttackServer Fail attacker off in start"); 
+                        Loger.Log("Server AttackServer Fail attacker off in start" + logDet); 
 
                         //команда хосту
                         var packet = new ModelMailTrade()
@@ -452,7 +455,7 @@ namespace ServerOnlineCity.Model
                     //при State == 10 и больше 1 мин, то уничтожение каравана, поселение остается как есть.
                     else
                     {
-                        Loger.Log("Server AttackServer Fail attacker off in progress");
+                        Loger.Log("Server AttackServer Fail attacker off in progress" + logDet);
 
                         //команда хосту
                         var packet = new ModelMailTrade()
@@ -512,7 +515,7 @@ namespace ServerOnlineCity.Model
                     //до State == 10, отмена у атакующего
                     if (StartTime == DateTime.MinValue) // State == 10 проверяется косвенно: StartTime устанавливается только при State == 10
                     {
-                        Loger.Log("Server AttackServer Fail host off in start");
+                        Loger.Log("Server AttackServer Fail host off in start" + logDet);
 
                         //команда атакующему
                         var packet = new ModelMailTrade()
@@ -529,7 +532,7 @@ namespace ServerOnlineCity.Model
                     //после State == 10, поселение переходит к атакующему
                     else
                     {
-                        Loger.Log("Server AttackServer Fail host off in progress");
+                        Loger.Log("Server AttackServer Fail host off in progress" + logDet);
 
                         //команда атакующему
                         var packet = new ModelMailTrade()
@@ -554,7 +557,8 @@ namespace ServerOnlineCity.Model
         private void Finish()
         {
             Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} Finish StartTime sec = " 
-                + (StartTime == DateTime.MinValue ? "-" : (DateTime.UtcNow - StartTime).TotalSeconds.ToString()));
+                + (StartTime == DateTime.MinValue ? "-" : (DateTime.UtcNow - StartTime).TotalSeconds.ToString())
+                + (VictoryAttacker == null ? "" : VictoryAttacker.Value ? "VictoryAttacker" : "VictoryHost"));
             Attacker.AttackData = null;
             Host.AttackData = null;
         }

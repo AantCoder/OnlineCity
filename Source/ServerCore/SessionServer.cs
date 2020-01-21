@@ -91,7 +91,7 @@ namespace ServerOnlineCity
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
                 var recObj = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
 
-                if (rec2.Length > 1024 * 512) Loger.Log($"Server Network taken {rec.Length} unzip {GZip.LastSizeObj} ");
+                if (rec.Length > 1024 * 512) Loger.Log($"Server Network taken {rec.Length} unzip {GZip.LastSizeObj} ");
                 var time2 = DateTime.UtcNow;
 
                 ModelContainer sendObj;
@@ -113,7 +113,7 @@ namespace ServerOnlineCity
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
 
-                if (ob.Length > 1024 * 512) Loger.Log($"Server Network pass {send.Length} unzip {GZip.LastSizeObj} ");
+                if (send.Length > 1024 * 512) Loger.Log($"Server Network pass {send.Length} unzip {GZip.LastSizeObj} ");
                 var time4 = DateTime.UtcNow;
 
                 Client.SendMessage(send);

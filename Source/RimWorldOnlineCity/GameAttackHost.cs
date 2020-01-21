@@ -1042,7 +1042,7 @@ namespace RimWorldOnlineCity
         {
             //отключить таймер и признаки, что нас атакуют
             if (TimerObj != null) SessionClientController.Timers.Remove(TimerObj);
-            GameAttackTrigger_Patch.ActiveAttackHost.Remove(GameMap);
+            if (GameMap != null) GameAttackTrigger_Patch.ActiveAttackHost.Remove(GameMap);
             SessionClientController.Data.AttackUsModule = null;
             SessionClientController.Data.BackgroundSaveGameOff = false;
             GameAttackTrigger_Patch.ForceSpeed = -1f;
