@@ -13,7 +13,7 @@ namespace ServerOnlineCity.ChatService
     {
         public string CmdID => "renamechat";
 
-        public Grants GrantsForRun => Grants.UsualUser;
+        public Grants GrantsForRun => Grants.UsualUser | Grants.SuperAdmin | Grants.Moderator;
 
         public string Help => ChatManager.prefix + "renamechat : rename private channel";
 

@@ -55,7 +55,7 @@ namespace ServerOnlineCity
             {
                 using (StreamWriter file = File.CreateText(jsonFile))
                 {
-                    var jsonText = JsonSerializer.Serialize(ServerSettings);
+                    var jsonText = JsonSerializer.Serialize(ServerSettings, new JsonSerializerOptions() { WriteIndented = true });
                     file.WriteLine(jsonText);
                 }
 
@@ -144,7 +144,7 @@ namespace ServerOnlineCity
             // 2. remove JsobIgnrore atribbute in ServerSettings  
             ServerSettings.SteamWorkShopModsDir = Environment.CurrentDirectory;
             ///!!!!!!!!!!!!!!!! STEAM FOLDER CHECK SWITCH HERE  !!!!!!!!!!!!!!!
-            var steamFiles = FileChecker.GenerateHashFiles(ServerSettings.SteamWorkShopModsDir, new string [0]);
+            var steamFiles = FileChecker.GenerateHashFiles(ServerSettings.SteamWorkShopModsDir, new string[0]);
 
             var modFilesDict = new Dictionary<string, ModelFileInfo>(modFiles.Count);
             var steamFilesDict = new Dictionary<string, ModelFileInfo>(steamFiles.Count);
