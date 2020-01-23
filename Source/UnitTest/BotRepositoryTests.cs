@@ -2,6 +2,7 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OCUnion.Transfer;
+using OCUnion.Transfer.Types;
 using Transfer;
 using Util;
 
@@ -11,6 +12,9 @@ namespace OC.UnitTest
     // Важно: сначала надо запустить сервер ;-)
     // Если есть идеи как запустить консольку сервера и тесты, будет здорово
     //[DeploymentItem("EntityFramework.SqlServer.dll")] // Потом атрибут
+
+    // before must be two users:111 (admin)
+    // 222 Usaly user
     [TestClass]
     public class BotRepositoryTests
     {
@@ -51,19 +55,19 @@ namespace OC.UnitTest
         public void CheckGrants()
         {
             var res2 = _sessionClient.PostingChat(1, "/grants type Nobody");
-            Assert.IsFalse(res2);
+            Assert.IsTrue(res2.Status == (int)ChatCmdResult.UserNotFound);
             var res3 = _sessionClient.PostingChat(1, "/grants add 222 2");
-            Assert.IsTrue(res3);
+            Assert.IsTrue(res3.Status == 0);
             var res4 = _sessionClient.PostingChat(1, "/grants revoke 222 2");
-            Assert.IsTrue(res4);
+            Assert.IsTrue(res4.Status == 0);
             var res5 = _sessionClient.PostingChat(1, "/grants type 222");
-            Assert.IsTrue(res5);
+            Assert.IsTrue(res5.Status == 0);
         }
 
         private void checkGetToken(string msg, int index)
         {
             var res = _sessionClient.PostingChat(1, msg);
-            Assert.IsTrue(res);
+            Assert.IsTrue(res.Status == 0);
             var dc = _sessionClient.UpdateChat(DateTime.UtcNow.AddHours(-1));
             Assert.IsNotNull(dc);
             Assert.IsTrue(dc.Chats[0].OwnerLogin == userName);

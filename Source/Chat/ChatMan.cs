@@ -37,8 +37,12 @@ namespace OC.Chat
         public void Send(int index, string text)
         {
             var selectCannal = SCC.ChatProv.Data.Chats[index];
+            var res = SCC.ChatProv.SendMessage(text, selectCannal.Id);
+            if (res != null && res.Status > 0)
+            {
 
-            SCC.ChatProv.SendMessage(text, selectCannal.Id);
+            }
+
             SCC.ChatProv.UpdateChats();
         }
     }

@@ -33,6 +33,7 @@ namespace ServerOnlineCity.ChatService
                 if (playerServer.DiscordToken.Equals(Guid.Empty))
                 {
                     playerServer.DiscordToken = Guid.NewGuid();
+                    Repository.Get.ChangeData = true;
                 }
 
                 return ChatManager.PostCommandPrivatPostActivChat(0, myLogin, chat, playerServer.DiscordToken.ToString());

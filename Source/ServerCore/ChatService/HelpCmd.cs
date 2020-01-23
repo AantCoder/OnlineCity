@@ -11,7 +11,7 @@ namespace ServerOnlineCity.ChatService
 {
     internal sealed class HelpCmd : IChatCmd
     {
-        public string CmdID => ChatManager.prefix + "help";
+        public string CmdID => "help";
 
         public Grants GrantsForRun => Grants.UsualUser | Grants.DiscordBot;
 
@@ -24,7 +24,7 @@ namespace ServerOnlineCity.ChatService
             var sb = new StringBuilder();
             foreach (var cmd in ChatManager.ChatCmds.Values.OrderBy(x => x.CmdID))
             {
-                if (cmd.GrantsForRun.HasFlag(userGrants))
+                if (!Grants.NoPermissions.Equals(cmd.GrantsForRun & userGrants))
                 {
                     sb.AppendLine(cmd.Help);
                 }
