@@ -558,7 +558,8 @@ namespace ServerOnlineCity.Model
         {
             Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} Finish StartTime sec = " 
                 + (StartTime == DateTime.MinValue ? "-" : (DateTime.UtcNow - StartTime).TotalSeconds.ToString())
-                + (VictoryAttacker == null ? "" : VictoryAttacker.Value ? "VictoryAttacker" : "VictoryHost"));
+                + (VictoryAttacker == null ? "" : VictoryAttacker.Value ? " VictoryAttacker" : " VictoryHost")
+                + (TestMode ? " TestMode" : ""));
             Attacker.AttackData = null;
             Host.AttackData = null;
         }

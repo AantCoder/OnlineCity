@@ -48,7 +48,7 @@ namespace OCUnion
                 try
                 {
                     //if (LogMessage != null) LogMessage(logMsg);
-                    File.AppendAllText(PathLog + @"Log " + date + ".txt", logMsg + Environment.NewLine, Encoding.UTF8);
+                    File.AppendAllText(PathLog + @"Log_" + date + ".txt", logMsg + Environment.NewLine, Encoding.UTF8);
                 }
                 catch (Exception exp)
                 {

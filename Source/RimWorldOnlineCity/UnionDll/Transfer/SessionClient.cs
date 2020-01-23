@@ -160,18 +160,38 @@ namespace Transfer
             lock (LockObj)
             {
                 ErrorMessage = null;
-                //Loger.Log("Client T1");
+
+                var time1 = DateTime.UtcNow;
+
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
-                //Loger.Log("Client Push " + Loger.Bytes(ob));
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
-                //Loger.Log("Client Send");
+
+                if (send.Length > 1024 * 512) Loger.Log($"Client Network toS {send.Length} unzip {GZip.LastSizeObj} ");
+                var time2 = DateTime.UtcNow;
+
                 Client.SendMessage(send);
-                //Loger.Log("Client Receive");
+
+                var time3 = DateTime.UtcNow;
+
                 var rec = Client.ReceiveBytes();
-                //Loger.Log("Client Received");
+
+                var time4 = DateTime.UtcNow;
+
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
-                //Loger.Log("Client Pop " + Loger.Bytes(rec2));
-                return (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
+                var res = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
+
+                var time5 = DateTime.UtcNow;
+                if (rec.Length > 1024 * 512) Loger.Log($"Client Network fromS {rec.Length} unzip {GZip.LastSizeObj} ");
+
+                if ((time5 - time1).TotalMilliseconds > 900)
+                {
+                    Loger.Log($"Client Network timeSerialize {(time2 - time1).TotalMilliseconds}" +
+                        $" timeSend {(time3 - time2).TotalMilliseconds}" +
+                        $" timeReceive {(time4 - time3).TotalMilliseconds}" +
+                        $" timeDeserialize {(time5 - time4).TotalMilliseconds}");
+                }
+
+                return res;
             }
         }
 
