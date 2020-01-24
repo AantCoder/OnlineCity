@@ -408,24 +408,24 @@ namespace RimWorldOnlineCity
                         var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
                         //if (selectCannal.Posts != null || selectCannal.Posts.Count > 0)
                         //{
-                            var chatLastPostTime = selectCannal.Posts.Max(p => p.Time);
-                            if (ChatLastPostTime != chatLastPostTime)
-                            {
-                                ChatLastPostTime = chatLastPostTime;
-                                Func<ChatPost, string> getPost = (cp) => "[" + cp.Time.ToGoodUtcString("dd HH:mm ") + cp.OwnerLogin + "]: " + cp.Message;
+                        var chatLastPostTime = selectCannal.Posts.Max(p => p.Time);
+                        if (ChatLastPostTime != chatLastPostTime)
+                        {
+                            ChatLastPostTime = chatLastPostTime;
+                            Func<ChatPost, string> getPost = (cp) => "[" + cp.Time.ToGoodUtcString("dd HH:mm ") + cp.OwnerLogin + "]: " + cp.Message;
 
-                                var totalLength = 0;
-                                ChatBox.Text = selectCannal.Posts
-                                    .Reverse<ChatPost>()
-                                    .Where(i => (totalLength += i.Message.Length) < 5000)
-                                    .Aggregate("", (r, i) => getPost(i) + (r == "" ? "" : Environment.NewLine + r));
-                                ChatScrollToDown = true;
-                            }
-                           // else
-                             //   ChatBox.Text = "";
+                            var totalLength = 0;
+                            ChatBox.Text = selectCannal.Posts
+                                .Reverse<ChatPost>()
+                                .Where(i => (totalLength += i.Message.Length) < 5000)
+                                .Aggregate("", (r, i) => getPost(i) + (r == "" ? "" : Environment.NewLine + r));
+                            ChatScrollToDown = true;
+                        }
+                        // else
+                        //   ChatBox.Text = "";
                         //}
-                      //  else
-                           // ChatBox.Text = "";
+                        //  else
+                        // ChatBox.Text = "";
                     }
                     else
                         ChatBox.Text = "";
@@ -462,6 +462,7 @@ namespace RimWorldOnlineCity
                             {
                                 connect.PostingChat(selectCannal.Id, ChatInputText);
                             });
+
                             ChatInputText = "";
                         }
                     }
@@ -658,7 +659,8 @@ namespace RimWorldOnlineCity
                         var mainCannal = SessionClientController.Data.Chats[0];
                         SessionClientController.Command((connect) =>
                         {
-                            if (connect.PostingChat(mainCannal.Id, "/killmyallplease"))
+                            var res = connect.PostingChat(mainCannal.Id, "/killmyallplease");
+                            if (res != null && res.Status == 0)
                             {
                                 SessionClientController.Disconnected("OCity_Dialog_DeletedData".Translate());
                             }

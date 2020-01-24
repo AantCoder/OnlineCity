@@ -50,7 +50,12 @@ namespace ServerOnlineCity.Services
                 IsAdmin = isAdmin,
             };
 
-            context.Player.Public.Grants = isAdmin ? Grants.SuperAdmin : Grants.UsualUser;
+            context.Player.Public.Grants = Grants.UsualUser;
+            if (isAdmin)
+            {
+                context.Player.Public.Grants = context.Player.Public.Grants | Grants.Moderator | Grants.SuperAdmin;
+
+            }
 
             Repository.GetData.PlayersAll.Add(context.Player);
             Repository.Get.ChangeData = true;

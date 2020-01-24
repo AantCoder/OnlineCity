@@ -213,7 +213,7 @@ namespace Transfer
                 var stat = res.Packet as T;
                 if (res.TypePacket != typeIn
                     || stat == null)
-                    throw new ApplicationException($"Unknow server error TransObject({typeOut} -> {typeIn}) responce: {res.TypePacket} " 
+                    throw new ApplicationException($"Unknow server error TransObject({typeOut} -> {typeIn}) responce: {res.TypePacket} "
                         + (res.Packet == null ? "null" : res.Packet.GetType().Name));
                 return stat;
             }
@@ -324,19 +324,15 @@ namespace Transfer
             return stat;
         }
 
-        public bool PostingChat(long chatId, string msg)
+        public ModelStatus PostingChat(long chatId, string msg)
         {
             Loger.Log("Client PostingChat " + chatId.ToString() + ", " + msg);
             var packet = new ModelPostingChat() { ChatId = chatId, Message = msg };
             var stat = TransObject<ModelStatus>(packet, 19, 20);
+          
+            ErrorMessage = stat?.Message;
 
-            if (stat != null && stat.Status != 0)
-            {
-                ErrorMessage = stat.Message;
-                return false;
-            }
-
-            return stat != null;
+            return stat;
         }
 
         public Player GetPlayerByToken(Guid guidToken)
