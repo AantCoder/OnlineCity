@@ -87,9 +87,9 @@ namespace OC.Chat
             Data.ApplyChats(dc, ref lastMessage);
         }
 
-        public void SendMessage(string message, long idChanell = 0)
+        public ModelStatus SendMessage(string message, long idChanell = 0)
         {
-            _sessionClient.PostingChat(idChanell, message);
+            return _sessionClient.PostingChat(idChanell, message);
         }
 
         /// <summary>
