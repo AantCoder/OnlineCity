@@ -17,33 +17,42 @@ namespace ServerOnlineCity.ChatService
 
         public string Help => ChatManager.prefix + "createchat :Create private chat";
 
+        private readonly ChatManager _chatManager;
+
+        public CreateChatCmd(ChatManager chatManager)
+        {
+            _chatManager = chatManager;
+        }
+
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
             var myLogin = player.Public.Login;
             if (argsM.Count < 1)
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.SetNameChannel, myLogin, chat, "No new channel name specified");
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.SetNameChannel, myLogin, chat, "No new channel name specified");
 
-            var nChat = new Chat()
+            var nChat = _chatManager.CreateChat(
+            new Chat()
             {
                 Name = argsM[0],
                 OwnerLogin = myLogin,
                 OwnerMaker = true,
                 PartyLogin = new List<string>() { myLogin, "system" },
-                Id = Repository.GetData.GetChatId(),
-            };
-
-            nChat.Posts.Add(new ChatPost()
-            {
-                Time = DateTime.UtcNow,
-                Message = "User " + myLogin + " created a channel " + argsM[0],
-                OwnerLogin = "system"
+                LastChanged = DateTime.UtcNow,
             });
 
-            player.Chats.Add(nChat);
+            nChat.Posts.Add(
+                new ChatPost()
+                {
+                    Message = "Created a channel " + argsM[0],
+                    OwnerLogin = myLogin,
+                    Time = DateTime.UtcNow
+                }
+                );
 
+            player.Chats.Add(nChat, new ModelUpdateTime() { Value = -1 });
             if (argsM.Count > 1)
             {
-                ChatManager.PostCommandAddPlayer(player, nChat, argsM[1]);
+                _chatManager.PostCommandAddPlayer(player, nChat, argsM[1]);
             }
 
             Repository.Get.ChangeData = true;

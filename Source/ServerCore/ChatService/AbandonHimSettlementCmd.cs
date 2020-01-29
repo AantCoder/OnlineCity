@@ -18,35 +18,31 @@ namespace ServerOnlineCity.ChatService
 
         public string Help => ChatManager.prefix + "killhimplease {UserLogin}: Drop user Settlement and delete him from a server";
 
+        private readonly ChatManager _chatManager;
+
+        public AbandonHimSettlementCmd(ChatManager chatManager)
+        {
+            _chatManager = chatManager;
+        }
+
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
             var ownLogin = player.Public.Login;
 
-            // to do remove it: permision for run cmd check before run cmd
-            //if (!player.IsAdmin)
-            //{
-            //    return ChatManager.PostCommandPrivatPostActivChat(ownLogin, chat, "Command only for admin");
-            //}
-
             if (argsM.Count < 1)
             {
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.PlayerNameEmpty, ownLogin, chat, "Player name is empty");
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.PlayerNameEmpty, ownLogin, chat, "Player name is empty");
             }
 
             var killPlayer = Repository.GetPlayerByLogin(argsM[0]);
             if (killPlayer == null)
             {
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[0] + " not found");
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[0] + " not found");
             }
 
             var msg = "User " + killPlayer.Public.Login + " deleted settlements.";
-            chat.Posts.Add(new ChatPost()
-            {
-                Time = DateTime.UtcNow,
-                Message = msg,
-                OwnerLogin = "system"
-            });
 
+            _chatManager.AddSystemPostToPublicChat(msg);
 
             Repository.DropUserFromMap(killPlayer.Public.Login);
             Repository.GetSaveData.DeletePlayerData(killPlayer.Public.Login);

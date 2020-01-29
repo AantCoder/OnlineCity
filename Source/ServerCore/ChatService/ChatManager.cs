@@ -1,4 +1,5 @@
 ﻿using Model;
+using OCUnion;
 using OCUnion.Transfer.Types;
 using ServerOnlineCity.ChatService;
 using ServerOnlineCity.Model;
@@ -6,17 +7,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Transfer;
 
 namespace ServerOnlineCity.Services
 {
-    class ChatManager
+    internal class ChatManager
     {
         public static IReadOnlyDictionary<string, IChatCmd> ChatCmds;
         public const char prefix = '/';
+        public const string InvalidCommand = "The command is not available";
+
+        private object _chatPostsLocker = new object();
+
+        public static ChatManager Instance { get; }
+
+        public int MaxChatId => _maxChatId;
+
+        private int _maxChatId;
+
+        public int GetChatId() 
+        {
+
+            Interlocked.Increment(ref _maxChatId);
+            return _maxChatId;
+        }
+
+        public Chat PublicChat { get; private set; }
 
         static ChatManager()
         {
+            Instance = new ChatManager();
             var d = new Dictionary<string, IChatCmd>();
             foreach (var type in Assembly.GetEntryAssembly().GetTypes())
             {
@@ -27,7 +48,7 @@ namespace ServerOnlineCity.Services
 
                 if (type.GetInterfaces().Any(x => x == typeof(IChatCmd)))
                 {
-                    var t = (IChatCmd)Activator.CreateInstance(type);
+                    var t = (IChatCmd)Activator.CreateInstance(type, Instance);
                     d[prefix + t.CmdID] = t;
                 }
             }
@@ -35,17 +56,36 @@ namespace ServerOnlineCity.Services
             ChatCmds = d;
         }
 
-        public const string InvalidCommand = "The command is not available";
-
-        public static ModelStatus PostCommandPrivatPostActivChat(ChatCmdResult reason, string login, Chat chat, string msg)
+        internal void AddSystemPostToPublicChat(string msg)
         {
-            chat.Posts.Add(new ChatPost()
+            PublicChat.Posts.Add
+                (
+                new ChatPost()
+                {
+                    Message = msg,
+                    OwnerLogin = "system",
+                    Time = DateTime.UtcNow,
+                }
+                );
+        }
+
+        public void NewChatManager(int CurentMaxChatId, Chat publicChat)
+        {
+            _maxChatId = CurentMaxChatId;
+            PublicChat = publicChat;
+        }
+
+        public ModelStatus PostCommandPrivatPostActivChat(ChatCmdResult reason, string login, Chat chat, string msg)
+        {
+            var post = new ChatPost()
             {
                 Time = DateTime.UtcNow,
                 Message = msg,
                 OwnerLogin = "system",
                 OnlyForPlayerLogin = login
-            });
+            };
+
+            chat.Posts.Add(post);
 
             return new ModelStatus()
             {
@@ -54,38 +94,43 @@ namespace ServerOnlineCity.Services
             };
         }
 
-        public static ModelStatus PostCommandAddPlayer(PlayerServer player, Chat chat, string who)
+        public ModelStatus PostCommandAddPlayer(PlayerServer player, Chat chat, string who)
         {
+            string myLogin = player.Public.Login;
             // проверка на корректность данных: это не системный чат, мы хозяин чата, такой пользователь существует.
-            var myLogin = player.Public.Login;
-            if (chat.PartyLogin.Any(p => p == who))
-            {
-                return PostCommandPrivatPostActivChat(ChatCmdResult.PlayerHere, myLogin, chat, "The player is already here");
-            }
-
             var newPlayer = Repository.GetPlayerByLogin(who);
             if (newPlayer == null)
                 return PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, myLogin, chat, "User " + who + " not found");
 
-            if (!player.PublicChat.PartyLogin.Any(p => p == who))
-                return PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, myLogin, chat, "Can not access " + who + " player");
-
-            if (!chat.OwnerMaker) // Вопрос к автору, что это такое ?
+            if (!chat.OwnerMaker) // Вопрос к автору, что это такое, если отработает следующее условие:  The player is already here?
                 return PostCommandPrivatPostActivChat(ChatCmdResult.CantAccess, myLogin, chat, "People can not be added to a shared channel");
 
-            if (chat.OwnerLogin != player.Public.Login && !player.IsAdmin)
+            var isAdmin = (player.Public.Grants & Grants.SuperAdmin) > 0;
+            if (chat.OwnerLogin != myLogin && !isAdmin)
                 return PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "You can not add people");
+
+            //if (!player.PublicChat.PartyLogin.Any(p => p == who))
+            //    return PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, myLogin, chat, "Can not access " + who + " player");
+
+            lock (chat)
+            {
+                if (chat.PartyLogin.Any(p => p == who))
+                {
+                    return PostCommandPrivatPostActivChat(ChatCmdResult.PlayerHere, myLogin, chat, "The player is already here");
+                }
+
+                newPlayer.Chats.Add(chat, new ModelUpdateTime() { Value = -1 });
+                chat.PartyLogin.Add(newPlayer.Public.Login);
+            }
 
             var msg = "User " + newPlayer.Public.Login + " entered the channel.";
             chat.Posts.Add(new ChatPost()
             {
-                Time = DateTime.UtcNow,
                 Message = msg,
-                OwnerLogin = "system"
+                OwnerLogin = "system",
+                Time = DateTime.UtcNow,
             });
 
-            chat.PartyLogin.Add(newPlayer.Public.Login);
-            newPlayer.Chats.Add(chat);
             Repository.Get.ChangeData = true;
 
             return new ModelStatus()
@@ -95,41 +140,12 @@ namespace ServerOnlineCity.Services
             };
         }
 
-        private List<ChatPost> chatPosts;
 
-        /// <summary>
-        /// Добавляем сообщение в чат 
-        /// </summary>
-        /// <param name="chatPost"></param>
-        /// <returns></returns>
-        public int TryAddPost(ChatPost chatPost, PlayerServer player)
+        public Chat CreateChat(Chat chat)
         {
-            if (chatPost.IdChat == 0)
-            {
-
-                return -1;
-
-                //  Бессмысленно писать сообщения а не команды в системный приватный чат, никто их не увидит
-            }
-
-            //// HashSet<long> playerChats
-            //if (!player.Chats.Contains(chatPost.IdChat))
-            //{
-            //    // 
-            //    return -1;
-            //}
-
-            lock (chatPosts)
-            {
-                chatPosts.Add(chatPost);
-            }
-
-            return -1;
-        }
-
-        public void TryCreateChat(PlayerServer player, Chat chat, string who)
-        {
-            // public static void PostCommandAddPlayer(PlayerServer player, Chat chat, string who)
+            Interlocked.Increment(ref _maxChatId);
+            chat.Id = _maxChatId;
+            return chat;
         }
 
         /// <summary>

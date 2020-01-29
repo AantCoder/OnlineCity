@@ -17,15 +17,15 @@ namespace ServerOnlineCity.ChatService
 
         public string Help => ChatManager.prefix + "everybodylogoff: all online users will be given a command to save and disconnect, except for the admin, until the server is rebooted";
 
+        private readonly ChatManager _chatManager;
+
+        public EverybodyLogoffCmd(ChatManager chatManager)
+        {
+            _chatManager = chatManager;
+        }
+
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
-            // grants check before run cmd
-            //if (!player.IsAdmin)
-            //{
-            //    ChatManager.PostCommandPrivatPostActivChat(player, chat, "Command only for admin");
-            //    return;
-            //}
-
             var data = Repository.GetData;
             lock (data)
             {

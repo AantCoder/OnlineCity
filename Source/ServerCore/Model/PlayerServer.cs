@@ -1,6 +1,7 @@
 ﻿using Model;
 using OCUnion.Transfer;
 using OCUnion.Transfer.Types;
+using ServerOnlineCity.Services;
 using System;
 using System.Collections.Generic;
 using Transfer;
@@ -35,14 +36,8 @@ namespace ServerOnlineCity.Model
         [NonSerialized]
         public ApproveLoadWorldReason ApproveLoadWorldReason;
 
-        public Chat PublicChat
-        {
-            get { return Chats[0]; }
-        }
-
-        public List<Chat> Chats;
-
-        public static List<ChatPost> PublicPosts = new List<ChatPost>();
+        /// Key: ChatId, Value: lastPostIndex, last changed list of Logins
+        public Dictionary<Chat, ModelUpdateTime> Chats;
 
         public DateTime SaveDataPacketTime;
 
@@ -86,17 +81,8 @@ namespace ServerOnlineCity.Model
                 Login = login
             };
 
-            var publicChat = new Chat()
-            {
-                Id = 1,
-                Name = "Public",
-                OwnerLogin = login,
-                OwnerMaker = false,
-                PartyLogin = new List<string>() { login, "system" },
-                Posts = PublicPosts
-            };
-
-            Chats = new List<Chat>() { publicChat };
+            Chats = new Dictionary<Chat, ModelUpdateTime>(1);
+            Chats.Add(ChatManager.Instance.PublicChat, new ModelUpdateTime() { Value = -1 });
         }
 
         public WorldObjectsValues CostWorldObjects(long serverId = 0)

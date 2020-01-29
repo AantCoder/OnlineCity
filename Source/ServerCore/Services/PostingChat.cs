@@ -37,7 +37,7 @@ namespace ServerOnlineCity.Services
                 };
             }
 
-            var chat = context.Player.Chats.FirstOrDefault(ct => ct.Id == pc.ChatId);
+            var chat = context.Player.Chats.Keys.FirstOrDefault(ct => ct.Id == pc.IdChat);
 
             if (chat == null)
             {

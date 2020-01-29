@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ServerOnlineCity.Model;
 using Transfer;
 
@@ -21,9 +23,7 @@ namespace ServerOnlineCity.Services
         private ModelStatus login(ModelLogin packet, ServiceContext context)
         {
             if (packet.Login == "system") return null;
-            var player = Repository.GetData.PlayersAll
-                .FirstOrDefault(p => p.Public.Login == packet.Login);
-
+            var player = Repository.GetPlayerByLogin(packet.Login);
 
             if (player != null)
             {
@@ -53,6 +53,14 @@ namespace ServerOnlineCity.Services
                     }
                 }
             }
+
+            // обновляем словарь Номер чата, индекс последнего полученного сообщения
+            foreach (var v in player.Chats.Values)
+            {
+                v.Value = -1;
+                v.Time = DateTime.MinValue;
+            }
+
             context.Player = player;
 
             return new ModelStatus()

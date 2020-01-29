@@ -4,6 +4,7 @@ using Transfer;
 using Model;
 using ServerOnlineCity.Model;
 using ServerOnlineCity.Common;
+using System.Collections.Generic;
 
 namespace ServerOnlineCity.Services
 {
@@ -12,6 +13,8 @@ namespace ServerOnlineCity.Services
         public int RequestTypePackage => 17;
 
         public int ResponseTypePackage => 18;
+
+        private readonly ChatManager _chatManager = ChatManager.Instance;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
@@ -27,29 +30,55 @@ namespace ServerOnlineCity.Services
             {
                 var res = new ModelUpdateChat()
                 {
-                    Time = DateTime.UtcNow
+                    Time = DateTime.UtcNow,
+                    Chats = new List<Chat>(),
                 };
 
-                //Список игроков кого видим
-                var ps = StaticHelper.PartyLoginSee(context.Player);
+                var myLogin = context.Player.Public.Login;
+                //var maxDateChanged = time.Time;
 
-                //Копируем чат без лишнего и отфильтровываем посты
-                res.Chats = context.Player.Chats
-                    .Select(ct => new Chat()
+                //Список игроков кого видим, а видим мы пока не построили консоль связи всех кто рядом в 10 клетках)
+                // ( ну или мы админ админ, модератор or discord)
+                var ps = StaticHelper.PartyLoginSee(context.Player);
+                //Копируем чат без лишнего и отфильтровываем посты   
+
+                foreach (var chatPair in context.Player.Chats)
+                {
+                    var ct = chatPair.Key;
+                    var resChat = new Chat()
                     {
                         Id = ct.Id,
                         OwnerLogin = ct.OwnerLogin,
                         Name = ct.Name,
                         OwnerMaker = ct.OwnerMaker,
-                        PartyLogin = ct.PartyLogin,
-                        Posts = ct.Posts
-                                .Where(p => p.Time > time.Time)
-                                .Where(p => p.OnlyForPlayerLogin == null && ps.Any(pp => pp == p.OwnerLogin)
-                                    || p.OnlyForPlayerLogin == ct.OwnerLogin)
-                                .ToList()
-                    })
-                    .Where(ct => ct != null)
-                    .ToList();
+                        Posts = new List<ChatPost>(),
+                        LastChanged = ct.LastChanged,
+                    };
+
+                    //Копируем чат без лишнего и отфильтровываем посты          
+                    var ix = chatPair.Value;
+                    var countOfPosts = ct.Posts.Count;
+
+                    for (var i = (int)ix.Value + 1; i < countOfPosts; i++)
+                    {
+                        var post = ct.Posts[i];
+                        if (post.OnlyForPlayerLogin == null && ps.Any(pp => pp == post.OwnerLogin) || post.OnlyForPlayerLogin == myLogin)
+                        {
+                            resChat.Posts.Add(post);
+                        }
+                    }
+
+                    ix.Value = countOfPosts - 1;
+
+                    // Если с с момента последнего изменения изменился список логинов ( добавили или удалили, обновляем список)                    
+                    if (ct.LastChanged > ix.Time)
+                    {
+                        resChat.PartyLogin = ct.PartyLogin;
+                        ix.Time = ct.LastChanged;
+                    }
+
+                    res.Chats.Add(resChat);
+                }
 
                 return res;
             }

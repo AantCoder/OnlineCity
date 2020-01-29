@@ -53,7 +53,9 @@ namespace ServerOnlineCity
                 return false;
             }
 
-            return Context.Player.Chats.Any(ct => ct.Posts.Any(p => p.Time > time));
+            // Для ускорения работы, в момент отправки сообщения пользователю, сохраняем последний отправленный индекс
+            // или Если пользователя кикнули с канала, тогда по дате изменения канала
+            return Context.Player.Chats.Any(ct => ct.Value.Value + 1 < ct.Key.Posts.Count || ct.Key.LastChanged > ct.Value.Time);
         }
 
         internal ModelContainer GetPackage(ModelContainer inputPackage)

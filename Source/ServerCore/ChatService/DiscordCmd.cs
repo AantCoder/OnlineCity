@@ -18,12 +18,19 @@ namespace ServerOnlineCity.ChatService
 
         public string Help => ChatManager.prefix + "discord : Request Discord token";
 
+        private readonly ChatManager _chatManager;
+
+        public DiscordCmd(ChatManager chatManager)
+        {
+            _chatManager = chatManager;
+        }
+
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
             var myLogin = player.Public.Login;
             if ("discord".Equals(myLogin.ToLower()))
             {
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "impossible get information for this user");
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "impossible get information for this user");
             }
 
             if (argsM.Count == 0)
@@ -36,22 +43,22 @@ namespace ServerOnlineCity.ChatService
                     Repository.Get.ChangeData = true;
                 }
 
-                return ChatManager.PostCommandPrivatPostActivChat(0, myLogin, chat, playerServer.DiscordToken.ToString());
+                return _chatManager.PostCommandPrivatPostActivChat(0, myLogin, chat, playerServer.DiscordToken.ToString());
             }
 
             if (!player.Public.Grants.HasFlag(Grants.SuperAdmin))
             {
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "Command only for admin");
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "Command only for admin");
             }
 
             if (argsM[0] == "servertoken")
             {
                 Loger.Log($"User {player.Public.Login} request DiscordServer token");
                 var serverToken = Repository.GetPlayerByLogin("discord").DiscordToken;
-                return ChatManager.PostCommandPrivatPostActivChat(0, myLogin, chat, serverToken.ToString());
+                return _chatManager.PostCommandPrivatPostActivChat(0, myLogin, chat, serverToken.ToString());
             }
 
-            return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.CommandNotFound, myLogin, chat, ChatManager.InvalidCommand);
+            return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.CommandNotFound, myLogin, chat, ChatManager.InvalidCommand);
         }
     }
 }

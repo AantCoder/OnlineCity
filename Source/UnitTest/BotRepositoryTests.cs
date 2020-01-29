@@ -68,7 +68,8 @@ namespace OC.UnitTest
         {
             var res = _sessionClient.PostingChat(1, msg);
             Assert.IsTrue(res.Status == 0);
-            var dc = _sessionClient.UpdateChat(DateTime.UtcNow.AddHours(-1));
+            var ic = new ModelUpdateTime();
+            var dc = _sessionClient.UpdateChat(ic);
             Assert.IsNotNull(dc);
             Assert.IsTrue(dc.Chats[0].OwnerLogin == userName);
 

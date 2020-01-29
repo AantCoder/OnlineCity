@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Transfer;
 using System.Linq;
+using ServerOnlineCity.Services;
 
 namespace ServerOnlineCity.Model
 {
@@ -16,7 +17,6 @@ namespace ServerOnlineCity.Model
 
         //public long VersionNum => long.Parse((Version ?? "0").Where(c => Char.IsDigit(c)).Aggregate("0", (r, i) => r + i));
 
-        //[Obsolete("Перебирать 1000+ пользователей, для поиска одного единственного и не повторимого, не очень хорошая идея, предлагаю подумать")]
         public List<PlayerServer> PlayersAll { get; set; }
 
         [NonSerialized]
@@ -27,14 +27,12 @@ namespace ServerOnlineCity.Model
             PlayersAllDic = new ConcurrentDictionary<string, PlayerServer>(PlayersAll.ToDictionary(p => p.Public.Login));
         }
 
-        public List<ChatPost> ChatPosts { get; set; }
-
         public string WorldSeed { get; set; }
         public int WorldDifficulty { get; set; }
         public int WorldMapSize { get; set; }
         public float WorldPlanetCoverage { get; set; }
         public long MaxServerIdWorldObjectEntry { get; set; }
-        public long MaxIdChat { get; set; }
+        public int MaxIdChat { get; set; }
 
         public int MaxPlayerId { get; set; }
 
@@ -47,23 +45,29 @@ namespace ServerOnlineCity.Model
 
         public BaseContainer()
         {
-            PlayersAll = new List<PlayerServer>()
+            var publicChat = new Chat()
             {
-                new PlayerServer("system")
+                Id = 1,
+                Name = "Public",
+                OwnerLogin = "system",
+                OwnerMaker = false,
+                PartyLogin = new List<string>() { "system" },
+                Posts = new List<ChatPost>(),
+                LastChanged = DateTime.UtcNow,
             };
 
+            MaxIdChat = 1; //Id = 1 Занят на общий чат, 0 - системный приватный чат
+            ChatManager.Instance.NewChatManager(1, publicChat);
+
+            PlayersAll = new List<PlayerServer>()
+            {
+                new PlayerServer("system")               
+            };
+           
             WorldObjects = new List<WorldObjectEntry>();
             WorldObjectsDeleted = new List<WorldObjectEntry>();
             Orders = new List<OrderTrade>();
-            MaxIdChat = 1; //Id = 1 Занят на общий чат, 0 - системный приватный чат
-
-            ChatPosts = new List<ChatPost>();
             VersionNum = MainHelper.VersionNum;
-        }
-
-        public long GetChatId()
-        {
-            return ++MaxIdChat;
         }
 
         public long GetWorldObjectEntryId()
