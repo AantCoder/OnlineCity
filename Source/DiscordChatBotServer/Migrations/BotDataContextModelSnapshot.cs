@@ -34,6 +34,8 @@ namespace OC.DiscordBotServer.Migrations
 
                     b.Property<string>("Token");
 
+                    b.Property<int>("LastRecivedPostIndex");
+
                     b.HasKey("Id");
 
                     b.ToTable("Chanel2Servers");

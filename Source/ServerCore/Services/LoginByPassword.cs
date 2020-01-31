@@ -55,10 +55,13 @@ namespace ServerOnlineCity.Services
             }
 
             // обновляем словарь Номер чата, индекс последнего полученного сообщения
-            foreach (var v in player.Chats.Values)
+            if (packet.Login != "discord")
             {
-                v.Value = -1;
-                v.Time = DateTime.MinValue;
+                foreach (var v in player.Chats.Values)
+                {
+                    v.Value = -1;
+                    v.Time = DateTime.MinValue;
+                }
             }
 
             context.Player = player;

@@ -10,8 +10,7 @@ namespace OCUnion
     /// Базовый класс ClientData независимый от римворлда и Verse 
     /// </summary>
     public class ClientData
-    {
-        public DateTime ChatsTime = DateTime.MinValue;
+    {        
         public DateTime UpdateTime = DateTime.MinValue;
 
         /// <summary>
@@ -57,7 +56,6 @@ namespace OCUnion
 
         public bool ApplyChats(ModelUpdateChat updateDate, ref string newStr)
         {
-            ChatsTime = updateDate.Time;
             int newPost = 0;
             newStr = "";
             if (Chats != null)

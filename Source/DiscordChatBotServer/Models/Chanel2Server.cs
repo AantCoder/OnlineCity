@@ -24,6 +24,11 @@ namespace OC.DiscordBotServer.Models
         public ulong LinkCreator { get; set; }
         public string Token { get; set; }
 
+        /// <summary>
+        /// For request public chat from this index
+        /// </summary>
+        public int LastRecivedPostIndex { get; set; }
+
         public IPEndPoint GetIPEndPoint() => Helper.TryParseStringToIp($"{IP}:{Port}");
     }
 }

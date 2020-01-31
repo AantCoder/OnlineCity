@@ -30,15 +30,11 @@ namespace ServerOnlineCity.ChatService
             if (argsM.Count < 1)
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.SetNameChannel, myLogin, chat, "No new channel name specified");
 
-            var nChat = _chatManager.CreateChat(
-            new Chat()
-            {
-                Name = argsM[0],
-                OwnerLogin = myLogin,
-                OwnerMaker = true,
-                PartyLogin = new List<string>() { myLogin, "system" },
-                LastChanged = DateTime.UtcNow,
-            });
+            var nChat = _chatManager.CreateChat();
+            nChat.Name = argsM[0];
+            nChat.OwnerLogin = myLogin;
+            nChat.OwnerMaker = true;
+            nChat.PartyLogin.Add(myLogin);
 
             nChat.Posts.Add(
                 new ChatPost()

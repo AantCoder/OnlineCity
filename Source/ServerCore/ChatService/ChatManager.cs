@@ -26,11 +26,10 @@ namespace ServerOnlineCity.Services
 
         private int _maxChatId;
 
-        public int GetChatId() 
+        public int GetChatId()
         {
 
-            Interlocked.Increment(ref _maxChatId);
-            return _maxChatId;
+            return Interlocked.Increment(ref _maxChatId);
         }
 
         public Chat PublicChat { get; private set; }
@@ -141,10 +140,14 @@ namespace ServerOnlineCity.Services
         }
 
 
-        public Chat CreateChat(Chat chat)
+        public Chat CreateChat()
         {
-            Interlocked.Increment(ref _maxChatId);
-            chat.Id = _maxChatId;
+            var chat = new Chat()
+            {
+                PartyLogin = new List<string>() { "system" },
+                LastChanged = DateTime.UtcNow,
+                Id = Interlocked.Increment(ref _maxChatId),
+            };
             return chat;
         }
 
@@ -154,22 +157,13 @@ namespace ServerOnlineCity.Services
         /// <param name="login"></param>
         /// <param name="cmd"></param>
         /// <returns></returns>        
-        public static ModelStatus TryGetCmdForUser(string login, string command, out IChatCmd result)
+        public static ModelStatus TryGetCmdForUser(string login, Grants grants, string command, out IChatCmd result)
         {
             result = null;
-            var user = Repository.GetPlayerByLogin(login);
-            if (user == null)
-            {
-                return new ModelStatus()
-                {
-                    Message = $"user for login {login} not found",
-                    Status = (int)ChatCmdResult.UserNotFound,
-                };
-            }
 
             if (ChatManager.ChatCmds.TryGetValue(command, out IChatCmd cmd))
             {
-                if (((int)cmd.GrantsForRun & (int)user.Public.Grants) > 0)
+                if (((int)cmd.GrantsForRun & (int)grants) > 0)
                 {
                     result = cmd;
 
@@ -184,7 +178,7 @@ namespace ServerOnlineCity.Services
                     return new ModelStatus()
                     {
                         Status = (int)ChatCmdResult.AccessDeny,
-                        Message = $"user {user.Public.Login} does not have permission for run " + command,
+                        Message = $"user {login} does not have permission for run " + command,
                     };
                 }
             }

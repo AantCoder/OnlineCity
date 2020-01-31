@@ -24,7 +24,7 @@ namespace Model
 
         public List<ChatPost> Posts = new List<ChatPost>();
 
-        public DateTime LastChanged;
+        public DateTime LastChanged;        
 
         public Chat()
         {

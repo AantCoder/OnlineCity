@@ -34,37 +34,57 @@ namespace OC.DiscordBotServer
 
             int argPos = 0;
 
+            var context = new SocketCommandContext(_discordClient, message);
             // обработка команды явно обращенной к боту. 
             if (message.HasStringPrefix(Program.PX, ref argPos) || message.HasMentionPrefix(_discordClient.CurrentUser, ref argPos))
             {
-                var context = new SocketCommandContext(_discordClient, message);
-
                 var result = await _commands.ExecuteAsync(context, argPos + 1, _services);
                 if (!result.IsSuccess)
                 {
+                    message.Channel.SendMessageAsync(result.ErrorReason);
                     Console.WriteLine(result.ErrorReason);
                 }
 
                 return;
             }
 
-            var id = message.Channel.Id;
+            var idServer = message.Channel.Id;
             // проверяем что сообщение находится в заригестрированном канале, и если да, то обрабатываем его дальше
-            if (!_app.UserOnServers.TryGetValue(message.Channel.Id, out ConcurrentDictionary<ulong, OCUser> users))
+            // check message: typed in registred channel  if not  exit
+
+            if (!_app.UserOnServers.TryGetValue(idServer, out ConcurrentDictionary<ulong, OCUser> users))
             {
                 return;
             }
 
+            var privateChannel = await message.Author.GetOrCreateDMChannelAsync();
             if (!users.TryGetValue(message.Author.Id, out OCUser user))
             {
-                var privateChannel = await message.Author.GetOrCreateDMChannelAsync();
                 // отправим приватное сообщение пользователю что он не зарегистрирован и удалим его сообщение с канала
                 await privateChannel.SendMessageAsync(Translator.InfUserNotFound);
                 await message.DeleteAsync();
                 return;
             }
 
-            // Here may be every commands for a game
+
+            if (_app.DiscrordToOCServer.TryGetValue(idServer, out var sessionClient))
+            {
+                if (!sessionClient.IsLogined)
+                {
+                    await privateChannel.SendMessageAsync(Translator.ErrServerNotAvailable);
+                }
+
+                var res = sessionClient.PostingChat(user.OCLogin, message.Content, message.Id, context.IsPrivate);
+                if (res == null)
+                {
+                    sessionClient.Disconnected("Error ");
+                }
+
+                if (!string.IsNullOrEmpty(res.Message))
+                {
+                    await privateChannel.SendMessageAsync(res.Message);
+                }
+            }
         }
     }
 }

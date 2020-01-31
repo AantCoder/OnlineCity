@@ -26,21 +26,14 @@ namespace OC.DiscordBotServer.Modules
         }
 
         [Command("reg", ignoreExtraArgs: false, RunMode = RunMode.Async)]
-        [Description("Register a new server RimWorldOnlineCity on the Discord channel: " +
+        [Description("{IP_Server} {DiscordToken}" +
+            "\n Register a new server RimWorldOnlineCity on the Discord channel: " +
             "\n type \"/Discord ServerToken\" in Game for get token. Remember! " +
-            "\n Token is Secret! "
-            + Helper.PREFIX + "reg IP_Server DiscordToken")]
+            "\n Token is Secret! Do not say it anybody !")]
         //RU: Регистрирует новый сервер RimWorldOnlineCity на канале Discord: reg IP_server
         public async Task RegAsync(string ip, string token)
         {
-            await ReplyAsync(_regCmd.Execute(Context , ip, token));
-        }
-
-        [Command("killhimplease")]
-        [Description("killhimplease")]
-        public async Task KillmyallpleaseAsync()
-        {
-            await ReplyAsync("This command apply only in Game");
+            await ReplyAsync(_regCmd.Execute(Context, ip, token));
         }
     }
 }

@@ -48,6 +48,29 @@ namespace ServerOnlineCity.Services
                 };
             }
 
+            Grants acceptedGrants;
+            PlayerServer player;
+            // обработка команд чата 
+            if ("discord".Equals(context.Player.Public.Login.ToLower()))
+            {
+                player = Repository.GetPlayerByLogin(pc.Owner);
+                if (player == null)
+                {
+                    return new ModelStatus()
+                    {
+                        Status = (int)ChatCmdResult.UserNotFound,
+                        Message = $"user {pc.Owner} not found",
+                    };
+                }
+
+                acceptedGrants = context.Player.Public.Grants & player.Public.Grants;
+            }
+            else
+            {
+                player = context.Player;
+                acceptedGrants = player.Public.Grants;
+            }
+
             if (pc.Message[0] == '/')
             {
                 var s = pc.Message.Split(new char[] { ' ' }, 2);
@@ -56,28 +79,11 @@ namespace ServerOnlineCity.Services
                 //разбираем аргументы в кавычках '. Удвоенная кавычка указывает на её символ.
                 var argsM = SplitBySpace(args);
 
-                PlayerServer player;
-                // обработка команд чата 
-                if ("discord".Equals(context.Player.Public.Login.ToLower()))
-                {
-                    player = Repository.GetPlayerByLogin(pc.Owner);
-                    if (player == null)
-                    {
-                        return new ModelStatus()
-                        {
-                            Status = (int)ChatCmdResult.UserNotFound,
-                            Message = $"user {pc.Owner} not found",
-                        };
-                    }
-                }
-                else
-                {
-                    player = context.Player;
-                }
-
-                var result = ChatManager.TryGetCmdForUser(player.Public.Login, command, out IChatCmd cmd);
+                var result = ChatManager.TryGetCmdForUser(player.Public.Login, acceptedGrants, command, out IChatCmd cmd);
                 if (result.Status > 0)
                     return result;
+
+                // аdditionally check Grants for DiscordUser: some commands for example: create chat, get token doesn't permitted from discord
 
                 return cmd.Execute(ref player, chat, argsM);
             }
@@ -90,7 +96,8 @@ namespace ServerOnlineCity.Services
                 {
                     Time = timeNow,
                     Message = mmsg,
-                    OwnerLogin = context.Player.Public.Login
+                    OwnerLogin = player.Public.Login,
+                    DiscordIdMessage = pc.IdDiscordMsg,
                 });
             }
 

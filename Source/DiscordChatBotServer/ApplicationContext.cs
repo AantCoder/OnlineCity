@@ -41,7 +41,7 @@ namespace OC.DiscordBotServer
             }
         }
 
-        public OCUser GetOCUser(ulong idChannel, ulong idUser)
+        public OCUser TryGetOCUser(ulong idChannel, ulong idUser)
         {
             if (!UserOnServers.TryGetValue(idChannel, out ConcurrentDictionary<ulong, OCUser> OCUsers))
             {

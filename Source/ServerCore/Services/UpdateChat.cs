@@ -35,7 +35,6 @@ namespace ServerOnlineCity.Services
                 };
 
                 var myLogin = context.Player.Public.Login;
-                //var maxDateChanged = time.Time;
 
                 //Список игроков кого видим, а видим мы пока не построили консоль связи всех кто рядом в 10 клетках)
                 // ( ну или мы админ админ, модератор or discord)
