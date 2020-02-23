@@ -69,7 +69,7 @@ namespace RimWorldOnlineCity
             //кнопки
             var ev = Event.current;
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 3, buttonYStart, btnSize.x, btnSize.y), "OCity_LoginForm_BtnEnter".Translate())
-                || ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
+                || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
             {
                 var msgError = SessionClientController.Login(InputAddr, InputLogin, InputPassword);
                 if (msgError == null)

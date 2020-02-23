@@ -72,7 +72,7 @@ namespace RimWorldOnlineCity
 
             var ev = Event.current;
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 2, buttonYStart, btnSize.x, btnSize.y), "OCity_Dialog_Registration_BtnReg".Translate())
-                || ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
+                || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
             {
                 if (InputAddr.Length > 2 && InputLogin.Length > 2 && InputPassword.Length > 2)
                 {

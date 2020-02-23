@@ -310,8 +310,14 @@ namespace RimWorldOnlineCity.UI
                             OrdersMenu.Add(rect2t, "OCity_Dialog_Exchenge_Location".Translate());
                         }
                         currentWidth -= 200f;
-                        var text = (item.Place.DayPath > 0 ? item.Place.DayPath.ToStringDecimalIfSmall() + "OCity_Dialog_Exchenge_Days".Translate() : "")
-                            + "OCity_Dialog_Exchenge_In".Translate() + item.Place.Name;
+
+                        string text = "";
+                        if (item.Place.DayPath > 0)
+                        {
+                            text = item.Place.DayPath.ToStringDecimalIfSmall() + "OCity_Dialog_Exchenge_Days".Translate();
+                        }
+                        text += "OCity_Dialog_Exchenge_In".Translate() + item.Place.Name;
+
                         TooltipHandler.TipRegion(rect2, "OCity_Dialog_Exchenge_Location_Goods".Translate() + Environment.NewLine + text);
                         Widgets.Label(rect2, text);
 
@@ -1050,10 +1056,16 @@ namespace RimWorldOnlineCity.UI
                 xr -= textCntW;
                 rect3 = new Rect(xr, rect.y, textCntW, 24f);
                 TooltipHandler.TipRegion(rect3, "OCity_Dialog_Exchenge_QualityNo_Less_Than".Translate() + ((QualityCategory)th.Quality).GetLabel());
-                Widgets.Label(rect3, th.Quality == 0
-                    ? "OCity_Dialog_Exchenge_All".Translate()
-                    : ((QualityCategory)th.Quality).GetLabelShort() + "+"
-                    );
+                string t;
+                if (th.Quality == 0)
+                {
+                    t = "OCity_Dialog_Exchenge_All".Translate();
+                }
+                else 
+                {
+                    t = ((QualityCategory)th.Quality).GetLabelShort() + "+";
+                }                    
+                Widgets.Label(rect3,t);
             }
         }
 

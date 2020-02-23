@@ -624,7 +624,9 @@ namespace RimWorldOnlineCity
                 GameStarter.SetPlanetCoverage,
                 GameStarter.SetSeed,
                 GameStarter.SetOverallRainfall,
-                GameStarter.SetOverallTemperature);
+                GameStarter.SetOverallTemperature,
+                OverallPopulation.Little
+                );
 
             Loger.Log("Client InitConnected() ExistMap3");
             //после создания мира запускаем его обработку, загружаем поселения др. игроков

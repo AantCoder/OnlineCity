@@ -46,7 +46,7 @@ namespace RimWorldOnlineCity.Services
             if (modsResCheck.Files.Count > 0)
             {
                 result = result | ApproveLoadWorldReason.ModsFilesFail;
-                FileChecker.FileSynchronization(GenFilePaths.CoreModsFolderPath, modsResCheck);
+                FileChecker.FileSynchronization(GenFilePaths.ModsFolderPath, modsResCheck);
             }
 
             if (steamCheck.Files.Count > 0)
@@ -69,9 +69,9 @@ namespace RimWorldOnlineCity.Services
             Loger.Log("Start Hash:" + modsFileName);
             Loger.Log("Start Hash:" + steamFileName);
             // может быть есть лучше вариант, как указать папку модов со steam ???
-            SteamFolder = GenFilePaths.CoreModsFolderPath.Replace("common\\RimWorld\\Mods", "workshop\\content\\294100");
+            SteamFolder = GenFilePaths.ModsFolderPath.Replace("common\\RimWorld\\Mods", "workshop\\content\\294100");
             Loger.Log("GenFilePaths.ModsConfigFilePath = " + GenFilePaths.ModsConfigFilePath);
-            if (SteamFolder.Equals(GenFilePaths.CoreModsFolderPath) || !Directory.Exists(SteamFolder))
+            if (SteamFolder.Equals(GenFilePaths.ModsFolderPath) || !Directory.Exists(SteamFolder))
             {
                 var steamFolder = Path.Combine(SessionClientController.ConfigPath, "workshop");
                 Log.Message($"Directory {SteamFolder} not found, using {steamFolder}");
@@ -89,8 +89,8 @@ namespace RimWorldOnlineCity.Services
 
             CheckHashModsThread = new Thread(() =>
            {
-               Loger.Log($"GenerateHashFiles {GenFilePaths.CoreModsFolderPath}");
-               ClientHashChecker.ModsFiles = FileChecker.GenerateHashFiles(GenFilePaths.CoreModsFolderPath, modsListFolder);
+               Loger.Log($"GenerateHashFiles {GenFilePaths.ModsFolderPath}");
+               ClientHashChecker.ModsFiles = FileChecker.GenerateHashFiles(GenFilePaths.ModsFolderPath, modsListFolder);
                Loger.Log($"GenerateHashFiles {SteamFolder}");
                ClientHashChecker.SteamFiles = FileChecker.GenerateHashFiles(SteamFolder, steamListFolder);               
            });

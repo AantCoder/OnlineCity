@@ -165,10 +165,11 @@ namespace RimWorldOnlineCity
 
                 Text.Font = GameFont.Small;
                 var loginRect = new Rect(inRect.width - 180f, -2f, 180f, 50f);
+
                 Widgets.Label(loginRect, SessionClientController.Data.LastServerConnectFail
                     ? "OCity_Dialog_Connecting".Translate()
                     : "OCity_Dialog_Login".Translate() + SessionClientController.My.Login
-                        + " " + (int)SessionClientController.Data.Ping.TotalMilliseconds + "ms");
+                        + new TaggedString(" ") + (int)SessionClientController.Data.Ping.TotalMilliseconds + new TaggedString("ms"));
             }
             catch (Exception e)
             {
@@ -454,10 +455,10 @@ namespace RimWorldOnlineCity
                         }
 
                         var ev = Event.current;
-                        if (ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return
+                        if (ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return
                             || rrcklick)
-                        {
-                            SoundDefOf.RadioButtonClicked.PlayOneShotOnCamera();
+                        {                            
+                            //SoundDefOf.RadioButtonClicked.PlayOneShotOnCamera();
                             SessionClientController.Command((connect) =>
                             {
                                 connect.PostingChat(selectCannal.Id, ChatInputText);
