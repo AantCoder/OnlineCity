@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using Verse;
 using OCUnion;
+using OCUnion.Transfer.Model;
 
 namespace Model
 {
@@ -55,6 +56,8 @@ namespace Model
         /// Прогресс роста. Используется только при переносе объектов (CreateThing CreateTrade)
         /// </summary>
         public float Growth { get; set; }
+
+        public IntVec3S Position { get; set; }
 
         /// <summary>
         /// У нас этого нет, невозможно продать. Вычисляется функцией ExchengeUtils.ChechToSell
@@ -210,6 +213,7 @@ namespace Model
             //WornByCorpse
             //Rotation
             //Growth
+            //Position
 
             return that;
         }
@@ -248,17 +252,21 @@ namespace Model
             Plant thingP = thing as Plant;
             if (thingP != null) that.Growth = thingP.Growth;
 
+            that.Position = new IntVec3S(thing.Position);
+
             return that;
         }
 
-        public Thing CreateThing()
+        public override Thing CreateThing(bool useOriginalID = false, int stackCount = 0)
         {
+            //useOriginalID не используется.
+
             var def = (ThingDef)GenDefDatabase.GetDef(typeof(ThingDef), DefName);
             var stuffDef = !string.IsNullOrEmpty(StuffName) ? (ThingDef)GenDefDatabase.GetDef(typeof(ThingDef), StuffName) : null;
             Thing thing = !string.IsNullOrEmpty(StuffName)
                 ? ThingMaker.MakeThing(def, stuffDef)
                 : ThingMaker.MakeThing(def);
-            thing.stackCount = Count;
+            thing.stackCount = stackCount > 0 ? stackCount : Count;
 
             if (HitPoints > 0) thing.HitPoints = HitPoints;
 
@@ -283,6 +291,8 @@ namespace Model
 
             Plant thingP = thing as Plant;
             if (thingP != null) thingP.Growth = Growth;
+
+            thing.Position = Position.Get();
 
             return thing;
         }

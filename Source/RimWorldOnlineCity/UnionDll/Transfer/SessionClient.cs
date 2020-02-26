@@ -178,9 +178,12 @@ namespace Transfer
                 var time4 = DateTime.UtcNow;
 
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
-                var res = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
 
                 var time5 = DateTime.UtcNow;
+
+                var res = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
+
+                var time6 = DateTime.UtcNow;
                 if (rec.Length > 1024 * 512) Loger.Log($"Client Network fromS {rec.Length} unzip {GZip.LastSizeObj} ");
 
                 if ((time5 - time1).TotalMilliseconds > 900)
@@ -188,7 +191,8 @@ namespace Transfer
                     Loger.Log($"Client Network timeSerialize {(time2 - time1).TotalMilliseconds}" +
                         $" timeSend {(time3 - time2).TotalMilliseconds}" +
                         $" timeReceive {(time4 - time3).TotalMilliseconds}" +
-                        $" timeDeserialize {(time5 - time4).TotalMilliseconds}");
+                        $" timeDecrypt {(time5 - time4).TotalMilliseconds}" +
+                        $" timeDeserialize {(time6 - time5).TotalMilliseconds}");
                 }
 
                 return res;

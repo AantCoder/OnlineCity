@@ -23,6 +23,8 @@ namespace Model
 
         public List<AttackPawnCommand> UpdateCommand { get; set; }
 
+        public List<int> NeedNewThingIDs { get; set; }
+
         public TimeSpan SetPauseOnTimeToHost { get; set; }
 
         public bool VictoryHostToHost { get; set; }

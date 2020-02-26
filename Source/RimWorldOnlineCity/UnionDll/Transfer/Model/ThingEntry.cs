@@ -61,7 +61,7 @@ namespace Model
             Data = gx.ToXml(thing);
         }
 
-        public virtual Thing CreateThing(bool useOriginalID, int stackCount = 0)
+        public virtual Thing CreateThing(bool useOriginalID = false, int stackCount = 0)
         {
             var gx = new GameXMLUtils();
             Thing thing = gx.FromXml<Thing>(Data);

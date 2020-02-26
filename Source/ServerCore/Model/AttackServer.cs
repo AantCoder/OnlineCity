@@ -48,23 +48,34 @@ namespace ServerOnlineCity.Model
 
         public List<ThingEntry> NewPawns { get; set; }
         public List<int> NewPawnsId { get; set; }
-        public List<ThingEntry> NewThings { get; set; }
+        public List<ThingTrade> NewThings { get; set; }
         public List<int> NewThingsId { get; set; }
+        public List<AttackCorpse> NewCorpses { get; set; }
         public List<int> Delete { get; set; }
         public Dictionary<int, AttackThingState> UpdateState { get; set; }
         public Dictionary<int, AttackPawnCommand> UpdateCommand { get; set; }
+        public HashSet<int> NeedNewThingIDs { get; set; }
 
         public DateTime? SetPauseOnTimeToHost { get; set; }
         public DateTime StartTime { get; set; }
+        public DateTime CreateTime { get; set; }
         public bool VictoryHostToHost { get; set; }
 
         private object SyncObj = new Object();
 
         public string New(PlayerServer player, PlayerServer hostPlayer, AttackInitiatorToSrv fromClient, bool testMode)
         {
-            if (!player.Online || !hostPlayer.Online) return "Attack not possible: player offline";
+            if (!player.Online || !hostPlayer.Online)
+            {
+                Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} canceled: Attack not possible: player offline");
+                return "Attack not possible: player offline";
+            }
             var err = AttackUtils.CheckPossibilityAttack(player, hostPlayer, fromClient.InitiatorPlaceServerId, fromClient.HostPlaceServerId);
-            if (err != null) return err;
+            if (err != null)
+            {
+                Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} canceled: {err}");
+                return err;
+            }
 
             TestMode = testMode;
             Attacker = player;
@@ -79,11 +90,15 @@ namespace ServerOnlineCity.Model
 
             NewPawns = new List<ThingEntry>();
             NewPawnsId = new List<int>();
-            NewThings = new List<ThingEntry>();
+            NewThings = new List<ThingTrade>();
             NewThingsId = new List<int>();
+            NewCorpses = new List<AttackCorpse>();
             Delete = new List<int>();
             UpdateState = new Dictionary<int, AttackThingState>();
             UpdateCommand = new Dictionary<int, AttackPawnCommand>();
+            NeedNewThingIDs = new HashSet<int>();
+
+            CreateTime = DateTime.UtcNow;
 
             Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} New");
             return null;
@@ -94,7 +109,9 @@ namespace ServerOnlineCity.Model
             //Loger.Log($"Server AttackOnlineHost RequestHost State: {State} -> {fromClient.State}");
             lock (SyncObj)
             {
-                if (CheckConnect(false))
+                //первые 5 минут не проверяем на отключения, т.к. загрузка может быть долгой (а дисконектит уже после 10 сек)
+                if ((fromClient.State == 10 || (DateTime.UtcNow - CreateTime).TotalSeconds > 8*60)
+                    && CheckConnect(false))
                 {
                     return new AttackHostFromSrv()
                     {
@@ -124,12 +141,12 @@ namespace ServerOnlineCity.Model
 
                 if (fromClient.State == 4)
                 {
-                    State = 4;
                     MapSize = fromClient.MapSize;
                     TerrainDefNameCell = fromClient.TerrainDefNameCell;
                     TerrainDefName = fromClient.TerrainDefName;
                     Thing = fromClient.Thing;
                     ThingCell = fromClient.ThingCell;
+                    State = 4;
                     return new AttackHostFromSrv()
                     {
                         State = State,
@@ -154,6 +171,7 @@ namespace ServerOnlineCity.Model
 
                     if (fromClient.NewPawnsId.Count > 0
                         || fromClient.NewThingsId.Count > 0
+                        || fromClient.NewCorpses.Count > 0
                         || fromClient.Delete.Count > 0)
                     {
                         //удаляем из Delete если сейчас команда добавитьс таким id
@@ -165,6 +183,11 @@ namespace ServerOnlineCity.Model
                         foreach (var n in fromClient.NewThingsId)
                         {
                             var index = Delete.IndexOf(n);
+                            if (index >= 0) Delete.RemoveAt(index);
+                        }
+                        foreach (var corps in fromClient.NewCorpses)
+                        {
+                            var index = Delete.IndexOf(corps.CorpseId);
                             if (index >= 0) Delete.RemoveAt(index);
                         }
 
@@ -181,10 +204,26 @@ namespace ServerOnlineCity.Model
                             NewThingsId.Add(fromClient.NewThingsId[i]);
                             NewThings.Add(fromClient.NewThings[i]);
                         }
+                        for (int i = 0; i < NewCorpses.Count; i++)
+                        {
+                            if (fromClient.NewCorpses.Any(c => c.PawnId == NewCorpses[i].PawnId || c.CorpseId == NewCorpses[i].CorpseId))
+                            {
+                                NewCorpses.RemoveAt(i--);
+                            }
+                        }
+                        for (int i = 0; i < fromClient.NewCorpses.Count; i++)
+                        {
+                            NewCorpses.Add(fromClient.NewCorpses[i]);
+                        }
                         for (int i = 0; i < fromClient.Delete.Count; i++)
                         {
                             if (Delete.Contains(fromClient.Delete[i])) continue;
                             Delete.Add(fromClient.Delete[i]);
+                        }
+                        for (int i = 0; i < fromClient.NewCorpses.Count; i++)
+                        {
+                            if (Delete.Contains(fromClient.NewCorpses[i].PawnId)) continue;
+                            Delete.Add(fromClient.NewCorpses[i].PawnId);
                         }
 
                         //на всякий случай корректируем: удаляем из добавляемых те, что на удаление
@@ -201,6 +240,14 @@ namespace ServerOnlineCity.Model
                             {
                                 NewThingsId.RemoveAt(index);
                                 NewThings.RemoveAt(index);
+                            }
+
+                            for (int i = 0; i < NewCorpses.Count; i++)
+                            {
+                                if (n == NewCorpses[i].CorpseId)
+                                {
+                                    NewCorpses.RemoveAt(i--);
+                                }
                             }
                         }
                     }
@@ -220,11 +267,13 @@ namespace ServerOnlineCity.Model
                     {
                         State = State,
                         UpdateCommand = UpdateCommand.Values.ToList(),
+                        NeedNewThingIDs = NeedNewThingIDs.ToList(),
                         SetPauseOnTime = SetPauseOnTimeToHost == null ? DateTime.MinValue : SetPauseOnTimeToHost.Value,
                         VictoryHost = VictoryHostToHost
                     };
 
                     UpdateCommand = new Dictionary<int, AttackPawnCommand>();
+                    NeedNewThingIDs = new HashSet<int>();
 
                     if (SetPauseOnTimeToHost != null) Loger.Log("Server Send SetPauseOnTimeToHost=" + SetPauseOnTimeToHost.Value.ToGoodUtcString());
 
@@ -244,7 +293,9 @@ namespace ServerOnlineCity.Model
         {
             lock (SyncObj)
             {
-                if (CheckConnect(true))
+                //первые 5 минут не проверяем на отключения, т.к. загрузка может быть долгой (а дисконектит уже после 10 сек)
+                if ((fromClient.State == 10 || (DateTime.UtcNow - CreateTime).TotalSeconds > 8 * 60)
+                    && CheckConnect(true))
                 { 
                     return new AttackInitiatorFromSrv()
                     {
@@ -273,7 +324,7 @@ namespace ServerOnlineCity.Model
                     //После передачи своих пешек, в ответ передаются данные карты и начинается её длительное создание
                     //в это время включаем на хосте обязательную паузу
                     //После загрузки пауза обновлется на 1 минуту, чтобы атакующий огляделся (ищи SetPauseOnTimeToHost в GameAttacker)
-                    SetPauseOnTimeToHost = DateTime.UtcNow.AddMinutes(5);
+                    SetPauseOnTimeToHost = DateTime.UtcNow.AddMinutes(8);
                     Loger.Log("Server Set 1 SetPauseOnTimeToHost=" + SetPauseOnTimeToHost.Value.ToGoodUtcString());
 
                     return new AttackInitiatorFromSrv()
@@ -331,6 +382,15 @@ namespace ServerOnlineCity.Model
                         }
                     }
 
+                    if (fromClient.NeedNewThingIDs != null && fromClient.NeedNewThingIDs.Count > 0)
+                    {
+                        //объединяем
+                        for (int i = 0; i < fromClient.NeedNewThingIDs.Count; i++)
+                        {
+                            NeedNewThingIDs.Add(fromClient.NeedNewThingIDs[i]);
+                        }
+                    }
+
                     var res = new AttackInitiatorFromSrv()
                     {
                         State = State,
@@ -338,6 +398,7 @@ namespace ServerOnlineCity.Model
                         NewPawnsId = NewPawnsId,
                         NewThings = NewThings,
                         NewThingsId = NewThingsId,
+                        NewCorpses = NewCorpses,
                         Delete = Delete,
                         UpdateState = UpdateState.Values.ToList(),
                         Finishing = VictoryAttacker != null,
@@ -345,8 +406,9 @@ namespace ServerOnlineCity.Model
                     };
                     NewPawns = new List<ThingEntry>();
                     NewPawnsId = new List<int>();
-                    NewThings = new List<ThingEntry>();
+                    NewThings = new List<ThingTrade>();
                     NewThingsId = new List<int>();
+                    NewCorpses = new List<AttackCorpse>();
                     Delete = new List<int>();
                     UpdateState = new Dictionary<int, AttackThingState>();
 
@@ -374,6 +436,7 @@ namespace ServerOnlineCity.Model
         private bool CheckConnect(bool attacker)
         {
             bool fail = false;
+            bool asTestMode = TestMode;
             string logDet;
             if (attacker)
             {
@@ -390,14 +453,24 @@ namespace ServerOnlineCity.Model
                 }
                 logDet = " (is host)";
             }
+            if (!fail)
+            {
+                if (State < 10 && (DateTime.UtcNow - CreateTime).TotalSeconds > 8 * 60)
+                {
+                    fail = true;
+                    asTestMode = true;
+                    logDet = " Loading too long.";
+                }
+            }
 
             if (fail)
             {
                 var data = Repository.GetData;
 
-                if (TestMode)
+                if (asTestMode)
                 {   //При тестовом режиме всех участников отключаем
-                    Loger.Log("Server AttackServer Fail TestMode" + logDet);
+                    if (TestMode) Loger.Log("Server AttackServer Fail and back. TestMode" + logDet);
+                    else Loger.Log("Server AttackServer Fail and back. " + logDet);
 
                     //команда хосту
                     var packet = new ModelMailTrade()
@@ -554,7 +627,7 @@ namespace ServerOnlineCity.Model
             return fail;
         }
 
-        private void Finish()
+        public void Finish()
         {
             Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} Finish StartTime sec = " 
                 + (StartTime == DateTime.MinValue ? "-" : (DateTime.UtcNow - StartTime).TotalSeconds.ToString())

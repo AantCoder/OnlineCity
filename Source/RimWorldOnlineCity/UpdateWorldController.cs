@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Transfer;
 using Verse;
 
@@ -272,10 +273,38 @@ namespace RimWorldOnlineCity
                 var map = (worldObject as Settlement).Map;
                 if (map != null)
                 {
-                    worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
+                    try
+                    {
+                        worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
+                    }
+                    catch
+                    {
+                        Thread.Sleep(100);
+                        worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
+                    }
 
                     worldObjectEntry.MarketValuePawn = 0;
-                    foreach (Pawn current in map.mapPawns.FreeColonists.ToList())
+                    //тут была ошибка из-за изменения списка колонистов
+                    List<Pawn> ps;
+                    try
+                    {
+                        ps = map.mapPawns.FreeColonists.ToList();
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            Thread.Sleep(2);
+                            ps = map.mapPawns.FreeColonists.ToList();
+                        }
+                        catch(Exception exp)
+                        {
+                            Loger.Log("Client Exception UpdateWorldController GetWorldObjectEntry 3: " + exp.Message);
+                            Thread.Sleep(200);
+                            ps = map.mapPawns.FreeColonists.ToList();
+                        }
+                    }
+                    foreach (Pawn current in ps)
                     {
                         worldObjectEntry.MarketValuePawn += current.MarketValue;
                     }

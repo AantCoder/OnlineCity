@@ -424,10 +424,11 @@ namespace RimWorldOnlineCity
             return SpawnList(map, pawns, true, (p) => true, spawn, (p) => nextCell());
         }
 
-        public static IntVec3 SpawnList(Map map, List<ThingEntry> pawns, bool attackCell
-            , Func<ThingEntry, bool> getPirate
-            , Action<Thing, ThingEntry> spawn = null
+        public static IntVec3 SpawnList<TE>(Map map, List<TE> pawns, bool attackCell
+            , Func<TE, bool> getPirate
+            , Action<Thing, TE> spawn = null
             , Func<Thing, IntVec3> getCell = null)
+            where TE : ThingEntry
         {
             if (MainHelper.DebugMode) Loger.Log("SpawnList...");
 
@@ -450,7 +451,8 @@ namespace RimWorldOnlineCity
                     var cell = getCell != null ? getCell(thin) : thin.Position;
                     if (i == 0) ret = cell;
 
-                    if (MainHelper.DebugMode) try { Loger.Log("Spawn... " + thin.Label); } catch { Loger.Log("Spawn... "); }
+                    //if (MainHelper.DebugMode) 
+                    try { Loger.Log("Spawn... " + thin.Label); } catch { Loger.Log("Spawn... "); }
                     if (thin is Pawn)
                     {
                         if (MainHelper.DebugMode) Loger.Log("Pawn... " + thin.Position.x + " " + thin.Position.y);
@@ -526,7 +528,7 @@ namespace RimWorldOnlineCity
             Find.WorldPawns.RemovePawn(pawn); //не проверенное полное удаление, чтобы не появлялось клонов пешки после возврата её назад
         }
 
-        public static void ApplyState(Thing thing, AttackThingState state)
+        public static void ApplyState(Thing thing, AttackThingState state, bool pawnHealthStateDead = false)
         {
             //полезное из игры: RecoverFromUnwalkablePositionOrKill
             if (state.StackCount > 0 && thing.stackCount != state.StackCount)
@@ -565,7 +567,7 @@ namespace RimWorldOnlineCity
                     thing.HitPoints = state.HitPoints;
                 }
             }
-
+            
             if (thing is Pawn)
             {
                 var pawn = thing as Pawn;
@@ -577,15 +579,18 @@ namespace RimWorldOnlineCity
                     }
                     else if (state.DownState == AttackThingState.PawnHealthState.Dead)
                     {
-                        Loger.Log("Client ApplyState Set pawn state (1): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
-                        HealthUtility.DamageUntilDead(pawn);
-                        //PawnKill(pawn);
+                        if (pawnHealthStateDead)
+                        {
+                            Loger.Log("Client ApplyState Set pawn state (1): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
+                            HealthUtility.DamageUntilDead(pawn);
+                            //PawnKill(pawn);
+                        }
                     }
                     else if (state.DownState == AttackThingState.PawnHealthState.Down)
                     {
                         Loger.Log("Client ApplyState Set pawn state (2): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
                         //todo! Применяем наркоз?
-                        HealthUtility.DamageUntilDowned(pawn, true);
+                        HealthUtility.DamageUntilDowned(pawn, false);
                     }
                     else
                     {

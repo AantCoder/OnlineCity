@@ -40,8 +40,11 @@ namespace ServerOnlineCity.Services
                 };
             }
 
+            //действия перед входом
             player.ExitReason = OCUnion.Transfer.DisconnectReason.AllGood;
             player.ApproveLoadWorldReason = OCUnion.Transfer.Types.ApproveLoadWorldReason.LoginOk;
+            //отмена атаки, если оба участника были отключены одновременно
+            if (player.AttackData != null) player.AttackData.Finish();
             //удаление всех писем с командой на перезагрузку
             if (player.Mails != null)
             {

@@ -80,6 +80,7 @@
     <Compile Include="Loger.cs" />
     <Compile Include="Transfer\ConnectSaver.cs" />
     <Compile Include="Transfer\FolderTree.cs" />
+    <Compile Include="Transfer\Model\AttackCorpse.cs" />
     <Compile Include="Transfer\Model\IPlayerEx.cs" />
     <Compile Include="Transfer\Model\ModelFileInfo.cs" />
     <Compile Include="Transfer\Types\ApproveLoadWorldReason.cs" />

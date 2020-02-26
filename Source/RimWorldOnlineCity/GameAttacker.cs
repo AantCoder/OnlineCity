@@ -69,11 +69,27 @@ namespace RimWorldOnlineCity
         /// Команды отданые игроком для отправки
         /// </summary>
         private Dictionary<int, AttackPawnCommand> ToSendCommand { get; set; }
+
+        /* NewCorpses
         /// <summary>
         /// Для пешек которым прикла команда на удаление идет задержка перед удалением на 1 цикл
         /// Если в этом же или следующем пакете придет кодманда создать труп из пешки, то команда станет не актуальной
         /// </summary>
         private List<Thing> DelayDestroyPawn { get; set; }
+        */
+        /// <summary>
+        /// Проверить действительно ли объект должен быть удален, если нет, то запросить его снова.
+        /// </summary>
+        private Dictionary<int, Thing> CheckDestroy { get; set; }
+
+        /// <summary>
+        /// Проверить действительно ли объект должен быть удален, если нет, то запросить его снова.
+        /// Для трупов не проверять
+        /// </summary>
+        private Dictionary<int, Thing> CheckSpawn { get; set; }
+
+        private bool CheckSpawnDestroyDisable { get; set; }
+        private Object CheckSpawnDestroySunc { get; set; } = new Object();
 
         /// <summary>
         /// Истина, когда атакующий сдается. Флаг для передачи хосту и начала завершения
@@ -111,6 +127,11 @@ namespace RimWorldOnlineCity
                     InitiatorPlaceServerId = UpdateWorldController.GetServerInfo(caravan).ServerId,
                     TestMode = testMode,
                 });
+                if (!string.IsNullOrEmpty(res.ErrorText))
+                {
+                    ErrorBreak(res.ErrorText);
+                    return;
+                }
                 if (!string.IsNullOrEmpty(connect.ErrorMessage))
                 {
                     ErrorBreak(connect.ErrorMessage);
@@ -176,6 +197,7 @@ namespace RimWorldOnlineCity
                 }
                 Find.TickManager.Pause();
                 GameAttackTrigger_Patch.ForceSpeed = 0f;
+                Loger.Log($"Client StartCreateClearMap 0 TerrainCell={response.TerrainDefNameCell.Count} Thing={response.ThingCell.Count}");
                 CreateClearMap(attackedBase.Tile, response.MapSize.Get(), (map, mapParent) =>
                 {
                     GameMap = map;
@@ -200,7 +222,9 @@ namespace RimWorldOnlineCity
                     ThingsObjDic = new Dictionary<int, Thing>();
                     AttackerPawns = new Dictionary<Pawn, int>();
                     ToSendCommand = new Dictionary<int, AttackPawnCommand>();
-                    DelayDestroyPawn = new List<Thing>();
+                    //DelayDestroyPawn = new List<Thing>();   NewCorpses
+                    CheckDestroy = new Dictionary<int, Thing>();
+                    CheckSpawn = new Dictionary<int, Thing>();
                     for (int i = 0; i < response.ThingCell.Count; i++)
                     {
                         var current = response.ThingCell[i].Get();
@@ -233,6 +257,28 @@ namespace RimWorldOnlineCity
             });
         }
 
+        private Thing GetThingByHostId(int hostid)
+        {
+            Thing thing = null;
+            int id;
+            if (!ThingsIDDicRev.TryGetValue(hostid, out id))
+            {
+                Loger.Log("Client GetThingByHostId Err1 " + hostid.ToString());
+                return null;
+            }
+
+            if (!ThingsObjDic.TryGetValue(id, out thing))
+            {
+                Loger.Log("Client GetThingByHostId Err2 " + hostid.ToString() + " id=" + id.ToString());
+                return null;
+            }
+            if (thing == null)
+            {
+                Loger.Log("Client GetThingByHostId Err3 " + hostid.ToString() + " id=" + id.ToString());
+            }
+            return thing;
+        }
+
         private void DestroyThing(Thing thing, int hostId = 0)
         {
             var id = thing.thingIDNumber;
@@ -240,7 +286,24 @@ namespace RimWorldOnlineCity
                 ThingsIDDicRev.Remove(hostId);
             ThingsIDDic.Remove(id);
             ThingsObjDic.Remove(id);
-            thing.Destroy();
+            CheckDestroy.Remove(id);
+            try
+            {
+                thing.Destroy();
+            }
+            catch (Exception ext)
+            {
+                Loger.Log("Client AttackUpdate DestroyThing Exception1 " + ext.ToString());
+                Thread.Sleep(5);
+                try
+                {
+                    if (thing.Spawned) thing.Destroy();
+                }
+                catch (Exception ext2)
+                {
+                    Loger.Log("Client AttackUpdate DestroyThing Exception2 " + ext2.ToString());
+                }
+            }
         }
 
         /// <summary>
@@ -249,16 +312,16 @@ namespace RimWorldOnlineCity
         /// <param name="msg"></param>
         private void ErrorBreak(string msg)
         {
-            Loger.Log("Client GameAttack error" + msg);
+            Loger.Log("Client GameAttack error " + msg);
 
             SessionClientController.Disconnected("OCity_GameAttacker_Dialog_ErrorMessage".Translate());
             /*
             if (AttackerPawns != null && AttackerPawns.Count > 0) Finish(false);
             Find.WindowStack.Add(new Dialog_Message("OCity_GameAttacker_Dialog_ErrorMessage".Translate(), msg, null, () => { }));
             */
-        }
+    }
 
-        private List<ThingEntry> GetPawnsAndDeleteCaravan(Caravan caravan)
+    private List<ThingEntry> GetPawnsAndDeleteCaravan(Caravan caravan)
         {
 
             var select = caravan.PawnsListForReading.ToList();
@@ -303,7 +366,6 @@ namespace RimWorldOnlineCity
                         , () => { }
                         , null
                     );
-
                 }
 
                 if (InTimer) return;
@@ -328,6 +390,41 @@ namespace RimWorldOnlineCity
                     var errNums = "1 ";
                     try
                     {
+                        Loger.Log($"Client AttackUpdate 1");
+                        //удаляем объекты которые созданы игрой а не нами
+                        List<int> needNewThings = new List<int>();
+                        CheckSpawnDestroyDisable = true;
+                        lock (CheckSpawnDestroySunc)
+                        {
+                            foreach (var checkSpawn in CheckSpawn)
+                            {
+                                if (!ThingsIDDic.ContainsKey(checkSpawn.Key))
+                                {
+                                    Loger.Log("Client AttackUpdate 1 Destroy thing=" + checkSpawn.Value.Label + " ID=" + checkSpawn.Key);
+                                    try
+                                    {
+                                        checkSpawn.Value.Destroy();
+                                    }
+                                    catch (Exception ext2)
+                                    {
+                                        Loger.Log("Client AttackUpdate Destroy Exception " + ext2.ToString());
+                                    }
+                                }
+                            }
+                            CheckSpawn.Clear();
+                            //запрашиваем повторно объекты, которые были удалены игрой
+                            foreach (var checkDestroy in CheckDestroy)
+                            {
+                                if (ThingsIDDic.TryGetValue(checkDestroy.Key, out int cdOutID))
+                                {
+                                    Loger.Log("Client AttackUpdate 1 Lost thing=" + checkDestroy.Value.Label + " ID=" + checkDestroy.Key);
+                                    needNewThings.Add(cdOutID);
+                                }
+                            }
+                            CheckDestroy.Clear();
+                        }
+                        CheckSpawnDestroyDisable = false;
+
                         Loger.Log($"Client AttackUpdate 2 ({AttackUpdateTick})");
                         var toSendCommand = ToSendCommand;
                         ToSendCommand = new Dictionary<int, AttackPawnCommand>();
@@ -339,6 +436,7 @@ namespace RimWorldOnlineCity
                             //снимаем паузу на загрузку у хоста и устанавливаем после загрузки, чтобы оглядеться атакующиму
                             SetPauseOnTimeToHost = AttackUpdateTick == 2 ? new TimeSpan(0, 0, TimeStopBeforeAttack) : TimeSpan.MinValue,
                             VictoryHostToHost = VictoryHostToHost,
+                            NeedNewThingIDs = needNewThings,
                         });
 
                         errNums += "3 ";
@@ -349,32 +447,20 @@ namespace RimWorldOnlineCity
                             //Применение изменения местоположения и пр. по ID хоста
                             for (int i = 0; i < toClient.UpdateState.Count; i++)
                             {
-                                int id;
-                                if (!ThingsIDDicRev.TryGetValue(toClient.UpdateState[i].HostThingID, out id))
-                                {
-                                    Loger.Log("Client AttackUpdate 4 Err1 " + toClient.UpdateState[i].ToString());
-                                    continue;
-                                }
+                                Thing thing = GetThingByHostId(toClient.UpdateState[i].HostThingID);
+                                if (thing == null) continue;
 
-                                Thing thing;
-                                if (!ThingsObjDic.TryGetValue(id, out thing))
-                                {
-                                    Loger.Log("Client AttackUpdate 4 Err2 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
-                                    continue;
-                                }
-                                if (thing == null)
-                                {
-                                    Loger.Log("Client AttackUpdate 4 Err3 " + toClient.UpdateState[i].ToString() + " id=" + id.ToString());
-                                    continue;
-                                }
                                 if (!(thing is Pawn)) Loger.Log("Client AttackUpdate 4 Apply " + toClient.UpdateState[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                /*  NewCorpses
                                 if (thing is Pawn && toClient.UpdateState[i].DownState == AttackThingState.PawnHealthState.Dead)
                                 {
                                     DelayDestroyPawn.Remove(thing);
                                 }
+                                */
                                 GameUtils.ApplyState(thing, toClient.UpdateState[i]);
                             }
 
+                            /* NewCorpses
                             for (int i = 0; i < DelayDestroyPawn.Count; i++)
                             {
                                 Thing thing = DelayDestroyPawn[i];
@@ -382,33 +468,20 @@ namespace RimWorldOnlineCity
                                 DestroyThing(thing);
                             }
                             DelayDestroyPawn.Clear();
+                            */
 
                             for (int i = 0; i < toClient.Delete.Count; i++)
                             {
-                                int id;
-                                if (!ThingsIDDicRev.TryGetValue(toClient.Delete[i], out id))
-                                {
-                                    Loger.Log("Client AttackUpdate 4 Err4 " + toClient.Delete[i].ToString());
-                                    continue;
-                                }
-
-                                Thing thing;
-                                if (!ThingsObjDic.TryGetValue(id, out thing))
-                                {
-                                    Loger.Log("Client AttackUpdate 4 Err5 " + toClient.Delete[i].ToString() + " id=" + id.ToString());
-                                    continue;
-                                }
-                                if (thing == null)
-                                {
-                                    Loger.Log("Client AttackUpdate 4 Err6 " + toClient.Delete[i].ToString() + " id=" + id.ToString());
-                                    continue;
-                                }
+                                Thing thing = GetThingByHostId(toClient.Delete[i]);
+                                if (thing == null) continue;
+                                /* NewCorpses
                                 if (thing is Pawn)
                                 {
                                     Loger.Log("Client AttackUpdate 4 ToDelayDestroy " + toClient.Delete[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
                                     DelayDestroyPawn.Add(thing);
                                 }
                                 else
+                                */
                                 {
                                     Loger.Log("Client AttackUpdate 4 Destroy " + toClient.Delete[i].ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
                                     DestroyThing(thing, toClient.Delete[i]);
@@ -418,36 +491,24 @@ namespace RimWorldOnlineCity
                         };
 
                         errNums += "4 ";
-                        if (toClient.NewPawns.Count > 0 || toClient.NewThings.Count > 0)
+                        if (toClient.NewPawns != null && toClient.NewCorpses != null && toClient.NewThings != null 
+                            && (toClient.NewPawns.Count > 0 || toClient.NewCorpses.Count > 0 || toClient.NewThings.Count > 0))
                         {
                             //LongEventHandler.QueueLongEvent(delegate
                             {
                                 try
                                 {
-                                    Loger.Log("Client AttackUpdate 3. NewPawn=" + toClient.NewPawns.Count);
 
                                     if (toClient.NewPawns.Count > 0)
                                     {
+                                        Loger.Log("Client AttackUpdate 3. NewPawn=" + toClient.NewPawns.Count);
                                         errNums += "5 ";
                                         //удаляем пешки NewPawnsId (здесь список thingIDNumber от хоста), которые сейчас обновим
                                         for (int i = 0; i < toClient.NewPawnsId.Count; i++)
                                         {
                                             var hostid = toClient.NewPawnsId[i];
-                                            int id;
-                                            if (!ThingsIDDicRev.TryGetValue(hostid, out id))
-                                            {
-                                                continue;
-                                            }
-
-                                            Thing thing;
-                                            if (!ThingsObjDic.TryGetValue(id, out thing))
-                                            {
-                                                continue;
-                                            }
-                                            if (thing == null)
-                                            {
-                                                continue;
-                                            }
+                                            Thing thing = GetThingByHostId(hostid);
+                                            if (thing == null) continue;
                                             Loger.Log("Client AttackUpdate 3 DestroyPawnForUpdate " + hostid.ToString() + " pawn=" + thing.Label + " ID=" + thing.thingIDNumber);
                                             DestroyThing(thing, hostid);
                                         }
@@ -458,6 +519,7 @@ namespace RimWorldOnlineCity
                                             , (p) => p.TransportID == 0 //если без нашего ID, то у нас как пират
                                             , (th, te) =>
                                             {
+                                                if (CheckDestroy.ContainsKey(th.thingIDNumber)) CheckDestroy.Remove(th.thingIDNumber);
                                                 var p = th as Pawn;
                                                 //Loger.Log("Client AttackUpdate 3. NewPawn " + (p.IsColonist ? "IsColonist" : "NotColonist"));
                                                 //Дополнить словарь сопоставления ID (их из OriginalID, наш ID, а TransportID уже никому не нужен, т.к. пешки дропнуты и переозданы)
@@ -488,15 +550,83 @@ namespace RimWorldOnlineCity
                                             });
                                     }
 
-                                    errNums += "7 ";
-                                    Loger.Log("Client AttackUpdate 3. NewThings=" + toClient.NewThings.Count);
+                                    if (toClient.NewCorpses.Count > 0)
+                                    {
+                                        Loger.Log("Client AttackUpdate 3. NewCorpses=" + toClient.NewCorpses.Count);
+                                        errNums += "7 ";
+                                        //удаляем пешку и труп NewCorpses (здесь список thingIDNumber от хоста и для того и для того), которые сейчас обновим
+                                        for (int i = 0; i < toClient.NewCorpses.Count; i++)
+                                        {
+                                            var hostid = toClient.NewCorpses[i].PawnId;
+                                            Thing thing = GetThingByHostId(hostid);
+                                            if (thing == null) continue;
+
+                                            Loger.Log("Client AttackUpdate 3 DestroyPawnCorpsForUpdate " + hostid.ToString() + " pawn=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                            DestroyThing(thing, hostid);
+                                        }
+
+                                        errNums += "7* ";
+                                        for (int i = 0; i < toClient.NewCorpses.Count; i++)
+                                        {
+                                            var hostid = toClient.NewCorpses[i].CorpseId;
+                                            Thing thing = GetThingByHostId(hostid);
+                                            if (thing == null) continue;
+
+                                            Loger.Log("Client AttackUpdate 3 Destroy " + hostid.ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                            DestroyThing(thing, hostid);                                            
+                                        }
+
+                                        errNums += "8 ";
+                                        //создаем список трупов пешек toClient.NewCorpses
+                                        GameUtils.SpawnList(GameMap, toClient.NewCorpses.Select(c => c.CorpseWithPawn).ToList(), false
+                                            , (p) => p.TransportID == 0 //если без нашего ID, то у нас как пират
+                                            , (th, te) =>
+                                            {
+                                                //мы спавним пешку у которой в здоровье "труп", поэтому фактически спавница труп, внутри которого пешка
+                                                //ищим этот труп в CheckSpawn
+                                                int corpsId;
+                                                lock (CheckSpawnDestroySunc)
+                                                {
+                                                    corpsId = CheckSpawn.FirstOrDefault(cs => cs.Value is Corpse && (cs.Value as Corpse).InnerPawn.thingIDNumber == th.thingIDNumber).Key;
+                                                    if (CheckDestroy.ContainsKey(th.thingIDNumber)) CheckDestroy.Remove(th.thingIDNumber);
+                                                    if (CheckDestroy.ContainsKey(corpsId)) CheckDestroy.Remove(corpsId);
+                                                }
+                                                Loger.Log("Client AttackUpdate 3. NewCorpses " + th.Label + " ID=" + th.thingIDNumber + " corpsID=" + corpsId);
+                                                //Дополнить словарь сопоставления ID (их из OriginalID, наш ID, а TransportID уже никому не нужен, т.к. пешки дропнуты и переозданы)
+                                                if (te.OriginalID != 0 && corpsId != 0)
+                                                {
+                                                    ThingsIDDicRev[te.OriginalID] = corpsId;
+                                                    ThingsIDDic[corpsId] = te.OriginalID;
+                                                    ThingsObjDic[corpsId] = th;
+                                                }
+                                                else
+                                                {
+                                                    Loger.Log("Client AttackUpdate SpawnListPawnCorps NotOrigID! " + " thing=" + th.Label + " ID=" + th.thingIDNumber + " corpsID=" + corpsId);
+                                                }
+                                            });
+                                    }
+
+                                    errNums += "9 ";
 
                                     if (toClient.NewThings.Count > 0)
                                     {
+                                        Loger.Log("Client AttackUpdate 3. NewThings=" + toClient.NewThings.Count);
+                                        //удаляем вешь
+                                        for (int i = 0; i < toClient.NewThingsId.Count; i++)
+                                        {
+                                            var hostid = toClient.NewThingsId[i];
+                                            Thing thing = GetThingByHostId(hostid);
+                                            if (thing == null) continue;
+
+                                            Loger.Log("Client AttackUpdate 3 Destroy " + hostid.ToString() + " thing=" + thing.Label + " ID=" + thing.thingIDNumber);
+                                            DestroyThing(thing, hostid);
+                                        }
+
+                                        //создаем вешь
                                         GameUtils.SpawnList(GameMap, toClient.NewThings, false, (p) => false
                                             , (th, te) =>
                                             {
-                                                var p = th as Pawn;
+                                                if (CheckDestroy.ContainsKey(th.thingIDNumber)) CheckDestroy.Remove(th.thingIDNumber);
                                                 //Loger.Log("Client AttackUpdate 3. NewPawn " + (p.IsColonist ? "IsColonist" : "NotColonist"));
                                                 //Дополнить словарь сопоставления ID (их из OriginalID, наш ID, а TransportID уже никому не нужен, т.к. пешки дропнуты и переозданы)
                                                 if (te.OriginalID != 0 && th.thingIDNumber != 0)
@@ -512,27 +642,27 @@ namespace RimWorldOnlineCity
                                             });
                                     }
 
-                                    errNums += "8 ";
+                                    errNums += "10 ";
                                     actUpdateState();
 
-                                    errNums += "9 ";
+                                    errNums += "11 ";
                                     Loger.Log("Client AttackUpdate 5");
 
                                     //после первого массового спавна всех пешек
                                     if (AttackUpdateTick == 1)
                                     {
-                                        errNums += "10 ";
+                                        errNums += "12 ";
                                         ModBaseData.RunMainThreadSync(() =>
                                         {
-                                            errNums += "11 ";
+                                            errNums += "13 ";
                                             //проверка обзора и переключение на карту
                                             FloodFillerFog.DebugRefogMap(GameMap);
                                             CameraJumper.TryJump(GameMap.Center, GameMap);
-                                            errNums += "12 ";
+                                            errNums += "14 ";
                                         });
-                                        errNums += "13 ";
+                                        errNums += "15 ";
                                         GameAttackTrigger_Patch.ActiveAttacker.Add(GameMap, this);
-                                        errNums += "14 ";
+                                        errNums += "16 ";
                                     }
                                 }
                                 catch (Exception ext)
@@ -541,26 +671,26 @@ namespace RimWorldOnlineCity
                                 }
                                 InTimer = false;
                             }//, "", false, null); //".."
-                            errNums += "15 ";
+                            errNums += "17 ";
                         }
                         else
                         {
-                            errNums += "16 ";
+                            errNums += "18 ";
                             actUpdateState();
 
                             InTimer = false;
                         }
 
-                        errNums += "17 ";
+                        errNums += "19 ";
                         //заканчиваем
                         if (toClient.Finishing) Finish(toClient.VictoryAttacker);
-                        errNums += "18 ";
+                        errNums += "20 ";
 
                     }
                     catch (Exception ext)
                     {
                         InTimer = false;
-                        Loger.Log("Client AttackUpdate SpawnList Exception " + ext.ToString() + " ErrNums:" + errNums);
+                        Loger.Log("Client AttackUpdate Command Exception " + ext.ToString() + " ErrNums:" + errNums);
                     }
                 });
             }
@@ -637,86 +767,175 @@ namespace RimWorldOnlineCity
             }
         }
 
+        /// <summary>
+        /// Перехват события когда что-то было уничтожено, получило повреждения или только что создано
+        /// </summary>
+        public void UIEventChange(Thing thing, bool distroy = false, bool newSpawn = false)
+        {
+            //if (InTimer) return;
+            if (/*PlantNotSend &&*/
+                                thing is Plant && !thing.def.plant.IsTree) return;
+
+            Loger.Log("AttackerUpdate UIEventChange " + (CheckSpawnDestroyDisable ? "OFF " : "")
+                + thing.GetType().ToString() + " " + thing.Label + " id=" + thing.thingIDNumber
+                + (distroy ? " distroy!" : "")
+                + (newSpawn ? " newSpawn!" : "")
+                + (thing is Corpse ? " Corpse " + (thing as Corpse).InnerPawn.thingIDNumber.ToString() : ""));
+
+            if (CheckSpawnDestroyDisable) return;
+
+            lock (CheckSpawnDestroySunc)
+            {
+                if (distroy)
+                {
+                    CheckDestroy[thing.thingIDNumber] = thing;
+                    CheckSpawn.Remove(thing.thingIDNumber);
+                }
+                else if (newSpawn)
+                {
+                    CheckSpawn[thing.thingIDNumber] = thing;
+                    CheckDestroy.Remove(thing.thingIDNumber);
+                }
+            }
+        }
+
         private void CreateClearMap(int tile, IntVec3 mapSize, Action<Map, MapParent> ready)
         {
             LongEventHandler.QueueLongEvent(delegate
             {
                 Loger.Log("Client CreateClearMap 1");
-                Rand.PushState();
                 try
                 {
-                    TileFinder_IsValidTileForNewSettlement_Patch.Off = true;
-                    int seed = Gen.HashCombineInt(Find.World.info.Seed, tile); //todo по идеи не нужен
-                    Rand.Seed = seed;
-
-                    Loger.Log("Client CreateClearMap 2");
-                    //todo проверить что временный родитель mapParent будет удален
-                    var mapParent = (MapParent)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Ambush); //WorldObjectDefOf.Ambush  WorldObjectDefOf.AttackedNonPlayerCaravan
-                    mapParent.Tile = tile;
-                    Loger.Log("Client CreateClearMap 3");
-                    Find.WorldObjects.Add(mapParent);
-                    mapParent.SetFaction(Find.FactionManager.OfPlayer);
-                    Loger.Log("Client CreateClearMap 4");
-                    var map = MapGenerator.GenerateMap(mapSize, mapParent, mapParent.MapGeneratorDef, null, null);
-                    Loger.Log("Client CreateClearMap 5");
-                    /*
-
-                    Map map = new Map();
-                    map.uniqueID = Find.UniqueIDsManager.GetNextMapID();
-                    map.info.Size = mapSize;
-                    map.info.parent = mapParent;
-                    map.ConstructComponents();
-                    Current.Game.AddMap(map);
-                    map.areaManager.AddStartingAreas();
-                    map.weatherDecider.StartInitialWeather();
-
-
-                    /*
-                    var mapGenerator = MapGeneratorDefOf.Encounter;
-                    IEnumerable<GenStepWithParams> enumerable = from x in mapGenerator.genSteps
-                                                                select new GenStepWithParams(x, default(GenStepParams));
-                    MapGenerator.GenerateContentsIntoMap(enumerable, map, seed);
-                    * /
-                    //RockNoises.Init(map); //это внутри MapGenerator.GenerateContentsIntoMap
-
-                    Find.Scenario.PostMapGenerate(map);
-                    map.FinalizeInit();
-                    Verse.MapComponentUtility.MapGenerated(map);
-                    if (mapParent != null)
+                    Rand.PushState();
+                    try
                     {
-                        mapParent.PostMapGenerate();
-                    }
-                    */
+                        TileFinder_IsValidTileForNewSettlement_Patch.Off = true;
+                        int seed = Gen.HashCombineInt(Find.World.info.Seed, tile); //todo по идеи не нужен
+                        Rand.Seed = seed;
 
-                    LongEventHandler.QueueLongEvent(delegate
-                    {
-                        Loger.Log("Client CreateClearMap 6");
-                        CellRect cellRect = CellRect.WholeMap(map);
-                        cellRect.ClipInsideMap(map);
-
-                        GenDebug.ClearArea(cellRect, map);
-                        /*
-                        foreach (IntVec3 current in cellRect)
+                        Loger.Log("Client CreateClearMap 2");
+                        //todo проверить что временный родитель mapParent будет удален
+                        var mapParent = (MapParent)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Ambush); //WorldObjectDefOf.Ambush  WorldObjectDefOf.AttackedNonPlayerCaravan
+                        mapParent.Tile = tile;
+                        Loger.Log("Client CreateClearMap 3");
+                        Find.WorldObjects.Add(mapParent);
+                        mapParent.SetFaction(Find.FactionManager.OfPlayer);
+                        Loger.Log("Client CreateClearMap 4");
+                        Map map;
+                        try
                         {
-                            GenSpawn.Spawn(ThingDefOf.Granite, current, map, WipeMode.Vanish);
+                            Loger.Log("Client CreateClearMap 4 " + mapParent.MapGeneratorDef.genSteps.Count
+                                + mapParent.MapGeneratorDef.genSteps.Aggregate("", (r, i) => r + Environment.NewLine + " " + i.defName + " " + i.ToString()));
+                            //отключаем заполнение содержимым карты
+                            //MapGenerator_GenerateContentsIntoMap_Patch.Disable = true;
+                            var mapSet = new MapGeneratorDef()
+                            {
+                                /*
+ ElevationFertility ElevationFertility
+ Caves Caves
+ Terrain Terrain
+ CavesTerrain CavesTerrain
+ Roads Roads
+ RockChunks RockChunks
+ ScatterRuinsSimple ScatterRuinsSimple
+ SteamGeysers SteamGeysers
+ FindPlayerStartSpot FindPlayerStartSpot
+ ScenParts ScenParts
+ Plants Plants
+ Snow Snow
+ Animals Animals
+ Fog Fog
+ RocksFromGrid_NoMinerals RocksFromGrid_NoMinerals
+                                 */
+                                genSteps = mapParent.MapGeneratorDef.genSteps
+                                    .Where(gs => gs.defName == "ElevationFertility"
+                                        || gs.defName == "Caves"
+                                        || gs.defName == "Terrain"
+                                        || gs.defName == "CavesTerrain"
+                                        || gs.defName == "FindPlayerStartSpot"
+                                        || gs.defName == "ScenParts"
+                                        || gs.defName == "Fog") //Animals
+                                    .ToList()
+                            };
+                            //создаем карту
+                            map = MapGenerator.GenerateMap(mapSize, mapParent, mapSet, null, null);
                         }
+                        finally
+                        {
+                            //MapGenerator_GenerateContentsIntoMap_Patch.Disable = false;
+                        }
+                        Loger.Log("Client CreateClearMap 5");
+                        /*
 
-                        GenDebug.ClearArea(cellRect, map);
+                        Map map = new Map();
+                        map.uniqueID = Find.UniqueIDsManager.GetNextMapID();
+                        map.info.Size = mapSize;
+                        map.info.parent = mapParent;
+                        map.ConstructComponents();
+                        Current.Game.AddMap(map);
+                        map.areaManager.AddStartingAreas();
+                        map.weatherDecider.StartInitialWeather();
+
+
+                        /*
+                        var mapGenerator = MapGeneratorDefOf.Encounter;
+                        IEnumerable<GenStepWithParams> enumerable = from x in mapGenerator.genSteps
+                                                                    select new GenStepWithParams(x, default(GenStepParams));
+                        MapGenerator.GenerateContentsIntoMap(enumerable, map, seed);
+                        * /
+                        //RockNoises.Init(map); //это внутри MapGenerator.GenerateContentsIntoMap
+
+                        Find.Scenario.PostMapGenerate(map);
+                        map.FinalizeInit();
+                        Verse.MapComponentUtility.MapGenerated(map);
+                        if (mapParent != null)
+                        {
+                            mapParent.PostMapGenerate();
+                        }
                         */
-                        Loger.Log("Client CreateClearMap 7");
-                        ready(map, mapParent);
 
-                        TileFinder_IsValidTileForNewSettlement_Patch.Off = false;
-                    }, "GeneratingMapForNewEncounter", false, null);
+                        LongEventHandler.QueueLongEvent(delegate
+                        {
+                            try
+                            { 
+                                Loger.Log("Client CreateClearMap 6");
+                                CellRect cellRect = CellRect.WholeMap(map);
+                                cellRect.ClipInsideMap(map);
+
+                                Loger.Log("Client CreateClearMap 7");
+                                GenDebug.ClearArea(cellRect, map);
+                                /*
+                                foreach (IntVec3 current in cellRect)
+                                {
+                                    GenSpawn.Spawn(ThingDefOf.Granite, current, map, WipeMode.Vanish);
+                                }
+
+                                GenDebug.ClearArea(cellRect, map);
+                                */
+                                Loger.Log("Client CreateClearMap 8");
+                                ready(map, mapParent);
+
+                                TileFinder_IsValidTileForNewSettlement_Patch.Off = false;
+                            }
+                            catch (Exception exp)
+                            {
+                                Loger.Log("Client CreateClearMap Event Exception: " + exp.ToString());
+                            }
+                        }, "GeneratingMapForNewEncounter", false, null);
+                    }
+                    finally
+                    {
+                        Rand.PopState();
+                    }
                 }
-                finally
+                catch (Exception exp)
                 {
-                    Rand.PopState();
+                    Loger.Log("Client CreateClearMap Exception: " + exp.ToString());
                 }
             }, "GeneratingMapForNewEncounter", false, null);
         }
 
-        /// <summary>
+        /// <summary>B
         /// Принудительная остановка режима pvp
         /// </summary>
         public void Clear()

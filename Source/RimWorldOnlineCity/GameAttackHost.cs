@@ -27,7 +27,7 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Для быстрой передачи не передавать растения (Кроме деревьев они всегда передаются)
         /// </summary>
-        public bool PlantNotSend { get; } = false;
+        public bool PlantNotSend { get; } = true;
 
         /// <summary>
         /// Время в сек между полной синхронизацией пешек, например, чтобы после получаения урона увидеть точное здоровье
@@ -95,9 +95,14 @@ namespace RimWorldOnlineCity
         public HashSet<int> ToSendAddId { get; set; }
 
         /// <summary>
-        /// К передаче на создание не пешек
+        /// К передаче на создание не пешек и трупы 
         /// </summary>
         public HashSet<Thing> ToSendThingAdd { get; set; }
+
+        /// <summary>
+        /// Вещи которые когда-либо передавались атакующему, актуальные (те, что к удалюению удаляються и тут)
+        /// </summary>
+        public Dictionary<int, Thing> SendedActual { get; set; }
 
         /// <summary>
         /// Список огня на карте, который нужно обновлять регулярно раз в SendDelayedFillPawnsSeconds
@@ -105,21 +110,11 @@ namespace RimWorldOnlineCity
         public HashSet<Thing> FireList { get; set; }
 
         /// <summary>
-        /// Новые трупы (отличаются от ToSendThingAdd тем, что берем содержимое контейнера Corpse)
-        /// </summary>
-        private HashSet<Thing> ToSendNewCorpse = new HashSet<Thing>();
-
-        /// <summary>
         /// Пешки из этого массива должны быть переданны для полного обновления раз в SendDelayedFillPawnsSeconds сек
         /// </summary>
         public HashSet<int> ToSendDelayedFillPawnsId { get; set; }
 
         public DateTime SendDelayedFillPawnsLastTime;
-
-        /// <summary>
-        /// К передаче на корретировку состояния, положения и пр.
-        /// </summary>
-        public HashSet<int> ToSendStateId { get; set; }
 
         /// <summary>
         /// Пешки которые атакуют хост.
@@ -372,14 +367,60 @@ namespace RimWorldOnlineCity
                         ToSendDeleteId = new HashSet<int>();
                         ToSendAddId = new HashSet<int>();
                         ToSendThingAdd = new HashSet<Thing>();
+                        SendedActual = new Dictionary<int, Thing>();
                         FireList = new HashSet<Thing>();
-                        ToSendNewCorpse = new HashSet<Thing>();
                         ToSendDelayedFillPawnsId = new HashSet<int>();
                         AttackingPawns = new List<Pawn>();
                         AttackingPawnDic = new Dictionary<int, int>();
                         AttackingPawnJobDic = new Dictionary<int, AttackPawnCommand>();
                         AttackUpdateTick = 0;
 
+                        //защита от сбоев: проверяем если ли такие пешки уже на карте по имени thing.LabelCapNoCount
+                        List<Pawn> mapPawns;
+                        try
+                        {
+                            try
+                            {
+                                mapPawns = GameMap.mapPawns.AllPawns.ToList();
+                            }
+                            catch
+                            {
+                                Thread.Sleep(5);
+                                mapPawns = GameMap.mapPawns.AllPawns.ToList();
+                            }
+                            for (int i = 0; i < pawnsA.Count; i++)
+                            {
+                                var label = pawnsA[i].Name;
+                                var exist = mapPawns.FirstOrDefault(p => p.LabelCapNoCount == label);
+                                if (exist != null)
+                                {
+                                    if (exist.IsColonist)
+                                    {
+                                        Loger.Log("Client GameAttackHost Start Name exists isColonist! Not add: " + label);
+                                        mapPawns.RemoveAt(i--);
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        Loger.Log("Client GameAttackHost Start Name exists! Drop pawn: " + label);
+                                        try
+                                        {
+                                            exist.Destroy();
+                                        }
+                                        catch
+                                        {
+                                            Thread.Sleep(5);
+                                            if (exist.Spawned) exist.Destroy();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+
+                        //создаем пешки
                         UIEventNewJobDisable = true;
                         var cellPawns = GameUtils.SpawnCaravanPirate(GameMap, pawnsA,
                             (th, te) =>
@@ -583,7 +624,6 @@ namespace RimWorldOnlineCity
                                 ToSendDelayedFillPawnsId.Clear();
                             }
 
-
                             //посылаем пакеты с данными
                             //                      Loger.Log("Client HostAttackUpdate 2");
 
@@ -606,6 +646,7 @@ namespace RimWorldOnlineCity
                                 if (AttackingPawnDic.ContainsKey(tt.OriginalID)) tt.TransportID = AttackingPawnDic[tt.OriginalID];
                                 newPawns.Add(tt);
                                 newPawnsId.Add(id);
+                                SendedActual[thing.thingIDNumber] = thing;
                             }
                             for (i = 0; i < cnt; i++)
                             {
@@ -620,13 +661,26 @@ namespace RimWorldOnlineCity
 
                             //новые вещи
                             var newThings = ToSendThingAdd
-                                .Where(thing => !ToSendDeleteId.Contains(thing.thingIDNumber))
-                                .Select(thing => ThingEntry.CreateEntry(thing, thing.stackCount))
+                                .Where(thing => !ToSendDeleteId.Contains(thing.thingIDNumber) && !(thing is Corpse))
+                                .Select(thing => ThingTrade.CreateTrade(thing, thing.stackCount, false))
                                 .ToList();
+                            //трупы
+                            var newCorpses = ToSendThingAdd
+                                .Where(thing => !ToSendDeleteId.Contains(thing.thingIDNumber) && thing is Corpse)
+                                .Select(thing => new AttackCorpse()
+                                {
+                                    CorpseId = thing.thingIDNumber,
+                                    PawnId = (thing as Corpse).InnerPawn.thingIDNumber,
+                                    CorpseWithPawn = ThingEntry.CreateEntry((thing as Corpse).InnerPawn, 1)
+                                })
+                                .ToList();
+                            foreach (var item in ToSendThingAdd)
+                            {
+                                SendedActual[item.thingIDNumber] = item;
+                            }
 
                             //передаем изменение местоположеня пешек (по ID хоста)
                             var toSendState = new List<AttackThingState>();
-                            var toSendStateId = new List<int>();
                             foreach (var mpp in mapPawns)
                             {
                                 var mp = mpp.Value;
@@ -667,15 +721,13 @@ namespace RimWorldOnlineCity
                             Loger.Log("HostAttackUpdate UpdateCommand FromJob Count=" + ThingPrepareChange0.Count.ToString());
                             ThingPrepareChange0 = ThingPrepareChange1;
                             ThingPrepareChange1 = new HashSet<Thing>();
-
-                            //трупы
-                            //todo выспомнить и написать зачем сюда трупы то
-                            foreach (var mp in ToSendNewCorpse)
-                            {
-                                toSendState.Add(new AttackThingState(mp));
-                            }
-
+                            
                             //Loger.Log("Client HostAttackUpdate 3");
+
+                            foreach (var item in ToSendDeleteId)
+                            {
+                                SendedActual.Remove(item);
+                            }
 
                             DateTime AUSTime1 = DateTime.UtcNow;
 
@@ -686,6 +738,7 @@ namespace RimWorldOnlineCity
                                 NewPawnsId = newPawnsId,
                                 NewThings = newThings,
                                 NewThingsId = newThings.Select(th => th.OriginalID).ToList(),
+                                NewCorpses = newCorpses,
                                 Delete = ToSendDeleteId.ToList(),
                                 UpdateState = toSendState,
                                 VictoryAttacker = ConfirmedVictoryAttacker,
@@ -694,7 +747,6 @@ namespace RimWorldOnlineCity
                             AU1ms = (DateTime.UtcNow - AUSTime1).TotalMilliseconds;
 
                             ToSendThingAdd.Clear();
-                            ToSendNewCorpse.Clear();
                             ToSendDeleteId.Clear();
                             ToUpdateStateId.Clear();
                             ToUpdateState.Clear();
@@ -738,6 +790,36 @@ namespace RimWorldOnlineCity
                             UIEventNewJobDisable = false;
                         }
 
+                        //принимаем объекты с нашим ID которые атакующий просит повторно отправть
+                        if (toClient.NeedNewThingIDs.Count > 0)
+                        {
+                            Loger.Log("HostAttackUpdate NeedNewThingIDs Count=" + toClient.NeedNewThingIDs.Count.ToString());
+                            lock (ToSendListsSync)
+                            {
+                                //объединяем
+                                for (int i = 0; i < toClient.NeedNewThingIDs.Count; i++)
+                                {
+                                    var id = toClient.NeedNewThingIDs[i];
+
+                                    Pawn pawn;
+                                    if (mapPawns.TryGetValue(id, out pawn))
+                                    {
+                                        ToSendAddId.Add(id);
+                                        Loger.Log("HostAttackUpdate NeedNewThingIDs AddPawn " + pawn.Label.ToString());
+                                        continue;
+                                    }
+
+                                    if (SendedActual.TryGetValue(id, out Thing thing))
+                                    {
+                                        if (thing is Pawn) continue;
+                                        ToSendThingAdd.Add(thing);
+                                        Loger.Log("HostAttackUpdate NeedNewThingIDs AddThing " + pawn.Label.ToString());
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+
                         //                      Loger.Log("Client HostAttackUpdate 4");
                     }
                     catch (Exception ext)
@@ -772,6 +854,7 @@ namespace RimWorldOnlineCity
         private Dictionary<int, APJBT> ApplyPawnJobByTick = new Dictionary<int, APJBT>();
         private void ApplyAttackingPawnJob(Pawn pawn)
         {
+            Loger.Log("HostAttackUpdate ApplyAttackingPawnJob " + pawn.Label.ToString() + " //"+ AttackingPawnDic.Count.ToString());
             var pId = pawn.thingIDNumber;
             AttackPawnCommand comm = null;
             bool stopJob = !AttackingPawnDic.ContainsKey(pId)
@@ -905,8 +988,8 @@ namespace RimWorldOnlineCity
                     //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("HostAttackUpdate UIEventNewJob StartJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore");
                     return;
                 }
-                var stack = "";
                 /*
+                var stack = "";
                 if (job == null || (job == null ? "null" : job.def.defName.ToString()) == "Wait_MaintainPosture")
                 {
                     var stackTrace = new StackTrace();
@@ -918,7 +1001,7 @@ namespace RimWorldOnlineCity
                     }
                 }
                 */
-            UIEventNewJobDisable = true;
+                UIEventNewJobDisable = true;
                 //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("HostAttackUpdate UIEventNewJob StartJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> <...> " + stack);
                 ApplyAttackingPawnJob(pawn);
 
@@ -947,28 +1030,17 @@ namespace RimWorldOnlineCity
             {
                 if (distroy)
                 {
-                    if (!ToSendDeleteId.Contains(tId)) ToSendDeleteId.Add(tId);
+                    ToSendDeleteId.Add(tId);
+                    ToSendThingAdd.Remove(thing);
                     var fi = thing as Fire;
-                    if (fi != null && FireList.Contains(fi)) FireList.Remove(fi);
+                    if (fi != null) FireList.Remove(fi);
                 }
                 else if (newSpawn)
                 {
-                    if (thing is Corpse && (thing as Corpse).InnerPawn != null)
-                    {
-                        //трупы обрабатываем отдельно: передаем труп не как объект, а как редактирование состояния пешки -
-                        //  она сама станет трупом + после изменеия состояния удалить из словарей, чтобы её не удалили
-                        //  (да ID созданного трупа будет не синхронизированно, но считаем что с ними ничего не будут делать)
-                        // здесь, а также изменить у атакующего: когда пришла команда удалить пешку, то
-                        //  задержать команду на 1 цикл (новый массив)
-                        var corpse = thing as Corpse;
-                        ToSendNewCorpse.Add(corpse.InnerPawn);
-                    }
-                    else /*if (!(thing is Pawn)) убрана лишняя проверка, т.к. с newSpawn не запускается для Pawn */
-                    {
-                        ToSendThingAdd.Add(thing);
-                        var fi = thing as Fire;
-                        if (fi != null && !FireList.Contains(fi)) FireList.Add(fi);
-                    }
+                    ToSendThingAdd.Add(thing);
+                    ToSendDeleteId.Remove(tId);
+                    var fi = thing as Fire;
+                    if (fi != null) FireList.Add(fi);
                 }
                 else //здесь остались события посл получения урона
                 {
@@ -1011,7 +1083,25 @@ namespace RimWorldOnlineCity
         {
             bool existHostPawn = false;
             bool existArrackerPawn = false;
-            foreach (var pawn in GameMap.mapPawns.AllPawns)
+            List<Pawn> pawns;
+            try
+            {
+                pawns = GameMap.mapPawns.AllPawns.ToList();
+            }
+            catch
+            {
+                Thread.Sleep(2);
+                try
+                {
+                    pawns = GameMap.mapPawns.AllPawns.ToList();
+                }
+                catch
+                {
+                    Loger.Log($"CheckAttackerVictory Error get GameMap.mapPawns.AllPawns");
+                    return null;
+                }
+            }
+            foreach (var pawn in pawns)
             {
                 if (!existArrackerPawn
                     && AttackingPawnDic.ContainsKey(pawn.thingIDNumber)
@@ -1029,7 +1119,7 @@ namespace RimWorldOnlineCity
                     existHostPawn = true;
                 }
             }
-            Loger.Log($"CheckAttackerVictory GameMap.mapPawns.AllPawns {GameMap.mapPawns.AllPawns.Count()}");
+            Loger.Log($"CheckAttackerVictory GameMap.mapPawns.AllPawns {pawns.Count}");
             return existHostPawn && existArrackerPawn
                 ? (bool?)null
                 : existArrackerPawn;

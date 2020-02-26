@@ -53,7 +53,8 @@ namespace RimWorldOnlineCity.GameClasses
         [HarmonyPrefix]
         public static void Prefix(Thing __instance)
         {
-            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (GameAttackTrigger_Patch.ActiveAttacker.Count == 0
+                && GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
             if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
@@ -62,9 +63,14 @@ namespace RimWorldOnlineCity.GameClasses
 
             var that = __instance;
             if (that.Map == null) return;
-            GameAttackHost client;
-            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out client)) return;
-            client.UIEventChange(that, true);
+            GameAttacker client;
+            if (GameAttackTrigger_Patch.ActiveAttacker.TryGetValue(that.Map, out client))
+            {
+                client.UIEventChange(that, true);
+            }
+            GameAttackHost clientHost;
+            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out clientHost)) return;
+            clientHost.UIEventChange(that, true);
         }
     }
 
@@ -79,7 +85,8 @@ namespace RimWorldOnlineCity.GameClasses
         [HarmonyPrefix]
         public static void Prefix(Thing __instance)
         {
-            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (GameAttackTrigger_Patch.ActiveAttacker.Count == 0
+                && GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
             if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
@@ -91,9 +98,14 @@ namespace RimWorldOnlineCity.GameClasses
 
             var that = __instance;
             if (that.Map == null) return;
-            GameAttackHost client;
-            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out client)) return;
-            client.UIEventChange(that, true);
+            GameAttacker client;
+            if (GameAttackTrigger_Patch.ActiveAttacker.TryGetValue(that.Map, out client))
+            {
+                client.UIEventChange(that, true);
+            }
+            GameAttackHost clientHost;
+            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out clientHost)) return;
+            clientHost.UIEventChange(that, true);
         }
     }
 
@@ -152,7 +164,8 @@ namespace RimWorldOnlineCity.GameClasses
         [HarmonyPostfix]
         public static void Postfix(Thing __instance, Map map, bool respawningAfterLoad)
         {
-            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (GameAttackTrigger_Patch.ActiveAttacker.Count == 0
+                && GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
             if (__instance is Explosion) return;
             if (__instance is Mote) return;
             if (__instance is Projectile) return;
@@ -165,9 +178,14 @@ namespace RimWorldOnlineCity.GameClasses
 
             var that = __instance;
             if (that.Map == null) return;
-            GameAttackHost client;
-            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out client)) return;
-            client.UIEventChange(that, false, true);
+            GameAttacker client;
+            if (GameAttackTrigger_Patch.ActiveAttacker.TryGetValue(that.Map, out client))
+            {
+                client.UIEventChange(that, false, true);
+            }
+            GameAttackHost clientHost;
+            if (!GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(that.Map, out clientHost)) return;
+            clientHost.UIEventChange(that, false, true);
         }
     }
 

@@ -70,6 +70,14 @@ namespace ServerOnlineCity
             {
                 var rec = Client.ReceiveBytes();
 
+                if (context.Player != null)
+                {
+                    lock (context.Player)
+                    {
+                        context.Player.Public.LastOnlineTime = DateTime.UtcNow;
+                    }
+                }
+
                 //отдельно обрабатываем пинг
                 if (rec.Length == 1)
                 {

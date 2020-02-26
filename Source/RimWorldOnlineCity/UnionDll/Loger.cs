@@ -40,7 +40,7 @@ namespace OCUnion
             LastMsg[thn] = dn;
             if (dd >= 1000000) dd = 0;
             var logMsg = dn.ToString(Culture) + " |" + dd.ToString().PadLeft(6) + " |" + thn.ToString().PadLeft(4) + " | " + msg;
-            var date = DateTime.Now.ToString("yyyy-MM-dd");
+            var fileName = $"Log_{DateTime.Now.ToString("yyyy-MM-dd")}_{MainHelper.RandomSeed}.txt";
 
             if (withCatch) Console.WriteLine(logMsg);
             lock (ObjLock)
@@ -48,7 +48,7 @@ namespace OCUnion
                 try
                 {
                     //if (LogMessage != null) LogMessage(logMsg);
-                    File.AppendAllText(PathLog + @"Log_" + date + ".txt", logMsg + Environment.NewLine, Encoding.UTF8);
+                    File.AppendAllText(PathLog + fileName, logMsg + Environment.NewLine, Encoding.UTF8);
                 }
                 catch (Exception exp)
                 {
