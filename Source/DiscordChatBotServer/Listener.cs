@@ -89,8 +89,10 @@ namespace OC.DiscordBotServer
             {
                 Loger.Log(ex.ToString());
             }
-
-            IsUpdatingChats = false;
+            finally
+            {
+                IsUpdatingChats = false;
+            }
         }
 
         /// <summary>

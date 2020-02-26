@@ -267,50 +267,71 @@ namespace RimWorldOnlineCity
             { }
         }
 
+        private static volatile bool ChatIsUpdating = false;
         private static void UpdateChats()
         {
             //Loger.Log("Client UpdateChating...");
             Command((connect) =>
             {
-                var timeFrom = DateTime.UtcNow;
-                var test = connect.ServiceCheck();
-                Data.Ping = DateTime.UtcNow - timeFrom;
-
-                if (test != null)
+                // Пока не обработали старый запрос, новый не отправляем, иначе ответ не успевает отправиться и следом еще один запрос на изменения
+                if (ChatIsUpdating)
                 {
-                    Data.LastServerConnectFail = false;
-                    Data.LastServerConnect = DateTime.UtcNow;
+                    return;
+                }
 
-                    if (test.Value || Data.ChatCountSkipUpdate > 60) // 60 * 500ms = принудительно раз в пол минуты
+                ChatIsUpdating = true;
+                try
+                {
+                    var timeFrom = DateTime.UtcNow;
+                    var test = connect.ServiceCheck();
+                    Data.Ping = DateTime.UtcNow - timeFrom;
+
+                    if (test != null)
                     {
-                        //Loger.Log("Client T4");
-                        ModelUpdateChat dc;
-                        Loger.Log("Client UpdateChats f0");
-                        dc = connect.UpdateChat(Data.ChatsTime);
-                        if (dc != null)
+                        Data.LastServerConnectFail = false;
+                        Data.LastServerConnect = DateTime.UtcNow;
+
+                        if (test.Value || Data.ChatCountSkipUpdate > 60) // 60 * 500ms = принудительно раз в пол минуты
                         {
-                            Data.ServetTimeDelta = dc.Time - DateTime.UtcNow;
-                            Loger.Log("Client UpdateChats: " + dc.Chats.Count.ToString() + " - " + dc.Time.Ticks //dc.Time.ToString(Loger.Culture)
-                                + "   " + (dc.Chats.Count == 0 ? "" : dc.Chats[0].Posts.Count.ToString()));
-
-                            if (Data.ApplyChats(dc) && !test.Value)
+                            Loger.Log("Client UpdateChats f0");
+                            var dc = connect.UpdateChat(Data.ChatsTime);
+                            if (dc != null)
                             {
-                                Loger.Log("Client UpdateChats: ServiceCheck fail ");
-                            }
-                        }
+                                Data.ServetTimeDelta = dc.Time - DateTime.UtcNow;
+                                Loger.Log("Client UpdateChats: " + dc.Chats.Count.ToString() + " - " + dc.Time.Ticks //dc.Time.ToString(Loger.Culture)
+                                    + "   " + (dc.Chats.Count == 0 ? "" : dc.Chats[0].Posts.Count.ToString()));
 
-                        Data.ChatCountSkipUpdate = 0;
+                                if (Data.ApplyChats(dc) && !test.Value)
+                                {
+                                    Loger.Log("Client UpdateChats: ServiceCheck fail ");
+                                }
+                            }
+                            else
+                            {
+                                Disconnected("Unknown error in UpdateChats");
+                            }
+
+                            Data.ChatCountSkipUpdate = 0;
+                        }
+                        else
+                            Data.ChatCountSkipUpdate++;
                     }
                     else
-                        Data.ChatCountSkipUpdate++;
+                    {
+                        //Loger.Log("Client UpdateChats f2");
+                        Data.LastServerConnectFail = true;
+                        if (!Data.ServerConnected) Disconnected("OCity_SessionCC_Disconnected".Translate());
+                    }
+                    //todo Сделать сброс крутяшки после обновления чата (см. Dialog_MainOnlineCity)
                 }
-                else
+                catch (Exception ex)
                 {
-                    //Loger.Log("Client UpdateChats f2");
-                    Data.LastServerConnectFail = true;
-                    if (!Data.ServerConnected) Disconnected("OCity_SessionCC_Disconnected".Translate());
+                    Loger.Log(ex.ToString());
                 }
-                //todo Сделать сброс крутяшки после обновления чата (см. Dialog_MainOnlineCity)
+                finally
+                {
+                    ChatIsUpdating = false;
+                }
             });
         }
 
@@ -773,7 +794,7 @@ namespace RimWorldOnlineCity
             try
             {
                 Loger.Log("Client InitGame()");
-                Data.ChatsTime = (DateTime.UtcNow + ServerTimeDelta).AddDays(-1); //без этого указания будут получены все сообщения с каналов
+                //Data.ChatsTime = (DateTime.UtcNow + ServerTimeDelta).AddDays(-1); //без этого указания будут получены все сообщения с каналов
 
                 MainButtonWorker_OC.ShowOnStart();
                 UpdateWorldController.ClearWorld();

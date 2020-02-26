@@ -37,7 +37,7 @@ namespace OC.DiscordBotServer.Commands
                 var player = ocServer.GetPlayerByToken(guidToken);
                 if (player != null)
                 {
-                    OCUser user = _appContext.GetOCUser(ocServerKeyPair.Key, context.User.Id);
+                    OCUser user = _appContext.TryGetOCUser(ocServerKeyPair.Key, context.User.Id);
                     if (user != null)
                     {
                         return string.Format(Translator.ErrUserTokenExist, user.OCLogin, user.DiscordIdChanel);
@@ -49,7 +49,7 @@ namespace OC.DiscordBotServer.Commands
                     _userRepository.AddNewItem(user);
 
                     // to do register user  
-                    return string.Format(Translator.InfUserFound, player.Login);
+                    return string.Format(Translator.InfUserFound, player.Login, ocServer.Chanel2Server.IP);
                 }
             }
 

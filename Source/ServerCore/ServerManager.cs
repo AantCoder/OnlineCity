@@ -16,6 +16,7 @@ using System.Text;
 using OCUnion.Transfer.Model;
 using OCUnion.Common;
 using OCUnion.Transfer;
+using ServerOnlineCity.Services;
 
 namespace ServerOnlineCity
 {
@@ -244,7 +245,7 @@ namespace ServerOnlineCity
             ///Обновляем кто кого видит
             foreach (var player in Repository.GetData.PlayersAll)
             {
-                var pl = player.PublicChat.PartyLogin;
+                var pl = ChatManager.Instance.PublicChat.PartyLogin;
                 if (pl.Count == Repository.GetData.PlayersAll.Count) continue;
 
                 changeInPlayers = true;
@@ -258,7 +259,7 @@ namespace ServerOnlineCity
                     {
                         ///админы видят всех: добавляем кого не хватает
                         var plAdd = new HashSet<string>(allLogins);
-                        plAdd.ExceptWith(player.PublicChat.PartyLogin);
+                        plAdd.ExceptWith(ChatManager.Instance.PublicChat.PartyLogin);
 
                         if (plAdd.Count > 0) pl.AddRange(plAdd);
                     }

@@ -233,7 +233,7 @@ namespace RimWorldOnlineCity
                         , inRect.height - (iconWidthSpase + lbCannalsHeight + 22f));
                 }
 
-                if (DataLastChatsTime != SessionClientController.Data.ChatsTime
+                if (DataLastChatsTime != SessionClientController.Data.ChatsTime.Time
                     || DataLastChatsTimeUpdateTime < DateTime.UtcNow.AddSeconds(-5))
                 {
                     DataLastChatsTimeUpdateTime = DateTime.UtcNow;
@@ -362,7 +362,7 @@ namespace RimWorldOnlineCity
                         }
 
                     }
-                    DataLastChatsTime = SessionClientController.Data.ChatsTime;
+                    DataLastChatsTime = SessionClientController.Data.ChatsTime.Time;
                     lbCannalsLastSelectedIndex = -1; //сброс для обновления содержимого окна
                 }
 

@@ -17,6 +17,12 @@ namespace ServerOnlineCity.ChatService
 
         public string Help => "list of all commands";
 
+        private readonly ChatManager _chatManager;
+
+        public HelpCmd(ChatManager chatManager)
+        {
+            _chatManager = chatManager;
+        }
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> param)
         {
             var userGrants = player.Public.Grants;
@@ -30,7 +36,7 @@ namespace ServerOnlineCity.ChatService
                 }
             }
 
-            return ChatManager.PostCommandPrivatPostActivChat(0, player.Public.Login, chat, sb.ToString());
+            return _chatManager.PostCommandPrivatPostActivChat(0, player.Public.Login, chat, sb.ToString());
         }
     }
 }

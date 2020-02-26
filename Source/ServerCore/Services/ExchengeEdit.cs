@@ -62,7 +62,8 @@ namespace ServerOnlineCity.Services
                         };
                     }
 
-                    order.Id = Repository.GetData.GetChatId();
+                    //order.Id = Repository.GetData.GetChatId();
+                    order.Id = ChatManager.Instance.GetChatId();
 
                     lock (data)
                     {

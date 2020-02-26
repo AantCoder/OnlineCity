@@ -17,19 +17,22 @@ namespace ServerOnlineCity.ChatService
 
         public string Help => ChatManager.prefix + "killmyallplease : Abandon My Settlement";
 
+        private readonly ChatManager _chatManager;
+
+        public AbandonMySettlementCmd(ChatManager chatManager)
+        {
+            _chatManager = chatManager;
+        }
+
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> param)
         {
             if (chat.OwnerMaker)
             {
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.OnlyForPublicChannel, player.Public.Login, chat, "Operation only for the shared channel");
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.OnlyForPublicChannel, player.Public.Login, chat, "Operation only for the shared channel");
             }
 
-            chat.Posts.Add(new ChatPost()
-            {
-                Time = DateTime.UtcNow,
-                Message = "User " + player.Public.Login + " deleted settlements.",
-                OwnerLogin = "system"
-            });
+            var msg = "User " + player.Public.Login + " deleted settlements.";
+            _chatManager.AddSystemPostToPublicChat(msg);
 
             Repository.DropUserFromMap(player.Public.Login);
             Repository.GetSaveData.DeletePlayerData(player.Public.Login);

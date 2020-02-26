@@ -40,6 +40,7 @@ namespace OC.Chat
         private void button2_Click(object sender, EventArgs e)
         {
             Chat.Send(0, textBox4.Text);
+            UpdateChats();
         }
     }
 }

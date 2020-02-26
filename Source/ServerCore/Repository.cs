@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Transfer;
 using Util;
+using ServerOnlineCity.Services;
 
 namespace ServerOnlineCity
 {
@@ -32,8 +33,12 @@ namespace ServerOnlineCity
 
         public static PlayerServer GetPlayerByLogin(string login)
         {
-            PlayerServer res;
-            if (!Repository.GetData.PlayersAllDic.TryGetValue(login, out res)) return null;
+            if (string.IsNullOrEmpty(login))
+            {
+                return null;
+            }
+
+            Repository.GetData.PlayersAllDic.TryGetValue(login, out var res);
             return res;
         }
 
@@ -87,7 +92,6 @@ namespace ServerOnlineCity
                         needResave = true;
                     }
 
-                    PlayerServer.PublicPosts = Data.PlayersAll[0].PublicChat.Posts;
                     if (Data.Orders == null) Data.Orders = new List<OrderTrade>();
 
                     Data.UpdatePlayersAllDic();
@@ -95,22 +99,37 @@ namespace ServerOnlineCity
                     Loger.Log("Server Load done. Users " + Data.PlayersAll.Count.ToString() + ": "
                         + Data.PlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
                         );
+
+                    ChatManager.Instance.NewChatManager(Data.MaxIdChat, Data.PlayersAll[0].Chats.Keys.First());
                 }
             }
+
+
             if (needResave)
                 Save();
             ChangeData = false;
+
+
         }
 
         private void convertToLastVersion()
         {
-            if (Data.VersionNum <= 20033)
+            if (Data.VersionNum < 30033)
             {
+                ChatManager.Instance.PublicChat.PartyLogin.Clear();
+
                 foreach (var player in Data.PlayersAll)
                 {
                     player.Public.Grants = player.Public.Grants | Grants.UsualUser;
                     if (player.IsAdmin)
                         player.Public.Grants = player.Public.Grants | Grants.SuperAdmin;
+
+                    //if (player.IdChats == null || !player.IdChats.Any())
+                    //{
+                    //    player.IdChats = new HashSet<int>() { ChatManager.PublicChatId };
+                    //}
+
+                    ChatManager.Instance.PublicChat.PartyLogin.Add(player.Public.Login);
                 }
             }
 
@@ -130,6 +149,9 @@ namespace ServerOnlineCity
                     if (File.Exists(SaveFileName + ".bak")) File.Delete(SaveFileName + ".bak");
                     File.Move(SaveFileName, SaveFileName + ".bak");
                 }
+
+                Data.MaxIdChat = ChatManager.Instance.MaxChatId;
+
                 using (var fs = File.OpenWrite(SaveFileName))
                 {
                     var bf = new BinaryFormatter();
