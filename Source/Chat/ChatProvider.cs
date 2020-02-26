@@ -13,6 +13,8 @@ namespace OC.Chat
         public Player My { get; set; }
         public TimeSpan ServerTimeDelta { get; set; }
 
+        private ModelUpdateTime _modelUpdateTime = new ModelUpdateTime() { Time = DateTime.MinValue, Value = -1 };
+
         private readonly Transfer.SessionClient _sessionClient;
 
         public ChatProvider()
@@ -40,6 +42,9 @@ namespace OC.Chat
             }
 
             InitConnected();
+
+            _modelUpdateTime.Time = DateTime.MinValue;
+            _modelUpdateTime.Value = 0;
             return null;
         }
 
@@ -68,12 +73,11 @@ namespace OC.Chat
 
         public void UpdateChats()
         {
-            ModelUpdateChat dc;
-            dc = _sessionClient.UpdateChat(Data.ChatsTime);
+            ModelUpdateChat dc = _sessionClient.UpdateChat(_modelUpdateTime);
             if (dc == null)
             {
                 Data.LastServerConnectFail = true;
-                if (!Data.ServerConnected)
+                if (Data.ServerConnected)
                 {
                     Disconnected();
                 }
@@ -81,13 +85,15 @@ namespace OC.Chat
                 return;
             }
 
+            _modelUpdateTime.Time = dc.Time;
+            _modelUpdateTime.Value = dc.LastChatPostId;
             Data.LastServerConnectFail = false;
             Data.LastServerConnect = DateTime.UtcNow;
             var lastMessage = string.Empty;
             Data.ApplyChats(dc, ref lastMessage);
         }
 
-        public ModelStatus SendMessage(string message, long idChanell = 0)
+        public ModelStatus SendMessage(string message, int idChanell = 0)
         {
             return _sessionClient.PostingChat(idChanell, message);
         }

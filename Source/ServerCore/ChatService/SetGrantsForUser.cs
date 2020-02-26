@@ -19,25 +19,32 @@ namespace ServerOnlineCity.ChatService
             ChatManager.prefix + "grants revoke {UserLogin} {RoleName} or {roleNumber}: revoke grants from user" + Environment.NewLine +
             ChatManager.prefix + "grants type {UserLogin}: type grants for user";
 
+        private readonly ChatManager _chatManager;
+
+        public SetGrantsForUser(ChatManager chatManager)
+        {
+            _chatManager = chatManager;
+        }
+
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
             var myLogin = player.Public.Login;
 
             if (argsM.Count < 1)
             {
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.CommandNotFound, myLogin, chat, Help);
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.CommandNotFound, myLogin, chat, Help);
             }
             var subCmd = argsM[0]?.ToLower();
 
             if (argsM.Count < 2)
             {
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.PlayerNameEmpty, myLogin, chat, "Player name is empty");
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.PlayerNameEmpty, myLogin, chat, "Player name is empty");
             }
 
             var anotherPlayer = Repository.GetPlayerByLogin(argsM[1]);
             if (anotherPlayer == null)
             {
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, myLogin, chat, $"Player {argsM[1]} not found :-(");
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, myLogin, chat, $"Player {argsM[1]} not found :-(");
             }
 
             Grants newGrants = Grants.NoPermissions;
@@ -45,13 +52,13 @@ namespace ServerOnlineCity.ChatService
             {
                 if (argsM.Count < 3)
                 {
-                    return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, myLogin, chat, $"role can be empty");
+                    return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, myLogin, chat, $"role can be empty");
                 }
 
                 newGrants = GetGrantsByStr(argsM[2]);
                 if (newGrants.Equals(Grants.NoPermissions))
                 {
-                    return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.RoleNotFound, myLogin, chat, $"retype role, this {argsM[2]} not found");
+                    return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.RoleNotFound, myLogin, chat, $"retype role, this {argsM[2]} not found");
                 }
             }
 
@@ -80,7 +87,7 @@ namespace ServerOnlineCity.ChatService
                         Loger.Log(msg);
                         lock (anotherPlayer.Public)
                         {
-                            anotherPlayer.Public.Grants = anotherPlayer.Public.Grants  & ~ newGrants;
+                            anotherPlayer.Public.Grants = anotherPlayer.Public.Grants & ~newGrants;
                         }
 
                         Repository.Get.ChangeData = true;
@@ -92,11 +99,11 @@ namespace ServerOnlineCity.ChatService
                     }
                 case "type":
                     {
-                        return ChatManager.PostCommandPrivatPostActivChat(0, myLogin, chat, $"User {anotherPlayer.Public.Login} have:" + anotherPlayer.Public.Grants.ToString());
+                        return _chatManager.PostCommandPrivatPostActivChat(0, myLogin, chat, $"User {anotherPlayer.Public.Login} have:" + anotherPlayer.Public.Grants.ToString());
                     }
                 default:
                     {
-                        return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.CommandNotFound, myLogin, chat, $"cmd '/grants {argsM[0]}' not found");
+                        return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.CommandNotFound, myLogin, chat, $"cmd '/grants {argsM[0]}' not found");
                     }
             }
         }

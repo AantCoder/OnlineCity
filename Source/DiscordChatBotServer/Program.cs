@@ -102,8 +102,8 @@ namespace OC.DiscordBotServer
             await _discordClient.StartAsync();
 
             var listener = _services.GetService<Listener>();
-            const int WAIT_LOGIN_DISCORD_TIME = 3000;
-            const int REFRESH_TIME = 500;
+            const int WAIT_LOGIN_DISCORD_TIME = 5000;
+            const int REFRESH_TIME = 5000;
             var t = new System.Threading.Timer((a) => { listener.UpdateChats(); }, null, WAIT_LOGIN_DISCORD_TIME, REFRESH_TIME);
 
             await Task.Delay(-1);

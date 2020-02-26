@@ -54,9 +54,9 @@ namespace ServerOnlineCity.Services
             if (isAdmin)
             {
                 context.Player.Public.Grants = context.Player.Public.Grants | Grants.Moderator | Grants.SuperAdmin;
-
             }
-
+            
+            ChatManager.Instance.PublicChat.LastChanged = System.DateTime.UtcNow;
             Repository.GetData.PlayersAll.Add(context.Player);
             Repository.Get.ChangeData = true;
             return new ModelStatus()

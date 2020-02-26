@@ -11,6 +11,8 @@ namespace Transfer
     {
         public DateTime Time;
 
+        public int LastChatPostId;
+
         public List<Chat> Chats;
     }
 }

@@ -6,6 +6,7 @@ namespace OC.Chat
 {
     public class ChatMan
     {
+
         public string Login(string addr, string login, string pass)
         {
             if (string.IsNullOrEmpty(addr))

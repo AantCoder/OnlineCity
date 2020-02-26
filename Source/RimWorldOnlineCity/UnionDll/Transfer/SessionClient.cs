@@ -315,21 +315,21 @@ namespace Transfer
             return stat;
         }
 
-        //[Obsolete("Don't use it, it's very slow on the server side, it will be removed in the future")]
-        public ModelUpdateChat UpdateChat(DateTime time)
+        public ModelUpdateChat UpdateChat(ModelUpdateTime modelUpdate)
         {
-            Loger.Log("Client UpdateChat " + time.ToGoodUtcString());
-            var packet = new ModelUpdateTime() { Time = time };
+            Loger.Log("Client UpdateChat " + modelUpdate.Time.ToGoodUtcString());
+            var packet = modelUpdate;
             var stat = TransObject<ModelUpdateChat>(packet, 17, 18);
+    
             return stat;
         }
 
-        public ModelStatus PostingChat(long chatId, string msg)
+        public ModelStatus PostingChat(int chatId, string msg)
         {
             Loger.Log("Client PostingChat " + chatId.ToString() + ", " + msg);
-            var packet = new ModelPostingChat() { ChatId = chatId, Message = msg };
+            var packet = new ModelPostingChat() { IdChat = chatId, Message = msg };
             var stat = TransObject<ModelStatus>(packet, 19, 20);
-          
+
             ErrorMessage = stat?.Message;
 
             return stat;

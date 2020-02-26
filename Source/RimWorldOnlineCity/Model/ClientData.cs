@@ -3,7 +3,6 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Transfer;
 using Verse;
 
@@ -11,7 +10,8 @@ namespace RimWorldOnlineCity
 {
     public class ClientData
     {
-        public DateTime ChatsTime = DateTime.MinValue;
+        public ModelUpdateTime ChatsTime = new ModelUpdateTime() { Time = DateTime.MinValue };
+
         public DateTime UpdateTime = DateTime.MinValue;
         /// <summary>
         /// Разница между UtcNow клиента и сервера + время передачи от сервера к клиенту (половина пинга)
@@ -32,7 +32,7 @@ namespace RimWorldOnlineCity
 
         public PlayerClient MyEx
         {
-            get 
+            get
             {
                 if (MyEx_p == null)
                 {
@@ -99,10 +99,9 @@ namespace RimWorldOnlineCity
 
         public bool ApplyChats(ModelUpdateChat updateDate)
         {
-            ChatsTime = updateDate.Time;
             int newPost = 0;
             var newStr = "";
-            if (Chats != null) 
+            if (Chats != null)
             {
                 foreach (var chat in updateDate.Chats)
                 {
@@ -114,20 +113,39 @@ namespace RimWorldOnlineCity
                         newPost += newPosts.Count;
                         if (newStr == "" && newPosts.Count > 0) newStr = chat.Name + ": " + newPosts[0].Message;
                         chat.Posts = cur.Posts;
+                        cur.Name = chat.Name;
+                        // это только для ускорения, сервер не передает список пати логинов, если ничего не изменилось
+                        // т.к. передать 3000+ логинов по 8 байт, это уже несколько пакетов
+                        if (chat.PartyLogin != null && chat.PartyLogin.Count > 0)
+                        {
+                            cur.PartyLogin = chat.PartyLogin;
+                        }
+                    }
+                    else
+                    {
+                        Chats.Add(chat);
                     }
                 }
+
+                var ids = updateDate.Chats.Select(x => x.Id);
+                Chats.RemoveAll(x => !ids.Contains(x.Id));
             }
-            Chats = updateDate.Chats;
+            else
+            {
+                Chats = updateDate.Chats;
+            }
+
             if (UIInteraction && newPost > 0)
             {
                 GameMessage(newStr);
             }
+
             ChatNotReadPost += newPost;
             return newPost > 0;
         }
 
         private void GameMessage(string newStr)
-        { 
+        {
             if (newStr.Length > 50) newStr = newStr.Substring(0, 49) + "OCity_ClientData_ChatDot".Translate();
             Messages.Message("OCity_ClientData_Chat".Translate() + newStr, MessageTypeDefOf.NeutralEvent);
         }

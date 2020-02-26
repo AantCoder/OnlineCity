@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Model
 {
     [Serializable]
     public class ChatPost
     {
-        public int IdChat { get; set; }
-
-        //[Obsolete ("В дальнейшем будет использоваться OwnerId")]
         public string OwnerLogin { get; set; }
 
-        public int OwnerId { get; set; }
+        public int IdOwner { get; set; }
 
-        public DateTime Time { get; set; }
+        public DateTime Time { get; set; } 
 
         public string Message { get; set; }
 

@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Transfer
 {
     [Serializable]
     public class ModelPostingChat
     {
-        public long ChatId;
+        public int IdChat;
 
         public string Message;
 
@@ -20,6 +17,6 @@ namespace Transfer
         /// <summary>
         /// if message recieved from discord property != null 
         /// </summary>
-        public ulong DiscordMsgId;
+        public ulong IdDiscordMsg;
     }
 }

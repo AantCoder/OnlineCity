@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Transfer;
 
 namespace OCUnion
@@ -11,8 +10,7 @@ namespace OCUnion
     /// Базовый класс ClientData независимый от римворлда и Verse 
     /// </summary>
     public class ClientData
-    {
-        public DateTime ChatsTime = DateTime.MinValue;
+    {        
         public DateTime UpdateTime = DateTime.MinValue;
 
         /// <summary>
@@ -36,8 +34,8 @@ namespace OCUnion
 
         private readonly SessionClient _sessionClient;
 
-        public ClientData(string myLogin, SessionClient sessionClient) 
-        {            
+        public ClientData(string myLogin, SessionClient sessionClient)
+        {
             _myLogin = myLogin;
             _sessionClient = sessionClient;
         }
@@ -55,10 +53,9 @@ namespace OCUnion
         public DateTime LastServerConnect = DateTime.MinValue;
         public bool LastServerConnectFail = false;
         public int ChatCountSkipUpdate = 0;
-      
+
         public bool ApplyChats(ModelUpdateChat updateDate, ref string newStr)
         {
-            ChatsTime = updateDate.Time;
             int newPost = 0;
             newStr = "";
             if (Chats != null)
@@ -73,11 +70,19 @@ namespace OCUnion
                         newPost += newPosts.Count;
                         if (newStr == "" && newPosts.Count > 0) newStr = chat.Name + ": " + newPosts[0].Message;
                         chat.Posts = cur.Posts;
+
+                        if (chat.PartyLogin != null)
+                        {
+                            cur.PartyLogin = chat.PartyLogin;
+                        }
                     }
                 }
             }
+            else
+            {
+                Chats = updateDate.Chats;
+            }
 
-            Chats = updateDate.Chats;          
             ChatNotReadPost += newPost;
             return newPost > 0;
         }

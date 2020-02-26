@@ -1,4 +1,5 @@
 ﻿using ServerOnlineCity.Model;
+using ServerOnlineCity.Services;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,9 +14,9 @@ namespace ServerOnlineCity.Common
         public static List<string> PartyLoginSee(PlayerServer player)
         {
             var ps = player.IsAdmin
-                ? Repository.GetData.PlayersAll.Select(p => p.Public.Login).ToList()
-                : player.Chats[0].PartyLogin;
-            return ps;
+               ? Repository.GetData.PlayersAll.Select(p => p.Public.Login)
+           : ChatManager.Instance.PublicChat.PartyLogin;
+            return ps.ToList();
         }
     }
 }

@@ -3,6 +3,7 @@ using OCUnion;
 using OCUnion.Transfer.Types;
 using ServerOnlineCity.Model;
 using ServerOnlineCity.Services;
+using System;
 using System.Collections.Generic;
 using Transfer;
 
@@ -16,14 +17,22 @@ namespace ServerOnlineCity.ChatService
 
         public string Help => ChatManager.prefix + "addplayer :Add player to private chat";
 
+        private readonly ChatManager _chatManager;
+
+        public AddPlayerCmd(ChatManager chatManager)
+        {
+            _chatManager = chatManager;
+        }
+
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
             if (argsM.Count < 1)
             {
-                return ChatManager.PostCommandPrivatPostActivChat(ChatCmdResult.PlayerNameEmpty, player.Public.Login, chat, "Player name is empty");
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.PlayerNameEmpty, player.Public.Login, chat, "Player name is empty");
             }
 
-            return ChatManager.PostCommandAddPlayer(player, chat, argsM[0]);
+            chat.LastChanged = DateTime.UtcNow;
+            return _chatManager.PostCommandAddPlayer(player, chat, argsM[0]);
         }
     }
 }
