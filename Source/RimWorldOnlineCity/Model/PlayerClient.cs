@@ -57,17 +57,17 @@ namespace RimWorldOnlineCity
         private string GetTextInfoCalc()
         {
             var values = CostWorldObjects();
-            var info = (
-                "OCity_PlayerClient_LastTick".Translate() + Environment.NewLine
+            string s = "OCity_PlayerClient_LastTick".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_LastSaveTime".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_baseCount".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_caravanCount".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_marketValue".Translate() + Environment.NewLine
-                + "OCity_PlayerClient_marketValuePawn".Translate()
-                ).Translate(
+                + "OCity_PlayerClient_marketValuePawn".Translate();
+            var info = (s)
+                .Translate(
                         Public.LastTick / 3600000
                         , Public.LastTick / 60000
-                        , Public.LastSaveTime == DateTime.MinValue ? "OCity_PlayerClient_LastSaveTimeNon".Translate() : Public.LastSaveTime.ToGoodUtcString()
+                        , Public.LastSaveTime == DateTime.MinValue ? "OCity_PlayerClient_LastSaveTimeNon".Translate() : new TaggedString (Public.LastSaveTime.ToGoodUtcString())
                         , values.BaseCount
                         , values.CaravanCount
                         , values.MarketValue.ToStringMoney()

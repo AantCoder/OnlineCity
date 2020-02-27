@@ -297,7 +297,13 @@ namespace RimWorldOnlineCity
             Current.Game.Scenario = ScenarioDefOf.Crashlanded.scenario;
             Find.Scenario.PreConfigure();
             Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra, DifficultyDefOf.Rough);
-            Current.Game.World = WorldGenerator.GenerateWorld(0.05f, GenText.RandomSeedString(), OverallRainfall.Normal, OverallTemperature.Normal);
+            Current.Game.World = WorldGenerator.GenerateWorld(
+                0.05f,
+                GenText.RandomSeedString(),
+                OverallRainfall.Normal,
+                OverallTemperature.Normal,
+                OverallPopulation.Little
+                );
         }
 
         /// <summary>

@@ -61,18 +61,19 @@ namespace RimWorldOnlineCity
                 return "OCity_Caravan_Player".Translate(OnlineName, OnlinePlayerLogin) + Environment.NewLine;
             else
             {
-                return ("OCity_Caravan_Player".Translate() + Environment.NewLine
+                var s = "OCity_Caravan_Player".Translate() + Environment.NewLine
                     + "OCity_Caravan_PriceThing".Translate() + Environment.NewLine
                     + "OCity_Caravan_PriceAnimalsPeople".Translate()
-                    + "OCity_Caravan_Other".Translate()
-                    ).Translate(
+                    + "OCity_Caravan_Other".Translate();
+                return (s.ToString())
+                    .Translate(
                         OnlineName
                         , OnlinePlayerLogin + (IsOnline ? " Online!" : "") + " (sId:" + OnlineWObject.ServerId +")"
                         , OnlineWObject.MarketValue.ToStringMoney()
                         , OnlineWObject.MarketValuePawn.ToStringMoney()
                         , OnlineWObject.FreeWeight > 0 && OnlineWObject.FreeWeight < 999999
                             ? Environment.NewLine + "OCity_Caravan_FreeWeight".Translate() + OnlineWObject.FreeWeight.ToStringMass()
-                            : ""
+                            : new TaggedString("")
                         , "" //todo Environment.NewLine + GameUtils.PlayerTextInfo(OnlineWObject.)
                     );
             }

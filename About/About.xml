@@ -2,7 +2,28 @@
 <ModMetaData> 
 	<name>OnlineCity</name> 
 	<author>Aant</author> 
- 	<url>https://vk.com/rimworldonline</url> 
-	<supportedVersions><li>1.0</li></supportedVersions>
- 	<description>Online game with interaction at the level of the planet</description> 
+ 	<url>https://discord.gg/mWshqrh</url> 
+	<supportedVersions>
+	  <li>1.1</li>
+	</supportedVersions>
+ 	<description>Online game with interaction at the level of the planet</description>	
+	<modDependencies>
+    <li>
+      <packageId>HugsLib</packageId>
+      <displayName>HugsLib</displayName>
+      <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=818773962</steamWorkshopUrl>
+    </li>
+	<loadAfter>
+  	  <li>Randy.Essential.MoreBoomrats</li>
+    </loadAfter>
+	<incompatibleWith>
+      <li>Better Vanilla Masking</li>
+	  <li>Frame Rate Control</li>
+	  <li>Better Vanilla Masking</li>
+	  <li>Vanilla Animals</li>
+	  <li>Vanilla Apparel Expanded</li>
+	  <li>Vanilla Armour Expanded</li>
+	  <li>Vanilla Weapons Expanded</li>
+    </incompatibleWith>
+  </modDependencies>  
 </ModMetaData> 

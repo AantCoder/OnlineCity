@@ -117,14 +117,26 @@ namespace Model
         {
             get
             {
-                return Name + (Count > 1 ? " x" + Count.ToString(): "") + Environment.NewLine
-                    + (Concrete
-                        ? "OCity_ThingTrade_Quality_Strength".Translate(((QualityCategory)Quality).GetLabel(), HitPoints, MaxHitPoints)
-                            + (WornByCorpse ? "OCity_ThingTrade_Cut_Body_Off".Translate() : "")
-                        : "OCity_ThingTrade_QualityBetter_StrengthMore".Translate(((QualityCategory)Quality).GetLabel(), HitPoints)
-                            + (WornByCorpse ? "OCity_ThingTrade_CouldTake_OffCorpse".Translate() : "")
-                        )
-                    ;
+                var result = Name + (Count > 1 ? " x" + Count.ToString() : "") + Environment.NewLine;
+                if (Concrete)
+                {
+                    result += "OCity_ThingTrade_Quality_Strength".Translate(((QualityCategory)Quality).GetLabel(), HitPoints, MaxHitPoints);
+                    if (WornByCorpse)
+                    {
+                        result += "OCity_ThingTrade_Cut_Body_Off".Translate();
+                    }
+
+                }
+                else
+                {
+                    result += "OCity_ThingTrade_QualityBetter_StrengthMore".Translate(((QualityCategory)Quality).GetLabel(), HitPoints);
+                    if (WornByCorpse)
+                    {
+                        result += "OCity_ThingTrade_CouldTake_OffCorpse".Translate();
+                    }
+                }
+
+                return result;
             }
         }
 
