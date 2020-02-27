@@ -7,12 +7,14 @@
 	  <li>1.1</li>
 	</supportedVersions>
  	<description>Online game with interaction at the level of the planet</description>	
+	<packageId>Aant.OnlineCity</packageId>
 	<modDependencies>
     <li>
-      <packageId>HugsLib</packageId>
+      <packageId>UnlimitedHugs.HugsLib</packageId>
       <displayName>HugsLib</displayName>
       <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=818773962</steamWorkshopUrl>
     </li>
+	</modDependencies>  
 	<loadAfter>
   	  <li>Randy.Essential.MoreBoomrats</li>
     </loadAfter>
@@ -25,5 +27,4 @@
 	  <li>Vanilla Armour Expanded</li>
 	  <li>Vanilla Weapons Expanded</li>
     </incompatibleWith>
-  </modDependencies>  
 </ModMetaData> 
