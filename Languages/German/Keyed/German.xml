@@ -112,6 +112,8 @@
 	<OCity_SessionCC_Shutdown_Command>The server has received a command to shut down</OCity_SessionCC_Shutdown_Command>
 	<OCity_SessionCC_Scenario_Classic>Classic</OCity_SessionCC_Scenario_Classic>
 	<OCity_SessionCC_Client_UpdateNeeded>Upgrade the client! Version for this server: </OCity_SessionCC_Client_UpdateNeeded>
+	<OCity_SessionCC_InitConnectedIntro_Title>Attention</OCity_SessionCC_InitConnectedIntro_Title>
+	<OCity_SessionCC_InitConnectedIntro_Text>If the exact match of the mods is set on the server, and they have not yet been installed, now they will be downloaded. If there is important information in the Mods game subfolder, click Cancel and make a backup copy! The mod synchronization process may take several minutes, after which the game will restart.</OCity_SessionCC_InitConnectedIntro_Text>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->

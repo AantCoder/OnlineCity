@@ -71,12 +71,16 @@ namespace RimWorldOnlineCity
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 3, buttonYStart, btnSize.x, btnSize.y), "OCity_LoginForm_BtnEnter".Translate())
                 || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
             {
-                var msgError = SessionClientController.Login(InputAddr, InputLogin, InputPassword);
+                var msgError = SessionClientController.Login(InputAddr, InputLogin, InputPassword
+                    , () =>
+                    {
+                        SessionClientController.LoginInNewServerIP = ModBaseData.GlobalData.LastIP.Value != InputAddr;
+                        ModBaseData.GlobalData.LastIP.Value = InputAddr;
+                        ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
+                        HugsLibController.SettingsManager.SaveChanges();                        
+                    });
                 if (msgError == null)
                 {
-                    ModBaseData.GlobalData.LastIP.Value = InputAddr;
-                    ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
-                    HugsLibController.SettingsManager.SaveChanges();
                     //Loger.Log("login " + StorageData.GlobalData.LastIP.Value);
                     Close();
                 }

@@ -147,42 +147,36 @@ namespace ServerOnlineCity
             ///!!!!!!!!!!!!!!!! STEAM FOLDER CHECK SWITCH HERE  !!!!!!!!!!!!!!!
             var steamFiles = FileChecker.GenerateHashFiles(ServerSettings.SteamWorkShopModsDir, new string[0]);
 
-            var modFilesDict = new Dictionary<string, ModelFileInfo>(modFiles.Count);
-            var steamFilesDict = new Dictionary<string, ModelFileInfo>(steamFiles.Count);
-
-            addFiles(modFilesDict, modFiles);
-            addFiles(steamFilesDict, steamFiles);
-            ModFilesDict = modFilesDict;
-            SteamFilesDict = steamFilesDict;
-
-            ServerSettings.AppovedFolderAndConfig = new ModelModsFiles()
-            {
-                Files = new List<ModelFileInfo>(3), // 0 - list Folders in Mods dir, 1 -list Folders in Steam dir , 3-  ModsConfig.xml  
-                                                    // FoldersTree = new FoldersTree(),
-            };
+            ModFilesDict = modFiles.ToDictionary(f => f.FileName);
+            SteamFilesDict = steamFiles.ToDictionary(f => f.FileName);
 
             // 2. Создаем файлы со списком разрешенных папок, которые отправим клиенту
-            var files = ServerSettings.AppovedFolderAndConfig.Files;
             var modsFolders = new ModelFileInfo() // 0 
             {
                 FileName = "ApprovedMods.txt",
                 Hash = FileChecker.CreateListFolder(ServerSettings.ModsDirectory)
-            };
-            files.Add(modsFolders);
-
+            }; 
             var steamFolders = new ModelFileInfo() // 1 
             {
                 FileName = "ApprovedSteamWorkShop.txt",
                 Hash = FileChecker.CreateListFolder(ServerSettings.SteamWorkShopModsDir)
-            };
-            files.Add(steamFolders);
-
-            var fName = Path.Combine(ServerSettings.WorkingDirectory, "ModsConfig.xml");
-            files.Add(new ModelFileInfo() // 1 
+            }; 
+            var modsConfigFileName = Path.Combine(ServerSettings.WorkingDirectory, "ModsConfig.xml");
+            var modsConfig = new ModelFileInfo() // 2
             {
                 FileName = "ModsConfig.xml",
-                Hash = Encoding.UTF8.GetBytes(File.ReadAllText(fName))
-            });
+                Hash = Encoding.UTF8.GetBytes(File.ReadAllText(modsConfigFileName))
+            };
+            // index: 0 - list Folders in Mods dir, 1 -list Folders in Steam dir , 2 - ModsConfig.xml 
+            ServerSettings.AppovedFolderAndConfig = new ModelModsFiles()
+            {
+                Files = new List<ModelFileInfo>()
+                {
+                    modsFolders,
+                    steamFolders,
+                    modsConfig,
+                }
+            };
 
             ServerSettings.ModsDirConfig = new ModelModsFiles()
             {
@@ -197,14 +191,6 @@ namespace ServerOnlineCity
                 Files = new List<ModelFileInfo>() { steamFolders },
                 FoldersTree = FoldersTree.GenerateTree(ServerSettings.SteamWorkShopModsDir),
             };
-        }
-
-        private void addFiles(Dictionary<string, ModelFileInfo> dict, List<ModelFileInfo> files)
-        {
-            foreach (var file in files)
-            {
-                dict[file.FileName] = file;
-            }
         }
 
         /// <summary>

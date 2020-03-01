@@ -37,7 +37,7 @@ namespace ServerCore.Model
         public string WorkingDirectory { get; set; }
 
         [JsonIgnore]
-        public static ModelModsFiles AppovedFolderAndConfig { get; set; }
+        public ModelModsFiles AppovedFolderAndConfig { get; set; }
 
         [JsonIgnore]
         public ModelModsFiles ModsDirConfig { get; set; }

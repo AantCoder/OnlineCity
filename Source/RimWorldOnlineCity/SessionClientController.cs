@@ -36,6 +36,8 @@ namespace RimWorldOnlineCity
 
         public static string ConfigPath { get; private set; }
 
+        public static bool LoginInNewServerIP { get; set; }
+
         /// <summary>
         /// Инициализация при старте игры. Как можно раньше
         /// </summary>
@@ -373,7 +375,7 @@ namespace RimWorldOnlineCity
         /// Подключаемся.
         /// </summary>
         /// <returns>null, или текст произошедшей ошибки</returns>
-        public static string Login(string addr, string login, string password)
+        public static string Login(string addr, string login, string password, Action LoginOK)
         {
             var msgError = Connect(addr);
             if (msgError != null) return msgError;
@@ -399,7 +401,8 @@ namespace RimWorldOnlineCity
                 logMsg = "Login OK";
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
-                InitConnected();
+                LoginOK();
+                InitConnectedIntro();
             }
 
             return null;
@@ -409,7 +412,7 @@ namespace RimWorldOnlineCity
         /// Регистрация
         /// </summary>
         /// <returns>null, или текст произошедшей ошибки</returns>
-        public static string Registration(string addr, string login, string password)
+        public static string Registration(string addr, string login, string password, Action LoginOK)
         {
             var msgError = Connect(addr);
             if (msgError != null) return msgError;
@@ -435,7 +438,8 @@ namespace RimWorldOnlineCity
                 logMsg = "Registration OK";
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
-                InitConnected();
+                LoginOK();
+                InitConnectedIntro();
             }
 
             return null;
@@ -466,6 +470,32 @@ namespace RimWorldOnlineCity
                 scenarioDefaultMem = listS.FirstOrDefault();
 
             return scenarioDefaultMem;
+        }
+
+        public static void InitConnectedIntro()
+        {
+            if (SessionClientController.LoginInNewServerIP)
+            {
+                //Текстовое оповещение о возможном обновлении с сервера
+                var form = new Dialog_Input("OCity_SessionCC_InitConnectedIntro_Title".Translate()
+                    , "OCity_SessionCC_InitConnectedIntro_Text".Translate());
+                form.PostCloseAction = () =>
+                {
+                    if (form.ResultOK)
+                    {
+                        InitConnected();
+                    }
+                    else
+                    {
+                        Disconnected("OCity_DialogInput_Cancele".Translate());
+                    }
+                };
+                Find.WindowStack.Add(form);
+            }
+            else
+            {
+                InitConnected();
+            }
         }
 
         /// <summary>

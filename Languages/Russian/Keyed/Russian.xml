@@ -112,6 +112,8 @@
 	<OCity_SessionCC_Shutdown_Command>От сервера получена команда на отключение.</OCity_SessionCC_Shutdown_Command>
 	<OCity_SessionCC_Scenario_Classic>Классика</OCity_SessionCC_Scenario_Classic>
 	<OCity_SessionCC_Client_UpdateNeeded>Обновите клиент! Версия для данного сервера: </OCity_SessionCC_Client_UpdateNeeded>
+	<OCity_SessionCC_InitConnectedIntro_Title>Внимание!</OCity_SessionCC_InitConnectedIntro_Title>
+	<OCity_SessionCC_InitConnectedIntro_Text>Если на сервере задано точное соответствие модов, и они ещё не установлены, то сейчас они будут скачены. Если в подпапке игры Mods есть важная информация, то нажмите Отмена и сделайте резерную копию! Процесс синхронизации модов может занять несколько минут, после чего игра будет перезапущена.</OCity_SessionCC_InitConnectedIntro_Text>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->

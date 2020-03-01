@@ -76,12 +76,16 @@ namespace RimWorldOnlineCity
             {
                 if (InputAddr.Length > 2 && InputLogin.Length > 2 && InputPassword.Length > 2)
                 {
-                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword);
+                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword
+                        , () => 
+                        { 
+                            SessionClientController.LoginInNewServerIP = ModBaseData.GlobalData.LastIP.Value != InputAddr;
+                            ModBaseData.GlobalData.LastIP.Value = InputAddr;
+                            ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
+                            HugsLibController.SettingsManager.SaveChanges();
+                        });
                     if (msgError == null)
                     {
-                        ModBaseData.GlobalData.LastIP.Value = InputAddr;
-                        ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
-                        HugsLibController.SettingsManager.SaveChanges();
                         Close();
                     }
                 }

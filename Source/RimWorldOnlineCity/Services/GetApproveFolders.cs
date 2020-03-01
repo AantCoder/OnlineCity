@@ -62,7 +62,9 @@ namespace RimWorldOnlineCity.Services
             var steamListFile = approvedFolders.Files[1].Hash;
             var modsConfig = approvedFolders.Files[2].Hash;
 
-            var result = checkAndCreateFile(modsFileName, modsListFile) & checkAndCreateFile(steamFileName, steamListFile) & checkAndCreateFile(modsConfigName, modsConfig);
+            var result = checkAndCreateFile(modsFileName, modsListFile) 
+                & checkAndCreateFile(steamFileName, steamListFile) 
+                & checkAndCreateFile(modsConfigName, modsConfig);
 
             return result;
         }

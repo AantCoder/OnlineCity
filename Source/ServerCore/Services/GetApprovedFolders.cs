@@ -21,7 +21,7 @@ namespace ServerOnlineCity.Services
 
         private ModelModsFiles checkFiles(ModelInt packet, ServiceContext context)
         {
-            return ServerSettings.AppovedFolderAndConfig;
+            return ServerManager.ServerSettings.AppovedFolderAndConfig;
         }
     }
 }
