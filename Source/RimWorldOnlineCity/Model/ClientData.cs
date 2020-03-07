@@ -95,6 +95,7 @@ namespace RimWorldOnlineCity
                 return FactionPirateData;
             }
         }
+
         private Faction FactionPirateData = null;
 
         public bool ApplyChats(ModelUpdateChat updateDate)
@@ -103,32 +104,35 @@ namespace RimWorldOnlineCity
             var newStr = "";
             if (Chats != null)
             {
-                foreach (var chat in updateDate.Chats)
+                lock (Chats)
                 {
-                    var cur = Chats.FirstOrDefault(c => c.Id == chat.Id);
-                    if (cur != null)
+                    foreach (var chat in updateDate.Chats)
                     {
-                        cur.Posts.AddRange(chat.Posts);
-                        var newPosts = chat.Posts.Where(p => p.OwnerLogin != SessionClientController.My.Login).ToList();
-                        newPost += newPosts.Count;
-                        if (newStr == "" && newPosts.Count > 0) newStr = chat.Name + ": " + newPosts[0].Message;
-                        chat.Posts = cur.Posts;
-                        cur.Name = chat.Name;
-                        // это только для ускорения, сервер не передает список пати логинов, если ничего не изменилось
-                        // т.к. передать 3000+ логинов по 8 байт, это уже несколько пакетов
-                        if (chat.PartyLogin != null && chat.PartyLogin.Count > 0)
+                        var cur = Chats.FirstOrDefault(c => c.Id == chat.Id);
+                        if (cur != null)
                         {
-                            cur.PartyLogin = chat.PartyLogin;
+                            cur.Posts.AddRange(chat.Posts);
+                            var newPosts = chat.Posts.Where(p => p.OwnerLogin != SessionClientController.My.Login).ToList();
+                            newPost += newPosts.Count;
+                            if (newStr == "" && newPosts.Count > 0) newStr = chat.Name + ": " + newPosts[0].Message;
+                            chat.Posts = cur.Posts;
+                            cur.Name = chat.Name;
+                            // это только для ускорения, сервер не передает список пати логинов, если ничего не изменилось
+                            // т.к. передать 3000+ логинов по 8 байт, это уже несколько пакетов
+                            if (chat.PartyLogin != null && chat.PartyLogin.Count > 0)
+                            {
+                                cur.PartyLogin = chat.PartyLogin;
+                            }
+                        }
+                        else
+                        {
+                            Chats.Add(chat);
                         }
                     }
-                    else
-                    {
-                        Chats.Add(chat);
-                    }
-                }
 
-                var ids = updateDate.Chats.Select(x => x.Id);
-                Chats.RemoveAll(x => !ids.Contains(x.Id));
+                    var ids = updateDate.Chats.Select(x => x.Id);
+                    Chats.RemoveAll(x => !ids.Contains(x.Id));
+                }
             }
             else
             {

@@ -6,7 +6,6 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using HugsLib.Utils;
 using RimWorld.Planet;
 using Transfer;
 using OCUnion;
@@ -639,7 +638,7 @@ namespace RimWorldOnlineCity.UI
                         if (!connect.ExchengeEdit(EditOrder))
                         {
                             Loger.Log("Client ExchengeEdit error: " + connect.ErrorMessage);
-                            Find.WindowStack.Add(new Dialog_Message("OCity_Dialog_Exchenge_Action_Not_CarriedOut".Translate(), connect.ErrorMessage));
+                            Find.WindowStack.Add(new Dialog_Input("OCity_Dialog_Exchenge_Action_Not_CarriedOut".Translate(), connect.ErrorMessage, true));
                         }
                         else
                         {
@@ -689,7 +688,7 @@ namespace RimWorldOnlineCity.UI
                         {
                             EditOrder.Id = -EditOrder.Id;
                             Loger.Log("Client ExchengeEdit error: " + connect.ErrorMessage);
-                            Find.WindowStack.Add(new Dialog_Message("OCity_Dialog_Exchenge_Action_Not_CarriedOut".Translate(), connect.ErrorMessage));
+                            Find.WindowStack.Add(new Dialog_Input("OCity_Dialog_Exchenge_Action_Not_CarriedOut".Translate(), connect.ErrorMessage, true));
                         }
                         else
                         {

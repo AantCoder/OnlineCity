@@ -58,6 +58,9 @@ namespace RimWorldOnlineCity.Services
             return result;
         }
 
+        private static bool CheckHashModsThreadRun;
+        private static object CheckHashModsThreadSunc = new Object();
+
         /// <summary>
         /// Send hash files of loaded mods to server and update it if hash different
         /// </summary>
@@ -88,23 +91,38 @@ namespace RimWorldOnlineCity.Services
             Loger.Log("SteamFolder=" + SteamFolder);
 
             CheckHashModsThread = new Thread(() =>
-           {
-               Loger.Log($"GenerateHashFiles {GenFilePaths.ModsFolderPath}");
-               ClientHashChecker.ModsFiles = FileChecker.GenerateHashFiles(GenFilePaths.ModsFolderPath, modsListFolder);
-               Loger.Log($"GenerateHashFiles {SteamFolder}");
-               ClientHashChecker.SteamFiles = FileChecker.GenerateHashFiles(SteamFolder, steamListFolder);               
-           });
+            {
+                lock (CheckHashModsThreadSunc)
+                {
+                    try
+                    {
+                        Loger.Log($"GenerateHashFiles {GenFilePaths.ModsFolderPath}");
+                        ClientHashChecker.ModsFiles = FileChecker.GenerateHashFiles(GenFilePaths.ModsFolderPath, modsListFolder);
+                        Loger.Log($"GenerateHashFiles {SteamFolder}");
+                        ClientHashChecker.SteamFiles = FileChecker.GenerateHashFiles(SteamFolder, steamListFolder);
 
+                    }
+                    catch (Exception exc)
+                    {
+                        Loger.Log($"GenerateHashFiles Exception {exc.ToString()}");
+                    }
+                    CheckHashModsThreadRun = false;
+                }
+            });
+            CheckHashModsThreadRun = true;
             CheckHashModsThread.IsBackground = true;
             CheckHashModsThread.Start();
         }
 
         private ModelModsFiles generateHashFiles(bool isSteam)
         {
-            if (CheckHashModsThread.ThreadState != ThreadState.Stopped)
+            if (CheckHashModsThreadRun)
             {
-                Loger.Log("Wait . . . ");
-                CheckHashModsThread.Join();
+                Loger.Log("Wait...");
+                lock (CheckHashModsThreadSunc)
+                {
+                    Loger.Log("Wait end");
+                }
             }
 
             return

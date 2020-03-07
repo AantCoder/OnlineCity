@@ -6,7 +6,6 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using HugsLib.Utils;
 
 namespace RimWorldOnlineCity
 {
@@ -79,7 +78,7 @@ namespace RimWorldOnlineCity
                     || !int.TryParse(InputPlanetCoverage, out ii) || ii < 5 || ii > 100
                     )
                 {
-                    Find.WindowStack.Add(new Dialog_Message("OCity_Dialog_CreateWorld_Err".Translate(), "OCity_Dialog_CreateWorld_Err2".Translate(), null, null));
+                    Find.WindowStack.Add(new Dialog_Input("OCity_Dialog_CreateWorld_Err".Translate(), "OCity_Dialog_CreateWorld_Err2".Translate(), true));
                 }
                 else
                 {

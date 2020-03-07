@@ -115,7 +115,7 @@ namespace RimWorldOnlineCity
             {
                 var textForm = new Dialog_TextOut(Dialog_MainOnlineCity.AboutGeneralText);
                 Find.WindowStack.Add(textForm);
-            }, Dialog_MainOnlineCity.IconForums);
+            }, GeneralTexture.IconForums);
             item.DrawOption(new Vector2(iresct.x, iresct.y), iresct.width);
 
             //поля ввода

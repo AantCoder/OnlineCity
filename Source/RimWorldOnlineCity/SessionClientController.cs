@@ -1,5 +1,4 @@
-﻿using HugsLib.Utils;
-using Model;
+﻿using Model;
 using OCUnion;
 using OCUnion.Common;
 using OCUnion.Transfer;
@@ -357,7 +356,7 @@ namespace RimWorldOnlineCity
                 logMsg = "Connection fail: " + connect.ErrorMessage;
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
-                Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_ConnectionFailTitle".Translate(), connect.ErrorMessage));
+                Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_ConnectionFailTitle".Translate(), connect.ErrorMessage, true));
                 //Close();
                 return connect.ErrorMessage;
             }
@@ -392,7 +391,7 @@ namespace RimWorldOnlineCity
                 logMsg = "Login fail: " + connect.ErrorMessage;
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
-                Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_LoginFailTitle".Translate(), connect.ErrorMessage));
+                Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_LoginFailTitle".Translate(), connect.ErrorMessage, true));
                 //Close();
                 return connect.ErrorMessage;
             }
@@ -429,7 +428,7 @@ namespace RimWorldOnlineCity
                 logMsg = "Registration fail: " + connect.ErrorMessage;
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
-                Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_RegFailTitle".Translate(), connect.ErrorMessage));
+                Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_RegFailTitle".Translate(), connect.ErrorMessage, true));
                 //Close();
                 return connect.ErrorMessage;
             }
@@ -503,78 +502,85 @@ namespace RimWorldOnlineCity
         /// </summary>
         public static void InitConnected()
         {
-            Loger.Log("Client InitConnected()");
-            Data = new ClientData();
-            TimersStop();
-            Timers = new WorkTimer();
-
-            var connect = SessionClient.Get;
-            var serverInfo = connect.GetInfo(ServerInfoType.Full);
-            My = serverInfo.My;
-            ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
-            Data.DelaySaveGame = serverInfo.DelaySaveGame;
-            if (Data.DelaySaveGame == 0) Data.DelaySaveGame = 15;
-            if (Data.DelaySaveGame < 5) Data.DelaySaveGame = 5;
-            Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
-            MainHelper.OffAllLog = serverInfo.EnableFileLog;
-
-            Loger.Log("Client ServerName=" + serverInfo.ServerName);
-            Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
-            Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin
-                + " Seed=" + serverInfo.Seed
-                + " NeedCreateWorld=" + serverInfo.NeedCreateWorld
-                + " DelaySaveGame=" + Data.DelaySaveGame
-                + " DisableDevMode=" + Data.DisableDevMode);
-            Loger.Log("Client Grants=" + serverInfo.My.Grants.ToString());
-
-            if (MainHelper.VersionNum < serverInfo.VersionNum)
+            try
             {
-                Disconnected("OCity_SessionCC_Client_UpdateNeeded".Translate() + serverInfo.VersionInfo);
-                return;
-            }
+                Loger.Log("Client InitConnected()");
+                Data = new ClientData();
+                TimersStop();
+                Timers = new WorkTimer();
 
-            if (serverInfo.IsModsWhitelisted && !CheckFiles())
-            {
-                var msg = "Not all files are resolve hash check, they was been updated, Close and Open Game".NeedTranslate();
-                //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
-                Disconnected(msg, () => ModsConfig.RestartFromChangedMods());
-                return;
-            }
+                var connect = SessionClient.Get;
+                var serverInfo = connect.GetInfo(ServerInfoType.Full);
+                My = serverInfo.My;
+                ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
+                Data.DelaySaveGame = serverInfo.DelaySaveGame;
+                if (Data.DelaySaveGame == 0) Data.DelaySaveGame = 15;
+                if (Data.DelaySaveGame < 5) Data.DelaySaveGame = 5;
+                Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
+                MainHelper.OffAllLog = serverInfo.EnableFileLog;
 
-            //создаем мир, если мы админ
-            if (serverInfo.IsAdmin && serverInfo.Seed == "")
-            {
-                Loger.Log("Client InitConnected() IsAdmin");
-                var form = new Dialog_CreateWorld();
-                form.PostCloseAction = () =>
+                Loger.Log("Client ServerName=" + serverInfo.ServerName);
+                Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
+                Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin
+                    + " Seed=" + serverInfo.Seed
+                    + " NeedCreateWorld=" + serverInfo.NeedCreateWorld
+                    + " DelaySaveGame=" + Data.DelaySaveGame
+                    + " DisableDevMode=" + Data.DisableDevMode);
+                Loger.Log("Client Grants=" + serverInfo.My.Grants.ToString());
+
+                if (serverInfo.IsModsWhitelisted && !CheckFiles())
                 {
-                    if (!form.ResultOK)
+                    var msg = "Not all files are resolve hash check, they was been updated, Close and Open Game".NeedTranslate();
+                    //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
+                    Disconnected(msg, () => ModsConfig.RestartFromChangedMods());
+                    return;
+                }
+
+                if (MainHelper.VersionNum < serverInfo.VersionNum)
+                {
+                    Disconnected("OCity_SessionCC_Client_UpdateNeeded".Translate() + serverInfo.VersionInfo);
+                    return;
+                }
+
+                //создаем мир, если мы админ
+                if (serverInfo.IsAdmin && serverInfo.Seed == "")
+                {
+                    Loger.Log("Client InitConnected() IsAdmin");
+                    var form = new Dialog_CreateWorld();
+                    form.PostCloseAction = () =>
                     {
-                        Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate());
-                        return;
-                    }
+                        if (!form.ResultOK)
+                        {
+                            Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate());
+                            return;
+                        }
 
-                    GameStarter.SetMapSize = int.Parse(form.InputMapSize);
-                    GameStarter.SetPlanetCoverage = float.Parse(form.InputPlanetCoverage) / 100f;
-                    GameStarter.SetSeed = form.InputSeed;
-                    GameStarter.SetDifficulty = int.Parse(form.InputDifficulty);
-                    GameStarter.SetScenario = GetScenarioDefault();
+                        GameStarter.SetMapSize = int.Parse(form.InputMapSize);
+                        GameStarter.SetPlanetCoverage = float.Parse(form.InputPlanetCoverage) / 100f;
+                        GameStarter.SetSeed = form.InputSeed;
+                        GameStarter.SetDifficulty = int.Parse(form.InputDifficulty);
+                        GameStarter.SetScenario = GetScenarioDefault();
 
-                    GameStarter.AfterStart = CreatingServerWorld;
-                    GameStarter.GameGeneration();
-                };
+                        GameStarter.AfterStart = CreatingServerWorld;
+                        GameStarter.GameGeneration();
+                    };
 
-                Find.WindowStack.Add(form);
-                return;
+                    Find.WindowStack.Add(form);
+                    return;
+                }
+
+                if (serverInfo.NeedCreateWorld)
+                {
+                    CreatePlayerWorld(serverInfo);
+                    return;
+                }
+
+                LoadPlayerWorld();
             }
-
-            if (serverInfo.NeedCreateWorld)
+            catch (Exception ext)
             {
-                CreatePlayerWorld(serverInfo);
-                return;
+                Loger.Log("Exception InitConnected: " + ext.ToString());
             }
-
-            LoadPlayerWorld();
         }
 
         private static void LoadPlayerWorld()
@@ -767,10 +773,13 @@ namespace RimWorldOnlineCity
                 msg = "OCity_SessionCC_MsgCreateWorlGood".Translate();
             }
 
-            Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_MsgCreatingServer".Translate(), msg, null, () =>
+            Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_MsgCreatingServer".Translate(), msg, true) 
+            { 
+                PostCloseAction = () =>
                 {
                     GenScene.GoToMainMenu();
-                }));
+                }
+            });
         }
 
         /// <summary>
@@ -803,7 +812,10 @@ namespace RimWorldOnlineCity
             if (msg == null)
                 GenScene.GoToMainMenu();
             else
-                Find.WindowStack.Add(new Dialog_Message("OCity_SessionCC_Disconnect".Translate(), msg, null, actionOnDisctonnect));
+                Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_Disconnect".Translate(), msg, true)
+                {
+                    PostCloseAction = actionOnDisctonnect
+                });
         }
 
         private static void UpdateFastTimer()
