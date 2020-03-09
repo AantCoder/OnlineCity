@@ -123,7 +123,7 @@ namespace ServerOnlineCity.Services
                 DelaySaveGame = player.SettingDelaySaveGame,
                 DisableDevMode = ServerManager.ServerSettings.DisableDevMode,
                 EnableFileLog = player.SettingEnableFileLog,
-                EnablePVPChangeTime = player.EnablePVPChangeTime,
+                TimeChangeEnablePVP = player.TimeChangeEnablePVP,
             };
 
             return result;

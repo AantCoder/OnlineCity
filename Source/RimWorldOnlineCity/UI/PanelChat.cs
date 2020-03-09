@@ -16,6 +16,7 @@ namespace RimWorldOnlineCity.UI
         private DateTime DataLastChatsTimeUpdateTime; //когда последний раз обновлялась информация в интерфейсе (перерисовывать раз в 5 сек)
         private ListBox<string> lbCannals;
         private int lbCannalsLastSelectedIndex;
+        private bool NeedUpdateChat;
         private float lbCannalsHeight = 0;
         private ListBox<ListBoxPlayerItem> lbPlayers;
         private TextBox ChatBox = new TextBox();
@@ -101,7 +102,22 @@ namespace RimWorldOnlineCity.UI
                             , inRect.height - (iconWidthSpase + lbCannalsHeight + 22f));
                     }
 
-                    if (DataLastChatsTime != SessionClientController.Data.ChatsTime.Time
+                    if (NeedUpdateChat)
+                    {
+                        lbCannalsLastSelectedIndex = -1;
+                        NeedUpdateChat = false;
+                    }
+
+                    var nowUpdateChat = DataLastChatsTime != SessionClientController.Data.ChatsTime.Time;
+                    if (nowUpdateChat)
+                    {
+                        Loger.Log("Client UpdateChats nowUpdateChat");
+                        DataLastChatsTime = SessionClientController.Data.ChatsTime.Time;
+                        lbCannalsLastSelectedIndex = -1; //сброс для обновления содержимого окна
+                        NeedUpdateChat = true;
+                    }
+
+                    if (nowUpdateChat
                         || DataLastChatsTimeUpdateTime < DateTime.UtcNow.AddSeconds(-5))
                     {
                         DataLastChatsTimeUpdateTime = DateTime.UtcNow;
@@ -230,8 +246,6 @@ namespace RimWorldOnlineCity.UI
                             }
 
                         }
-                        DataLastChatsTime = SessionClientController.Data.ChatsTime.Time;
-                        lbCannalsLastSelectedIndex = -1; //сброс для обновления содержимого окна
                     }
 
                     lbCannals.Drow();

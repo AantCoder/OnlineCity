@@ -10,12 +10,14 @@
 	<packageId>Aant.OnlineCity</packageId>
 	<modDependencies>
     <li>
-      <packageId>UnlimitedHugs.HugsLib</packageId>
-      <displayName>HugsLib</displayName>
-      <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=818773962</steamWorkshopUrl>
+		<packageId>UnlimitedHugs.HugsLib</packageId>
+		<displayName>HugsLib</displayName>
+		<downloadUrl>https://github.com/UnlimitedHugs/RimworldHugsLib/releases/latest</downloadUrl>
+		<steamWorkshopUrl>steam://url/CommunityFilePage/818773962</steamWorkshopUrl>
     </li>
 	</modDependencies>  
 	<loadAfter>
+	  <li>UnlimitedHugs.HugsLib</li>
   	  <li>Randy.Essential.MoreBoomrats</li>
     </loadAfter>
 	<incompatibleWith>

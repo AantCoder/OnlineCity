@@ -299,6 +299,7 @@ namespace RimWorldOnlineCity
                             if (dc != null)
                             {
                                 Data.ServetTimeDelta = dc.Time - DateTime.UtcNow;
+                                Data.ChatsTime.Time = dc.Time;
                                 Loger.Log("Client UpdateChats: " + dc.Chats.Count.ToString() + " - " + dc.Time.Ticks //dc.Time.ToString(Loger.Culture)
                                     + "   " + (dc.Chats.Count == 0 ? "" : dc.Chats[0].Posts.Count.ToString()));
 
@@ -497,6 +498,17 @@ namespace RimWorldOnlineCity
             }
         }
 
+        public static void SetFullInfo(ModelInfo serverInfo)
+        { 
+            My = serverInfo.My;
+            Data.DelaySaveGame = serverInfo.DelaySaveGame;
+            if (Data.DelaySaveGame == 0) Data.DelaySaveGame = 15;
+            if (Data.DelaySaveGame < 5) Data.DelaySaveGame = 5;
+            Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
+            Data.TimeChangeEnablePVP = serverInfo.TimeChangeEnablePVP;
+            MainHelper.OffAllLog = serverInfo.EnableFileLog;
+        }
+
         /// <summary>
         /// После успешной регистрации или входа
         /// </summary>
@@ -511,13 +523,8 @@ namespace RimWorldOnlineCity
 
                 var connect = SessionClient.Get;
                 var serverInfo = connect.GetInfo(ServerInfoType.Full);
-                My = serverInfo.My;
                 ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
-                Data.DelaySaveGame = serverInfo.DelaySaveGame;
-                if (Data.DelaySaveGame == 0) Data.DelaySaveGame = 15;
-                if (Data.DelaySaveGame < 5) Data.DelaySaveGame = 5;
-                Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
-                MainHelper.OffAllLog = serverInfo.EnableFileLog;
+                SetFullInfo(serverInfo);
 
                 Loger.Log("Client ServerName=" + serverInfo.ServerName);
                 Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");

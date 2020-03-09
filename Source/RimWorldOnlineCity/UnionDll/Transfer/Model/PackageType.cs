@@ -154,5 +154,8 @@ namespace OCUnion.Transfer.Model
         /// Ответа на дисконнект
         /// </summary>
         Response40Disconnect,
+
+        Request41SetPlayerInfo,
+        Response42SetPlayerInfo,
     }
 }

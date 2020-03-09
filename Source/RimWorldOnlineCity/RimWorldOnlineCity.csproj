@@ -110,6 +110,7 @@
     <Compile Include="Services\GetApproveFolders.cs" />
     <Compile Include="Services\ClientHashChecker.cs" />
     <Compile Include="Services\IOnlineCityClientService.cs" />
+    <Compile Include="Services\SetPlayerInfo.cs" />
     <Compile Include="SessionClient.cs" />
     <Compile Include="UI\DevelopTest.cs" />
     <Compile Include="GameAttacker.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="UI\Dialog_Registration.cs" />
     <Compile Include="UI\GeneralTexture.cs" />
     <Compile Include="UI\PanelChat.cs" />
+    <Compile Include="UI\PanelProfilePlayer.cs" />
     <Compile Include="UI\ScrollPanel.cs" />
     <Compile Include="UI\TextBox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

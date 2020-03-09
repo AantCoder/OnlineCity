@@ -20,6 +20,7 @@ namespace RimWorldOnlineCity
         private int TabIndex = 0;
 
         private PanelChat panelChat;
+        private PanelProfilePlayer panelProfilePlayer;
 
         private string InfoTabTitle = "OCity_Dialog_HelloLAN".Translate();
         private TextBox InfoBox = new TextBox()
@@ -57,6 +58,7 @@ namespace RimWorldOnlineCity
             resizeable = true;
             draggable = true;
             panelChat = new PanelChat();
+            panelProfilePlayer = new PanelProfilePlayer();
         }
 
         static public void ShowHide()
@@ -126,11 +128,13 @@ namespace RimWorldOnlineCity
                 List<TabRecord> list = new List<TabRecord>();
                 list.Add(new TabRecord("OCity_Dialog_ListChat".Translate(), () => { TabIndex = 0; }, TabIndex == 0));
                 list.Add(new TabRecord("OCity_Dialog_ListInfo".Translate(), () => { TabIndex = 1; }, TabIndex == 1));
-                list.Add(new TabRecord("OCity_Dialog_ListAbout".Translate(), () => { TabIndex = 2; }, TabIndex == 2));
+                list.Add(new TabRecord("Настройки".NeedTranslate(), () => { TabIndex = 2; }, TabIndex == 2));
+                list.Add(new TabRecord("OCity_Dialog_ListAbout".Translate(), () => { TabIndex = 3; }, TabIndex == 3));
                 TabDrawer.DrawTabs(screenRect, list);
                 if (TabIndex == 0) DoTab0Contents(tabRect);
                 else if (TabIndex == 1) DoTab1Contents(tabRect);
                 else if (TabIndex == 2) DoTab2Contents(tabRect);
+                else if (TabIndex == 3) DoTab3Contents(tabRect);
 
                 Text.Font = GameFont.Small;
                 var loginRect = new Rect(inRect.width - 180f, -2f, 180f, 50f);
@@ -169,6 +173,11 @@ namespace RimWorldOnlineCity
         }
 
         public void DoTab2Contents(Rect inRect)
+        {
+            panelProfilePlayer.Drow(inRect);
+        }
+
+        public void DoTab3Contents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
             Widgets.Label(inRect, "OCity_Dialog_AboutMode".Translate());
@@ -241,6 +250,7 @@ namespace RimWorldOnlineCity
             Widgets.Label(inRect, "Вкладка 3");
             */
         }
+        
 
     }
 }

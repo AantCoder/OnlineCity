@@ -79,11 +79,13 @@ namespace RimWorldOnlineCity
         /// </summary>
         public GameAttackHost AttackUsModule { get; set; } = null;
 
-        public int DelaySaveGame = 15;
+        public int DelaySaveGame { get; set; } = 15;
 
-        public bool DisableDevMode;
+        public bool DisableDevMode { get; set; }
 
-        public bool BackgroundSaveGameOff;
+        public DateTime TimeChangeEnablePVP { get; set; }
+
+        public bool BackgroundSaveGameOff { get; set; }
 
         public Faction FactionPirate
         {

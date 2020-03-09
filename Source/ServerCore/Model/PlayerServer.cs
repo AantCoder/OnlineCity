@@ -59,9 +59,9 @@ namespace ServerOnlineCity.Model
         public bool SettingEnableFileLog;
 
         /// <summary>
-        /// Когда последний раз менял галку "Учавствую в PVP"
+        /// Когда можно будет поменять галку "Учавствую в PVP"
         /// </summary>
-        public DateTime EnablePVPChangeTime;
+        public DateTime TimeChangeEnablePVP;
 
         /// <summary>
         /// Когда последний раз нападали

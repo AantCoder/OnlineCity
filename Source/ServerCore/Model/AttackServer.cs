@@ -277,6 +277,7 @@ namespace ServerOnlineCity.Model
 
                     if (SetPauseOnTimeToHost != null) Loger.Log("Server Send SetPauseOnTimeToHost=" + SetPauseOnTimeToHost.Value.ToGoodUtcString());
 
+                    Host.PVPHostLastTime = DateTime.UtcNow;
                     SetPauseOnTimeToHost = null;
                     VictoryHostToHost = false;
                     return res;

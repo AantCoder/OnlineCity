@@ -56,6 +56,12 @@ namespace RimWorldOnlineCity
 
         private string GetTextInfoCalc()
         {
+            var info0 = (Public.EnablePVP ? "Учавствует в PVP".NeedTranslate() : "Не учавствует в PVP".NeedTranslate()) + Environment.NewLine
+                + (string.IsNullOrEmpty(Public.DiscordUserName) ? "" : "Discord: ".NeedTranslate() + Public.DiscordUserName + Environment.NewLine)
+                + (string.IsNullOrEmpty(Public.EMail) ? "" : "Email: ".NeedTranslate() + Public.EMail + Environment.NewLine)
+                + (string.IsNullOrEmpty(Public.AboutMyText) ? "" : "О себе: ".NeedTranslate() + Environment.NewLine + Public.AboutMyText + Environment.NewLine)
+                + Environment.NewLine;                
+
             var values = CostWorldObjects();
             string s = "OCity_PlayerClient_LastTick".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_LastSaveTime".Translate() + Environment.NewLine
@@ -63,7 +69,7 @@ namespace RimWorldOnlineCity
                 + "OCity_PlayerClient_caravanCount".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_marketValue".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_marketValuePawn".Translate();
-            var info = (s)
+            var info1 = (s)
                 .Translate(
                         Public.LastTick / 3600000
                         , Public.LastTick / 60000
@@ -73,7 +79,8 @@ namespace RimWorldOnlineCity
                         , values.MarketValue.ToStringMoney()
                         , values.MarketValuePawn.ToStringMoney()
                     );
-            return info + values.Details;
+
+            return info0 + info1 + values.Details;
         }
     }
 }
