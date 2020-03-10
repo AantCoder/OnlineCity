@@ -145,17 +145,8 @@ namespace RimWorldOnlineCity
                         .ToList();
                     foreach (var pi in Data.Players)
                     {
+                        if (pi.Value.Public.Login == My.Login) continue;
                         pi.Value.WObjects = allWObjects.Where(wo => wo.OnlinePlayerLogin == pi.Key).ToList();
-                    }
-                    //свои поселения заполняем отдельно фиктивными CaravanOnline
-                    if (Data.Players.ContainsKey(My.Login))
-                    {
-                        Data.Players[My.Login].WObjects = UpdateWorldController.MyWorldObjectEntrys
-                            .Select(wo => wo.Type == WorldObjectEntryType.Base
-                                ? (CaravanOnline)new BaseOnline() { Tile = wo.Tile, OnlineWObject = wo }
-                                : new CaravanOnline() { Tile = wo.Tile, OnlineWObject = wo })
-                            .ToList();
-                        //todo test it (Нет цены своих колоний)
                     }
 
                     //Сохраняем и выходим

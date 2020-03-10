@@ -14,6 +14,15 @@ namespace RimWorldOnlineCity
 {
     static class UpdateWorldController
     {
+        /// <summary>
+        /// Для поиска объектов, уже созданных в прошлые разы
+        /// </summary>
+        private static Dictionary<long, int> ConverterServerId { get; set; }
+        public static Dictionary<int, WorldObjectEntry> WorldObjectEntrys { get; private set; }
+        private static List<WorldObjectEntry> ToDelete { get; set; }
+
+        private static List<WorldObjectEntry> LastSendMyWorldObjects { get; set; }
+
         public static void SendToServer(ModelPlayToServer toServ)
         {
             toServ.LastTick = (long)Find.TickManager.TicksGame;
@@ -24,6 +33,7 @@ namespace RimWorldOnlineCity
                     && (o is Settlement || o is Caravan)) //Чтобы отсеч разные карты событий
                 .Select(o => GetWorldObjectEntry(o))
                 .ToList();
+            LastSendMyWorldObjects = toServ.WObjects;
 
             //свои объекты которые удалил пользователь с последнего обновления
             if (ToDelete != null)
@@ -59,7 +69,6 @@ namespace RimWorldOnlineCity
 
             //обновление всех объектов
             ToDelete = new List<WorldObjectEntry>();
-            MyWorldObjectEntrys = new List<WorldObjectEntry>();
             if (fromServ.WObjects != null && fromServ.WObjects.Count > 0)
             {
                 for (int i = 0; i < fromServ.WObjects.Count; i++)
@@ -69,6 +78,25 @@ namespace RimWorldOnlineCity
             {
                 for (int i = 0; i < fromServ.WObjectsToDelete.Count; i++)
                     DeleteWorldObject(fromServ.WObjectsToDelete[i]);
+            }
+            //свои поселения заполняем отдельно теми, что последний раз отправляли, но на всякий случай не первый раз
+            if (!removeMissing && SessionClientController.Data.Players.ContainsKey(SessionClientController.My.Login))
+            {
+                Loger.Log("Set My.WObjects " + LastSendMyWorldObjects.Count);
+                SessionClientController.Data.Players[SessionClientController.My.Login].WObjects = LastSendMyWorldObjects
+                    .Select(wo => wo.Type == WorldObjectEntryType.Base
+                        ? (CaravanOnline)new BaseOnline() { Tile = wo.Tile, OnlineWObject = wo,  }
+                        : new CaravanOnline() { Tile = wo.Tile, OnlineWObject = wo })
+                    .ToList();
+                    /*
+                    UpdateWorldController.WorldObjectEntrys.Values
+                    .Where(wo => wo.LoginOwner == SessionClientController.My.Login)
+                    .Select(wo => wo.Type == WorldObjectEntryType.Base
+                        ? (CaravanOnline)new BaseOnline() { Tile = wo.Tile, OnlineWObject = wo }
+                        : new CaravanOnline() { Tile = wo.Tile, OnlineWObject = wo })
+                    .ToList();
+                    */
+                //todo test it (Нет цены своих колоний)
             }
 
             //пришла посылка от каравана другого игрока
@@ -99,13 +127,6 @@ namespace RimWorldOnlineCity
 
         #region WorldObject
 
-        /// <summary>
-        /// Для поиска объектов, уже созданных в прошлые разы
-        /// </summary>
-        private static Dictionary<long, int> ConverterServerId { get; set; }
-        private static Dictionary<int, WorldObjectEntry> WorldObjectEntrys { get; set; }
-        private static List<WorldObjectEntry> ToDelete { get; set; }
-        public static List<WorldObjectEntry> MyWorldObjectEntrys { get; private set; }
 
         public static int GetLocalIdByServerId(long serverId)
         {
@@ -378,7 +399,6 @@ namespace RimWorldOnlineCity
                 err += "1 ";
                 if (worldObjectEntry.LoginOwner == SessionClientController.My.Login)
                 {
-                    MyWorldObjectEntrys.Add(worldObjectEntry);
                     //для своих нужно только занести в MyWorldObjectEntry (чтобы запомнить ServerId)
                     if (!WorldObjectEntrys.Any(wo => wo.Value.ServerId == worldObjectEntry.ServerId))
                     {
