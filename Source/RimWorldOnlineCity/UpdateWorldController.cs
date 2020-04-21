@@ -82,7 +82,6 @@ namespace RimWorldOnlineCity
             //свои поселения заполняем отдельно теми, что последний раз отправляли, но на всякий случай не первый раз
             if (!removeMissing && SessionClientController.Data.Players.ContainsKey(SessionClientController.My.Login))
             {
-                Loger.Log("Set My.WObjects " + LastSendMyWorldObjects.Count);
                 SessionClientController.Data.Players[SessionClientController.My.Login].WObjects = LastSendMyWorldObjects
                     .Select(wo => wo.Type == WorldObjectEntryType.Base
                         ? (CaravanOnline)new BaseOnline() { Tile = wo.Tile, OnlineWObject = wo,  }
@@ -309,20 +308,20 @@ namespace RimWorldOnlineCity
                     List<Pawn> ps;
                     try
                     {
-                        ps = map.mapPawns.FreeColonists.ToList();
+                        ps = (map.mapPawns.FreeColonists as IList<Pawn>).ToList<Pawn>();
                     }
                     catch
                     {
                         try
                         {
-                            Thread.Sleep(2);
-                            ps = map.mapPawns.FreeColonists.ToList();
+                            Thread.Sleep(20);
+                            ps = (map.mapPawns.FreeColonists as IList<Pawn>).ToList<Pawn>();
                         }
                         catch(Exception exp)
                         {
                             Loger.Log("Client Exception UpdateWorldController GetWorldObjectEntry 3: " + exp.Message);
                             Thread.Sleep(200);
-                            ps = map.mapPawns.FreeColonists.ToList();
+                            ps = (map.mapPawns.FreeColonists as IList<Pawn>).ToList<Pawn>();
                         }
                     }
                     foreach (Pawn current in ps)

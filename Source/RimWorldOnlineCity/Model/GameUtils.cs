@@ -624,6 +624,9 @@ namespace RimWorldOnlineCity
         }
         */
 
+        private static bool DialodShowing = false;
+        private static Queue<Action> DialodQueue = new Queue<Action>();
+
         public static void ShowDialodOKCancel(string title
             , string text
             , Action ActOK
@@ -645,7 +648,7 @@ namespace RimWorldOnlineCity
             }
 
             DiaOption diaOption = new DiaOption("OCity_GameUtils_Ok".Translate()); //OK -> Принять передачу
-            diaOption.action = ActOK;
+            diaOption.action = () => { ActOK(); DialodQueueGoNext(); };
             /*{ спавн пешки бегущей "на помощь"
                 GenSpawn.Spawn(refugee, spawnSpot, map, WipeMode.Vanish);
                 refugee.SetFaction(Faction.OfPlayer, null);
@@ -660,7 +663,7 @@ namespace RimWorldOnlineCity
             if (!string.IsNullOrEmpty(AltText) && ActAlt != null)
             {
                 diaOption = new DiaOption(AltText);
-                diaOption.action = ActAlt;
+                diaOption.action = () => { ActAlt(); DialodQueueGoNext(); };
                 diaOption.resolveTree = true;
                 diaNode.options.Add(diaOption);
             }
@@ -670,12 +673,41 @@ namespace RimWorldOnlineCity
                 diaOption = new DiaOption("RejectLetter".Translate());
                 //RansomDemand_Reject это "Отказаться"
                 //RejectLetter это Отклонить
-                diaOption.action = ActCancel;
+                diaOption.action = () => { ActCancel(); DialodQueueGoNext(); };
                 diaOption.resolveTree = true;
                 diaNode.options.Add(diaOption);
             }
 
-            Find.WindowStack.Add(new Dialog_NodeTreeWithFactionInfo(diaNode, null, true, true, title));
+            Action show = () => Find.WindowStack.Add(new Dialog_NodeTreeWithFactionInfo(diaNode, null, true, true, title));
+
+            //если окно одно, то запускаем, если это окно создается при уже открытом другом, то ставим в очередь
+            lock (DialodQueue)
+            {
+                if (!DialodShowing)
+                {
+                    DialodShowing = true;
+                    show();
+                }
+                else
+                {
+                    DialodQueue.Enqueue(show);
+                }
+            }
+        }
+
+        private static void DialodQueueGoNext()
+        {
+            lock (DialodQueue)
+            {
+                if (DialodQueue.Count > 0)
+                {
+                    DialodQueue.Dequeue()();
+                }
+                else
+                {
+                    DialodShowing = false;
+                }
+            }
         }
 
         /// <summary>

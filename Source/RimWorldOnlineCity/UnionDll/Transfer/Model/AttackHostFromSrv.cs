@@ -30,5 +30,7 @@ namespace Model
         public DateTime SetPauseOnTime { get; set; }
 
         public bool VictoryHost { get; set; }
+
+        public bool TerribleFatalError { get; set; }
     }
 }

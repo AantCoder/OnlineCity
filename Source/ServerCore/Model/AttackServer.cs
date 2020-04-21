@@ -60,6 +60,8 @@ namespace ServerOnlineCity.Model
         public DateTime StartTime { get; set; }
         public DateTime CreateTime { get; set; }
         public bool VictoryHostToHost { get; set; }
+        public bool TerribleFatalError { get; set; }
+        public long AttackUpdateTick { get; set; }
 
         private object SyncObj = new Object();
 
@@ -99,6 +101,7 @@ namespace ServerOnlineCity.Model
             NeedNewThingIDs = new HashSet<int>();
 
             CreateTime = DateTime.UtcNow;
+            AttackUpdateTick = 0;
 
             Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} New");
             return null;
@@ -269,7 +272,8 @@ namespace ServerOnlineCity.Model
                         UpdateCommand = UpdateCommand.Values.ToList(),
                         NeedNewThingIDs = NeedNewThingIDs.ToList(),
                         SetPauseOnTime = SetPauseOnTimeToHost == null ? DateTime.MinValue : SetPauseOnTimeToHost.Value,
-                        VictoryHost = VictoryHostToHost
+                        VictoryHost = VictoryHostToHost,
+                        TerribleFatalError = TerribleFatalError,
                     };
 
                     UpdateCommand = new Dictionary<int, AttackPawnCommand>();
@@ -356,6 +360,8 @@ namespace ServerOnlineCity.Model
                 }
                 if (fromClient.State == 10)
                 {
+                    AttackUpdateTick++;
+
                     if (StartTime == DateTime.MinValue)
                     {
                         Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} Start");
@@ -365,6 +371,24 @@ namespace ServerOnlineCity.Model
                     if (fromClient.VictoryHostToHost)
                     {
                         VictoryHostToHost = fromClient.VictoryHostToHost;
+                    }
+
+                    if (fromClient.TerribleFatalError)
+                    {
+                        Loger.Log($"Server AttackServer TerribleFatalError {AttackUpdateTick}");
+                        if (AttackUpdateTick != 2)
+                        {
+                            //такая ошибка с отменой атаки возможна только на 2 обновлении (на 1 создаются все пешки, на 2 проверка, что все переданы)
+                            //если это не 2, то считаем, что атакующий жульничает
+                            VictoryHostToHost = true;
+                        }
+                        else
+                        {
+                            TerribleFatalError = fromClient.TerribleFatalError;
+
+                            SendAttackCancel();
+                            Finish();
+                        }
                     }
 
                     if (fromClient.SetPauseOnTimeToHost != TimeSpan.MinValue)
@@ -425,6 +449,33 @@ namespace ServerOnlineCity.Model
             }
         }
 
+        private void SendAttackCancel()
+        {
+            var data = Repository.GetData;
+            //команда хосту
+            var packet = new ModelMailTrade()
+            {
+                Type = ModelMailTradeType.AttackCancel,
+                From = data.PlayersAll[0].Public,
+                To = Host.Public,
+            };
+            lock (Host)
+            {
+                Host.Mails.Add(packet);
+            }
+            //команда атакующему
+            packet = new ModelMailTrade()
+            {
+                Type = ModelMailTradeType.AttackCancel,
+                From = data.PlayersAll[0].Public,
+                To = Attacker.Public,
+            };
+            lock (Attacker)
+            {
+                Attacker.Mails.Add(packet);
+            }
+        }
+
         /// <summary>
         /// Проверка и действия при сбоях.
         /// Если отключился атакующий до State == 10 или меньше 1 мин, то отмена.
@@ -441,18 +492,18 @@ namespace ServerOnlineCity.Model
             string logDet;
             if (attacker)
             {
-                fail = !Host.Online;
                 logDet = " (is attacker)";
+                fail = !Host.Online;
             }
             else
             {
+                logDet = " (is host)";
                 //атакующий может подвиснуть при создании карты, но когда максимум ожидания (=пауза у хоста) кончилось, то всё равно проверяем
                 if (StartTime != DateTime.MinValue
                     || SetPauseOnTimeToHost != DateTime.MinValue && SetPauseOnTimeToHost < DateTime.UtcNow)
                 {
                     fail = !Attacker.Online;
                 }
-                logDet = " (is host)";
             }
             if (!fail)
             {
@@ -473,58 +524,16 @@ namespace ServerOnlineCity.Model
                     if (TestMode) Loger.Log("Server AttackServer Fail and back. TestMode" + logDet);
                     else Loger.Log("Server AttackServer Fail and back. " + logDet);
 
-                    //команда хосту
-                    var packet = new ModelMailTrade()
-                    {
-                        Type = ModelMailTradeType.AttackCancel,
-                        From = data.PlayersAll[0].Public,
-                        To = Host.Public,
-                    };
-                    lock (Host)
-                    {
-                        Host.Mails.Add(packet);
-                    }
-                    //команда атакующему
-                    packet = new ModelMailTrade()
-                    {
-                        Type = ModelMailTradeType.AttackCancel,
-                        From = data.PlayersAll[0].Public,
-                        To = Attacker.Public,
-                    };
-                    lock (Attacker)
-                    {
-                        Attacker.Mails.Add(packet);
-                    }
+                    SendAttackCancel();
                 }
                 else if (!attacker)
                 {   //Если отключился атакующий
                     //до State == 10 или меньше 1 мин, то отмена 
                     if (StartTime == DateTime.MinValue || (DateTime.UtcNow - StartTime).TotalSeconds < 60) // State == 10 проверяется косвенно: StartTime устанавливается только при State == 10
                     {
-                        Loger.Log("Server AttackServer Fail attacker off in start" + logDet); 
+                        Loger.Log("Server AttackServer Fail attacker off in start" + logDet);
 
-                        //команда хосту
-                        var packet = new ModelMailTrade()
-                        {
-                            Type = ModelMailTradeType.AttackCancel,
-                            From = data.PlayersAll[0].Public,
-                            To = Host.Public,
-                        };
-                        lock (Host)
-                        {
-                            Host.Mails.Add(packet);
-                        }
-                        //команда атакующему
-                        packet = new ModelMailTrade()
-                        {
-                            Type = ModelMailTradeType.AttackCancel,
-                            From = data.PlayersAll[0].Public,
-                            To = Attacker.Public,
-                        };
-                        lock (Attacker)
-                        {
-                            Attacker.Mails.Add(packet);
-                        }
+                        SendAttackCancel();
                     }
                     //при State == 10 и больше 1 мин, то уничтожение каравана, поселение остается как есть.
                     else
@@ -633,7 +642,8 @@ namespace ServerOnlineCity.Model
             Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} Finish StartTime sec = " 
                 + (StartTime == DateTime.MinValue ? "-" : (DateTime.UtcNow - StartTime).TotalSeconds.ToString())
                 + (VictoryAttacker == null ? "" : VictoryAttacker.Value ? " VictoryAttacker" : " VictoryHost")
-                + (TestMode ? " TestMode" : ""));
+                + (TestMode ? " TestMode" : "")
+                + (TerribleFatalError ? " TerribleFatalError" : ""));
             Attacker.AttackData = null;
             Host.AttackData = null;
         }

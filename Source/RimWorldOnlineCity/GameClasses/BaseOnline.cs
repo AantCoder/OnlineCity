@@ -62,12 +62,13 @@ namespace RimWorldOnlineCity
                         , ShaderDatabase.WorldOverlayTransparentLit
                         , Color.white
                         , WorldMaterials.WorldObjectRenderQueue);
-                    if (this.MatColonyOn == null)
+                    /*if (this.MatColonyOn == null)
                     {
                         Loger.Log("this.MatColonyOn == null");
                     }
                     else
                         Loger.Log("this.MatColonyOn != null");
+                        */
                     return this.MatColonyOn;
                 }
 
@@ -75,14 +76,14 @@ namespace RimWorldOnlineCity
                     , ShaderDatabase.WorldOverlayTransparentLit
                     , Color.white
                     , WorldMaterials.WorldObjectRenderQueue);
-
+                /*
                 if (this.MatColonyOff == null)
                 {
                     Loger.Log("this.MatColonyOff == null");
                 }
                 else
                     Loger.Log("this.MatColonyOff != null");
-
+                    */
                 return this.MatColonyOff;
             }
         }

@@ -117,7 +117,7 @@ namespace RimWorldOnlineCity
 
         public AttackInitiatorFromSrv AttackOnlineInitiator(AttackInitiatorToSrv fromClient)
         {
-            Loger.Log("Client AttackOnlineInitiator " + fromClient.State);
+            //Loger.Log("Client AttackOnlineInitiator " + fromClient.State);
             var stat = TransObject<AttackInitiatorFromSrv>(fromClient, 27, 28);
 
             return stat;
@@ -125,7 +125,7 @@ namespace RimWorldOnlineCity
 
         public AttackHostFromSrv AttackOnlineHost(AttackHostToSrv fromClient)
         {
-            Loger.Log("Client AttackOnlineHost " + fromClient.State);
+            //Loger.Log("Client AttackOnlineHost " + fromClient.State);
             var stat = TransObject<AttackHostFromSrv>(fromClient, 29, 30);
 
             return stat;

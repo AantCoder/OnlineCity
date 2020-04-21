@@ -66,7 +66,7 @@ namespace Model
             var gx = new GameXMLUtils();
             Thing thing = gx.FromXml<Thing>(Data);
             thing.stackCount = stackCount == 0 ? Count : stackCount;
-            if (OriginalID <= 0 || useOriginalID)
+            if (OriginalID <= 0 || !useOriginalID)
             {
                 thing.thingIDNumber = -1;
                 ThingIDMaker.GiveIDTo(thing);
@@ -89,11 +89,11 @@ namespace Model
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnB" + (++nnnn).ToString() + ".xml", Data);
 
             bool col = Data.Contains("<kindDef>Colonist</kindDef>");
-            bool isAnimal = Data.Contains("<lastJobGiverThinkTree>Animal</lastJobGiverThinkTree>");
+            bool isAnimal = Data.Contains("<lastJobGiverThinkTree>Animal</lastJobGiverThinkTree>"); //похоже, с 1.1 этого тэга нет
             if (!isAnimal)
             {
                 isAnimal =
-                    !Data.Contains("<lastJobGiverThinkTree>Humanlike</lastJobGiverThinkTree>")
+                    !Data.Contains("<lastJobGiverThinkTree>Humanlike</lastJobGiverThinkTree>")  //похоже, с 1.1 этого тэга нет
                     && GameXMLUtils.GetByTag(Data, "def") == GameXMLUtils.GetByTag(Data, "kindDef");
             }
             if (!isAnimal)
@@ -126,7 +126,7 @@ namespace Model
                 */
 
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnA" + nnnn.ToString() + ".xml", Data);
-            return !col;
+            return !col && !isAnimal;
         }
     }
 }

@@ -28,5 +28,7 @@ namespace Model
         public TimeSpan SetPauseOnTimeToHost { get; set; }
 
         public bool VictoryHostToHost { get; set; }
+
+        public bool TerribleFatalError { get; set; }
     }
 }

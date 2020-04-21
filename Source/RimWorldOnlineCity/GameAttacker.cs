@@ -65,6 +65,10 @@ namespace RimWorldOnlineCity
         /// </summary>
         private Dictionary<Pawn, int> AttackerPawns { get; set; }
         /// <summary>
+        /// Имена атакующих пешек, до того как они были отправлены, для проверки, что все они были созданы вновь
+        /// </summary>
+        private List<string> AttackerOriginalPawnLabels { get; set; }
+        /// <summary>
         /// Команды отданые игроком для отправки
         /// </summary>
         private Dictionary<int, AttackPawnCommand> ToSendCommand { get; set; }
@@ -94,6 +98,10 @@ namespace RimWorldOnlineCity
         /// Истина, когда атакующий сдается. Флаг для передачи хосту и начала завершения
         /// </summary>
         public bool VictoryHostToHost { get; set; }
+        /// <summary>
+        /// Произошла ужасная ошибка, и всё нужно отменить. Когда истина, перестаём что-либо делать и ждем от сервера команды на перезапуск
+        /// </summary>
+        public bool TerribleFatalError { get; set; }
 
         public static bool Create()
         {
@@ -159,6 +167,7 @@ namespace RimWorldOnlineCity
                     }
                 }
                 var pawnsToSend = GetPawnsAndDeleteCaravan(caravan);
+                AttackerOriginalPawnLabels = pawnsToSend.Select(p => p.Name).ToList();
                 var response = connect.AttackOnlineInitiator(new AttackInitiatorToSrv()
                 {
                     State = 2,
@@ -286,6 +295,12 @@ namespace RimWorldOnlineCity
             ThingsIDDic.Remove(id);
             ThingsObjDic.Remove(id);
             CheckDestroy.Remove(id);
+
+            ModBaseData.RunMainThreadSync(() =>
+            {
+                thing.Destroy();
+            });
+            /*
             try
             {
                 thing.Destroy();
@@ -303,6 +318,7 @@ namespace RimWorldOnlineCity
                     Loger.Log("Client AttackUpdate DestroyThing Exception2 " + ext2.ToString());
                 }
             }
+            */
         }
 
         /// <summary>
@@ -318,9 +334,9 @@ namespace RimWorldOnlineCity
             if (AttackerPawns != null && AttackerPawns.Count > 0) Finish(false);
             Find.WindowStack.Add(new Dialog_Message("OCity_GameAttacker_Dialog_ErrorMessage".Translate(), msg, null, () => { }));
             */
-    }
+        }
 
-    private List<ThingEntry> GetPawnsAndDeleteCaravan(Caravan caravan)
+        private List<ThingEntry> GetPawnsAndDeleteCaravan(Caravan caravan)
         {
 
             var select = caravan.PawnsListForReading.ToList();
@@ -355,6 +371,12 @@ namespace RimWorldOnlineCity
             bool inTimerEvent = false;
             try
             {
+                if (TerribleFatalError)
+                {
+                    Find.TickManager.Pause();
+                    return;
+                }
+
                 //Scribe.ForceStop();
                 if (!Find.TickManager.Paused)
                 {
@@ -371,6 +393,52 @@ namespace RimWorldOnlineCity
                 InTimer = true;
                 AttackUpdateTick++;
                 Loger.Log("Client AttackUpdate #" + AttackUpdateTick.ToString() + ".");
+
+                if (AttackUpdateTick == 2)
+                {
+                    //Убираем сообщения Открыта область
+                    var findLabel = "LetterLabelAreaRevealed".Translate();
+                    for (int i = 0; i < Find.LetterStack.LettersListForReading.Count; i++)
+                    {
+                        if (Find.LetterStack.LettersListForReading[i].label == findLabel)
+                        {
+                            Find.LetterStack.RemoveLetter(Find.LetterStack.LettersListForReading[i--]);
+                        }
+                    }
+                    //проверяем, что все наши пешки на месте, если нет, то считаем, что загрузка прошла с ошибкой и вызываем отмену
+                    var terribleFatalError = AttackerOriginalPawnLabels.Count != AttackerPawns.Count;
+                    if (terribleFatalError)
+                    {
+                        Loger.Log($"Client AttackUpdate TerribleFatalError count: {AttackerOriginalPawnLabels.Count} != {AttackerPawns.Count}");
+                    }
+                    else
+                    {
+                        foreach (var pawnLabel in AttackerOriginalPawnLabels)
+                        {
+                            if (!AttackerPawns.Keys.Any(ap => ap.LabelCapNoCount == pawnLabel))
+                            {
+                                Loger.Log("Client AttackUpdate TerribleFatalError: " + pawnLabel);
+                                terribleFatalError = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (terribleFatalError)
+                    {
+                        Loger.Log("Client AttackUpdate TerribleFatalError");
+                        SessionClientController.Command((connect) =>
+                        {
+                            var toClient = connect.AttackOnlineInitiator(new AttackInitiatorToSrv()
+                            {
+                                State = 10,
+                                TerribleFatalError = true,
+                            });
+                            TerribleFatalError = true;
+                            Loger.Log("Client AttackUpdate TerribleFatalError end");
+                        });
+                        return;
+                    }
+                }
 
                 if (AttackUpdateTick == 3)
                 {
@@ -389,7 +457,7 @@ namespace RimWorldOnlineCity
                     var errNums = "1 ";
                     try
                     {
-                        Loger.Log($"Client AttackUpdate 1");
+                        //Loger.Log($"Client AttackUpdate 1");
                         //удаляем объекты которые созданы игрой а не нами
                         List<int> needNewThings = new List<int>();
                         CheckSpawnDestroyDisable = true;
@@ -424,7 +492,7 @@ namespace RimWorldOnlineCity
                         }
                         CheckSpawnDestroyDisable = false;
 
-                        Loger.Log($"Client AttackUpdate 2 ({AttackUpdateTick})");
+                        //Loger.Log($"Client AttackUpdate 2 ({AttackUpdateTick})");
                         var toSendCommand = ToSendCommand;
                         ToSendCommand = new Dictionary<int, AttackPawnCommand>();
                         errNums += "2 ";
@@ -441,7 +509,7 @@ namespace RimWorldOnlineCity
                         errNums += "3 ";
                         Action actUpdateState = () =>
                         {
-                            Loger.Log("Client AttackUpdate 4. UpdateState=" + toClient.UpdateState.Count);
+                            if (toClient.UpdateState.Count > 0) Loger.Log("Client AttackUpdate 4. UpdateState=" + toClient.UpdateState.Count);
 
                             //Применение изменения местоположения и пр. по ID хоста
                             for (int i = 0; i < toClient.UpdateState.Count; i++)
@@ -533,6 +601,7 @@ namespace RimWorldOnlineCity
                                                         AttackerPawns[p] = te.OriginalID;
 
                                                         p.playerSettings.hostilityResponse = HostilityResponseMode.Ignore;
+                                                        p.drafter.Drafted = true;
                                                         p.jobs.StartJob(new Job(JobDefOf.Wait_Combat)
                                                         {
                                                             playerForced = true,
@@ -717,31 +786,44 @@ namespace RimWorldOnlineCity
 
                 if (job != null)
                 {
+
                     if (job.targetA.HasThing)
                     {
                         int tid;
                         if (!ThingsIDDic.TryGetValue(job.targetA.Thing.thingIDNumber, out tid))
                         {
-                            //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob Error " + pawn.Label + " ThingID " + job.targetA.Thing.Label + " " + job.targetA.Thing.thingIDNumber.ToString());
-                            return;
+                            //если не нашли в словаре, то предполагаем, что ссылка на вешь на нас, для этого запоминаем defName
+                            comm.TargetDefName = job.targetA.Thing.def.defName;
                         }
-                        comm.TargetID = tid;
+                        else
+                        {
+                            comm.TargetID = tid;
+                            Loger.Log($"AttackUpdate UIEventNewJob {job.targetA.Thing.Label} ThingsIDDic({job.targetA.Thing.thingIDNumber}, {tid}) " +
+                                $"ThingsObjDic({job.targetA.Thing.thingIDNumber}, {ThingsObjDic[job.targetA.Thing.thingIDNumber]})");
+                        }
                     }
                     else
                         comm.TargetPos = new IntVec3S(job.targetA.Cell);
 
-                    if (job.def == JobDefOf.AttackStatic)
-                    {
-                        comm.Command = AttackPawnCommand.PawnCommand.Attack;
-                    }
-                    else if (job.def == JobDefOf.AttackMelee)
-                    {
-                        comm.Command = AttackPawnCommand.PawnCommand.AttackMelee;
-                    }
-                    else if (job.def == JobDefOf.Goto)
-                    {
-                        comm.Command = AttackPawnCommand.PawnCommand.Goto;
-                    }
+                    Loger.Log("AttackUpdate UIEventNewJob Command:" + job.def.defName
+                        + " targetA:" + (job.targetA == null ? "null" : job.targetA.ToString() + (job.targetA.HasThing ? "-" + job.targetA.Thing.def.defName + "-" + job.targetA.Thing.Label : ""))
+                        + " targetB:" + (job.targetB == null ? "null" : job.targetB.ToString() + (job.targetB.HasThing ? "-" + job.targetB.Thing.def.defName + "-" + job.targetB.Thing.Label : ""))
+                        + " targetC:" + (job.targetC == null ? "null" : job.targetC.ToString() + (job.targetC.HasThing ? "-" + job.targetC.Thing.def.defName + "-" + job.targetC.Thing.Label : ""))
+                        + " TargetID:" + comm.TargetID
+                        + " TargetDefName:" + comm.TargetDefName
+                        + " pawn:" + pawn.Label);
+
+                    if (job.def == JobDefOf.Goto) comm.Command = AttackPawnCommand.PawnCommand.Goto;
+                    else if (job.def == JobDefOf.AttackStatic) comm.Command = AttackPawnCommand.PawnCommand.Attack;
+                    else if (job.def == JobDefOf.AttackMelee) comm.Command = AttackPawnCommand.PawnCommand.AttackMelee;
+                    else if (job.def == JobDefOf.Equip) comm.Command = AttackPawnCommand.PawnCommand.Equip;
+                    else if (job.def == JobDefOf.TakeInventory) comm.Command = AttackPawnCommand.PawnCommand.TakeInventory;
+                    else if (job.def == JobDefOf.Wear) comm.Command = AttackPawnCommand.PawnCommand.Wear;
+                    else if (job.def == JobDefOf.DropEquipment) comm.Command = AttackPawnCommand.PawnCommand.DropEquipment;
+                    else if (job.def == JobDefOf.RemoveApparel) comm.Command = AttackPawnCommand.PawnCommand.RemoveApparel;
+                    else if (job.def == JobDefOf.Ingest) comm.Command = AttackPawnCommand.PawnCommand.Ingest;
+                    else if (job.def == JobDefOf.Strip) comm.Command = AttackPawnCommand.PawnCommand.Strip;
+                    else if (job.def == JobDefOf.TendPatient) comm.Command = AttackPawnCommand.PawnCommand.TendPatient;
                     else
                     {
                         //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore");
@@ -975,7 +1057,9 @@ namespace RimWorldOnlineCity
                 ModBaseData.RunMainThreadSync(() =>
                 {
                     //переделать карту в постоянную?
-                    foreach (var pawn in GameMap.mapPawns.AllPawns.ToList())
+                    var mapPawnsA = new Pawn[GameMap.mapPawns.AllPawnsSpawned.Count];
+                    GameMap.mapPawns.AllPawnsSpawned.CopyTo(mapPawnsA);
+                    foreach (var pawn in mapPawnsA)
                     {
                         //Loger.Log($"Client AttackerFinish {pawn.Label} CanHaveFaction {pawn.def.CanHaveFaction}, Humanlike {pawn.RaceProps.Humanlike}, Faction " + (pawn.Faction == null ? "null" : pawn.Faction.Name + " " + pawn.Faction.IsPlayer));
                         if (!pawn.def.CanHaveFaction || pawn.RaceProps.Humanlike || pawn.Faction == null || pawn.Faction.IsPlayer) continue;
