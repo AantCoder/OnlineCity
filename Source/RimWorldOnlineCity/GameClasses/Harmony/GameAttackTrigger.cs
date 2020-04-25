@@ -8,6 +8,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Threading;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -245,6 +247,102 @@ namespace RimWorldOnlineCity.GameClasses
             }
         }
     }
+
+    /// <summary>
+    /// Следим за командами атакующего игрока
+    /// </summary>
+    [HarmonyPatch(typeof(ITab_Pawn_Gear))]
+    [HarmonyPatch("InterfaceDrop")]
+    public static class ITab_Pawn_Gear_InterfaceDrop_Patch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(ITab_Pawn_Gear __instance, Thing t)
+        {
+            if (GameAttackTrigger_Patch.ActiveAttacker.Count == 0) return true;
+            var pawn = (t.ParentHolder as Pawn_InventoryTracker)?.pawn;
+            if (pawn == null) return true;
+            if (pawn.Map == null) return true;
+
+            //Если дропается вещь не из инвентаря (например оружие или одежда), то это делается джобом а не здесь
+            if (!pawn.inventory.innerContainer.Any(tt => tt == t)) return true;
+
+            GameAttacker client;
+            if (GameAttackTrigger_Patch.ActiveAttacker.TryGetValue(pawn.Map, out client))
+            {
+                return client.UIEventInventoryDrop(t);
+            }
+            return true;
+        }
+    }
+
+    /*
+    [HarmonyPatch(typeof(ThingOwner), new Type[0])]
+    [HarmonyPatch("TryDrop")]
+    [HarmonyPatch(new Type[] { typeof(Thing ), typeof(IntVec3 ), typeof(Map ), typeof(ThingPlaceMode ), typeof(Thing), typeof(Action<Thing, int>), typeof(Predicate < IntVec3 >) })]
+    public static class ThingOwner_TryDrop_Patch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(Thing thing, IntVec3 dropLoc, Map map, ThingPlaceMode mode, out Thing lastResultingThing, Action<Thing, int> placedAction = null, Predicate<IntVec3> nearPlaceValidator = null)
+        {
+            Loger.Log("TryDrop");
+            lastResultingThing = null;
+            return true;
+        }
+    }
+    */
+    /*
+    /// <summary>
+    /// Следим за командами атакующего игрока
+    /// </summary>
+    [HarmonyPatch(typeof(ITab_Pawn_Gear))]
+    [HarmonyPatch("InterfaceDrop")]
+    public static class ITab_Pawn_Gear_InterfaceDrop_Patch
+    {
+        [HarmonyPrefix]
+        public static void Prefix(Thing thing)
+        {
+            Loger.Log("InterfaceDrop");
+        }
+    }
+
+    /// <summary>
+    /// Следим за командами атакующего игрока
+    /// </summary>
+    [HarmonyPatch(typeof(GenDrop))]
+    [HarmonyPatch("TryDropSpawn")]
+    public static class GenDrop_TryDropSpawn_Patch
+    {
+        [HarmonyPrefix]
+        public static void Prefix()
+        {
+            try
+            {
+                Log.Warning("TryDropSpawn1");
+                Loger.Log("TryDropSpawn1");
+            }
+            catch
+            {
+                Thread.Sleep(20);
+                Loger.Log("TryDropSpawn11");
+            }
+        }
+
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            try
+            {
+                Log.Warning("TryDropSpawn2");
+                Loger.Log("TryDropSpawn2");
+            }
+            catch
+            {
+                Thread.Sleep(20);
+                Loger.Log("TryDropSpawn22");
+            }
+        }
+    }
+    */
 
     /// <summary>
     /// Прехватываем управление коэффициентом скорости игры

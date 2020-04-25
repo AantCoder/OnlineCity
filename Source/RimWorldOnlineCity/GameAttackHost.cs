@@ -1087,6 +1087,13 @@ namespace RimWorldOnlineCity
                         if (target == null) target = pawn;
                         SetPawnJob(pawn, JobDefOf.TendPatient, target, 1); //не проверено
                     }
+                    else if (comm.Command == AttackPawnCommand.PawnCommand.OC_InventoryDrop)
+                    {
+                        stopJob = true;
+                        //Это не job, а немедленная команда бросить из инвентаря
+                        Loger.Log("HostAttackUpdate ApplyAttackingPawnJob InventoryDrop: " + target.Label);
+                        GenDrop.TryDropSpawn(target, pawn.Position, GameMap, ThingPlaceMode.Near, out var nt);
+                    }
                     else stopJob = true;
                 }
                 if (stopJob)

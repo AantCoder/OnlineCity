@@ -91,6 +91,11 @@ namespace RimWorldOnlineCity
         /// </summary>
         private Dictionary<int, Thing> CheckSpawn { get; set; }
 
+        /// <summary>
+        /// Не пересылать дроп на сервер, напрмиер, когда происходит удаление
+        /// </summary>
+        private bool ThingDropIgnore { get; set; }
+
         private bool CheckSpawnDestroyDisable { get; set; }
         private Object CheckSpawnDestroySunc { get; set; } = new Object();
 
@@ -298,7 +303,15 @@ namespace RimWorldOnlineCity
 
             ModBaseData.RunMainThreadSync(() =>
             {
-                thing.Destroy();
+                try
+                {
+                    ThingDropIgnore = true;
+                    thing.Destroy();
+                }
+                finally
+                {
+                    ThingDropIgnore = false;
+                }
             });
             /*
             try
@@ -354,14 +367,22 @@ namespace RimWorldOnlineCity
                 }*/
             }
             //пешки получины, остальное уничтожаем
-            caravan.RemoveAllPawns();
-            if (caravan.Spawned)
+            try
             {
-                Find.WorldObjects.Remove(caravan);
+                ThingDropIgnore = true;
+                caravan.RemoveAllPawns();
+                if (caravan.Spawned)
+                {
+                    Find.WorldObjects.Remove(caravan);
+                }
+                foreach (var pair in select)
+                {
+                    GameUtils.PawnDestroy(pair);
+                }
             }
-            foreach (var pair in select)
+            finally
             {
-                GameUtils.PawnDestroy(pair);
+                ThingDropIgnore = false;
             }
             return sendThings;
         }
@@ -524,7 +545,15 @@ namespace RimWorldOnlineCity
                                     DelayDestroyPawn.Remove(thing);
                                 }
                                 */
-                                GameUtils.ApplyState(thing, toClient.UpdateState[i]);
+                                try
+                                {
+                                    ThingDropIgnore = true;
+                                    GameUtils.ApplyState(thing, toClient.UpdateState[i]);
+                                }
+                                finally
+                                {
+                                    ThingDropIgnore = false;
+                                }
                             }
 
                             /* NewCorpses
@@ -600,8 +629,8 @@ namespace RimWorldOnlineCity
                                                     {
                                                         AttackerPawns[p] = te.OriginalID;
 
-                                                        p.playerSettings.hostilityResponse = HostilityResponseMode.Ignore;
-                                                        p.drafter.Drafted = true;
+                                                        if (p.playerSettings != null) p.playerSettings.hostilityResponse = HostilityResponseMode.Ignore;
+                                                        if (p.drafter != null) p.drafter.Drafted = true;
                                                         p.jobs.StartJob(new Job(JobDefOf.Wait_Combat)
                                                         {
                                                             playerForced = true,
@@ -609,6 +638,16 @@ namespace RimWorldOnlineCity
                                                             checkOverrideOnExpire = false,
                                                         }
                                                             , JobCondition.InterruptForced);
+                                                    }
+                                                    else
+                                                    {
+                                                        //для нейтральных животных
+                                                        //все созданые пешки или враги или игрока, но если у них нет признака TransportID, то делаем их нейтральными
+                                                        //Loger.Log($"Client NewPawnsSpawnList {p.Label} CanHaveFaction {p.def.CanHaveFaction}, Humanlike {p.RaceProps.Humanlike}, Faction " + (p.Faction == null ? "null" : p.Faction.Name + " " + p.Faction.IsPlayer));
+                                                        if (p.def.CanHaveFaction /*&& !p.RaceProps.Humanlike*/ && p.Faction != null && p.Faction.IsPlayer)
+                                                        {
+                                                            p.SetFaction(null);
+                                                        }
                                                     }
                                                 }
                                                 else
@@ -849,6 +888,49 @@ namespace RimWorldOnlineCity
         }
 
         /// <summary>
+        /// Команда выложить из инвентаря. При false отменить действие
+        /// </summary>
+        public bool UIEventInventoryDrop(Thing thing)
+        {
+            Loger.Log("AttackerUpdate UIEventInventoryDrop "
+                + thing.GetType().ToString() + " " + thing.Label + " id=" + thing.thingIDNumber
+                + (thing is Corpse ? " Corpse " + (thing as Corpse).InnerPawn.thingIDNumber.ToString() : ""));
+
+            try
+            {
+                var pawn = (thing.ParentHolder as Pawn_InventoryTracker)?.pawn;
+                if (pawn == null) return true;
+
+                int id;
+                if (!AttackerPawns.TryGetValue(pawn, out id))
+                {
+                    //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob Out of event " + pawn.Label + " " + pawn.thingIDNumber.ToString());
+                    return true;
+                }
+
+                if (ToSendCommand.TryGetValue(id, out var comm0) && comm0.Command == AttackPawnCommand.PawnCommand.OC_InventoryDrop)
+                {
+                    Loger.Log("AttackerUpdate UIEventInventoryDrop last InventoryDrop not send");
+                    return false;
+                }
+
+                var comm = new AttackPawnCommand()
+                {
+                    HostPawnID = id
+                };
+                comm.TargetDefName = thing.def.defName;
+                comm.Command = AttackPawnCommand.PawnCommand.OC_InventoryDrop;
+
+                ToSendCommand[id] = comm;
+            }
+            catch (Exception exp)
+            {
+                Loger.Log("AttackUpdate UIEventInventoryDrop " + exp.ToString());
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Перехват события когда что-то было уничтожено, получило повреждения или только что создано
         /// </summary>
         public void UIEventChange(Thing thing, bool distroy = false, bool newSpawn = false)
@@ -1056,7 +1138,9 @@ namespace RimWorldOnlineCity
             {
                 ModBaseData.RunMainThreadSync(() =>
                 {
-                    //переделать карту в постоянную?
+                    //переделать карту в постоянную
+
+                    //переводим всех врагов в нейтральные, кроме людй (Humanlike)
                     var mapPawnsA = new Pawn[GameMap.mapPawns.AllPawnsSpawned.Count];
                     GameMap.mapPawns.AllPawnsSpawned.CopyTo(mapPawnsA);
                     foreach (var pawn in mapPawnsA)
