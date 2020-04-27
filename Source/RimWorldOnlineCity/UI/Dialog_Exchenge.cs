@@ -1008,7 +1008,7 @@ namespace RimWorldOnlineCity.UI
             var rect3 = new Rect(xr, rect.y, 24f, 24f);
             if (th.WornByCorpse)
             {
-                TooltipHandler.TipRegion(rect3, (th.Concrete ? "Снята с трупа" : "Для одежды допустимо быть снятой с трупа").NeedTranslate());
+                TooltipHandler.TipRegion(rect3, (th.Concrete ? "OCity_Dialog_Exchenge_FromCorpse" : "OCity_Dialog_Exchenge_FromCorpseD").Translate());
                 if (EditOrderIsMy && !th.Concrete)
                 {
                     if (Widgets.ButtonImage(rect3, IconSkull, Color.green)) th.WornByCorpse = false;
@@ -1018,7 +1018,7 @@ namespace RimWorldOnlineCity.UI
             }
             else
             {
-                TooltipHandler.TipRegion(rect3, (th.Concrete ? "НЕ с трупа" : "Для одежды НЕ допустимо быть снятой с трупа.").NeedTranslate());
+                TooltipHandler.TipRegion(rect3, (th.Concrete ? "OCity_Dialog_Exchenge_FromNotCorpse" : "OCity_Dialog_Exchenge_FromNotCorpseD").Translate());
                 if (EditOrderIsMy && !th.Concrete)
                     if (Widgets.ButtonImage(rect3, IconSkull, Color.gray)) th.WornByCorpse = true;
             }

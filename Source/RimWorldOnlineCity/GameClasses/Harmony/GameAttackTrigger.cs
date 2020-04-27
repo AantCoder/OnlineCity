@@ -275,75 +275,6 @@ namespace RimWorldOnlineCity.GameClasses
         }
     }
 
-    /*
-    [HarmonyPatch(typeof(ThingOwner), new Type[0])]
-    [HarmonyPatch("TryDrop")]
-    [HarmonyPatch(new Type[] { typeof(Thing ), typeof(IntVec3 ), typeof(Map ), typeof(ThingPlaceMode ), typeof(Thing), typeof(Action<Thing, int>), typeof(Predicate < IntVec3 >) })]
-    public static class ThingOwner_TryDrop_Patch
-    {
-        [HarmonyPrefix]
-        public static bool Prefix(Thing thing, IntVec3 dropLoc, Map map, ThingPlaceMode mode, out Thing lastResultingThing, Action<Thing, int> placedAction = null, Predicate<IntVec3> nearPlaceValidator = null)
-        {
-            Loger.Log("TryDrop");
-            lastResultingThing = null;
-            return true;
-        }
-    }
-    */
-    /*
-    /// <summary>
-    /// Следим за командами атакующего игрока
-    /// </summary>
-    [HarmonyPatch(typeof(ITab_Pawn_Gear))]
-    [HarmonyPatch("InterfaceDrop")]
-    public static class ITab_Pawn_Gear_InterfaceDrop_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix(Thing thing)
-        {
-            Loger.Log("InterfaceDrop");
-        }
-    }
-
-    /// <summary>
-    /// Следим за командами атакующего игрока
-    /// </summary>
-    [HarmonyPatch(typeof(GenDrop))]
-    [HarmonyPatch("TryDropSpawn")]
-    public static class GenDrop_TryDropSpawn_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix()
-        {
-            try
-            {
-                Log.Warning("TryDropSpawn1");
-                Loger.Log("TryDropSpawn1");
-            }
-            catch
-            {
-                Thread.Sleep(20);
-                Loger.Log("TryDropSpawn11");
-            }
-        }
-
-        [HarmonyPostfix]
-        public static void Postfix()
-        {
-            try
-            {
-                Log.Warning("TryDropSpawn2");
-                Loger.Log("TryDropSpawn2");
-            }
-            catch
-            {
-                Thread.Sleep(20);
-                Loger.Log("TryDropSpawn22");
-            }
-        }
-    }
-    */
-
     /// <summary>
     /// Прехватываем управление коэффициентом скорости игры
     /// </summary>
@@ -379,6 +310,87 @@ namespace RimWorldOnlineCity.GameClasses
         }
     }
 
+    /// <summary>
+    /// Перехватываем событие перемещения пешки на край карты, останавливаем её и откидываем назад, чтобы она не ушла с карты. 
+    /// Это заплатка от ошибки, когда игровой ИИ уходит враждебной пешкой с карты
+    /// </summary>
+    [HarmonyPatch(typeof(Thing))]
+    [HarmonyPatch("Position", MethodType.Setter)]
+    public static class Thing_Position_Patch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(Thing __instance)
+        {
+            if (!(__instance is Pawn)) return;
+            if (GameAttackTrigger_Patch.ActiveAttackHost.Count == 0) return;
+            if (__instance.Map == null) return;
+
+            GameAttackHost clientHost;
+            if (GameAttackTrigger_Patch.ActiveAttackHost.TryGetValue(__instance.Map, out clientHost))
+            {
+                var pawn = __instance as Pawn;
+                if (clientHost.AttackingPawns == null
+                    || !clientHost.AttackingPawns.Contains(pawn)) return;
+
+                //игнорируем некоторые виды, чтобы можно было взять вещи с краю
+                var jobName = pawn.CurJobDef?.defName;
+                if (jobName == "Equip"
+                    || jobName == "TakeInventory"
+                    || jobName == "Wear")
+                    return;
+
+                var mapBorder = 1;
+                if (pawn.Position.x < mapBorder || pawn.Position.x > pawn.Map.Size.x - 1 - mapBorder
+                    || pawn.Position.z < mapBorder || pawn.Position.z > pawn.Map.Size.z - 1 - mapBorder)
+                {
+                    //мы на краю
+                    if (clientHost.AttackingPawnsLastPos.TryGetValue(pawn, out var resPos))
+                    {
+                        try
+                        {
+                            clientHost.UIEventNewJobDisable = true;
+                            pawn.Position = resPos;
+                            pawn.Notify_Teleported(true, true);
+                            pawn.Drawer.DrawTrackerTick();
+                        }
+                        catch(Exception e) 
+                        {
+                            Loger.Log("Client Thing_Position_Patch Exception1: " + e.ToString());
+                        }
+                        clientHost.UIEventNewJobDisable = false;
+
+                        LongEventHandler.QueueLongEvent(delegate
+                        {
+                            try
+                            {
+                                //задаем команду стоять и не двигаться
+                                clientHost.AttackingPawnJobDic.Remove(pawn.thingIDNumber);
+                                clientHost.UIEventNewJobDisable = true;
+                                pawn.jobs.StartJob(new Job(JobDefOf.Wait_Combat)
+                                {
+                                    playerForced = true,
+                                    expiryInterval = int.MaxValue,
+                                    checkOverrideOnExpire = false,
+                                }
+                                    , JobCondition.InterruptForced);
+                            }
+                            catch (Exception e)
+                            {
+                                Loger.Log("Client Thing_Position_Patch Exception2: " + e.ToString());
+                            }
+                            clientHost.UIEventNewJobDisable = false;
+                        }, "", false, null);
+
+                    }
+                }
+                else
+                {
+                    //мы не на краю
+                    clientHost.AttackingPawnsLastPos[pawn] = pawn.Position;
+                }
+            }
+        }
+    }
 
     /*
     /// <summary>

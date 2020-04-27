@@ -118,12 +118,17 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Пешки которые атакуют хост.
         /// </summary>
-        public List<Pawn> AttackingPawns { get; set; }
+        public HashSet<Pawn> AttackingPawns { get; set; }
 
         /// <summary>
         /// Пешки которые атакуют хост. (ID пешки у хоста, ID пешки у атакующего (пришло в OriginalID, а ему отправляется в TransportID))
         /// </summary>
         public Dictionary<int, int> AttackingPawnDic { get; set; }
+
+        /// <summary>
+        /// Предыдущее местоположение атакующих пешек, нужно только для механизма заплатки бага. См. Thing_Position_Patch
+        /// </summary>
+        public Dictionary<Pawn, IntVec3> AttackingPawnsLastPos { get; set; }
 
         /// <summary>
         /// Команды у пешек, которые атакуют
@@ -327,8 +332,6 @@ namespace RimWorldOnlineCity
 
                             if (!isPlant) SendedActual[thc.thingIDNumber] = thc;
 
-                            //todo убрать
-                            //if (thc.thingIDNumber == 22121) Loger.Log($"HostAttackUpdate SendedActual Test1Add! {thc.Label} {thc.thingIDNumber}. {thc.Spawned}");
                         }
                     }
 
@@ -384,8 +387,9 @@ namespace RimWorldOnlineCity
                         ToSendThingAdd = new HashSet<Thing>();
                         FireList = new HashSet<Thing>();
                         ToSendDelayedFillPawnsId = new HashSet<int>();
-                        AttackingPawns = new List<Pawn>();
+                        AttackingPawns = new HashSet<Pawn>();
                         AttackingPawnDic = new Dictionary<int, int>();
+                        AttackingPawnsLastPos = new Dictionary<Pawn, IntVec3>();
                         AttackingPawnJobDic = new Dictionary<int, AttackPawnCommand>();
                         AttackUpdateTick = 0;
 
@@ -1126,7 +1130,7 @@ namespace RimWorldOnlineCity
             //UIEventNewJobDisable = false;
         }
 
-        private bool UIEventNewJobDisable = false;
+        public bool UIEventNewJobDisable = false;
         public void UIEventNewJob(Pawn pawn, Job job) //если job == null значит команда стоять и не двигаться Wait_Combat
         {
             try
@@ -1343,8 +1347,8 @@ namespace RimWorldOnlineCity
                 {
                     if (!pawn.Dead
                         && !pawn.Downed
-                        && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - MapBorder
-                            || pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - MapBorder))
+                        && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - 1 - MapBorder
+                            || pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - 1 - MapBorder))
                     {
                         GameUtils.PawnDestroy(pawn);
                     }

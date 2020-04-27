@@ -85,28 +85,28 @@ namespace RimWorldOnlineCity
             */
 
             Text.Font = GameFont.Medium;
-            Widgets.Label(inRect, "Настройки".NeedTranslate() + " " + Player.Login);
+            Widgets.Label(inRect, "OCity_PlayerClient_Settings".Translate().ToString() + " " + Player.Login);
             Text.Font = GameFont.Small;
             float topOffset = 30;
 
             /// Я учавствую в PVP
             var rect = new Rect(inRect.x + 30f, inRect.y + topOffset, 250f, 25f);
-            Widgets.CheckboxLabeled(rect, "Я учавствую в PVP".NeedTranslate(), ref Input_EnablePVP, SessionClientController.Data.TimeChangeEnablePVP >= DateTime.UtcNow, null, null, true);
+            Widgets.CheckboxLabeled(rect, "OCity_PlayerClient_InvolvedInPVP".Translate(), ref Input_EnablePVP, SessionClientController.Data.TimeChangeEnablePVP >= DateTime.UtcNow, null, null, true);
             rect = new Rect(inRect.x + 30f + 250f, inRect.y + topOffset, inRect.width - 30f - 250f, 25f);
             if (SessionClientController.Data.TimeChangeEnablePVP >= DateTime.UtcNow)
             {
                 Input_EnablePVP = Player.EnablePVP;
-                Widgets.Label(rect, "(можно изменить {0})".NeedTranslate(SessionClientController.Data.TimeChangeEnablePVP.ToGoodUtcString()));
+                Widgets.Label(rect, "OCity_PlayerClient_CanChange".Translate(SessionClientController.Data.TimeChangeEnablePVP.ToGoodUtcString()));
             }
             else
             {
-                Widgets.Label(rect, "(можно изменить сейчас)".NeedTranslate());
+                Widgets.Label(rect, "OCity_PlayerClient_CanChangeNow".Translate());
             }
             topOffset += 30f;
 
             /// Интервал сохранений в минутах
             rect = new Rect(inRect.x + 30f, inRect.y + topOffset, inRect.width - 30f, 25f);
-            Widgets.Label(rect, "Интервал сохранений в минутах (не меньше 5, по умолчанию 15):".NeedTranslate());
+            Widgets.Label(rect, "OCity_PlayerClient_SaveInterval".Translate());
             topOffset += 25f;
             rect = new Rect(inRect.x + 30f, inRect.y + topOffset, 250f, 25f);
             Input_DelaySaveGame = GUI.TextField(rect, Input_DelaySaveGame, 1000);
@@ -114,7 +114,7 @@ namespace RimWorldOnlineCity
 
             /// Мой дискорд
             rect = new Rect(inRect.x + 30f, inRect.y + topOffset, inRect.width - 30f, 25f);
-            Widgets.Label(rect, "Мой дискорд:".NeedTranslate());
+            Widgets.Label(rect, "OCity_PlayerClient_Discord".Translate());
             topOffset += 25f;
             rect = new Rect(inRect.x + 30f, inRect.y + topOffset, 250f, 25f);
             Input_DiscordUserName = GUI.TextField(rect, Input_DiscordUserName, 1000);
@@ -122,7 +122,7 @@ namespace RimWorldOnlineCity
 
             /// Почта
             rect = new Rect(inRect.x + 30f, inRect.y + topOffset, inRect.width - 30f, 25f);
-            Widgets.Label(rect, "Почта:".NeedTranslate());
+            Widgets.Label(rect, "OCity_PlayerClient_Email".Translate());
             topOffset += 25f;
             rect = new Rect(inRect.x + 30f, inRect.y + topOffset, 250f, 25f);
             Input_EMail = GUI.TextField(rect, Input_EMail, 1000);
@@ -130,14 +130,14 @@ namespace RimWorldOnlineCity
 
             /// Обо мне
             rect = new Rect(inRect.x + 30f, inRect.y + topOffset, inRect.width - 30f, 25f);
-            Widgets.Label(rect, "Обо мне:".NeedTranslate());
+            Widgets.Label(rect, "OCity_PlayerClient_AboutMyself".Translate());
             topOffset += 25f;
             rect = new Rect(inRect.x + 30f, inRect.y + topOffset, inRect.width - 50f, inRect.height - topOffset - 50f);
             Input_AboutMyTextBox.Drow(rect);
             topOffset = inRect.height - 50f;
             
             rect = new Rect(inRect.x + 70f, inRect.y + topOffset, 200f, 30f);
-            if (Widgets.ButtonText(rect, "Сохранить".NeedTranslate()))
+            if (Widgets.ButtonText(rect, "OCity_PlayerClient_Save".Translate()))
             {
                 Save();
             }

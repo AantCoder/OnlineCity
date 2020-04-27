@@ -20,9 +20,9 @@
 
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} игрока {1}</OCity_Caravan_Player>
-	<OCity_Caravan_PriceThing>Ценность вещей: {2}</OCity_Caravan_PriceThing>
-	<OCity_Caravan_PriceAnimalsPeople>Ценность людей и животных: {3}</OCity_Caravan_PriceAnimalsPeople>
-	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
+	<OCity_Caravan_Other>Ценность вещей: {2}
+Ценность людей и животных: {3}</OCity_Caravan_Other>
+	<OCity_Caravan_PlayerAttackCost>Максимальная ценность атакующих: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>Оставшаяся грузоподъемность: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Обмен товарами c {0}</OCity_Caravan_Trade>
 	<!-- Kor -->
@@ -49,6 +49,7 @@
 	<OCity_Dialog_ListChat>Чат</OCity_Dialog_ListChat>
 	<OCity_Dialog_ListInfo>Информация</OCity_Dialog_ListInfo>
 	<OCity_Dialog_ListAbout>О моде</OCity_Dialog_ListAbout>
+	<OCity_Dialog_Settings>Настройки</OCity_Dialog_Settings>
 	<OCity_Dialog_Connecting>Соединение...</OCity_Dialog_Connecting>
 	<OCity_Dialog_Login>Логин: </OCity_Dialog_Login>
 	<OCity_Dialog_Players>Игроки: </OCity_Dialog_Players>
@@ -114,6 +115,7 @@
 	<OCity_SessionCC_Client_UpdateNeeded>Обновите клиент! Версия для данного сервера: </OCity_SessionCC_Client_UpdateNeeded>
 	<OCity_SessionCC_InitConnectedIntro_Title>Внимание!</OCity_SessionCC_InitConnectedIntro_Title>
 	<OCity_SessionCC_InitConnectedIntro_Text>Если на сервере задано точное соответствие модов, и они ещё не установлены, то сейчас они будут скачены. Если в подпапке игры Mods есть важная информация, то нажмите Отмена и сделайте резерную копию! Процесс синхронизации модов может занять несколько минут, после чего игра будет перезапущена.</OCity_SessionCC_InitConnectedIntro_Text>
+	<OCity_SessionCC_FilesUpdated>Не все файлы прошли проверку на хеш, они были обновлены, закройте и откройте игру снова.</OCity_SessionCC_FilesUpdated>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
@@ -162,6 +164,10 @@
 	<OCity_Dialog_Exchenge_Whole_Less_Than>Цело не меньше чем </OCity_Dialog_Exchenge_Whole_Less_Than>
 	<OCity_Dialog_Exchenge_QualityNo_Less_Than>Качество не меньше чем</OCity_Dialog_Exchenge_QualityNo_Less_Than>
 	<OCity_Dialog_Exchenge_All>все</OCity_Dialog_Exchenge_All>
+	<OCity_Dialog_Exchenge_FromCorpse>Снята с трупа</OCity_Dialog_Exchenge_FromCorpse>
+	<OCity_Dialog_Exchenge_FromCorpseD>Для одежды допустимо быть снятой с трупа</OCity_Dialog_Exchenge_FromCorpseD>
+	<OCity_Dialog_Exchenge_FromNotCorpse>НЕ с трупа</OCity_Dialog_Exchenge_FromNotCorpse>
+	<OCity_Dialog_Exchenge_FromNotCorpseD>Для одежды НЕ допустимо быть снятой с трупа</OCity_Dialog_Exchenge_FromNotCorpseD>
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
@@ -202,7 +208,17 @@
 	<OCity_PlayerClient_marketValue>Ценность вещей: {5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>Ценность людей и животных: {6}</OCity_PlayerClient_marketValuePawn>
 	<OCity_PlayerClient_LastSaveTimeNon>не участвовал</OCity_PlayerClient_LastSaveTimeNon>
-
+	<OCity_PlayerClient_InvolvedInPVP>Участвует в PVP</OCity_PlayerClient_InvolvedInPVP>
+	<OCity_PlayerClient_NotInvolvedInPVP>Не участвует в PVP</OCity_PlayerClient_NotInvolvedInPVP>
+	<OCity_PlayerClient_Discord>Discord: </OCity_PlayerClient_Discord>
+	<OCity_PlayerClient_Email>Email: </OCity_PlayerClient_Email>
+	<OCity_PlayerClient_AboutMyself>О себе: </OCity_PlayerClient_AboutMyself>
+	<OCity_PlayerClient_Settings>Настройки</OCity_PlayerClient_Settings>
+	<OCity_PlayerClient_Save>Сохранить</OCity_PlayerClient_Save>
+	<OCity_PlayerClient_CanChange>(можно изменить {0})</OCity_PlayerClient_CanChange>
+	<OCity_PlayerClient_CanChangeNow>(можно изменить сейчас)</OCity_PlayerClient_CanChangeNow>
+	<OCity_PlayerClient_SaveInterval>Интервал сохранений в минутах (не меньше 5, по умолчанию 15):</OCity_PlayerClient_SaveInterval>
+	
 	<!-- Kor -->
 	<!-- GameUtils.cs -->
 	<OCity_GameUtils_From> из </OCity_GameUtils_From>

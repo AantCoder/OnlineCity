@@ -56,10 +56,10 @@ namespace RimWorldOnlineCity
 
         private string GetTextInfoCalc()
         {
-            var info0 = (Public.EnablePVP ? "Учавствует в PVP".NeedTranslate() : "Не учавствует в PVP".NeedTranslate()) + Environment.NewLine
-                + (string.IsNullOrEmpty(Public.DiscordUserName) ? "" : "Discord: ".NeedTranslate() + Public.DiscordUserName + Environment.NewLine)
-                + (string.IsNullOrEmpty(Public.EMail) ? "" : "Email: ".NeedTranslate() + Public.EMail + Environment.NewLine)
-                + (string.IsNullOrEmpty(Public.AboutMyText) ? "" : "О себе: ".NeedTranslate() + Environment.NewLine + Public.AboutMyText + Environment.NewLine)
+            var info0 = (Public.EnablePVP ? "OCity_PlayerClient_InvolvedInPVP".Translate() : "OCity_PlayerClient_NotInvolvedInPVP".Translate()).ToString() + Environment.NewLine
+                + (string.IsNullOrEmpty(Public.DiscordUserName) ? "" : "OCity_PlayerClient_Discord".Translate().ToString() + Public.DiscordUserName + Environment.NewLine)
+                + (string.IsNullOrEmpty(Public.EMail) ? "" : "OCity_PlayerClient_Email".Translate().ToString() + Public.EMail + Environment.NewLine)
+                + (string.IsNullOrEmpty(Public.AboutMyText) ? "" : "OCity_PlayerClient_AboutMyself".Translate().ToString() + Environment.NewLine + Public.AboutMyText + Environment.NewLine)
                 + Environment.NewLine;                
 
             var values = CostWorldObjects();

@@ -103,6 +103,12 @@ namespace ServerOnlineCity.Model
             CreateTime = DateTime.UtcNow;
             AttackUpdateTick = 0;
 
+            if (!TestMode)
+            {
+                Attacker.Public.LastPVPTime = DateTime.UtcNow;
+                Host.Public.LastPVPTime = DateTime.UtcNow;
+            }
+
             Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} New");
             return null;
         }
@@ -177,7 +183,7 @@ namespace ServerOnlineCity.Model
                         || fromClient.NewCorpses.Count > 0
                         || fromClient.Delete.Count > 0)
                     {
-                        //удаляем из Delete если сейчас команда добавитьс таким id
+                        //удаляем из Delete если сейчас команда добавить с таким id
                         foreach (var n in fromClient.NewPawnsId)
                         {
                             var index = Delete.IndexOf(n);
@@ -487,6 +493,12 @@ namespace ServerOnlineCity.Model
         /// <returns></returns>
         private bool CheckConnect(bool attacker)
         {
+            if (!TestMode)
+            {
+                Attacker.Public.LastPVPTime = DateTime.UtcNow;
+                Host.Public.LastPVPTime = DateTime.UtcNow;
+            }
+
             bool fail = false;
             bool asTestMode = TestMode;
             string logDet;

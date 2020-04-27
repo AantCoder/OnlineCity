@@ -1159,8 +1159,8 @@ namespace RimWorldOnlineCity
                     .Where(pawn =>
                         !pawn.Dead
                         && !pawn.Downed
-                        && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - MapBorder
-                            || pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - MapBorder))
+                        && (pawn.Position.x < MapBorder || pawn.Position.x > GameMap.Size.x - 1 - MapBorder
+                            || pawn.Position.z < MapBorder || pawn.Position.z > GameMap.Size.z - 1 - MapBorder))
                     .ToList();
                 Caravan caravan = CaravanMaker.MakeCaravan(listPawn, Faction.OfPlayer, GameMap.Tile, false);
                 Find.WorldObjects.Remove(GameMap.Parent);

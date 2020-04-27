@@ -21,6 +21,8 @@ namespace Model
 
         public DateTime LastOnlineTime { get; set; }
 
+        public DateTime LastPVPTime { get; set; }
+
         public long LastTick { get; set; }
 
         public bool EnablePVP { get; set; } = true; //todo После доработки интерфейса убрать

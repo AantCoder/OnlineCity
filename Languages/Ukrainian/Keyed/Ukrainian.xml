@@ -20,9 +20,9 @@
 
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} гравця {1}</OCity_Caravan_Player>
-	<OCity_Caravan_PriceThing>Цінність речей: {2}</OCity_Caravan_PriceThing>
-	<OCity_Caravan_PriceAnimalsPeople>Цінність людей та тварин: {3}</OCity_Caravan_PriceAnimalsPeople>
-	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
+	<OCity_Caravan_Other>Цінність речей: {2}
+Цінність людей та тварин: {3}</OCity_Caravan_Other>
+	<OCity_Caravan_PlayerAttackCost>The maximum price of attackers: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>Решта вантажопідйомності: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Обмін товарами з {0}</OCity_Caravan_Trade>
 	<!-- Kor -->
@@ -49,6 +49,7 @@
 	<OCity_Dialog_ListChat>Чат</OCity_Dialog_ListChat>
 	<OCity_Dialog_ListInfo>Інформація</OCity_Dialog_ListInfo>
 	<OCity_Dialog_ListAbout>Про мод</OCity_Dialog_ListAbout>
+	<OCity_Dialog_Settings>Settings</OCity_Dialog_Settings>
 	<OCity_Dialog_Connecting>З'єднання...</OCity_Dialog_Connecting>
 	<OCity_Dialog_Login>Логін: </OCity_Dialog_Login>
 	<OCity_Dialog_Players>Гравці: </OCity_Dialog_Players>
@@ -114,6 +115,7 @@
 	<OCity_SessionCC_Client_UpdateNeeded>Upgrade the client! Version for this server: </OCity_SessionCC_Client_UpdateNeeded>
 	<OCity_SessionCC_InitConnectedIntro_Title>Attention</OCity_SessionCC_InitConnectedIntro_Title>
 	<OCity_SessionCC_InitConnectedIntro_Text>If the exact match of the mods is set on the server, and they have not yet been installed, now they will be downloaded. If there is important information in the Mods game subfolder, click Cancel and make a backup copy! The mod synchronization process may take several minutes, after which the game will restart.</OCity_SessionCC_InitConnectedIntro_Text>
+	<OCity_SessionCC_FilesUpdated>Not all files are resolve hash check, they was been updated, Close and Open Game</OCity_SessionCC_FilesUpdated>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
@@ -162,6 +164,10 @@
 	<OCity_Dialog_Exchenge_Whole_Less_Than>whole no less than</OCity_Dialog_Exchenge_Whole_Less_Than>
 	<OCity_Dialog_Exchenge_QualityNo_Less_Than>The quality is no less than</OCity_Dialog_Exchenge_QualityNo_Less_Than>
 	<OCity_Dialog_Exchenge_All>all</OCity_Dialog_Exchenge_All>
+	<OCity_Dialog_Exchenge_FromCorpse>Taken from a corpse</OCity_Dialog_Exchenge_FromCorpse>
+	<OCity_Dialog_Exchenge_FromCorpseD>It is permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromCorpseD>
+	<OCity_Dialog_Exchenge_FromNotCorpse>NOT from a corpse</OCity_Dialog_Exchenge_FromNotCorpse>
+	<OCity_Dialog_Exchenge_FromNotCorpseD>It is NOT permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromNotCorpseD>
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
@@ -202,6 +208,16 @@
 	<OCity_PlayerClient_marketValue>Цінність речей: {5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>Цінність людей та тварин: {6}</OCity_PlayerClient_marketValuePawn>
 	<OCity_PlayerClient_LastSaveTimeNon>не участвовал</OCity_PlayerClient_LastSaveTimeNon>
+	<OCity_PlayerClient_InvolvedInPVP>Involved in PVP</OCity_PlayerClient_InvolvedInPVP>
+	<OCity_PlayerClient_NotInvolvedInPVP>Not involved in PVP</OCity_PlayerClient_NotInvolvedInPVP>
+	<OCity_PlayerClient_Discord>Discord: </OCity_PlayerClient_Discord>
+	<OCity_PlayerClient_Email>Email: </OCity_PlayerClient_Email>
+	<OCity_PlayerClient_AboutMyself>About myself:</OCity_PlayerClient_AboutMyself>
+	<OCity_PlayerClient_Settings>Settings</OCity_PlayerClient_Settings>
+	<OCity_PlayerClient_Save>Save</OCity_PlayerClient_Save>
+	<OCity_PlayerClient_CanChange>(can change {0})</OCity_PlayerClient_CanChange>
+	<OCity_PlayerClient_CanChangeNow>(can change now)</OCity_PlayerClient_CanChangeNow>
+	<OCity_PlayerClient_SaveInterval>Save interval in minutes (at least 5, default 15):</OCity_PlayerClient_SaveInterval>
 
 	<!-- Kor -->
 	<!-- GameUtils.cs -->

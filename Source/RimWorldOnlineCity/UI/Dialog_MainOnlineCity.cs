@@ -128,7 +128,7 @@ namespace RimWorldOnlineCity
                 List<TabRecord> list = new List<TabRecord>();
                 list.Add(new TabRecord("OCity_Dialog_ListChat".Translate(), () => { TabIndex = 0; }, TabIndex == 0));
                 list.Add(new TabRecord("OCity_Dialog_ListInfo".Translate(), () => { TabIndex = 1; }, TabIndex == 1));
-                list.Add(new TabRecord("Настройки".NeedTranslate(), () => { TabIndex = 2; }, TabIndex == 2));
+                list.Add(new TabRecord("OCity_Dialog_Settings".Translate(), () => { TabIndex = 2; }, TabIndex == 2));
                 list.Add(new TabRecord("OCity_Dialog_ListAbout".Translate(), () => { TabIndex = 3; }, TabIndex == 3));
                 TabDrawer.DrawTabs(screenRect, list);
                 if (TabIndex == 0) DoTab0Contents(tabRect);

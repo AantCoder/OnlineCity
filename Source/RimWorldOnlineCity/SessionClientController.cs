@@ -528,7 +528,7 @@ namespace RimWorldOnlineCity
 
                 if (serverInfo.IsModsWhitelisted && !CheckFiles())
                 {
-                    var msg = "Not all files are resolve hash check, they was been updated, Close and Open Game".NeedTranslate();
+                    var msg = "OCity_SessionCC_FilesUpdated".Translate();
                     //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
                     Disconnected(msg, () => ModsConfig.RestartFromChangedMods());
                     return;
