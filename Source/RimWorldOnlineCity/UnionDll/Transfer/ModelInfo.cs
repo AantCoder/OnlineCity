@@ -24,6 +24,7 @@ namespace Transfer
         public int Difficulty { get; set; }
         public int DelaySaveGame { get; set; }
         public bool DisableDevMode { get; set; }
+        public int MinutesIntervalBetweenPVP { get; set; }
         public bool EnableFileLog { get; set; }
         public DateTime TimeChangeEnablePVP { get; set; }
 

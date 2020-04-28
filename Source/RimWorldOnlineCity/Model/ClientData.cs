@@ -83,6 +83,8 @@ namespace RimWorldOnlineCity
 
         public bool DisableDevMode { get; set; }
 
+        public int MinutesIntervalBetweenPVP { get; set; }
+
         public DateTime TimeChangeEnablePVP { get; set; }
 
         public bool BackgroundSaveGameOff { get; set; }

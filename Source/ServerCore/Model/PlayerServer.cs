@@ -18,6 +18,8 @@ namespace ServerOnlineCity.Model
             Public.LastOnlineTime == DateTime.MinValue ? Public.LastSaveTime > DateTime.UtcNow.AddMinutes(-17) :
             Public.LastOnlineTime > (DateTime.UtcNow).AddSeconds(-10);
 
+        public int MinutesIntervalBetweenPVP => ServerManager.ServerSettings.MinutesIntervalBetweenPVP;
+
         public string Pass;
 
         public bool IsAdmin;

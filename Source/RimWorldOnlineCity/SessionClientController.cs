@@ -496,6 +496,7 @@ namespace RimWorldOnlineCity
             if (Data.DelaySaveGame == 0) Data.DelaySaveGame = 15;
             if (Data.DelaySaveGame < 5) Data.DelaySaveGame = 5;
             Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
+            Data.MinutesIntervalBetweenPVP = serverInfo.MinutesIntervalBetweenPVP;
             Data.TimeChangeEnablePVP = serverInfo.TimeChangeEnablePVP;
             MainHelper.OffAllLog = serverInfo.EnableFileLog;
         }

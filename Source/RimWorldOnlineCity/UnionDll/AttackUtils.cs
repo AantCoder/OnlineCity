@@ -52,7 +52,7 @@ namespace OCUnion
                     //todo  : host.Public.LastTick < 3600000 ? "You must not attack the game for less than a year"
 
                     //колонию атаковали недавно 
-                    : (DateTime.UtcNow - host.Public.LastPVPTime).TotalMinutes < 20
+                    : (DateTime.UtcNow - host.Public.LastPVPTime).TotalMinutes < host.MinutesIntervalBetweenPVP
                     ? "It was recently attacked. Wait to " + host.Public.LastPVPTime.ToGoodUtcString()
                     : null;
 

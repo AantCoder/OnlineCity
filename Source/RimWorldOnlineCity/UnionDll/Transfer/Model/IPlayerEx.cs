@@ -9,7 +9,10 @@ namespace Model
     public interface IPlayerEx
     {
         Player Public { get; }
+
         bool Online { get; }
+
+        int MinutesIntervalBetweenPVP { get; }
 
         WorldObjectsValues CostWorldObjects(long serverId = 0);
     }

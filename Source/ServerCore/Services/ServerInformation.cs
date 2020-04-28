@@ -122,6 +122,7 @@ namespace ServerOnlineCity.Services
                 ServerName = ServerManager.ServerSettings.ServerName,
                 DelaySaveGame = player.SettingDelaySaveGame,
                 DisableDevMode = ServerManager.ServerSettings.DisableDevMode,
+                MinutesIntervalBetweenPVP = ServerManager.ServerSettings.MinutesIntervalBetweenPVP,
                 EnableFileLog = player.SettingEnableFileLog,
                 TimeChangeEnablePVP = player.TimeChangeEnablePVP,
             };

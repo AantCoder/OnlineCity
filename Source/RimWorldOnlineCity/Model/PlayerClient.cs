@@ -16,6 +16,7 @@ namespace RimWorldOnlineCity
         public bool Online =>
             Public.LastOnlineTime == DateTime.MinValue ? Public.LastSaveTime > DateTime.UtcNow.AddMinutes(-17) :
             Public.LastOnlineTime > (DateTime.UtcNow + SessionClientController.Data.ServetTimeDelta).AddSeconds(-10);
+        public int MinutesIntervalBetweenPVP => SessionClientController.Data.MinutesIntervalBetweenPVP;
 
         public List<CaravanOnline> WObjects;
 
