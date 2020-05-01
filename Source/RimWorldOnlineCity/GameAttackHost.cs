@@ -194,6 +194,14 @@ namespace RimWorldOnlineCity
         public bool TerribleFatalError { get; set; }
 
         /// <summary>
+        /// Произошла ошибка на сервере. Мы ждем 60 секунд пока сервер не пришлет по системе mail команду. 
+        /// Если этого не происходит, то вызывает отключение по неизвестной ошибке. 
+        /// Также ожидание нужно, чтобы показать серверу, что ошибка произошла не из-за того что атакуемый отключился
+        /// </summary>
+        public bool WaitOrErrorExit { get; set; }
+        private DateTime WaitOrErrorExitStart { get; set; }
+
+        /// <summary>
         /// Пешки с текущей карты
         /// </summary>
         private Dictionary<int, Pawn> AllPawns = new Dictionary<int, Pawn>();
@@ -515,6 +523,8 @@ namespace RimWorldOnlineCity
         {
             Loger.Log("Client GameAttackHost error" + msg);
 
+            Clear();
+
             SessionClientController.Disconnected("OCity_GameAttacker_Dialog_ErrorMessage".Translate());
             /*
             Find.WindowStack.Add(new Dialog_Message("OCity_GameAttacker_Dialog_ErrorMessage".Translate(), msg, null, () => { }));
@@ -526,6 +536,22 @@ namespace RimWorldOnlineCity
             bool inTimerEvent = false;
             try
             {
+                if (WaitOrErrorExit)
+                {
+                    Find.TickManager.Pause();
+                    if (WaitOrErrorExitStart == DateTime.MinValue)
+                    {
+                        WaitOrErrorExitStart = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        if ((DateTime.UtcNow - WaitOrErrorExitStart).TotalSeconds > 60)
+                        {
+                            ErrorBreak("Unknown error");
+                        }
+                    }
+                    return;
+                }
                 if (TerribleFatalError)
                 {
                     Find.TickManager.Pause();
@@ -772,8 +798,6 @@ namespace RimWorldOnlineCity
 
                             foreach (var item in ToSendDeleteId)
                             {
-                                //todo убрать
-                                if (item == 22121) Loger.Log($"HostAttackUpdate SendedActual Test4Remove! {item}");
                                 SendedActual.Remove(item);
                             }
 
@@ -798,6 +822,12 @@ namespace RimWorldOnlineCity
                             ToSendDeleteId.Clear();
                             ToUpdateStateId.Clear();
                             ToUpdateState.Clear();
+                        }
+
+                        if (toClient == null || toClient.State == 0)
+                        {
+                            WaitOrErrorExit = true;
+                            return;
                         }
 
                         //принимаем настройки паузы

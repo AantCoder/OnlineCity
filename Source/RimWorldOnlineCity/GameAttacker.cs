@@ -313,25 +313,6 @@ namespace RimWorldOnlineCity
                     ThingDropIgnore = false;
                 }
             });
-            /*
-            try
-            {
-                thing.Destroy();
-            }
-            catch (Exception ext)
-            {
-                Loger.Log("Client AttackUpdate DestroyThing Exception1 " + ext.ToString());
-                Thread.Sleep(5);
-                try
-                {
-                    if (thing.Spawned) thing.Destroy();
-                }
-                catch (Exception ext2)
-                {
-                    Loger.Log("Client AttackUpdate DestroyThing Exception2 " + ext2.ToString());
-                }
-            }
-            */
         }
 
         /// <summary>
@@ -342,11 +323,9 @@ namespace RimWorldOnlineCity
         {
             Loger.Log("Client GameAttack error " + msg);
 
+            Clear();
+
             SessionClientController.Disconnected("OCity_GameAttacker_Dialog_ErrorMessage".Translate());
-            /*
-            if (AttackerPawns != null && AttackerPawns.Count > 0) Finish(false);
-            Find.WindowStack.Add(new Dialog_Message("OCity_GameAttacker_Dialog_ErrorMessage".Translate(), msg, null, () => { }));
-            */
         }
 
         private List<ThingEntry> GetPawnsAndDeleteCaravan(Caravan caravan)
@@ -815,7 +794,6 @@ namespace RimWorldOnlineCity
                 int id;
                 if (!AttackerPawns.TryGetValue(pawn, out id))
                 {
-                    //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob Out of event " + pawn.Label + " " + pawn.thingIDNumber.ToString());
                     return;
                 }
                 var comm = new AttackPawnCommand()
@@ -865,19 +843,15 @@ namespace RimWorldOnlineCity
                     else if (job.def == JobDefOf.TendPatient) comm.Command = AttackPawnCommand.PawnCommand.TendPatient;
                     else
                     {
-                        //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore");
                         return; //левые команды игнорятся, но перед ними идет отмена предыдущего с job == null
                         //comm.Command = AttackPawnCommand.PawnCommand.Wait_Combat;
                     }
                 }
                 else
                 {
-                    //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> ignore2");
                     return;
                     //comm.Command = AttackPawnCommand.PawnCommand.Wait_Combat;
                 }
-
-                //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob " + pawn.Label + " job=" + (job == null ? "null" : job.def.defName.ToString()) + " -> " + comm.Command.ToString());
 
                 ToSendCommand[id] = comm;
             }
@@ -904,7 +878,6 @@ namespace RimWorldOnlineCity
                 int id;
                 if (!AttackerPawns.TryGetValue(pawn, out id))
                 {
-                    //if (MainHelper.DebugMode && pawn.Label == "Douglas, Клерк") Loger.Log("AttackUpdate UIEventNewJob Out of event " + pawn.Label + " " + pawn.thingIDNumber.ToString());
                     return true;
                 }
 
@@ -977,7 +950,6 @@ namespace RimWorldOnlineCity
                         Rand.Seed = seed;
 
                         Loger.Log("Client CreateClearMap 2");
-                        //todo проверить что временный родитель mapParent будет удален
                         var mapParent = (MapParent)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Ambush); //WorldObjectDefOf.Ambush  WorldObjectDefOf.AttackedNonPlayerCaravan
                         mapParent.Tile = tile;
                         Loger.Log("Client CreateClearMap 3");
@@ -993,23 +965,6 @@ namespace RimWorldOnlineCity
                             //MapGenerator_GenerateContentsIntoMap_Patch.Disable = true;
                             var mapSet = new MapGeneratorDef()
                             {
-                                /*
- ElevationFertility ElevationFertility
- Caves Caves
- Terrain Terrain
- CavesTerrain CavesTerrain
- Roads Roads
- RockChunks RockChunks
- ScatterRuinsSimple ScatterRuinsSimple
- SteamGeysers SteamGeysers
- FindPlayerStartSpot FindPlayerStartSpot
- ScenParts ScenParts
- Plants Plants
- Snow Snow
- Animals Animals
- Fog Fog
- RocksFromGrid_NoMinerals RocksFromGrid_NoMinerals
-                                 */
                                 genSteps = mapParent.MapGeneratorDef.genSteps
                                     .Where(gs => gs.defName == "ElevationFertility"
                                         || gs.defName == "Caves"
@@ -1028,34 +983,6 @@ namespace RimWorldOnlineCity
                             //MapGenerator_GenerateContentsIntoMap_Patch.Disable = false;
                         }
                         Loger.Log("Client CreateClearMap 5");
-                        /*
-
-                        Map map = new Map();
-                        map.uniqueID = Find.UniqueIDsManager.GetNextMapID();
-                        map.info.Size = mapSize;
-                        map.info.parent = mapParent;
-                        map.ConstructComponents();
-                        Current.Game.AddMap(map);
-                        map.areaManager.AddStartingAreas();
-                        map.weatherDecider.StartInitialWeather();
-
-
-                        /*
-                        var mapGenerator = MapGeneratorDefOf.Encounter;
-                        IEnumerable<GenStepWithParams> enumerable = from x in mapGenerator.genSteps
-                                                                    select new GenStepWithParams(x, default(GenStepParams));
-                        MapGenerator.GenerateContentsIntoMap(enumerable, map, seed);
-                        * /
-                        //RockNoises.Init(map); //это внутри MapGenerator.GenerateContentsIntoMap
-
-                        Find.Scenario.PostMapGenerate(map);
-                        map.FinalizeInit();
-                        Verse.MapComponentUtility.MapGenerated(map);
-                        if (mapParent != null)
-                        {
-                            mapParent.PostMapGenerate();
-                        }
-                        */
 
                         LongEventHandler.QueueLongEvent(delegate
                         {
@@ -1067,14 +994,7 @@ namespace RimWorldOnlineCity
 
                                 Loger.Log("Client CreateClearMap 7");
                                 GenDebug.ClearArea(cellRect, map);
-                                /*
-                                foreach (IntVec3 current in cellRect)
-                                {
-                                    GenSpawn.Spawn(ThingDefOf.Granite, current, map, WipeMode.Vanish);
-                                }
 
-                                GenDebug.ClearArea(cellRect, map);
-                                */
                                 Loger.Log("Client CreateClearMap 8");
                                 ready(map, mapParent);
 
@@ -1083,6 +1003,7 @@ namespace RimWorldOnlineCity
                             catch (Exception exp)
                             {
                                 Loger.Log("Client CreateClearMap Event Exception: " + exp.ToString());
+                                ErrorBreak("Error CreateClearMap2");
                             }
                         }, "GeneratingMapForNewEncounter", false, null);
                     }
@@ -1094,6 +1015,7 @@ namespace RimWorldOnlineCity
                 catch (Exception exp)
                 {
                     Loger.Log("Client CreateClearMap Exception: " + exp.ToString());
+                    ErrorBreak("Error CreateClearMap1");
                 }
             }, "GeneratingMapForNewEncounter", false, null);
         }

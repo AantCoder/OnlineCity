@@ -12,31 +12,30 @@
 	<OCity_Caravan_GoTrade>우리는 {0}와 거래를 할것입니다.</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
 	<OCity_Caravan_LOGNoData>거래 내용에 대한 서버 데이터가 없습니다.</OCity_Caravan_LOGNoData>
-	<OCity_Caravan_LOGSwap>Caravan exchange: 모든 카라반 선택</OCity_Caravan_LOGSwap>
+	<OCity_Caravan_LOGSwap>캐러밴 교환: 모든 카라반 선택</OCity_Caravan_LOGSwap>
 	<!-- Kor -->
-	<OCity_Caravan_Go_Attack_Target>Attack</OCity_Caravan_Go_Attack_Target>
-	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Do you really want to attack this settlement? It's possible to have a training battle without consequences</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
-	<OCity_Caravan_Practive>No, just practice.</OCity_Caravan_Practive>
+	<OCity_Caravan_Go_Attack_Target>공격</OCity_Caravan_Go_Attack_Target>
+	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>이 기지를 정말로 공격하고 싶습니까? 결과없이 훈련 전투를 할 수 있습니다</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
+	<OCity_Caravan_Practive>훈련</OCity_Caravan_Practive>
 
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} 플레이어: {1}</OCity_Caravan_Player>
-	<OCity_Caravan_Other>물건들의 가치: {2}
-사람과 동물의 가치: {3}</OCity_Caravan_Other>
-	<OCity_Caravan_PlayerAttackCost>The maximum price of attackers: {0}</OCity_Caravan_PlayerAttackCost>
+	<OCity_Caravan_Other>물건들의 가치: {2} 사람과 동물의 가치: {3}</OCity_Caravan_Other>
+	<OCity_Caravan_PlayerAttackCost>공격자의 최대 가격: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>남은 용량: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>{0}이랑 거래하기.</OCity_Caravan_Trade>
 	<!-- Kor -->
-	<OCity_Caravan_Attack>Attack {0}</OCity_Caravan_Attack>
+	<OCity_Caravan_Attack>{0} 공격하기</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
 	<OCity_DevTest_Test>테스트</OCity_DevTest_Test>
-	<OCity_DevTest_NameTestPlayer>NameTestPlayer</OCity_DevTest_NameTestPlayer>
+	<OCity_DevTest_NameTestPlayer>테스트플레이어</OCity_DevTest_NameTestPlayer>
 
 	<!-- GameStarter.cs -->
 	<OCity_Starter_CityNotBuild>이곳은 다른 플레이어에게 점령됬습니다.</OCity_Starter_CityNotBuild>
 
 	<!-- StorageTest.cs -->
-	<OCity_StorageTest_CreateGrass>봄에 풀심기 (fix)</OCity_StorageTest_CreateGrass>
+	<OCity_StorageTest_CreateGrass>봄에 풀심기 (고치기)</OCity_StorageTest_CreateGrass>
 	<OCity_StorageTest_CreateGrassDescrip>1 년에 한 번, 각 카드에서 온도가 5도 이상으로 올라가면 비어있는 각 셀에 새 셀이 심어 잔디에서 10 분 거리에 셀이 자랍니다.</OCity_StorageTest_CreateGrassDescrip>
 	<OCity_StorageTest_LastIP>최근 IP</OCity_StorageTest_LastIP>
 
@@ -75,8 +74,8 @@
 	<OCity_Dialog_AutorPage>제작자의 페이지:</OCity_Dialog_AutorPage>
 	<OCity_Dialog_Regame>처음부터</OCity_Dialog_Regame>
 	<OCity_Dialog_DeleteData>개임 데이터 삭제</OCity_Dialog_DeleteData>
-	<OCity_Dialog_DeleteDataCheck>Do you really want to completely remove the game and start over?</OCity_Dialog_DeleteDataCheck>
-	<OCity_Dialog_DeletedData>The game has been deleted. Sign in again to create a new one.</OCity_Dialog_DeletedData>
+	<OCity_Dialog_DeleteDataCheck>정말로 게임을 지우고 처음부터 다시 하겠습니까?</OCity_Dialog_DeleteDataCheck>
+	<OCity_Dialog_DeletedData>게임이 삭제되었습니다. 다시 회원가입 하세요.</OCity_Dialog_DeletedData>
 
 	<!-- OnlineCity_Dialog_CreateWorld.cs -->
 	<OCity_Dialog_CreateWorld_Create>월드 만들기</OCity_Dialog_CreateWorld_Create>
@@ -113,9 +112,9 @@
 	<OCity_SessionCC_Shutdown_Command>서버가 닫혔습니다.</OCity_SessionCC_Shutdown_Command>
 	<OCity_SessionCC_Scenario_Classic>클래식</OCity_SessionCC_Scenario_Classic>
 	<OCity_SessionCC_Client_UpdateNeeded>버전이 서버와 맞지 않습니다! 이서버의 버전: </OCity_SessionCC_Client_UpdateNeeded>
-	<OCity_SessionCC_InitConnectedIntro_Title>Attention</OCity_SessionCC_InitConnectedIntro_Title>
-	<OCity_SessionCC_InitConnectedIntro_Text>If the exact match of the mods is set on the server, and they have not yet been installed, now they will be downloaded. If there is important information in the Mods game subfolder, click Cancel and make a backup copy! The mod synchronization process may take several minutes, after which the game will restart.</OCity_SessionCC_InitConnectedIntro_Text>
-	<OCity_SessionCC_FilesUpdated>Not all files are resolve hash check, they was been updated, Close and Open Game</OCity_SessionCC_FilesUpdated>
+	<OCity_SessionCC_InitConnectedIntro_Title>주의</OCity_SessionCC_InitConnectedIntro_Title>
+	<OCity_SessionCC_InitConnectedIntro_Text>서버랑 모드가 같지 않을경우, 자동으로 다운로드 됩니다. 중요한 파일은 다른 곳에 복사해 두세요.</OCity_SessionCC_InitConnectedIntro_Text>
+	<OCity_SessionCC_FilesUpdated>모드가 불일치 해서 모드를 업데이트 했습니다. 껏다 켜주세요.</OCity_SessionCC_FilesUpdated>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
@@ -164,10 +163,10 @@
 	<OCity_Dialog_Exchenge_Whole_Less_Than>보다 작지 않게</OCity_Dialog_Exchenge_Whole_Less_Than>
 	<OCity_Dialog_Exchenge_QualityNo_Less_Than>품질이 보다 적지 않게</OCity_Dialog_Exchenge_QualityNo_Less_Than>
 	<OCity_Dialog_Exchenge_All>전체</OCity_Dialog_Exchenge_All>
-	<OCity_Dialog_Exchenge_FromCorpse>Taken from a corpse</OCity_Dialog_Exchenge_FromCorpse>
-	<OCity_Dialog_Exchenge_FromCorpseD>It is permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromCorpseD>
-	<OCity_Dialog_Exchenge_FromNotCorpse>NOT from a corpse</OCity_Dialog_Exchenge_FromNotCorpse>
-	<OCity_Dialog_Exchenge_FromNotCorpseD>It is NOT permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromNotCorpseD>
+	<OCity_Dialog_Exchenge_FromCorpse>시체에서 가져옴</OCity_Dialog_Exchenge_FromCorpse>
+	<OCity_Dialog_Exchenge_FromCorpseD>시체에서 옷을 벗기는 것은 허용됩니다</OCity_Dialog_Exchenge_FromCorpseD>
+	<OCity_Dialog_Exchenge_FromNotCorpse>시체가 아닌 것은 제외됩니다.</OCity_Dialog_Exchenge_FromNotCorpse>
+	<OCity_Dialog_Exchenge_FromNotCorpseD>시체에서 옷을 벗기는 것은 허용되지 않습니다</OCity_Dialog_Exchenge_FromNotCorpseD>
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
@@ -210,14 +209,14 @@
 	<OCity_PlayerClient_LastSaveTimeNon>did not participate</OCity_PlayerClient_LastSaveTimeNon>
 	<OCity_PlayerClient_InvolvedInPVP>Involved in PVP</OCity_PlayerClient_InvolvedInPVP>
 	<OCity_PlayerClient_NotInvolvedInPVP>Not involved in PVP</OCity_PlayerClient_NotInvolvedInPVP>
-	<OCity_PlayerClient_Discord>Discord: </OCity_PlayerClient_Discord>
-	<OCity_PlayerClient_Email>Email: </OCity_PlayerClient_Email>
-	<OCity_PlayerClient_AboutMyself>About myself:</OCity_PlayerClient_AboutMyself>
-	<OCity_PlayerClient_Settings>Settings</OCity_PlayerClient_Settings>
-	<OCity_PlayerClient_Save>Save</OCity_PlayerClient_Save>
-	<OCity_PlayerClient_CanChange>(can change {0})</OCity_PlayerClient_CanChange>
-	<OCity_PlayerClient_CanChangeNow>(can change now)</OCity_PlayerClient_CanChangeNow>
-	<OCity_PlayerClient_SaveInterval>Save interval in minutes (at least 5, default 15):</OCity_PlayerClient_SaveInterval>
+	<OCity_PlayerClient_Discord>디스코드: </OCity_PlayerClient_Discord>
+	<OCity_PlayerClient_Email>이메일: </OCity_PlayerClient_Email>
+	<OCity_PlayerClient_AboutMyself>나에 대하여:</OCity_PlayerClient_AboutMyself>
+	<OCity_PlayerClient_Settings>설정</OCity_PlayerClient_Settings>
+	<OCity_PlayerClient_Save>저장</OCity_PlayerClient_Save>
+	<OCity_PlayerClient_CanChange>({0}를 바꿀수 있음)</OCity_PlayerClient_CanChange>
+	<OCity_PlayerClient_CanChangeNow>(이제 바꿀수 있음)</OCity_PlayerClient_CanChangeNow>
+	<OCity_PlayerClient_SaveInterval>저장 간격 (분) (최소 5, 기본값 15):</OCity_PlayerClient_SaveInterval>
 
 	<!-- Kor -->
 	<!-- GameUtils.cs -->

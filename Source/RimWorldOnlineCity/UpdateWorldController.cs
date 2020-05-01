@@ -29,7 +29,7 @@ namespace RimWorldOnlineCity
 
             //отправка всех новых и измененных объектов игрока
             toServ.WObjects = Find.WorldObjects.AllWorldObjects
-                .Where(o => o.Faction != null && o.Faction.IsPlayer //&& !(o is CaravanOnline) && !(o is BaseOnline)
+                .Where(o => o.Faction?.IsPlayer == true //o.Faction != null && o.Faction.IsPlayer
                     && (o is Settlement || o is Caravan)) //Чтобы отсеч разные карты событий
                 .Select(o => GetWorldObjectEntry(o))
                 .ToList();

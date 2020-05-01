@@ -1,4 +1,5 @@
 ﻿using Model;
+using OCUnion;
 using ServerOnlineCity.Model;
 using System;
 using System.Linq;
@@ -62,6 +63,7 @@ namespace ServerOnlineCity.Services
                 }
                 if (context.Player.AttackData == null)
                 {
+                    Loger.Log("Server AttackOnlineInitiator Unexpected error, no data");
                     res.ErrorText = "Unexpected error, no data";
                     return res;
                 }
