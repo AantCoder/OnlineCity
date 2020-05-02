@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	
+	<!-- MainMenu.cs -->
+	<OCity_LAN_btn>多人游戏</OCity_LAN_btn>
+	
+	<!-- CaravanArrivalAction_VisitOnline.cs -->
+	<OCity_Caravan_GoTrade>我们将要与之交换货物 {0}</OCity_Caravan_GoTrade>
+	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
+	<OCity_Caravan_LOGNoData>没有有关交易对象的服务器数据</OCity_Caravan_LOGNoData>
+	<OCity_Caravan_LOGSwap>大篷车交换：选择所有大篷车</OCity_Caravan_LOGSwap>
+	
+	<!-- OnlineCity_CaravanOnline.cs -->
+	<OCity_Caravan_Player>{0} 玩家 {1}</OCity_Caravan_Player>
+	<OCity_Caravan_PriceThing>物价: {2}</OCity_Caravan_PriceThing>
+	<OCity_Caravan_PriceAnimalsPeople>人和动物的价格: {3}</OCity_Caravan_PriceAnimalsPeople>
+	<OCity_Caravan_Other>{4}{5}</OCity_Caravan_Other>
+	<OCity_Caravan_FreeWeight>剩余负载能力: </OCity_Caravan_FreeWeight>
+	<OCity_Caravan_Trade>与...交换 {0}</OCity_Caravan_Trade>
+	
+	<!-- DevelopTest.cs -->
+	<OCity_DevTest_Test>测试</OCity_DevTest_Test>
+	<OCity_DevTest_NameTestPlayer>名字测试玩家</OCity_DevTest_NameTestPlayer>
+	
+	<!-- GameStarter.cs -->
+	<OCity_Starter_CityNotBuild>这个地方被另一个玩家占用</OCity_Starter_CityNotBuild>
+	
+	<!-- StorageTest.cs -->
+	<OCity_StorageTest_CreateGrass>在春季种草（修复）</OCity_StorageTest_CreateGrass>
+	<OCity_StorageTest_CreateGrassDescrip>每年一次，在每张卡片上，当温度升高到5度以上时，将在与草丛相距10的每个无人生长的细胞上种植一个新的细胞。</OCity_StorageTest_CreateGrassDescrip>
+	<OCity_StorageTest_LastIP>持续 IP</OCity_StorageTest_LastIP>
+	
+	<!-- OnlineCity_ClientData.cs -->
+	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
+	<OCity_ClientData_Chat>聊天室 </OCity_ClientData_Chat>
+	
+	<!-- Dialog_MainOnlineCity.cs -->
+	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
+	<OCity_Dialog_ListChat>聊天室</OCity_Dialog_ListChat>
+	<OCity_Dialog_ListInfo>信息</OCity_Dialog_ListInfo>
+	<OCity_Dialog_ListAbout>关于国防部</OCity_Dialog_ListAbout>
+	<OCity_Dialog_Connecting>连接中...</OCity_Dialog_Connecting>
+	<OCity_Dialog_Login>登录: </OCity_Dialog_Login>
+	<OCity_Dialog_Players>玩家们: </OCity_Dialog_Players>
+	<OCity_Dialog_ChennelOwn> 频道创作者</OCity_Dialog_ChennelOwn>
+	<OCity_Dialog_ChennelUser> 会员</OCity_Dialog_ChennelUser>
+	<OCity_Dialog_ChennelCreate>建立频道</OCity_Dialog_ChennelCreate>
+	<OCity_Dialog_ChennelClose>关闭频道</OCity_Dialog_ChennelClose>
+	<OCity_Dialog_OthersFunctions>其他功能</OCity_Dialog_OthersFunctions>
+	<OCity_Dialog_ChennelCreate2>建立频道</OCity_Dialog_ChennelCreate2>
+	<OCity_Dialog_ChennelLeave>离开频道</OCity_Dialog_ChennelLeave>
+	<OCity_Dialog_ChennelRen>改名</OCity_Dialog_ChennelRen>
+	<OCity_Dialog_ChennelCreating>建立频道</OCity_Dialog_ChennelCreating>
+	<OCity_Dialog_ChennelCreateName>输入频道名称</OCity_Dialog_ChennelCreateName>
+	<OCity_Dialog_ChennelQuit>退出频道</OCity_Dialog_ChennelQuit>
+	<OCity_Dialog_ChennelQuitCheck>您确定要离开频道吗?</OCity_Dialog_ChennelQuitCheck>
+	<OCity_Dialog_ChennelRenLabel>重命名频道</OCity_Dialog_ChennelRenLabel>
+	<OCity_Dialog_ChennelNewName>输入新的频道名称 </OCity_Dialog_ChennelNewName>
+	<OCity_Dialog_PrivateMessage>私人信息</OCity_Dialog_PrivateMessage>
+	<OCity_Dialog_ChennelAddUser>新增成员</OCity_Dialog_ChennelAddUser>
+	<OCity_Dialog_ChennelPlayerInfo>信息</OCity_Dialog_ChennelPlayerInfo>
+	<OCity_Dialog_ChennelPlayerInfoTitle>关于 </OCity_Dialog_ChennelPlayerInfoTitle>
+	<OCity_Dialog_AboutMode>关于在线城市</OCity_Dialog_AboutMode>
+	<OCity_Dialog_AutorPage>作者页面</OCity_Dialog_AutorPage>
+	<OCity_Dialog_Regame>重来</OCity_Dialog_Regame>
+	<OCity_Dialog_DeleteData>删除所有游戏数据</OCity_Dialog_DeleteData>
+	<OCity_Dialog_DeleteDataCheck>您是否真的要完全删除游戏并重新开始?</OCity_Dialog_DeleteDataCheck>
+	<OCity_Dialog_DeletedData>游戏已被删除。 再次登录以创建一个新的.</OCity_Dialog_DeletedData>
+	
+	<!-- OnlineCity_Dialog_CreateWorld.cs -->
+	<OCity_Dialog_CreateWorld_Create>创造世界</OCity_Dialog_CreateWorld_Create>
+	<OCity_Dialog_CreateWorld_BtnOk>好</OCity_Dialog_CreateWorld_BtnOk>
+	<OCity_Dialog_CreateWorld_Err>错误</OCity_Dialog_CreateWorld_Err>
+	<OCity_Dialog_CreateWorld_Err2>无效的参数</OCity_Dialog_CreateWorld_Err2>
+	<OCity_Dialog_CreateWorld_BtnCancel>取消</OCity_Dialog_CreateWorld_BtnCancel>
+	<OCity_Dialog_CreateWorld_Seed>种子</OCity_Dialog_CreateWorld_Seed>
+	<OCity_Dialog_CreateWorld_Difficulty>困难。 整数从0（非常简单）到2（困难）</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_MapSize>本地地图的大小（200-小，400-电磁）</OCity_Dialog_CreateWorld_MapSize>
+	<OCity_Dialog_CreateWorld_PercentWorld>行星表面生成的百分比（从5到100）</OCity_Dialog_CreateWorld_PercentWorld>
+	
+	<!-- Dialog_LoginForm.cs -->
+	<OCity_LoginForm_BtnEnter>登录</OCity_LoginForm_BtnEnter>
+	<OCity_LoginForm_Register>注册</OCity_LoginForm_Register>
+	<OCity_LoginForm_Close>关</OCity_LoginForm_Close>
+	<OCity_LoginForm_LabelEnter>登录</OCity_LoginForm_LabelEnter>
+	<OCity_LoginForm_Server>服务器:</OCity_LoginForm_Server>
+	<OCity_LoginForm_Login>登录:</OCity_LoginForm_Login>
+	<OCity_LoginForm_Pass>密码:</OCity_LoginForm_Pass>
+	
+	<!-- SessionClientController.cs -->
+	<OCity_SessionCC_ConnectionFailTitle>连接失败</OCity_SessionCC_ConnectionFailTitle>
+	<OCity_SessionCC_LoginFailTitle>登录失败</OCity_SessionCC_LoginFailTitle>
+	<OCity_SessionCC_RegFailTitle>注册失败</OCity_SessionCC_RegFailTitle>
+	<OCity_SessionCC_MsgCanceledCreateW>取消</OCity_SessionCC_MsgCanceledCreateW>
+	<OCity_SessionCC_MsgCreateWorlErr>出现了一个错误，请重试.</OCity_SessionCC_MsgCreateWorlErr>
+	<OCity_SessionCC_MsgCreateWorlGood>万岁！ 服务器上的世界已创建!</OCity_SessionCC_MsgCreateWorlGood>
+	<OCity_SessionCC_MsgCreatingServer>创建服务器</OCity_SessionCC_MsgCreatingServer>
+	<OCity_SessionCC_Disconnected>断线.</OCity_SessionCC_Disconnected>
+	<OCity_SessionCC_Disconnect>断开</OCity_SessionCC_Disconnect>
+	
+	<!-- UpdateWorldController.cs -->
+	<OCity_UpdateWorld_Trade>贸易方式</OCity_UpdateWorld_Trade>
+	<OCity_UpdateWorld_TradeDetails>玩家{0} 到 {1} 转移项目: {2}</OCity_UpdateWorld_TradeDetails>
+	
+	<!-- Dialog_Input.cs -->
+	<OCity_DialogInput_Ok>好的</OCity_DialogInput_Ok>
+	<OCity_DialogInput_Cancele>取消</OCity_DialogInput_Cancele>
+	
+	<!-- Dialog_Registration.cs -->
+	<OCity_Dialog_Registration_Close>关</OCity_Dialog_Registration_Close>
+	<OCity_Dialog_Registration_BtnReg>寄存器</OCity_Dialog_Registration_BtnReg>
+	<OCity_Dialog_Registration_LabelReg>注册</OCity_Dialog_Registration_LabelReg>
+	<OCity_Dialog_Registration_Server>服务器:</OCity_Dialog_Registration_Server>
+	<OCity_Dialog_Registration_Login>登录:</OCity_Dialog_Registration_Login>
+	<OCity_Dialog_Registration_Pass>密码:</OCity_Dialog_Registration_Pass>
+	<OCity_Dialog_Registration_Check>确认:</OCity_Dialog_Registration_Check>
+	
+	<!-- Dialog_TradeOnline.cs -->
+	<OCity_Dialog_TradeOnline_Trade>货物转移</OCity_Dialog_TradeOnline_Trade>
+	
+	<!-- GrassFix.cs -->
+	<OCity_GrassFix_Plant>种植 </OCity_GrassFix_Plant>
+	<OCity_GrassFix_Grass> 草</OCity_GrassFix_Grass>
+	
+	<!-- PlayerClient.cs -->
+	<OCity_PlayerClient_LastTick>玩了多年: {0}, 天: {1}.</OCity_PlayerClient_LastTick>
+	<OCity_PlayerClient_LastSaveTime>在游戏中: {2}</OCity_PlayerClient_LastSaveTime>
+	<OCity_PlayerClient_baseCount>基地数: {3}</OCity_PlayerClient_baseCount>
+	<OCity_PlayerClient_caravanCount>大篷车: {4}</OCity_PlayerClient_caravanCount>
+	<OCity_PlayerClient_marketValue>物品的财富: {5}</OCity_PlayerClient_marketValue>
+	<OCity_PlayerClient_marketValuePawn>人与动物的财富: {6}</OCity_PlayerClient_marketValuePawn>
+	<OCity_PlayerClient_LastSaveTimeNon>没有参加</OCity_PlayerClient_LastSaveTimeNon>
+	
+	<!-- SCC.cs -->
+	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>
+	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
+	
+	<!-- Dialog_MainOnlineCity.cs -->
+	<OCity_InfoTabText></OCity_InfoTabText>
+	<OCity_AboutTabText> 作者瓦西里·伊万诺夫（Aka Aant）.</OCity_AboutTabText>
+	<OCity_AboutGeneralText>
+	问候，殖民者！
+
+OnlineCity是RimWorld的在线多人游戏mod。它允许多个玩家在线玩在同一星球上。
+
+注册后，您可以创建自己的殖民地并与其他玩家一起玩。您可以监视邻居，他们的定居点和大篷车的进度，但最重要的是，您将能够通过转移食物，药品，武器，殖民者等为彼此提供物资。为此，只需在香草RimWorld中形成商队并将其发送给他们！
+
+该mod的目的是可以与朋友一起玩，而不会破坏平衡或降低游戏的沉浸感。目前，mod处于早期阶段。其功能包括：
+
+*在一个星球上的游戏，能够看到其他玩家的定居点和大篷车
+
+*交换物品（包括改装物品）
+
+*在玩家之间转移定居者和动物
+
+*玩家之间的公开和私人聊天
+
+技术特点：
+
+*支持任何和所有Mod组合，但是将物品发送给其他玩家时，两个玩家都必须拥有物品的来源。对于mod不兼容没有限制，所以要小心
+
+*在单人游戏中，OnlineCity被完全禁用（如果您没有从主菜单上的“多人游戏”按钮开始）
+
+*注册新帐户时，游戏可能会冻结几分钟。这是正常现象，请耐心等待。
+
+*由于技术原因，当您不通过菜单退出游戏时，保存将不起作用。而是每15分钟将游戏保存到服务器一次
+
+*目前，mod专注于合作游戏。
+
+*开发人员模式目前可用，但对此使用不满意（除非需要测试mod时除外）。
+
+*目前无法通过HardcoreSK项目转移棋子
+
+*货物和典当可以转移到离线玩家
+
+*在世界地图上，其他玩家的殖民地和大篷车被涂成蓝色。您可以通过选择商队并右键单击它们来与它们进行交互。
+
+*您可以通过右键单击在同一单元格上的定居点和大篷车之间转移。注意mod不兼容和主机过载。
+
+*注意您的旅行车可以携带多少货物。如果它们超载，它们将无法移动。您可以通过单击查看旅行车可以携带多少。
+
+*在聊天菜单中单击播放器将允许您发送私人消息，查看其个人资料或将其添加到当前的聊天频道。
+
+*要选择将从其他玩家收到的物品存储在何处，请创建一个名称为“交易”的库存（例如，“交易”，“交易”，“入场交易的物品”等）
+
+*当将典当转移到另一个殖民地时，交易完最后一个典当后，商队中的所有剩余物品也将添加到交易中。
+
+*游戏场景无法自定义，但是在完成设置后可以立即更改旁白
+
+*您不能与其他玩家在同一殖民地上玩。这不太可能改变。
+
+*多人游戏保存可以单人游戏进行。只需加载“ onlineTempCityLoad”保存即可在单人游戏中继续。请注意，单人游戏保存不能上传回多人游戏。
+
+* Mod尽最大努力不改变游戏玩法，它只是通过现有的游戏机制（例如大篷车）增加了与其他玩家的互动。唯一的主要更改是保存，因为这是由服务器自动完成的，以及打开地图并查看附近其他住所的感觉：）
+
+*玩家互动的例子可能是这样的：突袭到达您的殖民地。您暂停游戏并向朋友寻求帮助。他们派出大篷车和一些部队到您的住所。一旦到达，他们就会加入您的殖民地，并受到您的控制，直到袭击小组被推回，然后您将它们编成大篷车，然后将其送回原始殖民地。或者，除一支部队外，所有其他部队都被派往您的殖民地，以防止大篷车解散。他们的工作完成后，您可以将其送回大篷车，您的朋友将再次控制他们。
+
+*将日志写入Ludeon Studios \ OnlineCity的'％AppData％\ .. \ LocalLow \ Ludeon Studios \ RimWorld（可以将其复制并粘贴到资源管理器中）
+
+
+参考文献：
+主服务器地址是：194.87.95.90
+不和谐：https：//discord.gg/5DzWrnR
+官方VK Mod组：https://vk.com/rimworldonline
+特拉洛：https：//trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
+GitHub：https://github.com/AantCoder/OnlineCity
+
+
+要设置服务器，请按照下列步骤操作：
+1.将服务器文件解压缩到方便的位置。
+2.运行它。服务器创建文件夹C：\ World。里面有日志和数据文件。服务器将开始在默认端口19019上侦听。
+3.注册一个帐户。第一个注册的玩家成为管理员，他们被要求提供世界参数。创造世界之后，它们将断开连接。
+4.重新连接并恢复播放
+</OCity_AboutGeneralText>
+	
+</LanguageData>
