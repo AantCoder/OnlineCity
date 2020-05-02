@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
-  <CaravanOnline.label>其他玩家的大篷车</CaravanOnline.label>
-  <CaravanOnline.description>其他在线玩家的旅行车</CaravanOnline.description>
+  <CaravanOnline.label>其他玩家的"大篷车"</CaravanOnline.label>
+  <CaravanOnline.description>其他在线玩家的"旅行车"</CaravanOnline.description>
 
 - <BaseOnline.label>其他玩家的基地</BaseOnline.label>
 - <BaseOnline.description>其他在线玩家的基地</BaseOnline.description>
