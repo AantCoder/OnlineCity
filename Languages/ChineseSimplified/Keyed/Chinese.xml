@@ -38,7 +38,7 @@
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
 	<OCity_Dialog_ListChat>聊天室</OCity_Dialog_ListChat>
 	<OCity_Dialog_ListInfo>信息</OCity_Dialog_ListInfo>
-	<OCity_Dialog_ListAbout>关于国防部</OCity_Dialog_ListAbout>
+	<OCity_Dialog_ListAbout>关于</OCity_Dialog_ListAbout>
 	<OCity_Dialog_Connecting>连接中...</OCity_Dialog_Connecting>
 	<OCity_Dialog_Login>登录: </OCity_Dialog_Login>
 	<OCity_Dialog_Players>玩家们: </OCity_Dialog_Players>
@@ -60,7 +60,7 @@
 	<OCity_Dialog_ChennelAddUser>新增成员</OCity_Dialog_ChennelAddUser>
 	<OCity_Dialog_ChennelPlayerInfo>信息</OCity_Dialog_ChennelPlayerInfo>
 	<OCity_Dialog_ChennelPlayerInfoTitle>关于 </OCity_Dialog_ChennelPlayerInfoTitle>
-	<OCity_Dialog_AboutMode>关于在线城市</OCity_Dialog_AboutMode>
+	<OCity_Dialog_AboutMode>关于OnlineCity</OCity_Dialog_AboutMode>
 	<OCity_Dialog_AutorPage>作者页面</OCity_Dialog_AutorPage>
 	<OCity_Dialog_Regame>重来</OCity_Dialog_Regame>
 	<OCity_Dialog_DeleteData>删除所有游戏数据</OCity_Dialog_DeleteData>
@@ -69,7 +69,7 @@
 	
 	<!-- OnlineCity_Dialog_CreateWorld.cs -->
 	<OCity_Dialog_CreateWorld_Create>创造世界</OCity_Dialog_CreateWorld_Create>
-	<OCity_Dialog_CreateWorld_BtnOk>好</OCity_Dialog_CreateWorld_BtnOk>
+	<OCity_Dialog_CreateWorld_BtnOk>好/OK</OCity_Dialog_CreateWorld_BtnOk>
 	<OCity_Dialog_CreateWorld_Err>错误</OCity_Dialog_CreateWorld_Err>
 	<OCity_Dialog_CreateWorld_Err2>无效的参数</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>取消</OCity_Dialog_CreateWorld_BtnCancel>
@@ -107,7 +107,7 @@
 	<OCity_DialogInput_Cancele>取消</OCity_DialogInput_Cancele>
 	
 	<!-- Dialog_Registration.cs -->
-	<OCity_Dialog_Registration_Close>关</OCity_Dialog_Registration_Close>
+	<OCity_Dialog_Registration_Close>关闭</OCity_Dialog_Registration_Close>
 	<OCity_Dialog_Registration_BtnReg>寄存器</OCity_Dialog_Registration_BtnReg>
 	<OCity_Dialog_Registration_LabelReg>注册</OCity_Dialog_Registration_LabelReg>
 	<OCity_Dialog_Registration_Server>服务器:</OCity_Dialog_Registration_Server>
@@ -137,9 +137,9 @@
 	
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_InfoTabText></OCity_InfoTabText>
-	<OCity_AboutTabText> 作者瓦西里·伊万诺夫（Aka Aant）.</OCity_AboutTabText>
+	<OCity_AboutTabText> 作者AantCoder.</OCity_AboutTabText>
 	<OCity_AboutGeneralText>
-	问候，殖民者！
+	 你好，殖民者！
 
 OnlineCity是RimWorld的在线多人游戏mod。它允许多个玩家在线玩在同一星球上。
 
@@ -147,7 +147,7 @@ OnlineCity是RimWorld的在线多人游戏mod。它允许多个玩家在线玩�
 
 该mod的目的是可以与朋友一起玩，而不会破坏平衡或降低游戏的沉浸感。目前，mod处于早期阶段。其功能包括：
 
-*在一个星球上的游戏，能够看到其他玩家的定居点和大篷车
+*在一个星球上的游戏，能够看到其他玩家的定居点和"大篷车"
 
 *交换物品（包括改装物品）
 
