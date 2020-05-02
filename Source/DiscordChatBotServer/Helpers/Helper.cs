@@ -20,7 +20,7 @@ namespace OC.DiscordBotServer.Helpers
             var lastIndex = value.IndexOf(":");
             if (lastIndex > 0)
             {
-                var strPort = value.Substring(lastIndex);
+                var strPort = value.Substring(lastIndex + 1);
                 if (!int.TryParse(strPort, out port) || port < IPEndPoint.MinPort || port > IPEndPoint.MaxPort)
                 {
                     return null;

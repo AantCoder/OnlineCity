@@ -53,19 +53,21 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="$HugsLibChecker, Version=0.5.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLibChecker.5.0.0\lib\net35\$HugsLibChecker.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="%24HugsLibChecker, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLibChecker.1.0.0\lib\net35\$HugsLibChecker.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="0Harmony, Version=2.0.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Lib.Harmony.2.0.0.5\lib\net472\0Harmony.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HugsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>$(RimWorldFolder)Mods\HugsLib\v1.1\Assemblies\HugsLib.dll</HintPath>
+    <Reference Include="HugsLib">
+      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLib.7.1.4\lib\net472\HugsLib.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
@@ -157,6 +159,7 @@
     <ProjectReference Include="UnionDll\UnionDll.csproj">
       <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
       <Name>UnionDll</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
