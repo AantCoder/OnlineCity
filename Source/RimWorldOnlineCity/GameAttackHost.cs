@@ -271,21 +271,24 @@ namespace RimWorldOnlineCity
 
             Loger.Log("Client GameAttackHost Start 2 " + tolient.HostPlaceServerId + " TestMode=" + TestMode);
 
-            SessionClientController.SaveGameNowInEvent(false);
             Find.TickManager.Pause();
-            GameAttackTrigger_Patch.ForceSpeed = 0f;
-            PauseMessage();
-
-            //Устанавливаем паузу сейчас первый раз,
-            //далее она будет обновлена на 5 минут перед началом создания карты у атакующего игрока (см AttackServer.RequestInitiator())
-            //и последний раз после создания карты на 1 минуту, чтобы дать оглядеться атакующему (ищи SetPauseOnTimeToHost в GameAttacker)
-            CurrentPauseToTime = DateTime.UtcNow.AddMinutes(5);
-            Loger.Log("HostAttackUpdate Set 1 CurrentPauseToTime=" + CurrentPauseToTime.ToGoodUtcString());
 
             LongEventHandler.QueueLongEvent(delegate
             {
                 try
                 {
+                    SessionClientController.SaveGameNowInEvent(false);
+
+                    Find.TickManager.Pause();
+                    GameAttackTrigger_Patch.ForceSpeed = 0f;
+                    PauseMessage();
+
+                    //Устанавливаем паузу сейчас первый раз,
+                    //далее она будет обновлена на 5 минут перед началом создания карты у атакующего игрока (см AttackServer.RequestInitiator())
+                    //и последний раз после создания карты на 1 минуту, чтобы дать оглядеться атакующему (ищи SetPauseOnTimeToHost в GameAttacker)
+                    CurrentPauseToTime = DateTime.UtcNow.AddMinutes(5);
+                    Loger.Log("HostAttackUpdate Set 1 CurrentPauseToTime=" + CurrentPauseToTime.ToGoodUtcString());
+
                     Loger.Log("Client GameAttackHost Start 3");
                     var hostPlace = UpdateWorldController.GetWOByServerId(HostPlaceServerId) as MapParent;
                     GameMap = hostPlace.Map;

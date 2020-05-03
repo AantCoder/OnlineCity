@@ -21,12 +21,5 @@
   	  <li>Randy.Essential.MoreBoomrats</li>
     </loadAfter>
 	<incompatibleWith>
-      <li>Better Vanilla Masking</li>
-	  <li>Frame Rate Control</li>
-	  <li>Better Vanilla Masking</li>
-	  <li>Vanilla Animals</li>
-	  <li>Vanilla Apparel Expanded</li>
-	  <li>Vanilla Armour Expanded</li>
-	  <li>Vanilla Weapons Expanded</li>
     </incompatibleWith>
 </ModMetaData> 

@@ -75,7 +75,7 @@ namespace RimWorldOnlineCity
 
         }
 
-        public static void RunMainThreadSync(Action act)
+        public static void RunMainThreadSync(Action act, int waitSecond = 10)
         {
             if (GlobalData.MainThreadNum == Thread.CurrentThread.ManagedThreadId)
                 act();
@@ -88,7 +88,7 @@ namespace RimWorldOnlineCity
 
                 if (GlobalData.ActionNumReady < num)
                 {
-                    var end = DateTime.UtcNow.AddSeconds(10);
+                    var end = DateTime.UtcNow.AddSeconds(waitSecond);
                     while (GlobalData.ActionNumReady < num && DateTime.UtcNow < end) Thread.Sleep(10);
 
                     if (GlobalData.ActionNumReady < num)

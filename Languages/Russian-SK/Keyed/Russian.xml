@@ -218,7 +218,7 @@
 	<OCity_PlayerClient_CanChange>(можно изменить {0})</OCity_PlayerClient_CanChange>
 	<OCity_PlayerClient_CanChangeNow>(можно изменить сейчас)</OCity_PlayerClient_CanChangeNow>
 	<OCity_PlayerClient_SaveInterval>Интервал сохранений в минутах (не меньше 5, по умолчанию 15):</OCity_PlayerClient_SaveInterval>
-	
+
 	<!-- Kor -->
 	<!-- GameUtils.cs -->
 	<OCity_GameUtils_From> из </OCity_GameUtils_From>

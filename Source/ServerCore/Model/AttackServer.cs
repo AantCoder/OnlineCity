@@ -105,7 +105,6 @@ namespace ServerOnlineCity.Model
 
             if (!TestMode)
             {
-                Attacker.Public.LastPVPTime = DateTime.UtcNow;
                 Host.Public.LastPVPTime = DateTime.UtcNow;
             }
 
@@ -495,7 +494,6 @@ namespace ServerOnlineCity.Model
         {
             if (!TestMode)
             {
-                Attacker.Public.LastPVPTime = DateTime.UtcNow;
                 Host.Public.LastPVPTime = DateTime.UtcNow;
             }
 

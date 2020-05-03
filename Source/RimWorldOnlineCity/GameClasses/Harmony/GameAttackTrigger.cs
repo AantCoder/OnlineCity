@@ -332,12 +332,15 @@ namespace RimWorldOnlineCity.GameClasses
                 if (clientHost.AttackingPawns == null
                     || !clientHost.AttackingPawns.Contains(pawn)) return;
 
+                /* 
                 //игнорируем некоторые виды, чтобы можно было взять вещи с краю
+                нельзя использовать, убегает
                 var jobName = pawn.CurJobDef?.defName;
                 if (jobName == "Equip"
                     || jobName == "TakeInventory"
                     || jobName == "Wear")
                     return;
+                */
 
                 var mapBorder = 1;
                 if (pawn.Position.x < mapBorder || pawn.Position.x > pawn.Map.Size.x - 1 - mapBorder

@@ -11,6 +11,7 @@ using OCUnion;
 using RimWorld.Planet;
 using UnityEngine;
 using OCUnion.Transfer.Model;
+using System.Threading;
 
 namespace RimWorldOnlineCity
 {
@@ -457,11 +458,27 @@ namespace RimWorldOnlineCity
                     if (i == 0) ret = cell;
 
                     //if (MainHelper.DebugMode) 
-                    try { Loger.Log("Spawn... " + thin.Label); } catch { Loger.Log("Spawn... "); }
+                    try 
+                    { 
+                        Loger.Log("Spawn... " + thin.Label); 
+                    } 
+                    catch 
+                    { 
+                        Loger.Log("Spawn... "); 
+                    }
                     if (thin is Pawn)
                     {
                         if (MainHelper.DebugMode) Loger.Log("Pawn... " + thin.Position.x + " " + thin.Position.y);
-                        GenSpawn.Spawn((Pawn)thin, cell, map);
+                        try
+                        {
+                            GenSpawn.Spawn((Pawn)thin, cell, map);
+                        }
+                        catch(Exception exp)
+                        {
+                            Loger.Log("SpawnList Exception " + thing.Name + ": " + exp.ToString());
+                            Thread.Sleep(5);
+                            GenSpawn.Spawn((Pawn)thin, cell, map);
+                        }
                     }
                     else
                         GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);

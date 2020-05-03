@@ -123,6 +123,7 @@ namespace RimWorldOnlineCity
         public void Start(Caravan caravan, BaseOnline attackedBase, bool testMode)
         {
             //Ожидается что Start будет запукаться с UI
+            Find.TickManager.Pause();
             SessionClientController.SaveGameNowInEvent(false);
 
             SessionClientController.Command((connect) =>

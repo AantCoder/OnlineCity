@@ -27,8 +27,13 @@ namespace RimWorldOnlineCity
         {
             toServ.LastTick = (long)Find.TickManager.TicksGame;
 
+            var allWorldObjectsArr = new WorldObject[Find.WorldObjects.AllWorldObjects.Count];
+            Find.WorldObjects.AllWorldObjects.CopyTo(allWorldObjectsArr);
+
+            var allWorldObjects = allWorldObjectsArr.Where(wo => wo != null).ToList();
+
             //отправка всех новых и измененных объектов игрока
-            toServ.WObjects = Find.WorldObjects.AllWorldObjects
+            toServ.WObjects = allWorldObjects
                 .Where(o => o.Faction?.IsPlayer == true //o.Faction != null && o.Faction.IsPlayer
                     && (o is Settlement || o is Caravan)) //Чтобы отсеч разные карты событий
                 .Select(o => GetWorldObjectEntry(o))
@@ -39,7 +44,7 @@ namespace RimWorldOnlineCity
             if (ToDelete != null)
             {
                 var toDeleteNewNow = WorldObjectEntrys
-                    .Where(p => !Find.WorldObjects.AllWorldObjects.Any(wo => wo.ID == p.Key))
+                    .Where(p => !allWorldObjects.Any(wo => wo.ID == p.Key))
                     .Select(p => p.Value)
                     .ToList();
                 ToDelete.AddRange(toDeleteNewNow);
