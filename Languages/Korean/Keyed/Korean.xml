@@ -268,78 +268,316 @@
 
 	<OCity_InfoTabText>도움말</OCity_InfoTabText>
 	<OCity_AboutTabText>모드제작자: Vasily Ivanov 일명 Aant</OCity_AboutTabText>
-	<OCity_AboutGeneralText>
+	<OCity_AboutGeneralText>Greetings, colonizer!
 
-OnlineCity-RimWorld는 생존 시뮬레이터를위한 네트워크 게임 모듈입니다. 여러 플레이어가 같은 행성에서 온라인으로 플레이 할 수 있습니다.
+OnlineCity - is a network game module for the RimWorld survival simulator. It allows multiple players to play on the same planet online.
 
-등록 후, 당신은 당신의 자신의 정착을 만들고 다른 참가자들과 함께 개발을 시작할 수 있습니다. 이웃, 정착촌 및 카라반의 진행 상황을 모니터링 할 수있는 기회가 주어 지지만, 가장 중요한 것은 식량, 약, 무기 또는 정착민을 포함한 다른 것들을 양도함으로써 서로에게 실질적인 도움을 제공 할 수 있다는 것입니다. 이렇게하려면 캐러밴을 모아서 가져 가려면 게임의 모든 규칙 만 있으면됩니다!
+After registration, you can create your own settlement and begin to develop alongside other participants. You are given the opportunity to monitor the progress of your neighbors, their settlements and caravans, but most importantly, you can provide each other with quite material assistance by transferring food, medicine, weapons or any other things, including settlers. For example, you can send your doctor to help in difficult times, and arrange for the doctor to be returned back after treatment. To transfer it is necessary only by all the rules of the game to collect a caravan and get to the goal! Also now you can beat off attacks on your settlement and capture the settlements of other players, giving commands to your colonists!
 
-모드의 목적은 균형을 방해하지 않고 게임에 몰입되는 수준을 줄이지 않고 친구들과 놀 수있게하는 것입니다. 현재 모드의 수명 경로가 시작되었으며 기능에는 다음이 포함됩니다.
+1. General description
+2. Exchange between players
+3. Attack on player settlements (PVP)
+4. Installing the mod and how to start playing
+5. Additional modifications
+6. Server
+7. Functions of the mod in the game
+8. Possible problems
+9. Other frequently asked questions
 
-* 한 행성에서 다른 플레이어의 정착지와 캐러밴을 볼 수있는 게임
+1. General description
 
-* 아이템 교환 (추가 모드 포함)
+This mod almost does not change the gameplay. All events, settlements of the NPC and game mechanics for each player are different and are not connected with each other. Thanks to this, the balance of the game, which was conceived by the developers, is not upset. What exactly is changing?
 
-* 플레이어간에 정착민과 동물을 이동
+Your game is saved exclusively to the server and you can get into the network game only by clicking on the Network game button and entering the login and password. Autosaves occur every 15 minutes (can be changed in the settings) and when you exit the game. Important! Do not close the game using Alt-F4 or the operating system, in this case saving upon exit will not work and progress will be rolled back to the moment of the last successful saving. Use the menu to exit. If for one reason or another you want to play this game offline, you can do this by downloading the onlineCityTempLoad file, but your progress cannot be transferred to the server, you can only play offline. If you start the game in any way except by the Network game button, then the mod is completely turned off and does not work.
 
-* 플레이어 간 일반 / 개인 채팅
+When playing online on the planet, settlements of other players appear. The appearance of the icons approximately shows the wealth of the settlement, and if they are online, the light will be on in the house. By clicking on them you can see what kind of player it is, whether it is online, what is the total cost of people and things in the settlement. Caravans of other players are also displayed.
 
-기술적 특징 :
+Having equipped your caravan and reaching the settlement or player’s caravan, you can transfer any goods and pawns. In addition, caravans display the weight that they can still take. Transfer is carried out in one direction. That is, if you need to exchange goods, you must first agree on this in the chat and first one player must pass on what is needed, then the other player will give back. If the player is not online, then the goods will be transferred to him when he enters the game.
 
-* 모든 모드와 세트가 지원되지만 이러한 아이템을 변경 한 모드를 가진 플레이어 만이 아이템을주고받을 수 있습니다. 제한이 없습니다. 조심하세요
+In the game, by clicking the Online button, you can open chat, settings, and more. On the first tab in the chat you can see a list of all players and those who are online. You can create new channels in the chat and add any players there. By right-clicking on any player, you can select the Information item, and see that the player wrote about himself how much he has been playing, when was the last time, a list of all his colonies and caravans, their value and total wealth.
 
-* 일반 게임 중에는 모드가 완전히 비활성화되어 있습니다-네트워크 게임 버튼으로 시작하지 않은 경우
-
-* 새로운 플레이어를 등록 할 때 가끔 몇 분 동안 멈추는 경우가 있습니다.
-
-* 기술적 인 이유로 메뉴를 통하지 않고 게임을 종료하면 저장이 작동하지 않습니다. 또한 게임은 15 분마다 한 번씩 서버에 저장됩니다.
-
-* 네트워크 게임은 생존에 대한 상호 지원에만 초점을 맞추고 있습니다.
-
-* 현재 개발자 모드를 사용할 수 있지만 일반적으로 플레이어는 사용에 대해 매우 부정적입니다 (모드를 테스트해야하는 경우 제외).
-
-* HardcoreSK 프로젝트로 폰을 전송하는 것은 일시적으로 작동하지 않습니다
-
-* 상품과 폰을 플레이어에게 오프라인으로 옮길 수 있습니다
-
-* 다른 플레이어의 집과 캐러밴의 색상은 파란색입니다. 캐러밴을 강조 표시하고 마우스 오른쪽 버튼으로 클릭하여 상호 작용할 수 있습니다.
-
-* 마우스 오른쪽 버튼으로 같은 셀에 위치한 정착지와 카라반 사이를 이동할 수 있습니다. 모드 호환성 및 호스트 과부하 감시
-
-* 상품을 운송 할 때는 캐러밴의 운반 능력을 고려하십시오. 과부하되면 캐러밴은 움직일 수 없습니다. 캐러밴을 강조 표시 한 후에도 여전히 사용할 수있는화물의 양을 확인할 수 있습니다.
-
-* 플레이어의 닉네임에있는 아무 버튼이나 클릭하면 플레이어가 활성 채팅에 추가되거나 비공개 채팅 채널이 열리거나 플레이어의 일반 정보가 표시됩니다.
-
-* 다른 플레이어와의 거래에서 수령 한 물품을 합의의 특정 장소에 보관하려면 "창고"또는 "거래"기호가 포함되도록 원하는 창고의 이름을 바꾸십시오.
-
-* 마지막 폰이 전송되면 캐러밴이 해체되고 나머지 물건과 동물은 자동으로 전송에 추가됩니다
-
-* 게임 시나리오는 사용자 정의 할 수 없지만 설정을 시작한 직후 내레이터를 변경할 수 있습니다.
-
-* 당신은 하나의 카드에서 재생할 수 없으며, 이것은 아마도 미래에 변경되지 않을 것입니다
-
-* 게임을 온라인으로 다운로드 할 수 없습니다. 그러나이 게임을 오프라인으로 다운로드하거나 (온라인으로 전송할 수 없음),이를 위해 onlineCityTempLoad 저장을 다운로드 할 수 있습니다.
-
-* 모드에 의한 게임의 게임 플레이는 거의 변하지 않습니다. 본격적인 게임 규칙에 따라 상품과 폰을 교환하여 서로 도울 수있는 기회 만 있습니다. 저장에는 제한이 있습니다. 서버에는 자동으로 하나만 있습니다. 또한 행성의지도를보고 근처의 다른 정착촌을 볼 때 어깨 느낌 :)
-
-* 상호 작용의 예 : 공격시 친구에게 도움을 요청하고 게임을 일시 중지하면 캐러밴에 접근하여 정착민을 옮길 수 있습니다. 공격을 철회 한 후에 같은 방식으로 정착민을 반환 할 수 있습니다. 또는 예를 들어, 구조에 온 사람은 하나를 제외한 모든 폰을 옮길 수 있으므로 캐러밴이 해체되지 않도록하십시오. 그러면 캐러밴이 다시 캐러밴으로 옮겨서 격퇴 직후 정착민을 반환 할 수 있습니다.
-
-* 로그는 % appdata % \ .. \ LocalLow \ Ludeon Studios \ RimWorld by Ludeon Studios \ OnlineCity (탐색기에 삽입 할 수 있음)에 기록됩니다.
+For those who want more, you can set the Participate in PVP item on the Settings tab. After that, it will be possible to attack the settlements of players who also have this option turned on, and, of course, if they are also online.
 
 
-참고 문헌 :
-게임 및 테스트를위한 주요 서버 : rimworld.online 서버 : 194.87.95.90
-불일치 : https://discord.gg/5DzWrnR
-의. VK 모드 그룹 : https://vk.com/rimworldonline
-트렐로 : https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
-GitHub : https://github.com/AantCoder/OnlineCity
+2. Exchange between players
+
+Transfer between players is possible only from the caravan. To transfer anything you need to select your usual caravan, right-click on the settlement or caravan of another player and select the item Exchange of goods. An intuitive window for selecting the item to transfer opens. You can transfer the player any amount of goods, animals and settlers. You can transfer as many times as you like, even if the player is offline.
+
+Upon receipt of the transfer, a message will be issued, which will briefly list what is being transmitted and the opportunity to refuse it (in this case things will be destroyed). If the player agrees, then the transferred items will appear in the largest warehouse, in the name of which there are symbols "trad", if there is none, then in the largest warehouse with any name.
+
+When transferring prisoners there is a nuance. They do not appear immediately in the prison, but in the warehouse in the form of a passive hostile pawn, without weapons that need to be captured and placed in the right prison on their own.
+
+When the last pawn is transferred, the caravan will be disbanded, and the remaining items will be automatically added to the transfer. But you can leave some kind of animal, so that later an ally could return your colonists to this caravan from one animal.
+
+When a settler is transferred, all his connections with other settlers are lost. So, do not be surprised at easy amnesia when your militants return after helping a neighbor :)
+
+There is an unresolved issue of transferring pawns when using HardcoreSK. Maybe a similar problem will be with some other mods, is not yet known.
 
 
-서버 시작에 대한 몇 마디.
-편리한 위치에 서버 파일을 압축 해제하십시오. 서버가 C : \ World 폴더를 생성 (만들어야 함)합니다. 로그와 데이터 파일이 있습니다. 시작한 후 서버는 즉시 기본 포트 19019에서 시작합니다. 등록 할 첫 번째 서버는 관리자가되고 월드의 매개 변수를 요청합니다. 세계가 창조 된 후, 그의 단절과 그는 평소와 같이 들어 와서 스스로 정착 할 수 있습니다.
-세계를 다시 만들려면 서버 콘솔을 닫고 데이터 파일을 삭제 한 다음 콘솔을 시작하십시오.
+3. Attack on player settlements (PVP)
 
-한국어 번역: kang060302
+Now, if you want, you can attack a foreign colony with your caravan. You will appear at the edge of the map in a random place. Then you can look at the enemy’s base, be horrified and retreat (all pawns near the edge of the map in this case will go to the caravan). Rob, if something can be carried away with you. Or capture the settlement, killing or knocking down all the enemy pawns.
+
+Your colonists will attack the enemy colony in the form in which it is playing at the moment (of course, it must be online). True, the interiors of the premises will be closed until the doors or walls are broken. The attacking pawns are always in combat mode and accept commands to go to the position, shoot at the target and attack the target closely. They can also throw and pick up weapons, clothes and take or throw something from the inventory, they can also eat or drink something. Actually, the control possibilities end there: it turns out that only the main teams for fighting are available. For example, items such as Activate Artifacts do not work. Pawn behavior settings also do not work, for example, auto-attack is always on. Peaceful skills are not available in battle, that is, if you need to disassemble the wall and you have a wonderful miner, you still have to blow it up with a grenade or shoot from what is. All this, including the capture of pawns, can be done after the settlement is captured.
+
+We should also say that the attacker manages the situation remotely. Because of what, his orders are executed, but he does not see the process of aiming and shooting. Movements also occur in jerks. It is sad that it did not work out to do everything smoothly. At the moment, I do not see the technical ability to make this mechanism better. In order to slightly compensate for the loss of control, the speed of movement of the pawns of the attacked is halved (the reduction takes effect a minute after the start of the battle in order to have time to take a position).
+
+To attack, both you and the enemy in the Settings tab should have a checkmark "Participate in PVP". You can change it once a day. Also, for an attack, the value of people, animals and things of your caravan should not exceed a certain cost, which depends on the price of the settlement. If you encounter such a problem, you can split the caravan by removing animals from it or reducing the number of attackers. You can find out the exact cost of your caravan by clicking on your nickname in the chat and selecting the Information item, general information and information will be opened for each settlement and caravan separately. The server has a setting how many minutes a player cannot be attacked after the last attack. For example, on the official server it is 20 minutes.
+
+If either side during the battle leaves the game, this will be tantamount to defeat and the player will lose the colony or the caravan that is attacking. For the other side, only the fact that hostile pawns will passively shoot back under the control of the AI game will change. If the attacker wants to retreat, then he can select the Retreat option in the menu, then those who are closer than 10 cells to any edge of the map will move to the caravan.
+
+While PVP is in progress, half of the first speed is forcibly set. You can neither pause nor accelerate.
+
+Time of day and climatic conditions are not synchronized. The current ones on the host act (the one being attacked).
+
+Tamed animals from the caravan do not participate in the attack: they will appear at the edge of the map and will wait for you to stay or retreat with you.
+
+
+If interested, here is the exact formula for the maximum price of an attacking caravan:
+4 / (25/1000000 + 10 / colony wealth)
+It turns out, for example, like this: the cost of a colony -> maximum for a caravan
+100,000 -> 32,000
+400,000 -> 80,000
+1,000,000 -> 114,400
+2,000,000 -> 133,332
+
+
+There are a couple more issues that an attacker needs to consider.
+
+There is always an auto attack, therefore, when a pawn stands, it begins to attack the target chosen by the AI, if the attack command was not given explicitly. Therefore, with a single-shot weapon, you need to be careful.
+
+Occasionally, the command to go may be canceled or even a pawn may be afraid to start "running away" to the edge of the map. Check if pawns continue to execute commands.
+
+Detailed pawn parameters such as inventory, health, needs, etc. are updated less frequently. When changing inventory or changing in health. In this case, the pawn is updated as a whole and the selection drops from it, if it has been allocated.
+
+A target that is slain will not be selected by an auto attack and cannot be beaten closely, if you absolutely want to finish it, then shoot it.
+
+The extreme position on the border of the map is not available due to the patch. The fact is that the AI of the game, seeing that the attacking pawn wants to leave and is already on the edge, immediately removes it. It turns out that things that have fallen to the very edge will be available only after the capture of the colony. There is also a problem associated with this: sometimes, when a pawn is located across the cell from the edge of the map, it gets stuck there and does not respond to commands. It has not yet been possible to fix this, but if this happened, then try to select a pawn and quickly click
+
+
+4. Installing the mod and how to start playing
+
+1) Have any RimWorld not lower than 1.1
+
+2) Download the HugsLib and Harmony mod https://bit.ly/2PQjc6d Or from Workshop https://bit.ly/2KvHtbP
+
+3) Download the OnlineCity mod itself. The latest version is in the discord https://discord.gg/5DzWrnR on the channel #news, or from Workshop https://steamcommunity.com/sharedfiles/filedetails/?id=1908437382
+
+4) Open RimWorld, in “Mods” put a checkmark on Harmony, then Core, HugsLib, and only then other mods and OnlineCity (OnlineCity is best to be the last one). Click the close button. The game must restart.
+
+5) In the main menu, click on the "Network Game" button. If it is not, then either the RimWorld version is not supported or the mod was not enabled correctly.
+
+6) Create an account and enter it. Before doing this, make sure that there are no important data in the Mods folder, make a copy of it. The first login or registration on the server may take several minutes, depending on the server settings and Internet speed.
+
+7) Select the desired landing site.
+
+8) Pick / Create your own colonists. If possible, just in case you create in Prepare Carefully, save them.
+
+9) Everything is ready! Welcome to Online City!
+
+Additionally, it may be interesting:
+
+In the ModsConfig.xml file, the list of mods should start with
+    <li> brrainz.harmony </li>
+    <li> ludeon.rimworld </li>
+    <li> unlimitedhugs.hugslib </li>
+And end (preferably at the very end):
+    <li> aant.onlinecity </li>
+
+Common problems:
+
+* If your computer can barely handle RimWorld, then keep in mind that with this mod the memory requirement is slightly increased. It is recommended to play on a 64-bit operating system.
+
+* The game is poorly stable with poor communication, if it is often torn, problems may occur.
+
+* Check the mod version. This can be done by clicking Network game, and then What’s what, there will be a version in the first line.
+
+* If it turns out to connect / register, and then the black screen or the game freezes, then try to wait a few minutes
+
+* If you can’t register and writes that such a login is already taken, then try to use more than 3 characters in the username and password, and the login has more Latin letters. Also try just logging in, if you had a failure, then it may have occurred after you were registered.
+
+* No password reset system. You can only start over. The server administrator also does not have this access, but he can delete your settlement to free up space.
+
+* If all else fails, then try disabling other mods. If this helped, and the game started, then write to us which mod turned out to be incompatible.
+
+
+5. Additional modifications
+
+On the server there is an exact match mods setting. If it is enabled, the game’s Mods folder and the ModsConfig.xml file will be deleted and downloaded from the server. Be careful, and before entering the server for the first time, make sure that there is nothing valuable in the Mods folder! The presence of DLC Royality is not controlled and will not be downloaded from the server; you must install it yourself if it is required for the game on the server. Make sure you have one if you need one. If it is not needed for the server where you play, then before entering it is better to disable it. If the server does not need it, but you have it, then it will be correctly disabled. Further in the text, it is assumed that the setting is turned off and no synchronization occurs.
+
+If synchronization is turned off, if the OnlineCity mod is not compatible with the version on the server, an error will be generated and you will need to update it yourself. Also turned off synchronization means that different people can have completely different sets of mods.
+
+Watch carefully from which mods items to whom you pass. If both of you use the necessary modification, then there should be no problems. In other cases, the result is not predictable. Maybe a special property will simply be lost, or the item will simply disappear (most often this happens), but in some cases the game may completely break down (in this case, do not try to log in again after you have verified that the game is not working, and inform the server administrator, maybe he will be able to restore your previous save).
+
+It is also highly recommended not to use modifications that change the landscape: the outline of the seas and mountains. Thus, your settlement for other players may be in the middle of the ocean or may be inaccessible. In any case, it is unpleasant to play on different planets. An exception is if you maintain contact with all players and agree that such mods and their settings will be the same for everyone.
+
+If you will use the function of attacking players, then carefully read section 3. Attacking player settlements, it also tells about the dependence of additional modifications.
+
+At the moment, there is only one incompatible mod: Save Our Ship 2
+
+Potentially, OnlineCity is compatible with any other mods, but, of course, you need to be careful, especially when using large modpacks. It's funny that the mod is even compatible with Zetrith Multiplayer (except, perhaps, the PVP mode was not tested). After all, OnlineCity synchronizes the planet where everyone has their own settlement, and Zetrith Multiplayer is a cooperative of one settlement.
+
+
+6. Server
+
+Unzip the archive with the server to any folder. After that, you need to create a subfolder of World, which will store all the game data.
+
+Create a Settings.json file in the World folder. Here is an example of its contents:
+
+{
+  "ServerName": "OnlineCity Server with modpack",
+  "SaveInterval": 10000,
+  "Port": 19019,
+  "Description": "Official server OnlineCity with modpack",
+  "IsModsWhitelisted": true,
+  "DisableDevMode": false,
+  "MinutesIntervalBetweenPVP": 20,
+  "ModsDirectory": "c:\\CityOnlineTest19019\\Mods"
+}
+ServerName and Description - the name and description of the server, while not used anywhere, is not necessary.
+
+SaveInterval - the frequency in ms at which the server will save new data, if any, it is better not to change the default value of 10000.
+
+Port - the most important parameter, the port on which your server is running, by default 19019.
+
+IsModsWhitelisted - if exact mod matching is used, then set to true, otherwise false.
+
+ModsDirectory - if IsModsWhitelisted is set to true, then there is a folder that will be copied to each client in its Mods folder, otherwise the value is ignored. More details below.
+
+DisableDevMode - whether the developer mode will be disabled when players enter online.
+
+MinutesIntervalBetweenPVP - after an attack on one player by another, he cannot be attacked for a given number of minutes. You can put, for example, 0 or 20.
+
+
+Run ServerOnlineCity.exe. The console should open, which is the server. The output to it is duplicated to the log files in the World folder.
+
+In order for people to be able to connect to it, you need to open port 19019 (or the one specified in Port).
+
+When the server starts up, the "World" folder will be created in the folder with it. The first person to register on the server through the game will be considered an administrator. Special commands and developer mode are available to him, even if he is turned off by the server settings. At the first login / registration, the administrator will be asked to select the world seed, the percentage of the world filled in and the complexity of the game (simple / normal / difficult). The script and the narrator are always the same at startup. After that, the game will take several minutes, after which you will be returned to the main menu. Everything is ready! You can go again and as a regular player to create a settlement.
+
+In *nix systems, the launch should also occur without problems, because The server is written in .NET Core 3.1.
+
+There is also a Discord bot. You can read about its configuration separately here: https://github.com/AantCoder/OnlineCity/tree/dev/Source/DiscordChatBotServer
+
+
+More details on how to configure the mode of exact matching mods.
+
+To install everything correctly, configure your RimWorld so that all mods are taken from the Mods folder (not a single mod from Steam!). Check that everything works fine in a regular game. And copy your Mods folder to the server.
+
+After that, copy the ModsConfig.xml file from the game to the server in the World folder
+%appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config
+For example, I have it here:
+"c:\Users\Ant\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config\ModsConfig.xml"
+
+
+Some solutions to problems starting your server:
+
+1. The server console is open and there are no errors
+2. Try to enter the game from the same computer at localhost
+3. Check that friends are joining at the right IP address (you can google "how to find my IP")
+4. Forward port 19019 in the router (also google "how to open the port")
+5. Verify that the firewall allows the use of connections, or disable it
+6. Verify the version of the mod with the one who is connecting. This can be done by clicking Network game, and What’s what, there will be a version in the first line
+7. The game is poorly stable with poor communication, if it is often torn, problems may occur.
+8. If it turns out to connect / register, and then the black screen, then try to wait 5 minutes
+9. If you are unable to register and writes that such a login is already taken, then try to use more than 3 characters in the login and password, and in the login more Latin letters
+
+
+All player saves are in a subfolder of World\DataPlayers and have the name {player name}.dat {number}
+
+{player name} is the player’s login, but some characters that are not allowed for the file name are replaced with the symbol _
+
+{number} is the save history, 1 is the latest, 2 is the previous, 3 is the oldest
+
+There are also situations when, instead of history, only the file {player name}.dat1 and {player name}.bak remains. This means that a return to a previous save is undesirable. For example, this happens after a player transfers something to another player in order to exclude endless transmission.
+
+How can an administrator help a player?
+
+If you delete the files {player name}.dat *, then the next time you enter the player will be asked to create a new settlement. However, it is better to use the command from the console /killhimplease {UserLogin}
+
+If the player’s save is corrupted, you can delete the file {player name}.dat1 and rename the file {player name}.dat2 or {player name}.dat3 to this name
+
+You can regularly delete settlements of players who have played less than a few gaming days and have not entered for a long time. To do this, in the game you can find their settlements on the map by the icon of the smallest house, click on them, then on the information i. Here you can see the total cost of the settlement (for example, if it is less than 30000) and when the user last visited. If you decide to remove the player, then use the command /killhimplease {UserLogin}
+
+How to make sure that the player is who he claims to be? For example, if a player writes that his preservation is broken, and he asks to remove his settlement. In this case, ask him to try to enter the game right now. Then ask him to send you his logs for today. Then you can find the lines of his login to the server and compare the time with the logs on the server itself (keep in mind that there may be different time zones).
+
+
+7. Functions of the mod in the game
+
+Special commands are written in the chat (usually in any channel), and they will not be displayed in it. All such commands begin with a /
+
+/killmyallplease - removes the save from the server, and all settlements and caravans from the map. Registration remains. At the next call, it will be proposed to create a new settlement. The function can also be called from the About tab by clicking the Start again button.
+
+/killhimplease {UserLogin} - (admin only) is similar to /killmyallplease, but the specified player.
+
+/everybodylogoff - (admin only) command for the server to shut down correctly. All online players are given a save and exit command. After calling the team, you need to monitor the server console: as soon as the activity of the players disappears and the server saves the data, the console can be turned off. It is not recommended to start with an active PVP session.
+
+/createchat {Name} - creates a new chat with the specified name, also available in the chat interface
+
+/addplayer {UserLogin} - adds a player to the current chat, also available in the chat interface
+
+/renamechat {Name} - renames the current chat, also available in the chat interface
+
+/exitchat - leaves the current chat, also available in the chat interface
+
+/discord - for details see https://github.com/AantCoder/OnlineCity/tree/dev/Source/DiscordChatBotServer
+
+
+8. Possible problems
+
+If the game crashes (the colony does not load or it is impossible to play due to errors), then you can contact the administrator and ask him to restore the game from the previous save. You can also restart the game under the same account.
+
+There is an unresolved issue of transferring pawns when using HardcoreSK. Maybe a similar problem will be with some other mods, is not yet known.
+
+If you tried to log into the server, but the game showed a message that not all files passed the test, then just go again. This is a normal situation. Or there have been some, possibly minor, changes in the modpack. Either something has changed in the Mods folder or the ModsConfig.xml file has been changed by your game.
+
+After registration and login, mods can be downloaded and saved from the server. Sometimes this can take several minutes, during which the game may freeze or display a black screen. Try to wait up to 10 minutes. In some cases, when you first enter the server with downloading a large modpack with poor Internet speed, this can take a significantly longer time.
+
+If you have already logged in and played on the server with the mods synchronized, then if after restarting the game click on the Mods main menu, then the next time you log into the server, the game will most likely restart. In fact, nothing has changed, but the game after opening the list of mods overwrites ModsConfig.xml and it can change a little. This is normal behavior, just click the Fashion button less often :)
+
+There is a bug that is difficult to catch. Sometimes after transferring a settler to another player, a copy of it (a pawn with the same name, profession and skills) may appear in some event or ask to join the settlement. Do not agree, eyewitnesses say that this is a ghost that crashes the game! :)
+
+
+9. Other frequently asked questions
+
+> How to choose a game scenario?
+The game scenario cannot be customized, but the narrator and difficulty can be changed immediately after starting through the settings. Initially, the game begins with the narrator Cassandra, a standard scenario of the Classic and the complexity that was set when creating the server.
+
+> Is it possible to play together in one settlement?
+You cannot play on one map, except for attacking another player’s settlement, but this is still not direct control. If you need this type of game, try Zetrith Multiplayer
+
+> What happens to others when I pause?
+Nothing :) The course of the game of all participants is independent. Each player on the map has his own game session, in which interaction with foreign settlements and caravans is added. For example, you can pause and see how other people's caravans move on the map (although it’s difficult to get to the time when another player goes by caravan).
+But what an example of interaction may be: at the time of the attack, you can ask for help from a friend and pause the game, at that time he will come up as a caravan and transfer his settlers; after repulsing the attack, you can return the settlers in the same way. Or, for example, the one who came to the rescue can transfer all the pawns except one animal so that the caravan is not disbanded, then it will be possible to return the settlers immediately after repulsion, creating a new caravan from them and transferring them back to the friend’s caravan.
+
+> Game freezes after authorization
+It does not freeze, but it loads, just wait. The loading process can take up to ~ 5 - 10 minutes.
+
+> How to find logs
+Individual OnlineCity logs are written in: %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity (this can be inserted into Explorer)
+
+> How to remove your colony?
+You need to open the Online window through the panel below or through the Menu in the game. Next, on the About Fashion tab, click Start Again.
+The same action can be done by writing the command in the chat: /killmyallplease
+
+> How often is the game saved?
+The game is saved to the server once every 15 minutes, if you have not changed it on the Settings tab, it is also saved when you exit the game through the menu.
+Using ALT + F4, you can roll back your colony to the last save.
+
+> What should I do if I forget my password?
+Unfortunately, there is no password recovery system. Try to remember and if access cannot be restored in any way, then ask the administrator to delete your colony in order to free up space on the planet and register a new user.
+
+> Is developer mode available to other players?
+It depends on the server settings. If the mode is disabled, then everyone except the administrator will not be able to put it. You can check it out yourself :)
+
+
+References:
+The main server address is: 194.87.95.90
+Discord: https://discord.gg/5DzWrnR
+Official VK mod group: https://vk.com/rimworldonline
+Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
+GitHub: https://github.com/AantCoder/OnlineCity
+
 </OCity_AboutGeneralText>
 
 </LanguageData>
