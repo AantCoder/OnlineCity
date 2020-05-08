@@ -2,96 +2,97 @@
 <LanguageData>
 
 	<!-- MainMenu.cs -->
-	<OCity_LAN_btn>多人游戏</OCity_LAN_btn>
+	<OCity_LAN_btn>多人网络游戏</OCity_LAN_btn>
 	<!-- Kor -->
-	<OCity_MainMenu_Online>Online</OCity_MainMenu_Online>
-	<OCity_MainMenu_Withdraw>Withdraw</OCity_MainMenu_Withdraw>
-	<OCity_MainMenu_Surrender>Surrender</OCity_MainMenu_Surrender>
+	<OCity_MainMenu_Online>在线</OCity_MainMenu_Online>
+	<OCity_MainMenu_Withdraw>撤回</OCity_MainMenu_Withdraw>
+	<OCity_MainMenu_Surrender>投降</OCity_MainMenu_Surrender>
 
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
-	<OCity_Caravan_GoTrade>我们将要与之交换货物 {0}</OCity_Caravan_GoTrade>
+	<OCity_Caravan_GoTrade>我们要用 {0} 来交换货物哦(￣▽￣)"。</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
-	<OCity_Caravan_LOGNoData>没有有关交易对象的服务器数据</OCity_Caravan_LOGNoData>
-	<OCity_Caravan_LOGSwap>大篷车交换：选择所有大篷车</OCity_Caravan_LOGSwap>
+	<OCity_Caravan_LOGNoData>服务器上没有，有关于此交易对象的数据(* ￣︿￣)</OCity_Caravan_LOGNoData>
+	<OCity_Caravan_LOGSwap>商队交换：选择全部商队</OCity_Caravan_LOGSwap>
 	<!-- Kor -->
-	<OCity_Caravan_Go_Attack_Target>Attack</OCity_Caravan_Go_Attack_Target>
-	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Do you really want to attack this settlement? It's possible to have a training battle without consequences</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
-	<OCity_Caravan_Practive>No, just practice.</OCity_Caravan_Practive>
+	<OCity_Caravan_Go_Attack_Target>攻击╰（‵□′）╯</OCity_Caravan_Go_Attack_Target>
+	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>真的要攻打这个定居点吗？有可能在不计后果的情况下进行训练战！</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
+	<OCity_Caravan_Practive>不，只是练习呢。</OCity_Caravan_Practive>
 
 	<!-- OnlineCity_CaravanOnline.cs -->
-	<OCity_Caravan_Player>{0} 玩家 {1}</OCity_Caravan_Player>
-	<OCity_Caravan_Other>物价: {2}
-人和动物的价格: {3}</OCity_Caravan_Other>
-	<OCity_Caravan_PlayerAttackCost>The maximum price of attackers: {0}</OCity_Caravan_PlayerAttackCost>
-	<OCity_Caravan_FreeWeight>剩余负载能力: </OCity_Caravan_FreeWeight>
-	<OCity_Caravan_Trade>与...交换 {0}</OCity_Caravan_Trade>
+	<OCity_Caravan_Player>{0}玩家 {1}</OCity_Caravan_Player>
+	<OCity_Caravan_Other>物品的价值：{2}
+人和动物的价值：{3}</OCity_Caravan_Other>
+	<OCity_Caravan_PlayerAttackCost>攻击者的最高价格：{0}</OCity_Caravan_PlayerAttackCost>
+	<OCity_Caravan_FreeWeight>剩余负载能力： </OCity_Caravan_FreeWeight>
+	<OCity_Caravan_Trade>与{0}交易</OCity_Caravan_Trade>
 	<!-- Kor -->
-	<OCity_Caravan_Attack>Attack {0}</OCity_Caravan_Attack>
+	<OCity_Caravan_Attack>攻击 {0}</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
-	<OCity_DevTest_Test>测试</OCity_DevTest_Test>
-	<OCity_DevTest_NameTestPlayer>名字测试玩家</OCity_DevTest_NameTestPlayer>
+	<OCity_DevTest_Test>检验</OCity_DevTest_Test>
+	<OCity_DevTest_NameTestPlayer>测试者名称</OCity_DevTest_NameTestPlayer>
 
 	<!-- GameStarter.cs -->
-	<OCity_Starter_CityNotBuild>这个地方被另一个玩家占用</OCity_Starter_CityNotBuild>
+	<OCity_Starter_CityNotBuild>这个地方被其他玩家占据了</OCity_Starter_CityNotBuild>
 
 	<!-- StorageTest.cs -->
-	<OCity_StorageTest_CreateGrass>在春季种草（修复）</OCity_StorageTest_CreateGrass>
-	<OCity_StorageTest_CreateGrassDescrip>每年一次，在每张卡片上，当温度升高到5度以上时，将在与草丛相距10的每个无人生长的细胞上种植一个新的细胞。</OCity_StorageTest_CreateGrassDescrip>
-	<OCity_StorageTest_LastIP>持续 IP</OCity_StorageTest_LastIP>
+	<OCity_StorageTest_CreateGrass>春季种草（注意）原话就是这个意思我也没明白~</OCity_StorageTest_CreateGrass>
+	<OCity_StorageTest_CreateGrassDescrip>每年一次，在每卡上，当气温上升到5度以上时，在每一个无人居住、生长的小格子上，按距离草丛10左右的距离，种植一个新的小格子。</OCity_StorageTest_CreateGrassDescrip>
+	<OCity_StorageTest_LastIP>最后一个IP</OCity_StorageTest_LastIP>
 
 	<!-- OnlineCity_ClientData.cs -->
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
-	<OCity_ClientData_Chat>聊天室 </OCity_ClientData_Chat>
+	<OCity_ClientData_Chat>聊天o(*￣▽￣*)o </OCity_ClientData_Chat>
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
-	<OCity_Dialog_ListChat>聊天室</OCity_Dialog_ListChat>
-	<OCity_Dialog_ListInfo>信息</OCity_Dialog_ListInfo>
-	<OCity_Dialog_ListAbout>关于</OCity_Dialog_ListAbout>
-	<OCity_Dialog_Connecting>连接中...</OCity_Dialog_Connecting>
+	<OCity_Dialog_ListChat>聊天</OCity_Dialog_ListChat>
+	<OCity_Dialog_ListInfo>聊天信息</OCity_Dialog_ListInfo>
+	<OCity_Dialog_ListAbout>关于MOD</OCity_Dialog_ListAbout>
+	<OCity_Dialog_Settings>设置</OCity_Dialog_Settings>
+	<OCity_Dialog_Connecting>连接...</OCity_Dialog_Connecting>
 	<OCity_Dialog_Login>登录: </OCity_Dialog_Login>
-	<OCity_Dialog_Players>玩家们: </OCity_Dialog_Players>
-	<OCity_Dialog_ChennelOwn> 频道创作者</OCity_Dialog_ChennelOwn>
+	<OCity_Dialog_Players>玩家: </OCity_Dialog_Players>
+	<OCity_Dialog_ChennelOwn> 频道创建者</OCity_Dialog_ChennelOwn>
 	<OCity_Dialog_ChennelUser> 会员</OCity_Dialog_ChennelUser>
-	<OCity_Dialog_ChennelCreate>建立频道</OCity_Dialog_ChennelCreate>
+	<OCity_Dialog_ChennelCreate>创建频道</OCity_Dialog_ChennelCreate>
 	<OCity_Dialog_ChennelClose>关闭频道</OCity_Dialog_ChennelClose>
 	<OCity_Dialog_OthersFunctions>其他功能</OCity_Dialog_OthersFunctions>
-	<OCity_Dialog_ChennelCreate2>建立频道</OCity_Dialog_ChennelCreate2>
+	<OCity_Dialog_ChennelCreate2>创建一个频道</OCity_Dialog_ChennelCreate2>
 	<OCity_Dialog_ChennelLeave>离开频道</OCity_Dialog_ChennelLeave>
-	<OCity_Dialog_ChennelRen>改名</OCity_Dialog_ChennelRen>
-	<OCity_Dialog_ChennelCreating>建立频道</OCity_Dialog_ChennelCreating>
+	<OCity_Dialog_ChennelRen>重命名</OCity_Dialog_ChennelRen>
+	<OCity_Dialog_ChennelCreating>创建频道</OCity_Dialog_ChennelCreating>
 	<OCity_Dialog_ChennelCreateName>输入频道名称</OCity_Dialog_ChennelCreateName>
-	<OCity_Dialog_ChennelQuit>退出频道</OCity_Dialog_ChennelQuit>
-	<OCity_Dialog_ChennelQuitCheck>您确定要离开频道吗?</OCity_Dialog_ChennelQuitCheck>
-	<OCity_Dialog_ChennelRenLabel>重命名频道</OCity_Dialog_ChennelRenLabel>
+	<OCity_Dialog_ChennelQuit>退出通道</OCity_Dialog_ChennelQuit>
+	<OCity_Dialog_ChennelQuitCheck>你真的想要离开这个频道嘛?</OCity_Dialog_ChennelQuitCheck>
+	<OCity_Dialog_ChennelRenLabel>重命名这个频道~</OCity_Dialog_ChennelRenLabel>
 	<OCity_Dialog_ChennelNewName>输入新的频道名称 </OCity_Dialog_ChennelNewName>
-	<OCity_Dialog_PrivateMessage>私人信息</OCity_Dialog_PrivateMessage>
-	<OCity_Dialog_ChennelAddUser>新增成员</OCity_Dialog_ChennelAddUser>
+	<OCity_Dialog_PrivateMessage>个人信息</OCity_Dialog_PrivateMessage>
+	<OCity_Dialog_ChennelAddUser>添加会员(成员)</OCity_Dialog_ChennelAddUser>
 	<OCity_Dialog_ChennelPlayerInfo>信息</OCity_Dialog_ChennelPlayerInfo>
-	<OCity_Dialog_ChennelPlayerInfoTitle>关于 </OCity_Dialog_ChennelPlayerInfoTitle>
-	<OCity_Dialog_AboutMode>关于OnlineCity</OCity_Dialog_AboutMode>
+	<OCity_Dialog_ChennelPlayerInfoTitle>关于</OCity_Dialog_ChennelPlayerInfoTitle>
+	<OCity_Dialog_AboutMode>关于 OnlineCity(多人城镇)</OCity_Dialog_AboutMode>
 	<OCity_Dialog_AutorPage>作者页面</OCity_Dialog_AutorPage>
-	<OCity_Dialog_Regame>重来</OCity_Dialog_Regame>
+	<OCity_Dialog_Regame>重新开始</OCity_Dialog_Regame>
 	<OCity_Dialog_DeleteData>删除所有游戏数据</OCity_Dialog_DeleteData>
-	<OCity_Dialog_DeleteDataCheck>您是否真的要完全删除游戏并重新开始?</OCity_Dialog_DeleteDataCheck>
-	<OCity_Dialog_DeletedData>游戏已被删除。 再次登录以创建一个新的.</OCity_Dialog_DeletedData>
+	<OCity_Dialog_DeleteDataCheck>你真的要完全删除游戏，然后重新开始吗？</OCity_Dialog_DeleteDataCheck>
+	<OCity_Dialog_DeletedData>游戏已被删除。再次登录以创建新的。</OCity_Dialog_DeletedData>
 
 	<!-- OnlineCity_Dialog_CreateWorld.cs -->
 	<OCity_Dialog_CreateWorld_Create>创造世界</OCity_Dialog_CreateWorld_Create>
-	<OCity_Dialog_CreateWorld_BtnOk>好/OK</OCity_Dialog_CreateWorld_BtnOk>
+	<OCity_Dialog_CreateWorld_BtnOk>OK/好的</OCity_Dialog_CreateWorld_BtnOk>
 	<OCity_Dialog_CreateWorld_Err>错误</OCity_Dialog_CreateWorld_Err>
-	<OCity_Dialog_CreateWorld_Err2>无效的参数</OCity_Dialog_CreateWorld_Err2>
+	<OCity_Dialog_CreateWorld_Err2>设置不正确</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>取消</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>种子</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_Difficulty>困难。 整数从0（非常简单）到2（困难）</OCity_Dialog_CreateWorld_Difficulty>
-	<OCity_Dialog_CreateWorld_MapSize>本地地图的大小（200-小，400-电磁）</OCity_Dialog_CreateWorld_MapSize>
-	<OCity_Dialog_CreateWorld_PercentWorld>行星表面生成的百分比（从5到100）</OCity_Dialog_CreateWorld_PercentWorld>
+	<OCity_Dialog_CreateWorld_Difficulty>难度。从0(非常简单)到2(难度)的整数。</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_MapSize>当地地图的大小(200--小，400--大)</OCity_Dialog_CreateWorld_MapSize>
+	<OCity_Dialog_CreateWorld_PercentWorld>占地球表面生成量的百分比(从5到100)</OCity_Dialog_CreateWorld_PercentWorld>
 
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>登录</OCity_LoginForm_BtnEnter>
 	<OCity_LoginForm_Register>注册</OCity_LoginForm_Register>
-	<OCity_LoginForm_Close>关</OCity_LoginForm_Close>
+	<OCity_LoginForm_Close>关闭</OCity_LoginForm_Close>
 	<OCity_LoginForm_LabelEnter>登录</OCity_LoginForm_LabelEnter>
 	<OCity_LoginForm_Server>服务器:</OCity_LoginForm_Server>
 	<OCity_LoginForm_Login>登录:</OCity_LoginForm_Login>
@@ -99,85 +100,85 @@
 
 	<!-- SessionClientController.cs -->
 	<OCity_SessionCC_ConnectionFailTitle>连接失败</OCity_SessionCC_ConnectionFailTitle>
-	<OCity_SessionCC_LoginFailTitle>登录失败</OCity_SessionCC_LoginFailTitle>
-	<OCity_SessionCC_RegFailTitle>注册失败</OCity_SessionCC_RegFailTitle>
+	<OCity_SessionCC_LoginFailTitle>登录错误</OCity_SessionCC_LoginFailTitle>
+	<OCity_SessionCC_RegFailTitle>注册错误</OCity_SessionCC_RegFailTitle>
 	<OCity_SessionCC_MsgCanceledCreateW>取消</OCity_SessionCC_MsgCanceledCreateW>
-	<OCity_SessionCC_MsgCreateWorlErr>出现了一个错误，请重试.</OCity_SessionCC_MsgCreateWorlErr>
-	<OCity_SessionCC_MsgCreateWorlGood>万岁！ 服务器上的世界已创建!</OCity_SessionCC_MsgCreateWorlGood>
+	<OCity_SessionCC_MsgCreateWorlErr>错误，再试一次吧.</OCity_SessionCC_MsgCreateWorlErr>
+	<OCity_SessionCC_MsgCreateWorlGood>哦耶！服务器上的世界已经创建成功！</OCity_SessionCC_MsgCreateWorlGood>
 	<OCity_SessionCC_MsgCreatingServer>创建服务器</OCity_SessionCC_MsgCreatingServer>
-	<OCity_SessionCC_Disconnected>断线.</OCity_SessionCC_Disconnected>
-	<OCity_SessionCC_Disconnect>断开</OCity_SessionCC_Disconnect>
+	<OCity_SessionCC_Disconnected>连接错误.</OCity_SessionCC_Disconnected>
+	<OCity_SessionCC_Disconnect>断开连接</OCity_SessionCC_Disconnect>
 	<!-- Kor -->
-	<OCity_SessionCC_Shutdown_Command_ProgressSaved>We received a shutdown command from the server. The progress has been saved.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
-	<OCity_SessionCC_Shutdown_Command>The server has received a command to shut down</OCity_SessionCC_Shutdown_Command>
-	<OCity_SessionCC_Scenario_Classic>Classic</OCity_SessionCC_Scenario_Classic>
-	<OCity_SessionCC_Client_UpdateNeeded>Upgrade the client! Version for this server: </OCity_SessionCC_Client_UpdateNeeded>
-	<OCity_SessionCC_InitConnectedIntro_Title>Attention</OCity_SessionCC_InitConnectedIntro_Title>
-	<OCity_SessionCC_InitConnectedIntro_Text>If the exact match of the mods is set on the server, and they have not yet been installed, now they will be downloaded. If there is important information in the Mods game subfolder, click Cancel and make a backup copy! The mod synchronization process may take several minutes, after which the game will restart.</OCity_SessionCC_InitConnectedIntro_Text>
-	<OCity_SessionCC_FilesUpdated>Not all files are resolve hash check, they was been updated, Close and Open Game</OCity_SessionCC_FilesUpdated>
+	<OCity_SessionCC_Shutdown_Command_ProgressSaved>我们收到了来自服务器的关机命令。进程已经保存下来了. Прогресс был сохранен.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
+	<OCity_SessionCC_Shutdown_Command>服务器已收到关闭命令.</OCity_SessionCC_Shutdown_Command>
+	<OCity_SessionCC_Scenario_Classic>Классика/经典</OCity_SessionCC_Scenario_Classic>
+	<OCity_SessionCC_Client_UpdateNeeded>升级客户端! 此服务器的版本: </OCity_SessionCC_Client_UpdateNeeded>
+	<OCity_SessionCC_InitConnectedIntro_Title>注意事项!</OCity_SessionCC_InitConnectedIntro_Title>
+	<OCity_SessionCC_InitConnectedIntro_Text>（MOD与服务器规定的不一样）如果服务器已经设置了准确匹配的mod，而且还没有安装的话，现在就会被下载。如果Mods游戏子文件夹里有重要信息，请点击取消并进行备份! mods同步的过程可能需要几分钟的时间，之后游戏将重新启动。</OCity_SessionCC_InitConnectedIntro_Text>
+	<OCity_SessionCC_FilesUpdated>不是所有的文件都是解析哈希检查，它们被更新后会重启游戏。</OCity_SessionCC_FilesUpdated>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
-	<OCity_Dialog_Exchenge_Close>Close</OCity_Dialog_Exchenge_Close>
-	<OCity_Dialog_Exchenge_Edit>Edit</OCity_Dialog_Exchenge_Edit>
-	<OCity_Dialog_Exchenge_Trade_Orders>Trade orders</OCity_Dialog_Exchenge_Trade_Orders>
-	<OCity_Dialog_Exchenge_Viewing_Orders>Viewing order</OCity_Dialog_Exchenge_Viewing_Orders>
-	<OCity_Dialog_Exchenge_Deal_Open_Everyone>The deal is available to everyone.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
-	<OCity_Dialog_Exchenge_Deal_Open_Specific>The deal is only available for: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
-	<OCity_Dialog_Exchenge_Seller>Seller</OCity_Dialog_Exchenge_Seller>
-	<OCity_Dialog_Exchenge_BeenOnline>has been online</OCity_Dialog_Exchenge_BeenOnline>
-	<OCity_Dialog_Exchenge_Location>Location</OCity_Dialog_Exchenge_Location>
-	<OCity_Dialog_Exchenge_Days> days </OCity_Dialog_Exchenge_Days>
-	<OCity_Dialog_Exchenge_In> in </OCity_Dialog_Exchenge_In>
-	<OCity_Dialog_Exchenge_Location_Goods>Location of goods:</OCity_Dialog_Exchenge_Location_Goods>
-	<OCity_Dialog_Exchenge_Number>Number</OCity_Dialog_Exchenge_Number>
-	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>Maximum repetition of the transaction:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
-	<OCity_Dialog_Exchenge_Acquire>Acquire</OCity_Dialog_Exchenge_Acquire>
-	<OCity_Dialog_Exchenge_GiveTo>Give it to</OCity_Dialog_Exchenge_GiveTo>
-	<OCity_Dialog_Exchenge_No_Warrants>No warrants</OCity_Dialog_Exchenge_No_Warrants>
-	<OCity_Dialog_Exchenge_Active_Orders>Active orders {0}</OCity_Dialog_Exchenge_Active_Orders>
-	<OCity_Dialog_Exchenge_Update>Update</OCity_Dialog_Exchenge_Update>
-	<OCity_Dialog_Exchenge_Select_For_Sale>Selection for sale from {0} </OCity_Dialog_Exchenge_Select_For_Sale>
-	<OCity_Dialog_Exchenge_Choose>Choose</OCity_Dialog_Exchenge_Choose>
-	<OCity_Dialog_Exchenge_Order_Create>Create new order</OCity_Dialog_Exchenge_Order_Create>
-	<OCity_Dialog_Exchenge_Save>Save</OCity_Dialog_Exchenge_Save>
-	<OCity_Dialog_Exchenge_Create>Create</OCity_Dialog_Exchenge_Create>
-	<OCity_Dialog_Exchenge_Trade>Trade</OCity_Dialog_Exchenge_Trade>
-	<OCity_Dialog_Exchenge_Counterproposal>Counterproposal</OCity_Dialog_Exchenge_Counterproposal>
-	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>Action not carried out</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
-	<OCity_Dialog_Exchenge_Delete>Delete</OCity_Dialog_Exchenge_Delete>
-	<OCity_Dialog_Exchenge_Order_New>New order</OCity_Dialog_Exchenge_Order_New>
-	<OCity_Dialog_Exchenge_No_Exchanges>No such exchanges:</OCity_Dialog_Exchenge_No_Exchanges>
-	<OCity_Dialog_Exchenge_No_Available_Exchange>Nothing else is available for exchange.</OCity_Dialog_Exchenge_No_Available_Exchange>
-	<OCity_Dialog_Exchenge_Done_Once>It`s done once:</OCity_Dialog_Exchenge_Done_Once>
-	<OCity_Dialog_Exchenge_We_Give>We give</OCity_Dialog_Exchenge_We_Give>
-	<OCity_Dialog_Exchenge_We_Give2>We give {0} :</OCity_Dialog_Exchenge_We_Give2>
-	<OCity_Dialog_Exchenge_We_Get>We get</OCity_Dialog_Exchenge_We_Get>
-	<OCity_Dialog_Exchenge_No_User_Restrictions>There are no user restrictions.</OCity_Dialog_Exchenge_No_User_Restrictions>
-	<OCity_Dialog_Exchenge_User_Restrictions>Deal available only to users:</OCity_Dialog_Exchenge_User_Restrictions>
-	<OCity_Dialog_Exchenge_Add_User>+ add user</OCity_Dialog_Exchenge_Add_User>
-	<OCity_Dialog_Exchenge_Specific_Facility_Assigned>A specific facility has been assigned</OCity_Dialog_Exchenge_Specific_Facility_Assigned>
-	<OCity_Dialog_Exchenge_Add>+ add</OCity_Dialog_Exchenge_Add>
-	<OCity_Dialog_Exchenge_Whole_On>A whole on {0} of {1} ({2}%).</OCity_Dialog_Exchenge_Whole_On>
-	<OCity_Dialog_Exchenge_Quality>Quality</OCity_Dialog_Exchenge_Quality>
-	<OCity_Dialog_Exchenge_Whole_Less_Than>whole no less than</OCity_Dialog_Exchenge_Whole_Less_Than>
-	<OCity_Dialog_Exchenge_QualityNo_Less_Than>The quality is no less than</OCity_Dialog_Exchenge_QualityNo_Less_Than>
-	<OCity_Dialog_Exchenge_All>all</OCity_Dialog_Exchenge_All>
-	<OCity_Dialog_Exchenge_FromCorpse>Taken from a corpse</OCity_Dialog_Exchenge_FromCorpse>
-	<OCity_Dialog_Exchenge_FromCorpseD>It is permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromCorpseD>
-	<OCity_Dialog_Exchenge_FromNotCorpse>NOT from a corpse</OCity_Dialog_Exchenge_FromNotCorpse>
-	<OCity_Dialog_Exchenge_FromNotCorpseD>It is NOT permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromNotCorpseD>
+	<OCity_Dialog_Exchenge_Close>关闭</OCity_Dialog_Exchenge_Close>
+	<OCity_Dialog_Exchenge_Edit>编辑</OCity_Dialog_Exchenge_Edit>
+	<OCity_Dialog_Exchenge_Trade_Orders>贸易订单</OCity_Dialog_Exchenge_Trade_Orders>
+	<OCity_Dialog_Exchenge_Viewing_Orders>查看订单</OCity_Dialog_Exchenge_Viewing_Orders>
+	<OCity_Dialog_Exchenge_Deal_Open_Everyone>这个交易对每个人来说都是可以参加的.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
+	<OCity_Dialog_Exchenge_Deal_Open_Specific>此交易仅提供: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
+	<OCity_Dialog_Exchenge_Seller>卖家</OCity_Dialog_Exchenge_Seller>
+	<OCity_Dialog_Exchenge_BeenOnline>已上线 </OCity_Dialog_Exchenge_BeenOnline>
+	<OCity_Dialog_Exchenge_Location>位置</OCity_Dialog_Exchenge_Location>
+	<OCity_Dialog_Exchenge_Days> 天数 </OCity_Dialog_Exchenge_Days>
+	<OCity_Dialog_Exchenge_In> 在(in) </OCity_Dialog_Exchenge_In>
+	<OCity_Dialog_Exchenge_Location_Goods>货物的位置:</OCity_Dialog_Exchenge_Location_Goods>
+	<OCity_Dialog_Exchenge_Number>数量</OCity_Dialog_Exchenge_Number>
+	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>交易的最大重复次数:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
+	<OCity_Dialog_Exchenge_Acquire>购入</OCity_Dialog_Exchenge_Acquire>
+	<OCity_Dialog_Exchenge_GiveTo>给我吧</OCity_Dialog_Exchenge_GiveTo>
+	<OCity_Dialog_Exchenge_No_Warrants>没有权限</OCity_Dialog_Exchenge_No_Warrants>
+	<OCity_Dialog_Exchenge_Active_Orders>有效订单 {0}</OCity_Dialog_Exchenge_Active_Orders>
+	<OCity_Dialog_Exchenge_Update>更新</OCity_Dialog_Exchenge_Update>
+	<OCity_Dialog_Exchenge_Select_For_Sale>从{0}中选择出售</OCity_Dialog_Exchenge_Select_For_Sale>
+	<OCity_Dialog_Exchenge_Choose>选择</OCity_Dialog_Exchenge_Choose>
+	<OCity_Dialog_Exchenge_Order_Create>创建新订单</OCity_Dialog_Exchenge_Order_Create>
+	<OCity_Dialog_Exchenge_Save>保存</OCity_Dialog_Exchenge_Save>
+	<OCity_Dialog_Exchenge_Create>创建</OCity_Dialog_Exchenge_Create>
+	<OCity_Dialog_Exchenge_Trade>贸易</OCity_Dialog_Exchenge_Trade>
+	<OCity_Dialog_Exchenge_Counterproposal>反建议</OCity_Dialog_Exchenge_Counterproposal>
+	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>未执行的行动</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
+	<OCity_Dialog_Exchenge_Delete>删除</OCity_Dialog_Exchenge_Delete>
+	<OCity_Dialog_Exchenge_Order_New>新订单</OCity_Dialog_Exchenge_Order_New>
+	<OCity_Dialog_Exchenge_No_Exchanges>没有这种交换:</OCity_Dialog_Exchenge_No_Exchanges>
+	<OCity_Dialog_Exchenge_No_Available_Exchange>没有其他东西可供交换.</OCity_Dialog_Exchenge_No_Available_Exchange>
+	<OCity_Dialog_Exchenge_Done_Once>已经做了一次了:</OCity_Dialog_Exchenge_Done_Once>
+	<OCity_Dialog_Exchenge_We_Give>我们给予</OCity_Dialog_Exchenge_We_Give>
+	<OCity_Dialog_Exchenge_We_Give2>我们给予 {0} :</OCity_Dialog_Exchenge_We_Give2>
+	<OCity_Dialog_Exchenge_We_Get>我们得到</OCity_Dialog_Exchenge_We_Get>
+	<OCity_Dialog_Exchenge_No_User_Restrictions>没有用户限制.</OCity_Dialog_Exchenge_No_User_Restrictions>
+	<OCity_Dialog_Exchenge_User_Restrictions>只对此用户开放:</OCity_Dialog_Exchenge_User_Restrictions>
+	<OCity_Dialog_Exchenge_Add_User>+ 添加用户</OCity_Dialog_Exchenge_Add_User>
+	<OCity_Dialog_Exchenge_Specific_Facility_Assigned>已指定了一个具体的设施</OCity_Dialog_Exchenge_Specific_Facility_Assigned>
+	<OCity_Dialog_Exchenge_Add>+ 添加</OCity_Dialog_Exchenge_Add>
+	<OCity_Dialog_Exchenge_Whole_On>{1}的{0}上的一个整体（{2}%）。</OCity_Dialog_Exchenge_Whole_On>
+	<OCity_Dialog_Exchenge_Quality>质量</OCity_Dialog_Exchenge_Quality>
+	<OCity_Dialog_Exchenge_Whole_Less_Than>不亚于 </OCity_Dialog_Exchenge_Whole_Less_Than>
+	<OCity_Dialog_Exchenge_QualityNo_Less_Than>质量不亚于</OCity_Dialog_Exchenge_QualityNo_Less_Than>
+	<OCity_Dialog_Exchenge_All>全部</OCity_Dialog_Exchenge_All>
+	<OCity_Dialog_Exchenge_FromCorpse>从一具尸体上提取的</OCity_Dialog_Exchenge_FromCorpse>
+	<OCity_Dialog_Exchenge_FromCorpseD>允许从尸体上脱掉衣服是可以的。</OCity_Dialog_Exchenge_FromCorpseD>
+	<OCity_Dialog_Exchenge_FromNotCorpse>不是尸体上的</OCity_Dialog_Exchenge_FromNotCorpse>
+	<OCity_Dialog_Exchenge_FromNotCorpseD>不允许从尸体上脱掉衣服。</OCity_Dialog_Exchenge_FromNotCorpseD>
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
-	<OCity_ThingTrade_Quality_Strength>Quality {0}. Strength {1} of {2}</OCity_ThingTrade_Quality_Strength>
-	<OCity_ThingTrade_Cut_Body_Off>Cut off the body.</OCity_ThingTrade_Cut_Body_Off>
-	<OCity_ThingTrade_QualityBetter_StrengthMore>Quality {0} and better. Strength {1}% and more</OCity_ThingTrade_QualityBetter_StrengthMore>
-	<OCity_ThingTrade_CouldTake_OffCorpse>Could be taken off a corpse.</OCity_ThingTrade_CouldTake_OffCorpse>
+	<OCity_ThingTrade_Quality_Strength>质量{0}。强度{1}的{2}。</OCity_ThingTrade_Quality_Strength>
+	<OCity_ThingTrade_Cut_Body_Off>切掉身体。</OCity_ThingTrade_Cut_Body_Off>
+	<OCity_ThingTrade_QualityBetter_StrengthMore>质量{0}和更好。强度{1}%及以上</OCity_ThingTrade_QualityBetter_StrengthMore>
+	<OCity_ThingTrade_CouldTake_OffCorpse>可以从身体上取下。</OCity_ThingTrade_CouldTake_OffCorpse>
 
-	<!-- UpdateWorldController.cs -->	
-	<OCity_UpdateWorld_Trade>贸易方式</OCity_UpdateWorld_Trade>
-	<OCity_UpdateWorld_TradeDetails>玩家{0} 到 {1} 转移项目: {2}</OCity_UpdateWorld_TradeDetails>
+	<!-- UpdateWorldController.cs -->
+	<OCity_UpdateWorld_Trade>贸易</OCity_UpdateWorld_Trade>
+	<OCity_UpdateWorld_TradeDetails>玩家{0}到{1}转移物品。{2}</OCity_UpdateWorld_TradeDetails>
 
 	<!-- Dialog_Input.cs -->
 	<OCity_DialogInput_Ok>好的</OCity_DialogInput_Ok>
@@ -185,86 +186,83 @@
 
 	<!-- Dialog_Registration.cs -->
 	<OCity_Dialog_Registration_Close>关闭</OCity_Dialog_Registration_Close>
-	<OCity_Dialog_Registration_BtnReg>寄存器</OCity_Dialog_Registration_BtnReg>
+	<OCity_Dialog_Registration_BtnReg>注册</OCity_Dialog_Registration_BtnReg>
 	<OCity_Dialog_Registration_LabelReg>注册</OCity_Dialog_Registration_LabelReg>
 	<OCity_Dialog_Registration_Server>服务器:</OCity_Dialog_Registration_Server>
 	<OCity_Dialog_Registration_Login>登录:</OCity_Dialog_Registration_Login>
 	<OCity_Dialog_Registration_Pass>密码:</OCity_Dialog_Registration_Pass>
-	<OCity_Dialog_Registration_Check>确认:</OCity_Dialog_Registration_Check>
+	<OCity_Dialog_Registration_Check>确认密码:</OCity_Dialog_Registration_Check>
 
 	<!-- Dialog_TradeOnline.cs -->
-	<OCity_Dialog_TradeOnline_Trade>货物转移</OCity_Dialog_TradeOnline_Trade>
+	<OCity_Dialog_TradeOnline_Trade>货物转让</OCity_Dialog_TradeOnline_Trade>
 
 	<!-- GrassFix.cs -->
-	<OCity_GrassFix_Plant>种植 </OCity_GrassFix_Plant>
-	<OCity_GrassFix_Grass> 草</OCity_GrassFix_Grass>
+	<OCity_GrassFix_Plant>种植  </OCity_GrassFix_Plant>
+	<OCity_GrassFix_Grass> 药材</OCity_GrassFix_Grass>
 
 	<!-- PlayerClient.cs -->
-	<OCity_PlayerClient_LastTick>玩了多年: {0}, 天: {1}.</OCity_PlayerClient_LastTick>
-	<OCity_PlayerClient_LastSaveTime>在游戏中: {2}</OCity_PlayerClient_LastSaveTime>
-	<OCity_PlayerClient_baseCount>基地数: {3}</OCity_PlayerClient_baseCount>
-	<OCity_PlayerClient_caravanCount>大篷车: {4}</OCity_PlayerClient_caravanCount>
-	<OCity_PlayerClient_marketValue>物品的财富: {5}</OCity_PlayerClient_marketValue>
-	<OCity_PlayerClient_marketValuePawn>人与动物的财富: {6}</OCity_PlayerClient_marketValuePawn>
-	<OCity_PlayerClient_LastSaveTimeNon>没有参加</OCity_PlayerClient_LastSaveTimeNon>
-	<OCity_PlayerClient_InvolvedInPVP>Involved in PVP</OCity_PlayerClient_InvolvedInPVP>
-	<OCity_PlayerClient_NotInvolvedInPVP>Not involved in PVP</OCity_PlayerClient_NotInvolvedInPVP>
-	<OCity_PlayerClient_Discord>Discord: </OCity_PlayerClient_Discord>
+	<OCity_PlayerClient_LastTick>玩了多少年: {0}, 天: {1}.</OCity_PlayerClient_LastTick>
+	<OCity_PlayerClient_LastSaveTime>在游戏中：{2}</OCity_PlayerClient_LastSaveTime>
+	<OCity_PlayerClient_baseCount>基地数量： {3}</OCity_PlayerClient_baseCount>
+	<OCity_PlayerClient_caravanCount>商队：{4}</OCity_PlayerClient_caravanCount>
+	<OCity_PlayerClient_marketValue>物品财富：{5}</OCity_PlayerClient_marketValue>
+	<OCity_PlayerClient_marketValuePawn>人和动物的价值：{6}</OCity_PlayerClient_marketValuePawn>
+	<OCity_PlayerClient_LastSaveTimeNon>未参与</OCity_PlayerClient_LastSaveTimeNon>
+	<OCity_PlayerClient_InvolvedInPVP>参加VP</OCity_PlayerClient_InvolvedInPVP>
+	<OCity_PlayerClient_NotInvolvedInPVP>不参与PVP</OCity_PlayerClient_NotInvolvedInPVP>
+	<OCity_PlayerClient_Discord>纷争: </OCity_PlayerClient_Discord>
 	<OCity_PlayerClient_Email>Email: </OCity_PlayerClient_Email>
-	<OCity_PlayerClient_AboutMyself>About myself:</OCity_PlayerClient_AboutMyself>
-	<OCity_PlayerClient_Settings>Settings</OCity_PlayerClient_Settings>
-	<OCity_PlayerClient_Save>Save</OCity_PlayerClient_Save>
-	<OCity_PlayerClient_CanChange>(can change {0})</OCity_PlayerClient_CanChange>
-	<OCity_PlayerClient_CanChangeNow>(can change now)</OCity_PlayerClient_CanChangeNow>
-	<OCity_PlayerClient_SaveInterval>Save interval in minutes (at least 5, default 15):</OCity_PlayerClient_SaveInterval>
+	<OCity_PlayerClient_AboutMyself>关于我自己: </OCity_PlayerClient_AboutMyself>
+	<OCity_PlayerClient_Settings>设置</OCity_PlayerClient_Settings>
+	<OCity_PlayerClient_Save>保存</OCity_PlayerClient_Save>
+	<OCity_PlayerClient_CanChange>(可以改变{0})</OCity_PlayerClient_CanChange>
+	<OCity_PlayerClient_CanChangeNow>(现在可以改了)</OCity_PlayerClient_CanChangeNow>
+	<OCity_PlayerClient_SaveInterval>保存时间，间隔为分钟（至少5，默认为15）。</OCity_PlayerClient_SaveInterval>
 
 	<!-- Kor -->
 	<!-- GameUtils.cs -->
-	<OCity_GameUtils_From> from </OCity_GameUtils_From>
+	<OCity_GameUtils_From> 从 </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>
 
 	<!-- Kor -->
 	<!-- GameAttacker.cs -->
-	<OCity_GameAttacker_Dialog_ErrorMessage>Error attack</OCity_GameAttacker_Dialog_ErrorMessage>
-	<OCity_GameAttacker_Dialog_Settlement_Attack>You are attacking the settlement</OCity_GameAttacker_Dialog_Settlement_Attack>
-	<OCity_GameAttacker_Withdraw>Withdraw</OCity_GameAttacker_Withdraw>
-	<OCity_GameAttacker_Main_Dialog>
-	In this mode, the pause must be permanently activated. In spite of this the game continues and things change.
-	If you want to finish attack, then take those you can to any edge of the map and in the main menu press withdraw.
-	</OCity_GameAttacker_Main_Dialog>
-	<OCity_GameAttacker_Main_Preparation_Dialog>Preparation is complete. You have one minute to look around the map and the attack will begin.</OCity_GameAttacker_Main_Preparation_Dialog>
-	<Ocity_GameAttacker_TrainingFight_Won>You won this training fight! :) </Ocity_GameAttacker_TrainingFight_Won>
-	<Ocity_GameAttacker_TrainingFight_Caravan_Restore>The caravan will now be restored, you'll need to log in.</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
-	<Ocity_GameAttacker_TrainingFight_Lost>You have been defeated in this training attack. :(</Ocity_GameAttacker_TrainingFight_Lost>
-	<OCity_GameAttacker_Done>Done</OCity_GameAttacker_Done>
-	<OCity_GameAttacker_Settlement_TakenOver>You have taken over this settlement! :)</OCity_GameAttacker_Settlement_TakenOver>
-	<OCity_GameAttacker_Defeated>You have been defeated :( </OCity_GameAttacker_Defeated>
-	<OCity_GameAttacker_Colonist_Return>The remaining colonists who are able to move and who have retreated to the edges of the map will return.</OCity_GameAttacker_Colonist_Return>
+	<OCity_GameAttacker_Dialog_ErrorMessage>错误攻击</OCity_GameAttacker_Dialog_ErrorMessage>
+	<OCity_GameAttacker_Dialog_Settlement_Attack>你在攻击定居点</OCity_GameAttacker_Dialog_Settlement_Attack>
+	<OCity_GameAttacker_Withdraw>撤回</OCity_GameAttacker_Withdraw>
+	<OCity_GameAttacker_Main_Dialog>在这种模式下，必须永久激活暂停。尽管如此，游戏还在继续，形势也发生了变化。如果你想完成一次攻击，把那些你能做的事情带到地图的任何边缘，从主菜单中按下 </OCity_GameAttacker_Main_Dialog>
+	<OCity_GameAttacker_Main_Preparation_Dialog>准备工作已经完成。你有1分钟的时间看一下地图，攻击就会开始!</OCity_GameAttacker_Main_Preparation_Dialog>
+	<Ocity_GameAttacker_TrainingFight_Won>你赢了这场训练战！:)</Ocity_GameAttacker_TrainingFight_Won>
+	<Ocity_GameAttacker_TrainingFight_Caravan_Restore>车队现在要恢复了，你需要进入。:)</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
+	<Ocity_GameAttacker_TrainingFight_Lost>你在这次的训练攻击中被打败了。:(</Ocity_GameAttacker_TrainingFight_Lost>
+	<OCity_GameAttacker_Done>完成了.</OCity_GameAttacker_Done>
+	<OCity_GameAttacker_Settlement_TakenOver>你接管了这个定居点！:) </OCity_GameAttacker_Settlement_TakenOver>
+	<OCity_GameAttacker_Defeated>你已经被打败了：(</OCity_GameAttacker_Defeated>
+	<OCity_GameAttacker_Colonist_Return>剩余的殖民者，有能力移动的，退到地图边缘的殖民者们，纷纷返回：</OCity_GameAttacker_Colonist_Return>
 
 	<!-- Kor -->
 	<!-- GameAttackHost.cs -->
-	<OCity_GameAttack_Host_Test_Attack>{0} is conducting a test attack on your settlement</OCity_GameAttack_Host_Test_Attack>
-	<OCity_GameAttack_Host_Settlement_Attacking>Your settlement is attacking {0}</OCity_GameAttack_Host_Settlement_Attacking>
-	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>Wait until the attacker is ready. After that, the speed will automatically turn on the x1 and it will not change.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog>
-	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>If you want to finish and give up the settlement, click in the main menu.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
-	<OCity_GameAttack_Host_Cancel_Action> If you want to finish and cancel the action, click on the main menu.</OCity_GameAttack_Host_Cancel_Action>
-	<OCity_GameAttack_Host_Surrender>Surrender</OCity_GameAttack_Host_Surrender>
-	<OCity_GameAttack_Host_Error_Message_Attack>Error attack</OCity_GameAttack_Host_Error_Message_Attack>
-	<OCity_GameAttack_Host_Card_Restored>The card will now be restored, you will need to login.</OCity_GameAttack_Host_Card_Restored>
-	<OCity_GameAttack_Host_Training_Attack_Repulsed>You repulsed this training attack! :)</OCity_GameAttack_Host_Training_Attack_Repulsed>
-	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>You have been defeated and the settlement passes to the new owner :(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
-	<OCity_GameAttack_Host_Atack_Repulsed>You repulsed that attack! :)</OCity_GameAttack_Host_Atack_Repulsed>
-	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>The enemies who couldn't get away will stay on the map, but they've lost touch with their commander.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
+	<OCity_GameAttack_Host_Test_Attack>{0}正在对你的定居点进行测试攻击</OCity_GameAttack_Host_Test_Attack>
+	<OCity_GameAttack_Host_Settlement_Attacking>你的定居点正在攻击{0}</OCity_GameAttack_Host_Settlement_Attacking>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>等到攻击者准备好了之后。之后，速度会自动开启X1，并且不会改变。</OCity_GameAttack_Host_GameSpeed_Lock_Dialog>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>如果你想完成并放弃结算，请点击主菜单。</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
+	<OCity_GameAttack_Host_Cancel_Action> 如果你想完成并取消操作，请点击主菜单。 </OCity_GameAttack_Host_Cancel_Action>
+	<OCity_GameAttack_Host_Surrender>投降</OCity_GameAttack_Host_Surrender>
+	<OCity_GameAttack_Host_Error_Message_Attack>错误攻击</OCity_GameAttack_Host_Error_Message_Attack>
+	<OCity_GameAttack_Host_Card_Restored>现在地图会恢复，你需要登录。</OCity_GameAttack_Host_Card_Restored>
+	<OCity_GameAttack_Host_Training_Attack_Repulsed>你击退了这次训练的攻击！:)</OCity_GameAttack_Host_Training_Attack_Repulsed>
+	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>你已经被打败了，你已经被打败了，和解的权利转给了新的主人。:(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
+	<OCity_GameAttack_Host_Atack_Repulsed>你击退了攻击！ :) </OCity_GameAttack_Host_Atack_Repulsed>
+	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>跑不掉的敌人会留在地图上，但他们已经和指挥官失去了联系</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- SCC.cs -->
-	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>
+	<!-- <OCity_SCC_Disconnected>Ошибка соединения.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<!-- Kor -->
-	<OCity_Dialog_Exchenge_Chat>Chat</OCity_Dialog_Exchenge_Chat>
-	<OCity_Dialog_Exchenge_Gamers>gamers</OCity_Dialog_Exchenge_Gamers>
-	<OCity_Dialog_Exchenge_What_Point>What's the point</OCity_Dialog_Exchenge_What_Point>
+	<OCity_Dialog_Exchenge_Chat>聊天</OCity_Dialog_Exchenge_Chat>
+	<OCity_Dialog_Exchenge_Gamers>游戏玩家</OCity_Dialog_Exchenge_Gamers>
+	<OCity_Dialog_Exchenge_What_Point>有什么意义呢？</OCity_Dialog_Exchenge_What_Point>
 
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> 作者AantCoder.</OCity_AboutTabText>
@@ -577,7 +575,6 @@ Discord: https://discord.gg/5DzWrnR
 Official VK mod group: https://vk.com/rimworldonline
 Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
 GitHub: https://github.com/AantCoder/OnlineCity
-
 </OCity_AboutGeneralText>
 
 </LanguageData>
