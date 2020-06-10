@@ -15,6 +15,8 @@ namespace Transfer
         public readonly Encoding MessageEncoding = Encoding.UTF8;
         protected const int DefaultTimeout = 600000; //10 мин
         public DateTime LastSend;
+        public long CurrentRequestLength = 0;
+        public DateTime CurrentRequestStart = DateTime.MinValue;
 
         public ConnectClient(string addr, int port)
             : this(new TcpClient(addr, port))
@@ -38,8 +40,19 @@ namespace Transfer
         public void SendMessage(byte[] message)
         {
             byte[] packlength = BitConverter.GetBytes(message.Length);
-            ClientStream.Write(packlength, 0, packlength.Length);
-            ClientStream.Write(message, 0, message.Length);
+
+            CurrentRequestStart = DateTime.UtcNow;
+            CurrentRequestLength = message.Length + packlength.Length;
+            try
+            {
+                ClientStream.Write(packlength, 0, packlength.Length);
+                ClientStream.Write(message, 0, message.Length);            
+            }
+            finally
+            {
+                CurrentRequestStart = DateTime.MinValue;
+            }
+
             LastSend = DateTime.UtcNow;
         }
 
@@ -50,13 +63,25 @@ namespace Transfer
             //длина передаваемого сообщения (принимается в первых 4 байтах (константа Int32Length))
             int lenghtAllMessageByte;
 
-            byte[] receiveBuffer = ReceiveBytes(Int32Length);
-            lenghtAllMessageByte = BitConverter.ToInt32(receiveBuffer, 0);
-            if (lenghtAllMessageByte == 0) return new byte[0];
+            CurrentRequestStart = DateTime.UtcNow;
+            CurrentRequestLength = Int32Length;
+            try
+            {
 
-            receiveBuffer = ReceiveBytes(lenghtAllMessageByte);
+                byte[] receiveBuffer = ReceiveBytes(Int32Length);
+                lenghtAllMessageByte = BitConverter.ToInt32(receiveBuffer, 0);
+                if (lenghtAllMessageByte == 0) return new byte[0];
 
-            return receiveBuffer;
+                CurrentRequestStart = DateTime.UtcNow;
+                CurrentRequestLength = lenghtAllMessageByte;
+
+                receiveBuffer = ReceiveBytes(lenghtAllMessageByte);
+                return receiveBuffer;
+            }
+            finally
+            {
+                CurrentRequestStart = DateTime.MinValue;
+            }
         }
 
         private byte[] ReceiveBytes(int countByte)

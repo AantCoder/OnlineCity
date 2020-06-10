@@ -49,6 +49,10 @@ namespace ServerOnlineCity.Services
                     Repository.Get.ChangeData = true;
                 }
                 context.Player.Public.LastTick = packet.LastTick;
+                if (context.Player.GetKeyReconnect())
+                {
+                    toClient.KeyReconnect = context.Player.KeyReconnect1;
+                }
 
                 var pLogin = context.Player.Public.Login;
                 //packet.WObjects тут все объекты этого игрока, добавляем которых у нас нет

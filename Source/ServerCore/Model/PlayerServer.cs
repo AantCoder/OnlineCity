@@ -5,6 +5,7 @@ using ServerOnlineCity.Services;
 using System;
 using System.Collections.Generic;
 using Transfer;
+using Util;
 
 namespace ServerOnlineCity.Model
 {
@@ -70,6 +71,15 @@ namespace ServerOnlineCity.Model
         /// </summary>
         public DateTime PVPHostLastTime;
 
+        [NonSerialized]
+        private DateTime KeyReconnectTime;
+
+        [NonSerialized]
+        public string KeyReconnect1;
+
+        [NonSerialized]
+        private string KeyReconnect2;
+
         private PlayerServer()
         {
             ExitReason = DisconnectReason.AllGood;
@@ -107,6 +117,33 @@ namespace ServerOnlineCity.Model
             }
 
             return values;
+        }
+
+        public bool GetKeyReconnect()
+        {
+            if ((DateTime.UtcNow - KeyReconnectTime).TotalMinutes < 30
+                && string.IsNullOrEmpty(KeyReconnect1))
+                return false;
+
+            KeyReconnectTime = DateTime.UtcNow;
+            var rnd = new Random();
+            var key = "o6*#fn`~ыggTgj0&9 gT54Qa[g}t,23rfr4*vcx%%4/\"d!2" + rnd.ToString()
+                + DateTime.UtcNow.Date.AddHours(DateTime.UtcNow.Hour).ToBinary().ToString()
+                + Public.Login;
+            var hash = new CryptoProvider().GetHash(key);
+
+            KeyReconnect2 = KeyReconnect1;
+            KeyReconnect1 = hash;
+
+            return true;
+        }
+
+        public bool KeyReconnectVerification(string testKey)
+        {
+            if (string.IsNullOrEmpty(testKey)) return false;
+            GetKeyReconnect();
+            return KeyReconnect1 == testKey
+                || KeyReconnect2 == testKey;
         }
     }
 }

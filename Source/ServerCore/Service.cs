@@ -62,7 +62,7 @@ namespace ServerOnlineCity
         {
             if (ServiceDictionary.TryGetValue(inputPackage.TypePacket, out IGenerateResponseContainer generateResponseContainer))
             {
-                Loger.Log("Server " + (Context.Player == null ? "     " : Context.Player.Public.Login.PadRight(5)) + generateResponseContainer.GetType().Name);
+                Loger.Log("Server " + (Context.Player == null ? "     " : Context.Player.Public.Login.PadRight(5)) + " " + generateResponseContainer.GetType().Name);
                 return generateResponseContainer.GenerateModelContainer(inputPackage, Context);
             }
 

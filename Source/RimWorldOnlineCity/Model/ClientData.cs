@@ -13,6 +13,9 @@ namespace RimWorldOnlineCity
         public ModelUpdateTime ChatsTime = new ModelUpdateTime() { Time = DateTime.MinValue };
 
         public DateTime UpdateTime = DateTime.MinValue;
+
+        public string KeyReconnect;
+
         /// <summary>
         /// Разница между UtcNow клиента и сервера + время передачи от сервера к клиенту (половина пинга)
         /// </summary>

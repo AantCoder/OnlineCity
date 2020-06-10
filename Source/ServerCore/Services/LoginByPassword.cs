@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OCUnion;
 using ServerOnlineCity.Model;
 using Transfer;
 
@@ -27,7 +28,17 @@ namespace ServerOnlineCity.Services
 
             if (player != null)
             {
-                if (player.Pass != packet.Pass) //todo
+                if (!string.IsNullOrEmpty(packet.KeyReconnect))
+                {
+                    if (!player.KeyReconnectVerification(packet.KeyReconnect))
+                    {
+                        Loger.Log("Reconnect " + player.Public.Login + " Fail");
+                        player = null;
+                    }
+                    else
+                        Loger.Log("Reconnect " + player.Public.Login + " OK");
+                }
+                else if (player.Pass != packet.Pass)
                     player = null;
             }
 
@@ -43,27 +54,32 @@ namespace ServerOnlineCity.Services
             //действия перед входом
             player.ExitReason = OCUnion.Transfer.DisconnectReason.AllGood;
             player.ApproveLoadWorldReason = OCUnion.Transfer.Types.ApproveLoadWorldReason.LoginOk;
-            //отмена атаки, если оба участника были отключены одновременно
-            if (player.AttackData != null) player.AttackData.Finish();
-            //удаление всех писем с командой на перезагрузку
-            if (player.Mails != null)
+
+            //При восстановлении подключения ничего не делаем
+            if (!string.IsNullOrEmpty(packet.KeyReconnect))
             {
-                for (int i = 0; i < player.Mails.Count; i++)
+                //отмена атаки, если оба участника были отключены одновременно
+                if (player.AttackData != null) player.AttackData.Finish();
+                //удаление всех писем с командой на перезагрузку
+                if (player.Mails != null)
                 {
-                    if (player.Mails[i].Type == ModelMailTradeType.AttackCancel)
+                    for (int i = 0; i < player.Mails.Count; i++)
                     {
-                        player.Mails.RemoveAt(i--);
+                        if (player.Mails[i].Type == ModelMailTradeType.AttackCancel)
+                        {
+                            player.Mails.RemoveAt(i--);
+                        }
                     }
                 }
-            }
 
-            // обновляем словарь Номер чата, индекс последнего полученного сообщения
-            if (packet.Login != "discord")
-            {
-                foreach (var v in player.Chats.Values)
+                // обновляем словарь Номер чата, индекс последнего полученного сообщения
+                if (packet.Login != "discord")
                 {
-                    v.Value = -1;
-                    v.Time = DateTime.MinValue;
+                    foreach (var v in player.Chats.Values)
+                    {
+                        v.Value = -1;
+                        v.Time = DateTime.MinValue;
+                    }
                 }
             }
 

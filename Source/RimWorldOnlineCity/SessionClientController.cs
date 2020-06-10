@@ -7,6 +7,7 @@ using RimWorld.Planet;
 using RimWorldOnlineCity.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -25,7 +26,9 @@ namespace RimWorldOnlineCity
     public static class SessionClientController
     {
         public static ClientData Data { get; set; }
+        public static string ConnectAddr { get; set; }
         public static WorkTimer Timers { get; set; }
+        public static WorkTimer TimerReconnect { get; set; }
         public static Player My { get; set; }
         public static TimeSpan ServerTimeDelta { get; set; }
 
@@ -68,6 +71,7 @@ namespace RimWorldOnlineCity
         }
 
         private static object UpdatingWorld = new Object();
+        private static int GetPlayersInfoCountRequest = 0;
 
         private static void UpdateWorld(bool firstRun = false)
         {
@@ -91,10 +95,23 @@ namespace RimWorldOnlineCity
                     //собираем данные с планеты
                     if (!firstRun) UpdateWorldController.SendToServer(toServ);
 
+                    if (firstRun) GetPlayersInfoCountRequest = 0;
+
                     //запрос на информацию об игроках. Можно будет ограничить редкое получение для тех кто оффлайн
                     if (Data.Chats != null && Data.Chats[0].PartyLogin != null)
                     {
-                        toServ.GetPlayersInfo = Data.Chats[0].PartyLogin;
+                        if (Data.Players == null || Data.Players.Count == 0
+                            || GetPlayersInfoCountRequest % 5 == 0)
+                        {
+                            //в начале и раз в пол минуты (5 сек между UpdateWorld * 5) получаем инфу обо всех
+                            toServ.GetPlayersInfo = Data.Chats[0].PartyLogin;
+                        }
+                        else
+                        {
+                            //в промежутках о тех кто онлайн
+                            toServ.GetPlayersInfo = Data.Players.Values.Where(p => p.Online).Select(p => p.Public.Login).ToList();
+                        }
+                        GetPlayersInfoCountRequest++;
                         //Loger.Log("Client " + My.Login + " UpdateWorld* " + (toServ.GetPlayersInfo.Count.ToString()) 
                         //    + " " + (toServ.GetPlayersInfo.Any(p => p == SessionClientController.My.Login) ? "1" : "0"));
                     }
@@ -104,7 +121,7 @@ namespace RimWorldOnlineCity
 
                     //Loger.Log("Client UpdateWorld 5 ");
                     Loger.Log("Client " + My.Login + " UpdateWorld "
-                        + string.Format("Отпр. свои {0}, своиDel {1}{5}. Пришло {2}, del {3}, посылок {4}{6}{7}"
+                        + string.Format("Отпр. свои {0}, своиDel {1}{5}. Пришло {2}, del {3}, игроков {8}, посылок {4}{6}{7}"
                             , toServ.WObjects == null ? 0 : toServ.WObjects.Count
                             , toServ.WObjectsToDelete == null ? 0 : toServ.WObjectsToDelete.Count
                             , fromServ.WObjects == null ? 0 : fromServ.WObjects.Count
@@ -113,10 +130,12 @@ namespace RimWorldOnlineCity
                             , toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : ", сейв"
                             , fromServ.AreAttacking ? " Атакуют!" : ""
                             , fromServ.NeedSaveAndExit ? " Команда на отключение" : ""
+                            , fromServ.PlayersInfo == null ? "null" : fromServ.PlayersInfo.Count.ToString()
                             ));
 
                     //сохраняем время актуальности данных
                     Data.UpdateTime = fromServ.UpdateTime;
+                    if (!string.IsNullOrEmpty(fromServ.KeyReconnect)) Data.KeyReconnect = fromServ.KeyReconnect;
 
                     //обновляем информацию по игрокам
                     if (fromServ.PlayersInfo != null && fromServ.PlayersInfo.Count > 0)
@@ -256,7 +275,8 @@ namespace RimWorldOnlineCity
                 });
             }
             catch
-            { }
+            {
+            }
         }
 
         private static volatile bool ChatIsUpdating = false;
@@ -313,7 +333,23 @@ namespace RimWorldOnlineCity
                     {
                         //Loger.Log("Client UpdateChats f2");
                         Data.LastServerConnectFail = true;
-                        if (!Data.ServerConnected) Disconnected("OCity_SessionCC_Disconnected".Translate());
+                        if (!Data.ServerConnected)
+                        {
+                            /*
+                            var th = new Thread(() =>
+                            {
+                                Loger.Log("Client ReconnectWithTimers not ping");
+                                if (!ReconnectWithTimers())
+                                {
+                                    Loger.Log("Client Disconnected after try reconnect");
+                                    Disconnected("OCity_SessionCC_Disconnected".Translate());
+                                }
+                            });
+                            th.IsBackground = true;
+                            th.Start();
+                            */
+                            Thread.Sleep(5000); //Ждем, когда CheckReconnectTimer срубит этот поток основного таймера 
+                        }
                     }
                     //todo Сделать сброс крутяшки после обновления чата (см. Dialog_MainOnlineCity)
                 }
@@ -331,7 +367,7 @@ namespace RimWorldOnlineCity
         public static string Connect(string addr)
         {
             TimersStop();
-            //todo Предварительная проверка корректности
+
             int port = 0;
             if (addr.Contains(":")
                 && int.TryParse(addr.Substring(addr.LastIndexOf(":") + 1), out port))
@@ -371,6 +407,8 @@ namespace RimWorldOnlineCity
             var msgError = Connect(addr);
             if (msgError != null) return msgError;
 
+            ConnectAddr = addr;
+
             var logMsg = "Login: " + login;
             Loger.Log("Client " + logMsg);
             Log.Warning(logMsg);
@@ -384,7 +422,6 @@ namespace RimWorldOnlineCity
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
                 Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_LoginFailTitle".Translate(), connect.ErrorMessage, true));
-                //Close();
                 return connect.ErrorMessage;
             }
             else
@@ -408,6 +445,8 @@ namespace RimWorldOnlineCity
             var msgError = Connect(addr);
             if (msgError != null) return msgError;
 
+            ConnectAddr = addr;
+
             var logMsg = "Registration. Login: " + login;
             Loger.Log("Client " + logMsg);
             Log.Warning(logMsg);
@@ -421,7 +460,6 @@ namespace RimWorldOnlineCity
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
                 Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_RegFailTitle".Translate(), connect.ErrorMessage, true));
-                //Close();
                 return connect.ErrorMessage;
             }
             else
@@ -436,6 +474,71 @@ namespace RimWorldOnlineCity
             return null;
         }
 
+        /// <summary>
+        /// Отбрасывание старого подключения, создание нового и аутэнтификация. Перед вызовом убедиться, что поток таймера остановлен
+        /// </summary>
+        /// <returns></returns>
+        public static bool Reconnect()
+        {
+            if (string.IsNullOrEmpty(Data?.KeyReconnect))
+            {
+                Loger.Log("Client Reconnect fail: no KeyReconnect ");
+                return false;
+            }
+            if (string.IsNullOrEmpty(My?.Login))
+            {
+                Loger.Log("Client Reconnect fail: no Login ");
+                return false;
+            }
+            if (string.IsNullOrEmpty(ConnectAddr))
+            {
+                Loger.Log("Client Reconnect fail: no ConnectAddr ");
+                return false;
+            }
+
+            //Connect {
+            var addr = ConnectAddr;
+            int port = 0;
+            if (addr.Contains(":")
+                && int.TryParse(addr.Substring(addr.LastIndexOf(":") + 1), out port))
+            {
+                addr = addr.Substring(0, addr.LastIndexOf(":"));
+            }
+            var logMsg = "Reconnect to server. Addr: " + addr + ". Port: " + (port == 0 ? SessionClient.DefaultPort : port).ToString();
+            Loger.Log("Client " + logMsg);
+            Log.Warning(logMsg);
+            var connect = new SessionClient();
+            if (!connect.Connect(addr, port))
+            {
+                logMsg = "Reconnect net fail: " + connect.ErrorMessage;
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                return false;
+            }
+            SessionClient.Recreate(connect);
+            // }
+
+            logMsg = "Reconnect login: " + My.Login;
+            Loger.Log("Client " + logMsg);
+            Log.Warning(logMsg);
+            //var connect = SessionClient.Get;
+            if (!connect.Reconnect(My.Login, Data.KeyReconnect))
+            {
+                logMsg = "Reconnect login fail: " + connect.ErrorMessage;
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                //Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_LoginFailTitle".Translate(), connect.ErrorMessage, true));
+                return false;
+            }
+            else
+            {
+                logMsg = "Reconnect OK";
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                return true;
+            }
+        }
+
         public static void Command(Action<SessionClient> netAct)
         {
             var connect = SessionClient.Get;
@@ -444,8 +547,13 @@ namespace RimWorldOnlineCity
 
         private static void TimersStop()
         {
+            Loger.Log("Client TimersStop b");
+            if (TimerReconnect != null) TimerReconnect.Stop();
+            TimerReconnect = null;
+
             if (Timers != null) Timers.Stop();
             Timers = null;
+            Loger.Log("Client TimersStop e");
         }
 
         public static Scenario GetScenarioDefault()
@@ -512,6 +620,7 @@ namespace RimWorldOnlineCity
                 Data = new ClientData();
                 TimersStop();
                 Timers = new WorkTimer();
+                TimerReconnect = new WorkTimer();
 
                 var connect = SessionClient.Get;
                 var serverInfo = connect.GetInfo(ServerInfoType.Full);
@@ -668,7 +777,7 @@ namespace RimWorldOnlineCity
             UpdateWorldController.InitGame();
             UpdateWorld(true);
 
-            Timers.Add(20000, PingServer);
+            Timers.Add(10000, PingServer);
 
             Loger.Log("Client InitConnected() ExistMap4");
             var form = GetFirstConfigPage();
@@ -804,7 +913,7 @@ namespace RimWorldOnlineCity
                 actionOnDisctonnect = () => GenScene.GoToMainMenu();
             }
 
-            Loger.Log("Client Disconected :( ");
+            Loger.Log("Client Disconected :( " + msg);
             GameExit.BeforeExit = null;
             TimersStop();
             SessionClient.Get.Disconnect();
@@ -829,6 +938,79 @@ namespace RimWorldOnlineCity
             }
         }
 
+        public static bool ReconnectWithTimers()
+        { 
+            Timers.LowLevelStop();
+            try
+            {
+                var repeat = 3;
+                while (repeat-- > 0)
+                {
+                    Loger.Log("Client CheckReconnectTimer() " + (3 - repeat).ToString());
+                    try
+                    {
+                        if (Reconnect())
+                        {
+                            Data.LastServerConnectFail = false;
+                            Loger.Log("Client CheckReconnectTimer() OK");
+                            return true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Loger.Log("Client CheckReconnectTimer() Exception:" + ex.ToString());
+                    }
+                    Thread.Sleep(7000);
+                }
+                return false;
+            }
+            finally
+            {
+                Timers.LowLevelStart();
+            }
+        }
+
+        /// <summary>
+        /// Проведура работает в отдельном потоке и проверяет активно ли основное сетевое подключение.
+        /// Если это не так, то не меняя контекста пересоздается подключение, срубается поток основного таймера, и запускается снова
+        /// </summary>
+        public static void CheckReconnectTimer()
+        {
+            //Условие, когда подключение считается зависшим: не срабатывает собития чата (оно только из основного таймера) 
+            // и долгое время текущего получения ответа
+
+            //Loger.Log("Client TestBagSD CRTb");
+            var connect = SessionClient.Get;
+            var needReconnect = false;
+            if (connect.Client.CurrentRequestStart != DateTime.MinValue)
+            {
+                var sec = (DateTime.UtcNow - connect.Client.CurrentRequestStart).TotalSeconds;
+                var len = connect.Client.CurrentRequestLength;
+                if (len < 1024 * 512 && sec > 10
+                    || len < 1024 * 1024 * 2 && sec > 30
+                    || sec > 120)
+                {
+                    needReconnect = true;
+                    Loger.Log($"Client ReconnectWithTimers len={len} sec={sec} noPing={Data.LastServerConnectFail}");
+                }
+            }
+            if (!needReconnect && Data.LastServerConnectFail)
+            {
+                needReconnect = true;
+                Loger.Log($"Client ReconnectWithTimers noPing");
+            }
+            if (needReconnect)
+            {
+                //котострофа
+                if (!ReconnectWithTimers())
+                {
+                    Loger.Log("Client CheckReconnectTimer Disconnected after try reconnect");
+                    Disconnected("OCity_SessionCC_Disconnected".Translate());
+                }
+            }
+            //Loger.Log("Client TestBagSD CRTe");
+        }
+
         /// <summary>
         /// Инициализация после получения всех данных и уже запущенной игре
         /// </summary>
@@ -850,31 +1032,41 @@ namespace RimWorldOnlineCity
                 Timers.Add(100, UpdateFastTimer);
                 Timers.Add(500, UpdateChats);
                 Timers.Add(5000, () => UpdateWorld(false));
+                Timers.Add(10000, PingServer);
                 Timers.Add(60000 * Data.DelaySaveGame, BackgroundSaveGame);
+                TimerReconnect.Add(1000, CheckReconnectTimer);
 
                 //устанавливаем событие на выход из игры
                 GameExit.BeforeExit = () =>
                 {
-                    Loger.Log("Client BeforeExit ");
-                    GameExit.BeforeExit = null;
-                    TimersStop();
-                    if (Current.Game == null) return;
-
-                    if (!Data.BackgroundSaveGameOff)
+                    try
                     {
-                        Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit " + SaveFullName);
-                        GameDataSaveLoader.SaveGame(SaveName);
-                        var content = File.ReadAllBytes(SaveFullName);
-                        if (content.Length > 1024)
-                        {
-                            Data.SaveFileData = content;
-                            Data.SingleSave = false;
-                            UpdateWorld(false);
+                        Loger.Log("Client BeforeExit ");
+                        GameExit.BeforeExit = null;
+                        TimersStop();
+                        if (Current.Game == null) return;
 
-                            Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit OK");
+                        if (!Data.BackgroundSaveGameOff)
+                        {
+                            Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit " + SaveFullName);
+                            GameDataSaveLoader.SaveGame(SaveName);
+                            var content = File.ReadAllBytes(SaveFullName);
+                            if (content.Length > 1024)
+                            {
+                                Data.SaveFileData = content;
+                                Data.SingleSave = false;
+                                UpdateWorld(false);
+
+                                Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit OK");
+                            }
                         }
+                        SessionClient.Get.Disconnect();
                     }
-                    SessionClient.Get.Disconnect();
+                    catch (Exception e)
+                    {
+                        Loger.Log("Client BeforeExit Exception: " + e.ToString());
+                        throw;
+                    }
                 };
             }
             catch (Exception e)

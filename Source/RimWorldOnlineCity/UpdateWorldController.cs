@@ -32,14 +32,17 @@ namespace RimWorldOnlineCity
 
             var allWorldObjects = allWorldObjectsArr.Where(wo => wo != null).ToList();
 
+            //Loger.Log("Client TestBagSD 035");
+            Dictionary<Map, List<Pawn>> cacheColonists = new Dictionary<Map, List<Pawn>>();
             //отправка всех новых и измененных объектов игрока
             toServ.WObjects = allWorldObjects
                 .Where(o => o.Faction?.IsPlayer == true //o.Faction != null && o.Faction.IsPlayer
                     && (o is Settlement || o is Caravan)) //Чтобы отсеч разные карты событий
-                .Select(o => GetWorldObjectEntry(o))
+                .Select(o => GetWorldObjectEntry(o, cacheColonists))
                 .ToList();
             LastSendMyWorldObjects = toServ.WObjects;
 
+            //Loger.Log("Client TestBagSD 036");
             //свои объекты которые удалил пользователь с последнего обновления
             if (ToDelete != null)
             {
@@ -248,7 +251,7 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Только для своих объетков
         /// </summary>
-        public static WorldObjectEntry GetWorldObjectEntry(WorldObject worldObject)
+        public static WorldObjectEntry GetWorldObjectEntry(WorldObject worldObject, Dictionary<Map, List<Pawn>> cacheColonists)
         {
             var worldObjectEntry = new WorldObjectEntry();
             worldObjectEntry.Type = worldObject is Caravan ? WorldObjectEntryType.Caravan : WorldObjectEntryType.Base;
@@ -261,7 +264,9 @@ namespace RimWorldOnlineCity
             var caravan = worldObject as Caravan;
             if (caravan != null)
             {
+                //Loger.Log("Client TestBagSD 002");
                 var transferables = CalculateTransferables(caravan);
+                //Loger.Log("Client TestBagSD 003");
 
                 List<ThingCount> stackParts = new List<ThingCount>();
                 for (int i = 0; i < transferables.Count; i++)
@@ -271,8 +276,10 @@ namespace RimWorldOnlineCity
                         stackParts.Add(new ThingCount(originalThing, toTake));
                     }, false, false);
                 }
+                //Loger.Log("Client TestBagSD 004");
                 worldObjectEntry.FreeWeight = CollectionsMassCalculator.Capacity(stackParts)
                     - CollectionsMassCalculator.MassUsage(stackParts, IgnorePawnsInventoryMode.Ignore, false, false);
+                //Loger.Log("Client TestBagSD 005");
 
                 worldObjectEntry.MarketValue = 0f;
                 worldObjectEntry.MarketValuePawn = 0f;
@@ -292,12 +299,15 @@ namespace RimWorldOnlineCity
                             worldObjectEntry.MarketValue += thing.MarketValue * (float)count;
                     }
                 }
+                //Loger.Log("Client TestBagSD 006");
             }
             else if (worldObject is Settlement)
             {
+                //Loger.Log("Client TestBagSD 007");
                 var map = (worldObject as Settlement).Map;
                 if (map != null)
                 {
+                    //Loger.Log("Client TestBagSD 008");
                     try
                     {
                         worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
@@ -309,40 +319,36 @@ namespace RimWorldOnlineCity
                     }
 
                     worldObjectEntry.MarketValuePawn = 0;
-                    //тут была ошибка из-за изменения списка колонистов
+
+                    //Loger.Log("Client TestBagSD 015");
                     List<Pawn> ps;
-                    try
+                    if (!cacheColonists.TryGetValue(map, out ps))
                     {
-                        ps = (map.mapPawns.FreeColonists as IList<Pawn>).ToList<Pawn>();
+                        var mapPawnsA = new Pawn[map.mapPawns.AllPawnsSpawned.Count];
+                        map.mapPawns.AllPawnsSpawned.CopyTo(mapPawnsA);
+
+                        ps = mapPawnsA.Where(p => p.Faction == Faction.OfPlayer && p.RaceProps.Humanlike).ToList();
+                        cacheColonists[map] = ps;
                     }
-                    catch
-                    {
-                        try
-                        {
-                            Thread.Sleep(20);
-                            ps = (map.mapPawns.FreeColonists as IList<Pawn>).ToList<Pawn>();
-                        }
-                        catch(Exception exp)
-                        {
-                            Loger.Log("Client Exception UpdateWorldController GetWorldObjectEntry 3: " + exp.Message);
-                            Thread.Sleep(200);
-                            ps = (map.mapPawns.FreeColonists as IList<Pawn>).ToList<Pawn>();
-                        }
-                    }
+
+                    //Loger.Log("Client TestBagSD 016");
                     foreach (Pawn current in ps)
                     {
                         worldObjectEntry.MarketValuePawn += current.MarketValue;
                     }
+                    //Loger.Log("Client TestBagSD 017");
                     //Loger.Log("Map things "+ worldObjectEntry.MarketValue + " pawns " + worldObjectEntry.MarketValuePawn);
                 }
             }
-            
+            //Loger.Log("Client TestBagSD 018");
+
             WorldObjectEntry storeWO;
             if (WorldObjectEntrys.TryGetValue(worldObject.ID, out storeWO))
             {
                 //если серверу приходит объект без данного ServerId, значит это наш новый объект (кроме первого запроса, т.к. не было ещё загрузки)
                 worldObjectEntry.ServerId = storeWO.ServerId;
             }
+            //Loger.Log("Client TestBagSD 019");
 
             return worldObjectEntry;
         }

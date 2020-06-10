@@ -216,7 +216,9 @@ namespace RimWorldOnlineCity.UI
                             }
                         }
 
-                        var other = SessionClientController.Data.Chats[0].PartyLogin
+                        var other = SessionClientController.Data.Chats[0].PartyLogin == null
+                            ? new List<string>()
+                            : SessionClientController.Data.Chats[0].PartyLogin
                             .Where(p => p != "" && p != "system" && !allreadyLogin.Any(al => al == p))
                             .ToList();
                         if (other.Count > 0)
@@ -288,26 +290,24 @@ namespace RimWorldOnlineCity.UI
                         if (lbCannals.SelectedIndex >= 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                         {
                             var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
-                            //if (selectCannal.Posts != null || selectCannal.Posts.Count > 0)
-                            //{
-                            var chatLastPostTime = selectCannal.Posts.Max(p => p.Time);
-                            if (ChatLastPostTime != chatLastPostTime)
+                            if (selectCannal.Posts != null && selectCannal.Posts.Count > 0)
                             {
-                                ChatLastPostTime = chatLastPostTime;
-                                Func<ChatPost, string> getPost = (cp) => "[" + cp.Time.ToGoodUtcString("dd HH:mm ") + cp.OwnerLogin + "]: " + cp.Message;
+                                var chatLastPostTime = selectCannal.Posts.Max(p => p.Time);
+                                if (ChatLastPostTime != chatLastPostTime)
+                                {
+                                    ChatLastPostTime = chatLastPostTime;
+                                    Func<ChatPost, string> getPost = (cp) => "[" + cp.Time.ToGoodUtcString("dd HH:mm ") + cp.OwnerLogin + "]: " + cp.Message;
 
-                                var totalLength = 0;
-                                ChatBox.Text = selectCannal.Posts
-                                    .Reverse<ChatPost>()
-                                    .Where(i => (totalLength += i.Message.Length) < 5000)
-                                    .Aggregate("", (r, i) => getPost(i) + (r == "" ? "" : Environment.NewLine + r));
-                                ChatScrollToDown = true;
+                                    var totalLength = 0;
+                                    ChatBox.Text = selectCannal.Posts
+                                        .Reverse<ChatPost>()
+                                        .Where(i => (totalLength += i.Message.Length) < 5000)
+                                        .Aggregate("", (r, i) => getPost(i) + (r == "" ? "" : Environment.NewLine + r));
+                                    ChatScrollToDown = true;
+                                }
+                                //else ChatBox.Text = "";
                             }
-                            // else
-                            //   ChatBox.Text = "";
-                            //}
-                            //  else
-                            // ChatBox.Text = "";
+                            //else ChatBox.Text = "";
                         }
                         else
                             ChatBox.Text = "";

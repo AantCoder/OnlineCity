@@ -221,5 +221,25 @@ namespace RimWorldOnlineCity
             }
         }
     }
-        
+
+    /// ////////////////////////////////////////////////////////////
+    
+    //Устанавливаем параметры при генерации мира
+    [HarmonyPatch(typeof(Autosaver))]
+    [HarmonyPatch("DoAutosave")]
+    internal class Autosaver_DoAutosave_Patch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix()
+        {
+            if (SessionClient.Get.IsLogined)
+            {
+                Loger.Log("Client HarmonyPatch Autosaver.DoAutosave cancel");
+                return false;
+            }
+            else
+                return true;
+        }
+    }
+
 }

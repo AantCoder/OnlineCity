@@ -20,13 +20,13 @@ namespace OCUnion
         public static bool OffAllLog = false;
 
         //public static string VersionInfo = $"Version {Assembly.GetExecutingAssembly().FullName}";
-        public static string VersionInfo = "Version 0.03.40a from 2020.05.03";
+        public static string VersionInfo = "Version 0.03.43a from 2020.06.09";
 
         /// <summary>
         /// Для автоматической проверки: версия клиента должна быть больше или равна версии сервера
         /// </summary>
         //public static readonly long  VersionNum = Assembly.GetExecutingAssembly().GetName().Version.Revision;
-        public static long VersionNum = 30040;
+        public static long VersionNum = 30043;
 
         public static string DefaultIP = DebugMode ? "localhost" : "rimworld.online"; // rimworld.online 194.87.95.90:19020
 
@@ -74,14 +74,17 @@ namespace OCUnion
 
         public static string ToGoodUtcString(this DateTime that)
         {
+            if (that == DateTime.MinValue) return that.ToString(Culture);
             var nowUtc = DateTime.Now - DateTime.UtcNow;
             return (that + nowUtc).ToString(Culture);
         }
 
         public static string ToGoodUtcString(this DateTime that, string format)
         {
+            if (that == DateTime.MinValue) return that.ToString(format, Culture);
             var nowUtc = DateTime.Now - DateTime.UtcNow;
             return (that + nowUtc).ToString(format, Culture);
         }
+
     }
 }

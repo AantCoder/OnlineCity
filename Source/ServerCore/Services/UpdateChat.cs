@@ -33,6 +33,7 @@ namespace ServerOnlineCity.Services
                     Time = DateTime.UtcNow,
                     Chats = new List<Chat>(),
                 };
+                bool fullRequest = time.Time == DateTime.MinValue;
 
                 var myLogin = context.Player.Public.Login;
 
@@ -57,6 +58,12 @@ namespace ServerOnlineCity.Services
                     //Копируем чат без лишнего и отфильтровываем посты          
                     var ix = chatPair.Value;
                     var countOfPosts = ct.Posts.Count;
+                    var fullRequestMinCountPosts = 20;
+                    if (fullRequest && countOfPosts - ((int)ix.Value + 1) < fullRequestMinCountPosts)
+                    {
+                        ix.Value = countOfPosts - fullRequestMinCountPosts - 1;
+                        if (ix.Value < 0) ix.Value = 0;
+                    }
 
                     for (var i = (int)ix.Value + 1; i < countOfPosts; i++)
                     {
@@ -70,7 +77,7 @@ namespace ServerOnlineCity.Services
                     ix.Value = countOfPosts - 1;
 
                     // Если с с момента последнего изменения изменился список логинов ( добавили или удалили, обновляем список)                    
-                    if (ct.LastChanged > ix.Time)
+                    if (fullRequest || ct.LastChanged > ix.Time)
                     {
                         resChat.PartyLogin = ct.PartyLogin;
                         ix.Time = ct.LastChanged;

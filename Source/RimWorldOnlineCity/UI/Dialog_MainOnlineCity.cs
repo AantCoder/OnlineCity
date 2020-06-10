@@ -159,9 +159,20 @@ namespace RimWorldOnlineCity
         {
             if (string.IsNullOrEmpty(InfoTabTitle) && string.IsNullOrEmpty(InfoBox.Text))
             {
-                var pl = SessionClientController.Data.Players[SessionClientController.My.Login];
-                InfoTabTitle = "OCity_Dialog_ChennelPlayerInfoTitle".Translate() + SessionClientController.My.Login;
-                InfoBox.Text = pl.GetTextInfo();
+                try
+                {
+                    var pl = SessionClientController.Data.Players[SessionClientController.My.Login];
+                    InfoTabTitle = "OCity_Dialog_ChennelPlayerInfoTitle".Translate() + SessionClientController.My.Login;
+                    InfoBox.Text = pl.GetTextInfo();
+                }
+                catch
+                {
+                    Loger.Log("Dialog_MainOnlineCity DoTab1Contents Exception: "
+                        + $" Login={SessionClientController.My.Login} cnt={SessionClientController.Data.Players.Count}"
+                        );
+                    
+                    throw;
+                }
             }
 
             Text.Font = GameFont.Medium;

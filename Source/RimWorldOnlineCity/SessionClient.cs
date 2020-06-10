@@ -14,6 +14,12 @@ namespace RimWorldOnlineCity
 
         public static SessionClient Get => Single;
 
+        public static void Recreate(SessionClient newClient)
+        {
+            Single.Disconnect();
+            Single = newClient;
+        }
+
         public ModelInfo WorldLoad()
         {
             Loger.Log("Client WorldLoad (GetInfo 3)");
@@ -21,7 +27,6 @@ namespace RimWorldOnlineCity
             var stat = TransObject<ModelInfo>(packet, 5, 6);
             return stat;
         }
-
 
         public bool CreateWorld(ModelCreateWorld packet)
         {

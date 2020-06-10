@@ -18,5 +18,6 @@ namespace Transfer
         public List<Player> PlayersInfo { get; set; }
         public bool AreAttacking { get; set; }
         public bool NeedSaveAndExit { get; set; }
+        public string KeyReconnect { get; set; }
     }
 }

@@ -304,6 +304,15 @@ namespace Transfer
             return good;
         }
 
+        public bool Reconnect(string login, string key)
+        {
+            var packet = new ModelLogin() { Login = login, KeyReconnect = key };
+            var good = TransStatus(packet, 3, 4);
+
+            if (good) IsLogined = true;
+            return good;
+        }
+
         public ModelInfo GetInfo(OCUnion.Transfer.ServerInfoType serverInfoType)
         {
             Loger.Log("Client GetInfo " + serverInfoType.ToString());
