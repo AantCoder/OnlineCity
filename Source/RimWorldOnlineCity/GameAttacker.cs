@@ -124,6 +124,7 @@ namespace RimWorldOnlineCity
         {
             //Ожидается что Start будет запукаться с UI
             Find.TickManager.Pause();
+            SessionClientController.Data.DontChactTimerFail = true;
             SessionClientController.SaveGameNowInEvent(false);
 
             SessionClientController.Command((connect) =>
@@ -397,6 +398,8 @@ namespace RimWorldOnlineCity
 
                 if (AttackUpdateTick == 2)
                 {
+                    SessionClientController.Data.DontChactTimerFail = false;
+
                     //Убираем сообщения Открыта область
                     var findLabel = "LetterLabelAreaRevealed".Translate();
                     for (int i = 0; i < Find.LetterStack.LettersListForReading.Count; i++)
@@ -1031,6 +1034,7 @@ namespace RimWorldOnlineCity
             if (GameMap != null) GameAttackTrigger_Patch.ActiveAttacker.Remove(GameMap);
             SessionClientController.Data.AttackModule = null;
             SessionClientController.Data.BackgroundSaveGameOff = false;
+            SessionClientController.Data.DontChactTimerFail = false;
             GameAttackTrigger_Patch.ForceSpeed = -1f;
         }
 

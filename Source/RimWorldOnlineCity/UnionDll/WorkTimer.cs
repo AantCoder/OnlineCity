@@ -18,8 +18,9 @@ namespace OCUnion
 
         private List<WorkTimerData> Timers;
         private int Index;
-        private bool IsStop = false;
-        public Thread ThreadDo;
+        public bool IsStop { get; private set; } = false;
+        public Thread ThreadDo { get; private set; }
+        public DateTime LastLoop { get; private set; }
 
         public WorkTimer()
         {
@@ -103,6 +104,7 @@ namespace OCUnion
                 {
                     if (Timers.Count == 0) continue;
                     var now = DateTime.UtcNow;
+                    LastLoop = now;
                     var curIndex = Index;
                     while (true)
                     {

@@ -982,6 +982,7 @@ namespace RimWorldOnlineCity
             //Loger.Log("Client TestBagSD CRTb");
             var connect = SessionClient.Get;
             var needReconnect = false;
+            //проверка коннекта
             if (connect.Client.CurrentRequestStart != DateTime.MinValue)
             {
                 var sec = (DateTime.UtcNow - connect.Client.CurrentRequestStart).TotalSeconds;
@@ -994,10 +995,21 @@ namespace RimWorldOnlineCity
                     Loger.Log($"Client ReconnectWithTimers len={len} sec={sec} noPing={Data.LastServerConnectFail}");
                 }
             }
+            //проверка пропажи пинга
             if (!needReconnect && Data.LastServerConnectFail)
             {
                 needReconnect = true;
                 Loger.Log($"Client ReconnectWithTimers noPing");
+            }
+            //проверка не завис ли поток с таймером
+            if (!needReconnect && !Data.DontChactTimerFail && !Timers.IsStop && Timers.LastLoop != DateTime.MinValue)
+            {
+                var sec = (DateTime.UtcNow - Timers.LastLoop).TotalSeconds;
+                if (sec > 30)
+                {
+                    needReconnect = true;
+                    Loger.Log($"Client ReconnectWithTimers timerFail {sec}");
+                }
             }
             if (needReconnect)
             {

@@ -68,7 +68,14 @@ namespace RimWorldOnlineCity
         }
 
         public DateTime LastServerConnect = DateTime.MinValue;
+        /// <summary>
+        /// Истина, если нет ответа на пинг (пропала связь)
+        /// </summary>
         public bool LastServerConnectFail = false;
+        /// <summary>
+        /// Не реагировать на зависание потока таймера, устанавливается при тяжелых задачах (пока только загрузка ПВП)
+        /// </summary>
+        public bool DontChactTimerFail = false;
         public int ChatCountSkipUpdate = 0;
         public static bool UIInteraction = false; //говорят уведомления слева сверху мешают, поэтому выключено (можно сделать настройку если кому надо будет)
 
