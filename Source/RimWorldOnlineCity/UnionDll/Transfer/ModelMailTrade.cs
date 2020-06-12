@@ -12,6 +12,8 @@ namespace Transfer
     [Serializable]
     public class ModelMailTrade
     {
+        public ModelMailTradeType Type { get; set; }
+
         public Player From { get; set; }
         public Player To { get; set; }
         public int Tile { get; set; }
@@ -20,7 +22,15 @@ namespace Transfer
 
         public string ContentString()
         {
-            return Things.Aggregate("", (r, i) => r + Environment.NewLine + i.Name + " x" + i.Count);
+            return Things == null ? "" : Things.Aggregate("", (r, i) => r + Environment.NewLine + i.Name + " x" + i.Count);
         }
+    }
+
+    public enum ModelMailTradeType
+    {
+        CreateThings = 0,
+        DeleteByServerId,
+        AttackCancel,
+        AttackTechnicalVictory
     }
 }

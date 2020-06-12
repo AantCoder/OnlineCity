@@ -18,15 +18,17 @@ namespace OCUnion
 
         private List<WorkTimerData> Timers;
         private int Index;
-        private bool IsStop = false;
+        public bool IsStop { get; private set; } = false;
+        public Thread ThreadDo { get; private set; }
+        public DateTime LastLoop { get; private set; }
 
         public WorkTimer()
         {
             Timers = new List<WorkTimerData>();
             Index = 0;
-            var th = new Thread(Do);
-            th.IsBackground = true;
-            th.Start();
+            ThreadDo = new Thread(Do);
+            ThreadDo.IsBackground = true;
+            ThreadDo.Start();
         }
 
         /// <summary>
@@ -38,6 +40,31 @@ namespace OCUnion
             lock (Timers)
             {
                 Timers = new List<WorkTimerData>();
+            }
+        }
+
+        public void LowLevelStop()
+        {
+            try
+            {
+                ThreadDo.Abort();
+                ThreadDo.Join(500);
+            }
+            catch
+            {
+            }
+        }
+
+        public void LowLevelStart()
+        {
+            try
+            {
+                ThreadDo = new Thread(Do);
+                ThreadDo.IsBackground = true;
+                ThreadDo.Start();
+            }
+            catch
+            {
             }
         }
 
@@ -77,6 +104,7 @@ namespace OCUnion
                 {
                     if (Timers.Count == 0) continue;
                     var now = DateTime.UtcNow;
+                    LastLoop = now;
                     var curIndex = Index;
                     while (true)
                     {

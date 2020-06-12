@@ -17,27 +17,6 @@ namespace Transfer
         private Object LockObj = new Object();
         #region
 
-        [Obsolete("For Using in Discrod bot need many Session Clients, use SessionClient as variable in constructor in the Future")]
-        private static SessionClient Single;
-
-        /// <summary>
-        /// Discrod may contains many server, Lazy initialisation Singlton class
-        /// Что бы не вносить больших изменений, добавил ленивую инциализацию 
-        /// </summary>
-        [Obsolete("For Using in Discrod bot need many Session Clients, use SessionClient as variable in constructor in the Future")]
-        public static SessionClient Get
-        {
-            get
-            {
-                if (Single == null)
-                {
-                    Single = new SessionClient();
-                }
-
-                return Single;
-            }
-        }
-
         public volatile bool IsLogined = false;
 
         public ConnectClient Client;
@@ -60,6 +39,7 @@ namespace Transfer
 
         public bool Connect(string addr, int port = 0)
         {
+            ErrorMessage = null;
             if (port == 0) port = DefaultPort;
             try
             {
@@ -128,6 +108,7 @@ namespace Transfer
             {
                 lock (LockObj)
                 {
+                    ErrorMessage = null;
                     Client.SendMessage(new byte[1] { 0x00 });
 
                     var rec = Client.ReceiveBytes();
@@ -154,6 +135,7 @@ namespace Transfer
             {
                 lock (LockObj)
                 {
+                    ErrorMessage = null;
                     Client.SendMessage(new byte[1] { 0x01 });
 
                     var rec = Client.ReceiveBytes();
@@ -177,25 +159,50 @@ namespace Transfer
         {
             lock (LockObj)
             {
-                //Loger.Log("Client T1");
+                ErrorMessage = null;
+
+                var time1 = DateTime.UtcNow;
+
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
-                //Loger.Log("Client Push " + Loger.Bytes(ob));
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
-                //Loger.Log("Client Send");
+
+                if (send.Length > 1024 * 512) Loger.Log($"Client Network toS {send.Length} unzip {GZip.LastSizeObj} ");
+                var time2 = DateTime.UtcNow;
+
                 Client.SendMessage(send);
-                //Loger.Log("Client Receive");
+
+                var time3 = DateTime.UtcNow;
+
                 var rec = Client.ReceiveBytes();
-                //Loger.Log("Client Received");
+
+                var time4 = DateTime.UtcNow;
+
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
-                //Loger.Log("Client Pop " + Loger.Bytes(rec2));
-                return (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
+
+                var time5 = DateTime.UtcNow;
+
+                var res = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
+
+                var time6 = DateTime.UtcNow;
+                if (rec.Length > 1024 * 512) Loger.Log($"Client Network fromS {rec.Length} unzip {GZip.LastSizeObj} ");
+
+                if ((time5 - time1).TotalMilliseconds > 900)
+                {
+                    Loger.Log($"Client Network timeSerialize {(time2 - time1).TotalMilliseconds}" +
+                        $" timeSend {(time3 - time2).TotalMilliseconds}" +
+                        $" timeReceive {(time4 - time3).TotalMilliseconds}" +
+                        $" timeDecrypt {(time5 - time4).TotalMilliseconds}" +
+                        $" timeDeserialize {(time6 - time5).TotalMilliseconds}");
+                }
+
+                return res;
             }
         }
 
         /// <summary>
         /// Передаем объект с указанием номера типа.
         /// </summary>
-        private T TransObject<T>(object objOut, int typeOut, int typeIn)
+        protected T TransObject<T>(object objOut, int typeOut, int typeIn)
             where T : class
         {
             //Loger.Log("Client T2");
@@ -210,7 +217,8 @@ namespace Transfer
                 var stat = res.Packet as T;
                 if (res.TypePacket != typeIn
                     || stat == null)
-                    throw new ApplicationException("Unknow server error");
+                    throw new ApplicationException($"Unknow server error TransObject({typeOut} -> {typeIn}) responce: {res.TypePacket} "
+                        + (res.Packet == null ? "null" : res.Packet.GetType().Name));
                 return stat;
             }
             catch (Exception e)
@@ -222,7 +230,7 @@ namespace Transfer
             }
         }
 
-        private T TransObject2<T>(object objOut, PackageType typeOut, PackageType typeIn)
+        public T TransObject2<T>(object objOut, PackageType typeOut, PackageType typeIn)
             where T : class
         {
             return TransObject<T>(objOut, (int)typeOut, (int)typeIn);
@@ -296,48 +304,22 @@ namespace Transfer
             return good;
         }
 
-        public ModelInfo GetInfo(bool fullInfo)
+        public bool Reconnect(string login, string key)
         {
-            Loger.Log("Client GetInfo " + (fullInfo ? 1 : 2).ToString());
-            var packet = new ModelInt() { Value = fullInfo ? 1 : 2 };
+            var packet = new ModelLogin() { Login = login, KeyReconnect = key };
+            var good = TransStatus(packet, 3, 4);
+
+            if (good) IsLogined = true;
+            return good;
+        }
+
+        public ModelInfo GetInfo(OCUnion.Transfer.ServerInfoType serverInfoType)
+        {
+            Loger.Log("Client GetInfo " + serverInfoType.ToString());
+            var packet = new ModelInt() { Value = (int)serverInfoType };
             var stat = TransObject<ModelInfo>(packet, 5, 6);
             return stat;
         }
-
-        public ModelInfo WorldLoad()
-        {
-            Loger.Log("Client WorldLoad (GetInfo 3)");
-            var packet = new ModelInt() { Value = 3 };
-            var stat = TransObject<ModelInfo>(packet, 5, 6);
-            return stat;
-        }
-
-        public bool CreateWorld(ModelCreateWorld packet)
-        {
-            Loger.Log("Client CreateWorld");
-            var stat = TransObject<ModelStatus>(packet, 7, 8);
-
-            if (stat != null && stat.Status != 0)
-            {
-                ErrorMessage = stat.Message;
-                return false;
-            }
-            return stat != null;
-        }
-
-        /*
-        public bool CreatePlayerMap(ModelCreatePlayerMap packet)
-        {
-            Loger.Log("Client CreatePlayerMap");
-            var stat = TransObject<ModelStatus>(packet, 9, 10);
-            if (stat != null && stat.Status != 0)
-            {
-                ErrorMessage = stat.Message;
-                return false;
-            }
-            return stat != null;
-        }
-        */
 
         public ModelPlayToClient PlayInfo(ModelPlayToServer info)
         {
@@ -346,105 +328,22 @@ namespace Transfer
             return stat;
         }
 
-        public ModelUpdateChat UpdateChat(DateTime time)
+        public ModelUpdateChat UpdateChat(ModelUpdateTime modelUpdate)
         {
-            Loger.Log("Client UpdateChat " + time.ToGoodUtcString());
-            var packet = new ModelUpdateTime() { Time = time };
+            Loger.Log("Client UpdateChat " + modelUpdate.Time.ToGoodUtcString());
+            var packet = modelUpdate;
             var stat = TransObject<ModelUpdateChat>(packet, 17, 18);
+    
             return stat;
         }
 
-        public bool PostingChat(long chatId, string msg)
+        public ModelStatus PostingChat(int chatId, string msg)
         {
             Loger.Log("Client PostingChat " + chatId.ToString() + ", " + msg);
-            var packet = new ModelPostingChat() { ChatId = chatId, Message = msg };
+            var packet = new ModelPostingChat() { IdChat = chatId, Message = msg };
             var stat = TransObject<ModelStatus>(packet, 19, 20);
 
-            if (stat != null && stat.Status != 0)
-            {
-                ErrorMessage = stat.Message;
-                return false;
-            }
-
-            return stat != null;
-        }
-
-        public bool SendThings(List<ThingEntry> sendThings, string myLogin, string onlinePlayerLogin, long serverId, int tile)
-        {
-            Loger.Log("Client SendThings");
-            var packet = new ModelMailTrade()
-            {
-                From = new Player() { Login = myLogin },
-                To = new Player() { Login = onlinePlayerLogin },
-                Tile = tile,
-                PlaceServerId = serverId,
-                Things = sendThings
-            };
-            var stat = TransObject<ModelStatus>(packet, 15, 16);
-
-            if (stat != null && stat.Status != 0)
-            {
-                ErrorMessage = stat.Message;
-                return false;
-            }
-
-            return stat != null;
-        }
-
-        public bool ExchengeEdit(OrderTrade order)
-        {
-            Loger.Log("Client ExchengeEdit " + order.ToString());
-            var stat = TransObject<ModelStatus>(order, 21, 22);
-
-            if (stat != null && stat.Status != 0)
-            {
-                ErrorMessage = stat.Message;
-                return false;
-            }
-
-            return stat != null;
-        }
-
-        public bool ExchengeBuy(ModelOrderBuy buy)
-        {
-            Loger.Log("Client ExchengeBuy id=" + buy.OrderId.ToString() + " count=" + buy.Count.ToString());
-            var stat = TransObject<ModelStatus>(buy, 23, 24);
-
-            if (stat != null && stat.Status != 0)
-            {
-                ErrorMessage = stat.Message;
-                return false;
-            }
-
-            return stat != null;
-        }
-
-        public List<OrderTrade> ExchengeLoad()
-        {
-            Loger.Log("Client ExchengeLoad");
-            var stat = TransObject<ModelOrderLoad>(new ModelStatus(), 25, 26);
-
-            if (stat != null && stat.Status != 0)
-            {
-                ErrorMessage = stat.Message;
-                return null;
-            }
-
-            return stat.Orders;
-        }
-
-        public AttackInitiatorFromSrv AttackOnlineInitiator(AttackInitiatorToSrv fromClient)
-        {
-            Loger.Log("Client AttackOnlineInitiator " + fromClient.State);
-            var stat = TransObject<AttackInitiatorFromSrv>(fromClient, 27, 28);
-
-            return stat;
-        }
-
-        public AttackHostFromSrv AttackOnlineHost(AttackHostToSrv fromClient)
-        {
-            Loger.Log("Client AttackOnlineHost " + fromClient.State);
-            var stat = TransObject<AttackHostFromSrv>(fromClient, 29, 30);
+            ErrorMessage = stat?.Message;
 
             return stat;
         }

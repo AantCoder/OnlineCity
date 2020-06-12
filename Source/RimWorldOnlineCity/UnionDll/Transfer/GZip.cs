@@ -12,6 +12,9 @@ namespace Util
         [ThreadStatic]
         private static BinaryFormatter formatter = null;
 
+        [ThreadStatic]
+        public static long LastSizeObj;
+
         public static void CopyTo(Stream src, Stream dest)
         {
             byte[] bytes = new byte[4096];
@@ -59,6 +62,7 @@ namespace Util
             {
                 if (formatter == null) formatter = new BinaryFormatter();
                 formatter.Serialize(msi, obj);
+                LastSizeObj = msi.Length;
                 msi.Seek(0, SeekOrigin.Begin);
                 return ZipStreamByte(msi);
             }
@@ -110,6 +114,7 @@ namespace Util
             using (var msi = new MemoryStream(bytes))
             using (var mso = UnpackFromStream(msi))
             {
+                LastSizeObj = mso.Length;
                 mso.Seek(0, SeekOrigin.Begin);
                 if (formatter == null) formatter = new BinaryFormatter();
                 return formatter.Deserialize(mso);

@@ -12,6 +12,7 @@ namespace RimWorldOnlineCity
     public class Dialog_Input : Window
     {
         private bool ModeOkCancel = false;
+        private bool ModeOkOnly = false;
         private string TitleText;
         private string PrintText;
         private bool NeedFockus = true;
@@ -57,12 +58,13 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Старт в режиме Да/Нет
         /// </summary>
-        public Dialog_Input(string title, string printText)
+        public Dialog_Input(string title, string printText, bool modeOkOnly = false)
             : this()
         {
             TitleText = title;
             PrintText = printText;
-            ModeOkCancel = true;
+            if (modeOkOnly) ModeOkOnly = true;
+            else ModeOkCancel = true;
         }
 
         public override void PreOpen()
@@ -86,13 +88,13 @@ namespace RimWorldOnlineCity
 
             var ev = Event.current;
             if (Widgets.ButtonText(new Rect(0, buttonYStart, btnSize.x, btnSize.y), "OCity_DialogInput_Ok".Translate())
-                || ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
+                || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
             {
                 ResultOK = true;
                 Close();
             }
 
-            if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x, buttonYStart, btnSize.x, btnSize.y), "OCity_DialogInput_Cancele".Translate()))
+            if (!ModeOkOnly && Widgets.ButtonText(new Rect(inRect.width - btnSize.x, buttonYStart, btnSize.x, btnSize.y), "OCity_DialogInput_Cancele".Translate()))
             {
                 Close();
             }
@@ -111,7 +113,7 @@ namespace RimWorldOnlineCity
 
             Widgets.Label(new Rect(0, 70f, inRect.width, 120f), PrintText);
 
-            if (!ModeOkCancel)
+            if (!ModeOkCancel && !ModeOkOnly)
             {
                 GUI.SetNextControlName("StartTextField");
                 InputText = GUI.TextField(new Rect(0, 70f + 90f, 300f, 25f), InputText, 1000);

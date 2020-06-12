@@ -81,7 +81,7 @@ namespace OC.DiscordBotServer.Commands
                 }
 
                 var pass = new CryptoProvider().GetHash(token);
-                if (!client.Login("Discord", pass))
+                if (!client.Login(SessionClientWrapper.DiscrodLogin, pass))
                 {
                     return Languages.Translator.ErrInvalidToken;
                 }
@@ -93,7 +93,8 @@ namespace OC.DiscordBotServer.Commands
                     Port = serverAdr.Port,
                     LinkCreator = context.Message.Author.Id,
                     LastOnlineTime = DateTime.UtcNow.AddDays(-1),
-                    Token = token
+                    Token = token,
+                    LastRecivedPostIndex = -1,
                 };
 
                 _appContext.RegisterNewServer(channelToServer, new SessionClientWrapper(channelToServer, client));

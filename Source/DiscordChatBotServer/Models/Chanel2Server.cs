@@ -17,11 +17,17 @@ namespace OC.DiscordBotServer.Models
         [Required]
         public int Port { get; set; }
         public DateTime LastOnlineTime { get; set; }
+        public DateTime LastCheckTime { get; set; }
         /// <summary>
         /// Id Discrord user
         /// </summary>
         public ulong LinkCreator { get; set; }
         public string Token { get; set; }
+
+        /// <summary>
+        /// For request public chat from this index
+        /// </summary>
+        public int LastRecivedPostIndex { get; set; }
 
         public IPEndPoint GetIPEndPoint() => Helper.TryParseStringToIp($"{IP}:{Port}");
     }

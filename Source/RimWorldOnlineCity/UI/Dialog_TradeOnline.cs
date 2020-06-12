@@ -192,11 +192,11 @@ namespace RimWorldOnlineCity
             //метод из Dialog_SplitCaravan с удалением лишнего
             //TransferableUIUtility.DrawMassInfo(rect, this.SourceMassUsage, this.SourceMassCapacity, "SplitCaravanMassUsageTooltip".Translate(), -9999f, false);
             //CaravanUIUtility.DrawDaysWorthOfFoodInfo(new Rect(rect.x, rect.y + 19f, rect.width, rect.height), this.SourceDaysWorthOfFood.First, this.SourceDaysWorthOfFood.Second, this.EnvironmentAllowsEatingVirtualPlantsNow, false, 3.40282347E+38f);
-            /*TransferableUIUtility.*/DrawMassInfo(rect, this.MassUsage, MassCapacity, "SplitCaravanMassUsageTooltip".Translate(), -9999f, true);
+            /*TransferableUIUtility.*/DrawMassInfo(rect, this.MassUsage, MassCapacity, -9999f, true);
             //CaravanUIUtility.DrawDaysWorthOfFoodInfo(new Rect(rect.x, rect.y + 19f, rect.width, rect.height), this.DestDaysWorthOfFood.First, this.DestDaysWorthOfFood.Second, this.EnvironmentAllowsEatingVirtualPlantsNow, true, 3.40282347E+38f);
         }
         
-        public static void DrawMassInfo(Rect rect, float usedMass, float availableMass, string tip, float lastMassFlashTime = -9999f, bool alignRight = false)
+        public static void DrawMassInfo(Rect rect, float usedMass, float availableMass, float lastMassFlashTime = -9999f, bool alignRight = false)
         {
             if (usedMass > availableMass)
             {
@@ -206,11 +206,7 @@ namespace RimWorldOnlineCity
             {
                 GUI.color = Color.gray;
             }
-            string text = "MassUsageInfo".Translate(new object[]
-            {
-                usedMass.ToString("0.##"),
-                availableMass.ToString("0.##")
-            });
+            string text = $" {usedMass.ToString("0.##")} / {availableMass.ToString("0.##")} kg";
             Vector2 vector = Text.CalcSize(text);
             Rect rect2;
             if (alignRight)
@@ -227,7 +223,6 @@ namespace RimWorldOnlineCity
                 GUI.DrawTexture(rect2, TransferableUIUtility.FlashTex);
             }
             Widgets.Label(rect2, text);
-            TooltipHandler.TipRegion(rect2, tip);
             GUI.color = Color.white;
         }
 

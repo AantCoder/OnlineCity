@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
-  <MainButtonOnline.label>Online</MainButtonOnline.label>
-  <MainButtonOnline.description>Online functions</MainButtonOnline.description>
+  <MainButtonOnline.label>Multijoueur</MainButtonOnline.label>
+  <MainButtonOnline.description>Fonctions multijoueurs</MainButtonOnline.description>
 
 </LanguageData>

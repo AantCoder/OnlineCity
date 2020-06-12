@@ -13,10 +13,12 @@ namespace OC.DiscordBotServer.Migrations
                 {
                     Id = table.Column<ulong>(nullable: false),
                     IP = table.Column<string>(nullable: false),
-                    Port = table.Column<int>(nullable: false),
+                    Port = table.Column<int>(nullable: true),
                     LastOnlineTime = table.Column<DateTime>(nullable: false),
+                    LastCheckTime = table.Column<DateTime>(nullable: false),
                     LinkCreator = table.Column<ulong>(nullable: false),
-                    Token = table.Column<string>(nullable: true)
+                    Token = table.Column<string>(nullable: false),
+                    LastRecivedPostIndex = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {

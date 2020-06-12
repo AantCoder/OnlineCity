@@ -25,9 +25,9 @@ namespace RimWorldOnlineCity
 
         public Dialog_LoginForm()
         {
-            InputAddr = StorageData.GlobalData.LastIP.Value;
-            InputLogin = StorageData.GlobalData.LastLoginName.Value;
-            
+            InputAddr = ModBaseData.GlobalData.LastIP.Value;
+            InputLogin = ModBaseData.GlobalData.LastLoginName.Value;
+
             if (string.IsNullOrEmpty(InputAddr))
             {
                 InputAddr = MainHelper.DefaultIP;
@@ -69,14 +69,18 @@ namespace RimWorldOnlineCity
             //кнопки
             var ev = Event.current;
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 3, buttonYStart, btnSize.x, btnSize.y), "OCity_LoginForm_BtnEnter".Translate())
-                || ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
+                || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
             {
-                var msgError = SessionClientController.Login(InputAddr, InputLogin, InputPassword);
+                var msgError = SessionClientController.Login(InputAddr, InputLogin, InputPassword
+                    , () =>
+                    {
+                        SessionClientController.LoginInNewServerIP = ModBaseData.GlobalData.LastIP.Value != InputAddr;
+                        ModBaseData.GlobalData.LastIP.Value = InputAddr;
+                        ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
+                        HugsLibController.SettingsManager.SaveChanges();                        
+                    });
                 if (msgError == null)
                 {
-                    StorageData.GlobalData.LastIP.Value = InputAddr;
-                    StorageData.GlobalData.LastLoginName.Value = InputLogin;
-                    HugsLibController.SettingsManager.SaveChanges();
                     //Loger.Log("login " + StorageData.GlobalData.LastIP.Value);
                     Close();
                 }
@@ -103,15 +107,15 @@ namespace RimWorldOnlineCity
             Text.Font = GameFont.Small;
             mainListing.GapLine();
             mainListing.Gap();
-            
+
             var iresct = mainListing.GetRect(20f);
 
             //что к чему
-            ListableOption item = new ListableOption_WebLink("Что к чему".NeedTranslate(), () => 
+            ListableOption item = new ListableOption_WebLink("OCity_Dialog_Exchenge_What_Point".Translate(), () => 
             {
                 var textForm = new Dialog_TextOut(Dialog_MainOnlineCity.AboutGeneralText);
                 Find.WindowStack.Add(textForm);
-            }, Dialog_MainOnlineCity.IconForums);
+            }, GeneralTexture.IconForums);
             item.DrawOption(new Vector2(iresct.x, iresct.y), iresct.width);
 
             //поля ввода
@@ -119,7 +123,7 @@ namespace RimWorldOnlineCity
 
             TextInput(mainListing, "OCity_LoginForm_Server".Translate(),
                 (sub, rect) =>
-                {                    
+                {
                     InputAddr = GUI.TextField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputAddr, 100);
                 });
 
@@ -136,7 +140,7 @@ namespace RimWorldOnlineCity
                     InputPassword = GUI.PasswordField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputPassword, "*"[0], 100);
 
                 });
-            
+
             if (NeedFockus)
             {
                 NeedFockus = false;

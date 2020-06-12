@@ -3,7 +3,6 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Transfer;
 using Verse;
 
@@ -11,8 +10,12 @@ namespace RimWorldOnlineCity
 {
     public class ClientData
     {
-        public DateTime ChatsTime = DateTime.MinValue;
+        public ModelUpdateTime ChatsTime = new ModelUpdateTime() { Time = DateTime.MinValue };
+
         public DateTime UpdateTime = DateTime.MinValue;
+
+        public string KeyReconnect;
+
         /// <summary>
         /// Разница между UtcNow клиента и сервера + время передачи от сервера к клиенту (половина пинга)
         /// </summary>
@@ -28,7 +31,29 @@ namespace RimWorldOnlineCity
 
         public Dictionary<string, PlayerClient> Players = new Dictionary<string, PlayerClient>();
 
+        private PlayerClient MyEx_p = null;
+
+        public PlayerClient MyEx
+        {
+            get
+            {
+                if (MyEx_p == null)
+                {
+                    if (SessionClientController.My == null
+                        || !Players.TryGetValue(SessionClientController.My.Login, out MyEx_p)
+                        ) return null;
+                }
+                return MyEx_p;
+            }
+            set
+            {
+                MyEx_p = value;
+            }
+        }
+
         public byte[] SaveFileData;
+
+        public bool SingleSave;
 
         public long LastSaveTick;
 
@@ -43,19 +68,36 @@ namespace RimWorldOnlineCity
         }
 
         public DateTime LastServerConnect = DateTime.MinValue;
+        /// <summary>
+        /// Истина, если нет ответа на пинг (пропала связь)
+        /// </summary>
         public bool LastServerConnectFail = false;
+        /// <summary>
+        /// Не реагировать на зависание потока таймера, устанавливается при тяжелых задачах (пока только загрузка ПВП)
+        /// </summary>
+        public bool DontChactTimerFail = false;
         public int ChatCountSkipUpdate = 0;
         public static bool UIInteraction = false; //говорят уведомления слева сверху мешают, поэтому выключено (можно сделать настройку если кому надо будет)
 
         /// <summary>
         /// Если не null, значит сейчас режим атаки на другое поселение online
         /// </summary>
-        public GameAttacker AttackModule = null;
+        public GameAttacker AttackModule { get; set; } = null;
 
         /// <summary>
         /// Если не null, значит сейчас режим атаки кого-то на наше поселение online
         /// </summary>
-        public GameAttackHost AttackUsModule = null;
+        public GameAttackHost AttackUsModule { get; set; } = null;
+
+        public int DelaySaveGame { get; set; } = 15;
+
+        public bool DisableDevMode { get; set; }
+
+        public int MinutesIntervalBetweenPVP { get; set; }
+
+        public DateTime TimeChangeEnablePVP { get; set; }
+
+        public bool BackgroundSaveGameOff { get; set; }
 
         public Faction FactionPirate
         {
@@ -67,39 +109,61 @@ namespace RimWorldOnlineCity
                 return FactionPirateData;
             }
         }
+
         private Faction FactionPirateData = null;
 
         public bool ApplyChats(ModelUpdateChat updateDate)
         {
-            ChatsTime = updateDate.Time;
             int newPost = 0;
             var newStr = "";
-            if (Chats != null) 
+            if (Chats != null)
             {
-                foreach (var chat in updateDate.Chats)
+                lock (Chats)
                 {
-                    var cur = Chats.FirstOrDefault(c => c.Id == chat.Id);
-                    if (cur != null)
+                    foreach (var chat in updateDate.Chats)
                     {
-                        cur.Posts.AddRange(chat.Posts);
-                        var newPosts = chat.Posts.Where(p => p.OwnerLogin != SessionClientController.My.Login).ToList();
-                        newPost += newPosts.Count;
-                        if (newStr == "" && newPosts.Count > 0) newStr = chat.Name + ": " + newPosts[0].Message;
-                        chat.Posts = cur.Posts;
+                        var cur = Chats.FirstOrDefault(c => c.Id == chat.Id);
+                        if (cur != null)
+                        {
+                            cur.Posts.AddRange(chat.Posts);
+                            var newPosts = chat.Posts.Where(p => p.OwnerLogin != SessionClientController.My.Login).ToList();
+                            newPost += newPosts.Count;
+                            if (newStr == "" && newPosts.Count > 0) newStr = chat.Name + ": " + newPosts[0].Message;
+                            chat.Posts = cur.Posts;
+                            cur.Name = chat.Name;
+                            // это только для ускорения, сервер не передает список пати логинов, если ничего не изменилось
+                            // т.к. передать 3000+ логинов по 8 байт, это уже несколько пакетов
+                            if (chat.PartyLogin != null && chat.PartyLogin.Count > 0)
+                            {
+                                cur.PartyLogin = chat.PartyLogin;
+                            }
+                        }
+                        else
+                        {
+                            Chats.Add(chat);
+                        }
                     }
+
+                    var ids = updateDate.Chats.Select(x => x.Id);
+                    Chats.RemoveAll(x => !ids.Contains(x.Id));
                 }
             }
-            Chats = updateDate.Chats;
+            else
+            {
+                Chats = updateDate.Chats;
+            }
+
             if (UIInteraction && newPost > 0)
             {
                 GameMessage(newStr);
             }
+
             ChatNotReadPost += newPost;
             return newPost > 0;
         }
 
         private void GameMessage(string newStr)
-        { 
+        {
             if (newStr.Length > 50) newStr = newStr.Substring(0, 49) + "OCity_ClientData_ChatDot".Translate();
             Messages.Message("OCity_ClientData_Chat".Translate() + newStr, MessageTypeDefOf.NeutralEvent);
         }

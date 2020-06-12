@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Model
 {
     [Serializable]
     public class Chat
     {
-        public long Id;
-    
+        // 0 - приватный системый чат, сообщения не сохраняется и создается каждый раз новый для каждого пользователя
+        // 1 - публичный чат
+        public int Id;
+
         public string OwnerLogin;
 
         public string Name;
@@ -19,14 +19,15 @@ namespace Model
         /// иначе автоматический из всех кто доступен владельцу (это его общий чат)
         /// </summary>
         public bool OwnerMaker;
-        
+
         public List<string> PartyLogin;
 
         public List<ChatPost> Posts = new List<ChatPost>();
 
+        public DateTime LastChanged;        
+
         public Chat()
         {
         }
-        
     }
 }

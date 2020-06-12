@@ -61,12 +61,12 @@ namespace Model
             Data = gx.ToXml(thing);
         }
 
-        public virtual Thing CreateThing(bool useOriginalID, int stackCount = 0)
+        public virtual Thing CreateThing(bool useOriginalID = false, int stackCount = 0)
         {
             var gx = new GameXMLUtils();
             Thing thing = gx.FromXml<Thing>(Data);
             thing.stackCount = stackCount == 0 ? Count : stackCount;
-            if (OriginalID <= 0 || useOriginalID)
+            if (OriginalID <= 0 || !useOriginalID)
             {
                 thing.thingIDNumber = -1;
                 ThingIDMaker.GiveIDTo(thing);
@@ -89,7 +89,14 @@ namespace Model
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnB" + (++nnnn).ToString() + ".xml", Data);
 
             bool col = Data.Contains("<kindDef>Colonist</kindDef>");
-            if (!Data.Contains("<lastJobGiverThinkTree>Animal</lastJobGiverThinkTree>"))
+            bool isAnimal = Data.Contains("<lastJobGiverThinkTree>Animal</lastJobGiverThinkTree>"); //похоже, с 1.1 этого тэга нет
+            if (!isAnimal)
+            {
+                isAnimal =
+                    !Data.Contains("<lastJobGiverThinkTree>Humanlike</lastJobGiverThinkTree>")  //похоже, с 1.1 этого тэга нет
+                    && GameXMLUtils.GetByTag(Data, "def") == GameXMLUtils.GetByTag(Data, "kindDef");
+            }
+            if (!isAnimal)
             {
                 string fraction = fractionColonist; //col ? fractionColonist : fractionPirate;
                 Data = GameXMLUtils.ReplaceByTag(Data, "faction", fraction);
@@ -119,7 +126,7 @@ namespace Model
                 */
 
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnA" + nnnn.ToString() + ".xml", Data);
-            return !col;
+            return !col && !isAnimal;
         }
     }
 }

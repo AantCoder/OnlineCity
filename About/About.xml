@@ -2,7 +2,24 @@
 <ModMetaData> 
 	<name>OnlineCity</name> 
 	<author>Aant</author> 
- 	<url>https://vk.com/rimworldonline</url> 
-	<supportedVersions><li>1.0</li></supportedVersions>
- 	<description>Online game with interaction at the level of the planet</description> 
+ 	<url>https://discord.gg/mWshqrh</url> 
+	<supportedVersions>
+	  <li>1.1</li>
+	</supportedVersions>
+ 	<description>Online game with interaction at the level of the planet</description>	
+	<packageId>Aant.OnlineCity</packageId>
+	<modDependencies>
+    <li>
+		<packageId>UnlimitedHugs.HugsLib</packageId>
+		<displayName>HugsLib</displayName>
+		<downloadUrl>https://github.com/UnlimitedHugs/RimworldHugsLib/releases/latest</downloadUrl>
+		<steamWorkshopUrl>steam://url/CommunityFilePage/818773962</steamWorkshopUrl>
+    </li>
+	</modDependencies>  
+	<loadAfter>
+	  <li>UnlimitedHugs.HugsLib</li>
+  	  <li>Randy.Essential.MoreBoomrats</li>
+    </loadAfter>
+	<incompatibleWith>
+    </incompatibleWith>
 </ModMetaData> 

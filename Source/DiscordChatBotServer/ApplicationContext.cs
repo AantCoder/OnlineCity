@@ -1,11 +1,9 @@
 ﻿using OC.DiscordBotServer.Common;
+using OC.DiscordBotServer.Helpers;
 using OC.DiscordBotServer.Models;
 using OC.DiscordBotServer.Repositories;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Net;
-using Transfer;
 
 namespace OC.DiscordBotServer
 {
@@ -43,14 +41,14 @@ namespace OC.DiscordBotServer
             }
         }
 
-        public OCUser GetOCUser(ulong idChannel, ulong idUser) 
+        public OCUser TryGetOCUser(ulong idChannel, ulong idUser)
         {
-            if (!UserOnServers.TryGetValue (idChannel , out ConcurrentDictionary<ulong, OCUser> OCUsers ))
+            if (!UserOnServers.TryGetValue(idChannel, out ConcurrentDictionary<ulong, OCUser> OCUsers))
             {
                 return null;
             }
 
-            if (!OCUsers.TryGetValue(idUser, out  OCUser OCUser))
+            if (!OCUsers.TryGetValue(idUser, out OCUser OCUser))
             {
                 return null;
             }
@@ -78,6 +76,23 @@ namespace OC.DiscordBotServer
                 result &= sessionClient.ConnectAndLogin();
             }
 
+            return result;
+        }
+
+        public SessionClientWrapper TryGetSessionClientByIP(string ip)
+        {
+            var ipPont = Helper.TryParseStringToIp(ip);
+            if (ipPont == null)
+            {
+                return null;
+            }
+
+            if (!OCServerToDiscrord.TryGetValue(ipPont, out ulong discordID))
+            {
+                return null;
+            }
+
+            DiscrordToOCServer.TryGetValue(discordID, out SessionClientWrapper result);
             return result;
         }
     }

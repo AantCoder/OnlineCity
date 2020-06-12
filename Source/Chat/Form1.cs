@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Chat
+namespace OC.Chat
 {
     public partial class Form1 : Form
     {
@@ -40,6 +40,7 @@ namespace Chat
         private void button2_Click(object sender, EventArgs e)
         {
             Chat.Send(0, textBox4.Text);
+            UpdateChats();
         }
     }
 }

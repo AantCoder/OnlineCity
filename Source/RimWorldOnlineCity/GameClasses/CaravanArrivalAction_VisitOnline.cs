@@ -1,5 +1,4 @@
-﻿using HugsLib.Utils;
-using Model;
+﻿using Model;
 using OCUnion;
 using RimWorld;
 using RimWorld.Planet;
@@ -16,7 +15,7 @@ namespace RimWorldOnlineCity
         private CaravanOnline сaravanOnline;
 
         private string mode;
-        
+
         public CaravanArrivalAction_VisitOnline()
         {
         }
@@ -33,8 +32,8 @@ namespace RimWorldOnlineCity
             get
             {
                 if (сaravanOnline == null) return "";
-                return string.Format(mode == "exchangeOfGoods" ? "OCity_Caravan_GoTrade".Translate() 
-                        : mode == "attack" ? "Атака {0}".NeedTranslate()
+                return string.Format(mode == "exchangeOfGoods" ? "OCity_Caravan_GoTrade".Translate()
+                        : mode == "attack" ? "OCity_Caravan_Go_Attack_Target".Translate()
                         : "OCity_Caravan_GoTrade2".Translate()
                     , сaravanOnline.Label);
             }
@@ -59,15 +58,33 @@ namespace RimWorldOnlineCity
             }
             else if (mode == "attack")
             {
-                if (GameAttacker.Create())
-                {
-                    GameAttacker.Get.Start(caravan, (BaseOnline)сaravanOnline);
-                }
+                attack(caravan);
             }
         }
 
+        private void attack(Caravan caravan)
+        {
+            Find.TickManager.Pause();
+            Action<bool> att = (testMode) =>
+            {
+                if (GameAttacker.Create())
+                {
+                    GameAttacker.Get.Start(caravan, (BaseOnline)сaravanOnline, testMode);
+                }
+            };
+
+            GameUtils.ShowDialodOKCancel("OCity_Caravan_Go_Attack_Target".Translate() + " " + сaravanOnline.Label
+                , "OCity_Caravan_Confirm_Attack_TestBattle_Possible".Translate()
+                , () => att(false)
+                , () => { }
+                , null
+                , "OCity_Caravan_Practive".Translate()
+                , () => att(true)
+            );
+        }
+
         private void exchangeOfGoods(Caravan caravan)
-        { 
+        {
             //Pawn bestNegotiator = CaravanVisitUtility.BestNegotiator(caravan);
             ThingOwner<Thing> сontainer = new ThingOwner<Thing>();
             Dialog_TradeOnline form = null;
@@ -78,7 +95,7 @@ namespace RimWorldOnlineCity
             }
 
             var goods = GameUtils.GetAllThings(caravan);
-                
+
             form = new Dialog_TradeOnline(goods
                 , сaravanOnline.OnlinePlayerLogin
                 , сaravanOnline.OnlineWObject.FreeWeight
@@ -135,7 +152,7 @@ namespace RimWorldOnlineCity
                     //удаляем пешку из игры
                     foreach (var pawn in caravan.PawnsListForReading)
                     {
-                        pawn.Destroy(DestroyMode.Vanish);
+                        GameUtils.PawnDestroy(pawn);
                     }
 
                     Find.WorldObjects.Remove(caravan);
@@ -150,8 +167,7 @@ namespace RimWorldOnlineCity
                         {
                             var pawn = thing as Pawn;
                             //удаляем пешку из игры
-                            pawn.Destroy(DestroyMode.Vanish);
-                            //Find.WorldPawns.RemovePawn(pawn); не проверенное не полное удаление, если её вернут назад
+                            GameUtils.PawnDestroy(pawn);
                         }
                         else
                         {
@@ -161,6 +177,10 @@ namespace RimWorldOnlineCity
                         }
                     }
                 }
+
+                //После передачи сохраняем, чтобы нельзя было обузить
+                if (!SessionClientController.Data.BackgroundSaveGameOff)
+                    SessionClientController.SaveGameNow(true);
             });
             Find.WindowStack.Add(form);
         }
