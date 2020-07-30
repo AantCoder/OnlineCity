@@ -6,7 +6,7 @@
 	<supportedVersions>
 	  <li>1.1</li>
 	</supportedVersions>
- 	<description>Online game with interaction at the level of the planet</description>	
+ 	<description>Online multiplayer mod which allows players to play on the same planet.</description>	
 	<packageId>Aant.OnlineCity</packageId>
 	<modDependencies>
     <li>
