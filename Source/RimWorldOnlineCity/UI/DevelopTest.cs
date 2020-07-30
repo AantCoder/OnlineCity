@@ -58,12 +58,20 @@ namespace RimWorldOnlineCity
         public bool Run()
         {
             return false;
+            Log.Message("DevelopTest Run");
+            Loger.Log("");
+            Loger.Log("DevelopTest Run");
+            
+            var formm = new Dialog_Exchenge(Find.Maps[0]);
+            Find.WindowStack.Add(formm);
+            return true;
+            // */
+            /*
             Log.Message("DevelopTest Run: " + UpdateWorldController.GetTestText());
             
             var hostPlace = UpdateWorldController.GetWOByServerId(7) as MapParent;
             Log.Message("DevelopTest Run: " + (hostPlace?.Label ?? "null"));
             return true;
-            /*
             var mmap = Find.Maps[0];
             var ppawn = mmap.mapPawns.AllPawnsSpawned.FirstOrDefault(i => i.thingIDNumber == 589);
             var tpawn = mmap.mapPawns.AllPawnsSpawned.FirstOrDefault(i => i.thingIDNumber == 586);
@@ -92,23 +100,15 @@ namespace RimWorldOnlineCity
             return true;
             */
             /*
-            var formm = new Dialog_Exchenge(Find.Maps[0]);
-            Find.WindowStack.Add(formm);
-            return true;
-            // */
             return false;
-            /*
             var lll = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef);
 
             File.WriteAllText(Loger.PathLog + @"ScenarioLister.txt", TextObj(lll), Encoding.UTF8);
             return true;
             */
+            /*
             try
             {
-                Log.Message("DevelopTest Run");
-                Loger.Log("");
-                Loger.Log("DevelopTest Run");
-
                 var pawns = Find.WorldPawns.AllPawnsAlive.ToList();
 
                 //Fedon,Huntsman,Ally,Lilith,Tater,Jesse,Kentucky
@@ -119,10 +119,16 @@ namespace RimWorldOnlineCity
 
                 var msg = "";
                 var map = Find.Maps[0];
-                var pawnsMy = map.mapPawns.AllPawnsSpawned.First();
+
+                //var pawnsMy = map.mapPawns.AllPawnsSpawned.First();
+                var mapPawnsA = new Pawn[map.mapPawns.AllPawnsSpawned.Count];
+                map.mapPawns.AllPawnsSpawned.CopyTo(mapPawnsA);
+                var pawnsMy = mapPawnsA.First();
+
                 Thing thinXZ;
                 var cell = GameUtils.GetTradeCell(map);
 
+                /*
                 var gx = new GameXMLUtils();
                 //var testPawn = Scribe.saver.DebugOutputFor(pawns[0]);
                 var testPawn = gx.ToXml(pawnsMy);
@@ -148,13 +154,16 @@ namespace RimWorldOnlineCity
 
                 //MapComponentUtility.FinalizeInit(map); //????
                 return true;
+                * /
+                //File.WriteAllText(Loger.PathLog + @"map.txt", TextObj(map, false), Encoding.UTF8);
 
-                File.WriteAllText(Loger.PathLog + @"map.txt", TextObj(map, false), Encoding.UTF8);
-                
+                Loger.Log("DevelopTest t1");
                 List<Thing> listThing = CaravanFormingUtility.AllReachableColonyItems(Find.Maps[0]);
+                Loger.Log("DevelopTest t2");
                 Dialog_TradeOnline form = null;
                 form = new Dialog_TradeOnline(listThing, "OCity_DevTest_Test".Translate(), 3, () =>
                 {
+                    Loger.Log("DevelopTest t3");
                     var select = form.GetSelect();
                     Thing thin = null;
                     var thins = select.Select(p =>
@@ -163,7 +172,8 @@ namespace RimWorldOnlineCity
                      }).ToList();
                     var outText = TextObj(thins, true);
                     File.WriteAllText(Loger.PathLog + @"Car.txt", outText, Encoding.UTF8);
-                    
+
+                    Loger.Log("DevelopTest t4");
                     var caravan = Find.WorldObjects.Caravans[0];
                     foreach (var t in select)
                     {
@@ -174,10 +184,11 @@ namespace RimWorldOnlineCity
                         //thin = the.CreateThing();
                         //var p = CaravanInventoryUtility.FindPawnToMoveInventoryTo(thin, caravan.PawnsListForReading, null);
                         //p.inventory.innerContainer.TryAdd(thin, true);
-                        //*/
+                        //* /
                         //thin = the.CreateThing();
                         GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
                     }
+                    Loger.Log("DevelopTest t5");
                     /*
                     File.WriteAllText(Loger.PathLog + @"ThingIn.txt", TextObj(thin, true), Encoding.UTF8);
                     //if (thin.Spawned) thin.DeSpawn();
@@ -187,47 +198,49 @@ namespace RimWorldOnlineCity
                     File.WriteAllText(Loger.PathLog + @"ThingXZ.txt", TextObj(thinXZ, true), Encoding.UTF8);
                     File.WriteAllText(Loger.PathLog + @"ThingOut.txt", TextObj(thin, true), Encoding.UTF8);
                     */
-                    /*
-                    if (thin != null)
-                    {
-                        File.WriteAllText(Loger.PathLog + @"ThingIn.txt", TextObj(thin, true), Encoding.UTF8);
-                        ThingEntry the = new ThingEntry(thin, 1);
-                        File.WriteAllText(Loger.PathLog + @"ThingEntry.txt", TextObj(the, true), Encoding.UTF8);
-                        File.WriteAllText(Loger.PathLog + @"ThingOut.txt", TextObj(the.CreateThing(), true), Encoding.UTF8);
-                    }*/
-                });
-                Find.WindowStack.Add(form);
-                return true;
-                
-                pawn = pawns.Where(p => p.Name.ToStringShort == "Jesse").FirstOrDefault();
-
-                //msg += Find.Maps.Count.ToString() + Environment.NewLine;
-
-
-                var pawnText = TextObj(pawn, true);
-                File.WriteAllText(Loger.PathLog + @"Car.txt", pawnText, Encoding.UTF8);
-
-                int directionTile = CaravanExitMapUtility.RandomBestExitTileFrom(Find.Maps[0]);
-                    //Find.Maps[0].Tile;
-
-                //var destroyedFactionBase = (CaravanOnline)WorldObjectMaker.MakeWorldObject(ModDefOf.CaravanOnline);
-                var destroyedFactionBase = (CaravanOnline)WorldObjectMaker.MakeWorldObject(ModDefOf.BaseOnline);
-                destroyedFactionBase.Tile = directionTile;
-                destroyedFactionBase.OnlineWObject = new Model.WorldObjectEntry() { LoginOwner = "OCity_DevTest_NameTestPlayer".Translate() };
-                destroyedFactionBase.SetFaction(Faction.OfPlayer);
-                Find.WorldObjects.Add(destroyedFactionBase);
-
-                var cars = Find.WorldObjects.AllWorldObjects.Where(o => o is Caravan).ToList();
-                var seeText = TextObj(cars);
-                File.WriteAllText(Loger.PathLog + @"See.txt", seeText, Encoding.UTF8);
-
-                Loger.Log(msg);
-                
-            }
-            catch(Exception e)
+            /*
+            if (thin != null)
             {
-                Log.Error(e.ToString());
-            }
+                File.WriteAllText(Loger.PathLog + @"ThingIn.txt", TextObj(thin, true), Encoding.UTF8);
+                ThingEntry the = new ThingEntry(thin, 1);
+                File.WriteAllText(Loger.PathLog + @"ThingEntry.txt", TextObj(the, true), Encoding.UTF8);
+                File.WriteAllText(Loger.PathLog + @"ThingOut.txt", TextObj(the.CreateThing(), true), Encoding.UTF8);
+            }* /
+        });
+        Find.WindowStack.Add(form);
+        return true;
+        */
+            /*
+            pawn = pawns.Where(p => p.Name.ToStringShort == "Jesse").FirstOrDefault();
+
+            //msg += Find.Maps.Count.ToString() + Environment.NewLine;
+
+
+            var pawnText = TextObj(pawn, true);
+            File.WriteAllText(Loger.PathLog + @"Car.txt", pawnText, Encoding.UTF8);
+
+            int directionTile = CaravanExitMapUtility.RandomBestExitTileFrom(Find.Maps[0]);
+                //Find.Maps[0].Tile;
+
+            //var destroyedFactionBase = (CaravanOnline)WorldObjectMaker.MakeWorldObject(ModDefOf.CaravanOnline);
+            var destroyedFactionBase = (CaravanOnline)WorldObjectMaker.MakeWorldObject(ModDefOf.BaseOnline);
+            destroyedFactionBase.Tile = directionTile;
+            destroyedFactionBase.OnlineWObject = new Model.WorldObjectEntry() { LoginOwner = "OCity_DevTest_NameTestPlayer".Translate() };
+            destroyedFactionBase.SetFaction(Faction.OfPlayer);
+            Find.WorldObjects.Add(destroyedFactionBase);
+
+            var cars = Find.WorldObjects.AllWorldObjects.Where(o => o is Caravan).ToList();
+            var seeText = TextObj(cars);
+            File.WriteAllText(Loger.PathLog + @"See.txt", seeText, Encoding.UTF8);
+
+            Loger.Log(msg);
+            * /
+        }
+        catch(Exception e)
+        {
+            Log.Error(e.ToString());
+        }
+        */
             return true;
         }
     }

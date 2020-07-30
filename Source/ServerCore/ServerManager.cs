@@ -17,6 +17,9 @@ using OCUnion.Transfer.Model;
 using OCUnion.Common;
 using OCUnion.Transfer;
 using ServerOnlineCity.Services;
+using System.Net;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace ServerOnlineCity
 {
@@ -228,7 +231,9 @@ namespace ServerOnlineCity
             HashSet<string> allLogins = null;
             //Есть ли какие-то изменения в списках пользователей
             bool changeInPlayers = false;
+
             ///Обновляем кто кого видит
+            
             foreach (var player in Repository.GetData.PlayersAll)
             {
                 var pl = ChatManager.Instance.PublicChat.PartyLogin;
@@ -278,6 +283,43 @@ namespace ServerOnlineCity
                 }
             }
 
+            /// Удаляем колонии за которые давно не заходили, игровое время которых меньше полугода и ценность в них меньше второй иконки
+
+            var minCostForTrade = 25000; // эту цифру изменять вместе с CaravanOnline.GetFloatMenuOptions()
+            foreach (var player in Repository.GetData.PlayersAll)
+            {
+                if (player.Public.LastSaveTime == DateTime.MinValue) continue;
+                if (player.Public.LastTick > 3600000 / 2) continue;
+
+                if ((DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays < 7) continue;
+                if ((DateTime.UtcNow - player.LastUpdateTime).TotalDays < 7) continue;
+                if ((DateTime.UtcNow - player.Public.LastSaveTime).TotalDays < 7) continue;
+
+                if (player.IsAdmin) continue;
+
+                var costAll = player.CostWorldObjects();
+                if (costAll.BaseCount + costAll.CaravanCount == 0) continue;
+                if (costAll.MarketValue + costAll.MarketValuePawn == 0) continue; //какой-то сбой отсутствия данных
+                if (costAll.MarketValue + costAll.MarketValuePawn > minCostForTrade) continue;
+                
+                var msg = $"User {player.Public.Login} deleted settlements (game abandoned): " +
+                    $"cost {costAll.MarketValue + costAll.MarketValuePawn}, " +
+                    $"game days {player.Public.LastTick / 60000}, " +
+                    $"last online (day) {(int)(DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays} ";
+
+                //блок удаления из AbandonHimSettlementCmd
+
+                ChatManager.Instance.AddSystemPostToPublicChat(msg);
+
+                Repository.DropUserFromMap(player.Public.Login);
+                Repository.GetSaveData.DeletePlayerData(player.Public.Login);
+                player.Public.LastSaveTime = DateTime.MinValue;
+                Repository.Get.ChangeData = true;
+                Loger.Log("Server " + msg);
+            }
+
+            /// Завершение
+
             if (changeInPlayers)
             {
                 Repository.GetData.UpdatePlayersAllDic();
@@ -287,6 +329,112 @@ namespace ServerOnlineCity
         public void Stop()
         {
             Connect.Stop();
+        }
+
+        public void SaveAndQuit()
+        {
+            try
+            {
+                Loger.Log("Command SaveAndQuit");
+                Thread.CurrentThread.IsBackground = false;
+                Connect.Stop();
+                Thread.Sleep(100);
+                var rep = Repository.Get;
+                rep.Save();
+                Thread.Sleep(200);
+                Loger.Log("Command SaveAndQuit done");
+                Environment.Exit(0);
+            }
+            catch (Exception e)
+            {
+                Loger.Log("Command Exception " + e.ToString());
+            }
+        }
+
+        public void SaveAndRestart()
+        {
+            try
+            {
+                Loger.Log("Command SaveAndRestart");
+                Thread.CurrentThread.IsBackground = false;
+                Connect.Stop();
+                Thread.Sleep(100);
+                var rep = Repository.Get;
+                rep.Save();
+                Thread.Sleep(200);
+                Loger.Log("Restart");
+                Process.Start(Process.GetCurrentProcess().MainModule.FileName);
+                Loger.Log("Command SaveAndRestart done");
+                Environment.Exit(0);
+            }
+            catch (Exception e)
+            {
+                Loger.Log("Command Exception " + e.ToString());
+            }
+        }
+
+        public void EverybodyLogoff()
+        {
+            try
+            {
+                Loger.Log("Command EverybodyLogoff");
+                //Ниже код из EverybodyLogoffCmd:
+
+                var data = Repository.GetData;
+                lock (data)
+                {
+                    data.EverybodyLogoff = true;
+                }
+
+                var msg = "Server is preparing to shut down (EverybodyLogoffCmd)";
+                Loger.Log(msg);
+            }
+            catch (Exception e)
+            {
+                Loger.Log("Command Exception " + e.ToString());
+            }
+        }
+
+        public void SavePlayerStatisticsFile()
+        {
+            try
+            {
+                var msg = "Command SaveListPlayerFileStats";
+                Loger.Log(msg);
+
+                Func<DateTime, string> dateTimeToStr = dt => dt == DateTime.MinValue ? "" : dt.ToString("yyyy-MM-dd hh:mm:ss", CultureInfo.InvariantCulture);
+
+                var content = "Login;LastOnlineTime;LastOnlineDay;GameDays;BaseCount;CaravanCount;MarketValue;MarketValuePawn;Grants;EnablePVP;EMail;DiscordUserName" + Environment.NewLine;
+                foreach (var player in Repository.GetData.PlayersAll)
+                {
+                    var costAll = player.CostWorldObjects();
+
+                    var newLine = $"{player.Public.Login};" +
+                        $"{dateTimeToStr(player.Public.LastOnlineTime)};" +
+                        $"{(int)(DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays};" +
+                        $"{(int)(player.Public.LastTick / 60000)};" +
+                        $"{costAll.BaseCount};" +
+                        $"{costAll.CaravanCount};" +
+                        $"{costAll.MarketValue};" +
+                        $"{costAll.MarketValuePawn};" +
+                        $"{player.Public.Grants.ToString()};" +
+                        $"{(player.Public.EnablePVP ? 1 : 0)};" +
+                        $"{player.Public.EMail};" +
+                        $"{player.Public.DiscordUserName}";
+                    newLine = newLine.Replace(Environment.NewLine, " ")
+                        .Replace("/r", "").Replace("/n", "");
+
+                    content += newLine + Environment.NewLine;
+                }
+
+                var fileName = Path.Combine(Path.GetDirectoryName(Repository.Get.SaveFileName)
+                    , $"Players_{DateTime.Now.ToString("yyyy-MM-dd_hh-mm")}.csv");
+                File.WriteAllText(fileName, content, Encoding.UTF8);
+            }
+            catch (Exception e)
+            {
+                Loger.Log("Command Exception " + e.ToString());
+            }
         }
 
         private void ConnectionAccepted(ConnectClient client)
@@ -302,29 +450,48 @@ namespace ServerOnlineCity
             thread.IsBackground = true;
             thread.Start();
         }
-
+        
         private void DoClient(ConnectClient client)
         {
+            SessionServer session = null;
+            string addrIP = ((IPEndPoint)client.Client.Client.RemoteEndPoint).Address.ToString();
             try
             {
-                Loger.Log("New connect");
-
-                using (var ss = new SessionServer())
+                try
                 {
-                    ss.Do(client);
+                    Loger.Log($"New connect {addrIP} (connects: {ActiveClientCount})");
+                    session = new SessionServer();
+                    session.Do(client);
                 }
+                catch (Transfer.ConnectClient.ConnectSilenceTimeOutException)
+                {
+                    Loger.Log("Abort connect TimeOut " + addrIP);
+                }
+                catch (Exception e)
+                {
+                    if (!(e is SocketException) && !(e.InnerException is SocketException)
+                        && !(e is Transfer.ConnectClient.ConnectNotConnectedException) && !(e.InnerException is Transfer.ConnectClient.ConnectNotConnectedException))
+                    {
+                        ExceptionUtil.ExceptionLog(e, "Server Exception");
+                    }
+                }
+                //if (LogMessage != null) LogMessage("End connect");
             }
-            catch (Exception e)
+            finally
             {
-                var errorText = ExceptionUtil.ExceptionLog(e, "Server Exception");
-                if (!(e is SocketException) && !(e.InnerException is SocketException))
+                Interlocked.Decrement(ref _ActiveClientCount);
+                Loger.Log($"Close connect {addrIP}{(session == null ? "" : " " + session?.GetNameWhoConnect())} (connects: {ActiveClientCount})");
+                try
                 {
-                    Loger.Log(errorText);
+                    if (session != null)
+                    {
+                        session.Dispose();
+                    }
                 }
+                catch
+                { }
             }
-            //if (LogMessage != null) LogMessage("End connect");
-
-            Interlocked.Decrement(ref _ActiveClientCount);
         }
+
     }
 }

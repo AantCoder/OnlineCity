@@ -29,9 +29,20 @@ namespace RimWorldOnlineCity
             }
             return TextInfo;
         }
-
         private string TextInfo = "";
         private DateTime TextInfoTime = DateTime.MinValue;
+
+        public WorldObjectsValues CostAllWorldObjects()
+        {
+            if (AllWorldObjectsTime < DateTime.UtcNow.AddSeconds(-5))
+            {
+                AllWorldObjectsTime = DateTime.UtcNow;
+                AllWorldObjects = CostWorldObjects();
+            }
+            return AllWorldObjects;
+        }
+        private WorldObjectsValues AllWorldObjects = null;
+        private DateTime AllWorldObjectsTime = DateTime.MinValue;
 
         public WorldObjectsValues CostWorldObjects(long serverId = 0)
         {
@@ -61,9 +72,11 @@ namespace RimWorldOnlineCity
                 + (string.IsNullOrEmpty(Public.DiscordUserName) ? "" : "OCity_PlayerClient_Discord".Translate().ToString() + Public.DiscordUserName + Environment.NewLine)
                 + (string.IsNullOrEmpty(Public.EMail) ? "" : "OCity_PlayerClient_Email".Translate().ToString() + Public.EMail + Environment.NewLine)
                 + (string.IsNullOrEmpty(Public.AboutMyText) ? "" : "OCity_PlayerClient_AboutMyself".Translate().ToString() + Environment.NewLine + Public.AboutMyText + Environment.NewLine)
-                + Environment.NewLine;                
+                + Environment.NewLine;
 
-            var values = CostWorldObjects();
+            AllWorldObjectsTime = DateTime.UtcNow;
+            AllWorldObjects = CostWorldObjects();
+
             string s = "OCity_PlayerClient_LastTick".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_LastSaveTime".Translate() + Environment.NewLine
                 + "OCity_PlayerClient_baseCount".Translate() + Environment.NewLine
@@ -75,13 +88,14 @@ namespace RimWorldOnlineCity
                         Public.LastTick / 3600000
                         , Public.LastTick / 60000
                         , Public.LastSaveTime == DateTime.MinValue ? "OCity_PlayerClient_LastSaveTimeNon".Translate() : new TaggedString (Public.LastSaveTime.ToGoodUtcString())
-                        , values.BaseCount
-                        , values.CaravanCount
-                        , values.MarketValue.ToStringMoney()
-                        , values.MarketValuePawn.ToStringMoney()
+                        , AllWorldObjects.BaseCount
+                        , AllWorldObjects.CaravanCount
+                        , AllWorldObjects.MarketValue.ToStringMoney()
+                        , AllWorldObjects.MarketValuePawn.ToStringMoney()
                     );
 
-            return info0 + info1 + values.Details;
+            return info0 + info1 + AllWorldObjects.Details;
         }
+
     }
 }

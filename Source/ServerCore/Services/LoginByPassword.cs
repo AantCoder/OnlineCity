@@ -56,8 +56,10 @@ namespace ServerOnlineCity.Services
             player.ApproveLoadWorldReason = OCUnion.Transfer.Types.ApproveLoadWorldReason.LoginOk;
 
             //При восстановлении подключения ничего не делаем
-            if (!string.IsNullOrEmpty(packet.KeyReconnect))
+            if (string.IsNullOrEmpty(packet.KeyReconnect))
             {
+                //если зашли по паролю, то сбрасываем ключ, для передачи клиенту нового
+                player.KeyReconnect1 = null;
                 //отмена атаки, если оба участника были отключены одновременно
                 if (player.AttackData != null) player.AttackData.Finish();
                 //удаление всех писем с командой на перезагрузку

@@ -71,10 +71,10 @@ namespace ServerOnlineCity.Model
         /// </summary>
         public DateTime PVPHostLastTime;
 
-        [NonSerialized]
+        //[NonSerialized]
         private DateTime KeyReconnectTime;
 
-        [NonSerialized]
+        //[NonSerialized]
         public string KeyReconnect1;
 
         [NonSerialized]
@@ -122,12 +122,12 @@ namespace ServerOnlineCity.Model
         public bool GetKeyReconnect()
         {
             if ((DateTime.UtcNow - KeyReconnectTime).TotalMinutes < 30
-                && string.IsNullOrEmpty(KeyReconnect1))
+                && !string.IsNullOrEmpty(KeyReconnect1))
                 return false;
 
             KeyReconnectTime = DateTime.UtcNow;
-            var rnd = new Random();
-            var key = "o6*#fn`~ыggTgj0&9 gT54Qa[g}t,23rfr4*vcx%%4/\"d!2" + rnd.ToString()
+            var rnd = new Random((int)(DateTime.UtcNow.Ticks & int.MaxValue));
+            var key = "o6*#fn`~ыggTgj0&9 gT54Qa[g}t,23rfr4*vcx%%4/\"d!2" + rnd.Next(int.MaxValue).ToString()
                 + DateTime.UtcNow.Date.AddHours(DateTime.UtcNow.Hour).ToBinary().ToString()
                 + Public.Login;
             var hash = new CryptoProvider().GetHash(key);

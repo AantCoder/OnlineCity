@@ -1,12 +1,16 @@
 ﻿using OCUnion;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace ServerOnlineCity
 {
     class Program
     {
+        private static ServerManager Manager;
+
         static void Main(string[] args)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); // fix error encoding 1252 from encoding with netcore framework
@@ -18,8 +22,31 @@ namespace ServerOnlineCity
             //Loger.LogMessage += (msg) => Console.WriteLine(msg);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            var serverManager = new ServerManager();
-            serverManager.Start(workPath);
+            var th = new Thread(CommandInput);
+            th.IsBackground = true;
+            th.Start();
+
+            Manager = new ServerManager();
+            Manager.Start(workPath);
+        }
+
+        private static void CommandInput()
+        {
+            Thread.Sleep(3000);
+            Console.WriteLine(@"Available console commands: Q - quit (shutdown)
+R - restart (shutdown and start), 
+L - command to save players for shutdown (EverybodyLogoff)
+S - save player statistics file");
+            while (true)
+            {
+                Thread.Sleep(500);
+                var key = Console.ReadKey(true);
+                if (char.ToLower(key.KeyChar) == 'q') Manager.SaveAndQuit();
+                if (char.ToLower(key.KeyChar) == 'r') Manager.SaveAndRestart();
+                else if (char.ToLower(key.KeyChar) == 'l') Manager.EverybodyLogoff();
+                else if (char.ToLower(key.KeyChar) == 's') Manager.SavePlayerStatisticsFile();
+                else Console.WriteLine($"Unknow command: {char.ToUpper(key.KeyChar)}");
+            }
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

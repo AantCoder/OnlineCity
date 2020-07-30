@@ -4,6 +4,7 @@ using ServerOnlineCity.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using Transfer;
 using Util;
@@ -23,6 +24,18 @@ namespace ServerOnlineCity
         public void Dispose()
         {
             Client.Dispose();
+        }
+
+        public string GetNameWhoConnect()
+        {
+            try
+            {
+                return Worker?.Context?.Player?.Public?.Login ?? "";
+            }
+            catch
+            {
+                return "";
+            }
         }
 
         private void SetKey()
@@ -110,6 +123,10 @@ namespace ServerOnlineCity
                 catch (Exception ext)
                 {
                     Loger.Log("Exception GetPackage: " + ext.ToString());
+                    sendObj = null;
+                }
+                if (sendObj == null)
+                {
                     sendObj = new ModelContainer()
                     {
                         TypePacket = 0
