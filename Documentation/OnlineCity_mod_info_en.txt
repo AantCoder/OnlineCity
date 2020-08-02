@@ -150,7 +150,7 @@ Potentially, OnlineCity is compatible with any other mods, but, of course, you n
 
 Unzip the archive with the server to any folder. After that, you need to create a subfolder of World, which will store all the game data.
 
-Create a Settings.json file in the World folder. Here is an example of its contents:
+Create a Settings.json file in the World folder (it can be opened with a simple notepad). Here is an example of its contents:
 
 {
   "ServerName": "OnlineCity Server with modpack",
@@ -177,6 +177,8 @@ DisableDevMode - whether the developer mode will be disabled when players enter 
 MinutesIntervalBetweenPVP - after an attack on one player by another, he cannot be attacked for a given number of minutes. You can put, for example, 0 or 20.
 
 
+Check that you have .NET Core 3.1 installed before starting: https://dotnet.microsoft.com/download/dotnet-core/current/runtime
+
 Run ServerOnlineCity.exe. The console should open, which is the server. The output to it is duplicated to the log files in the World folder.
 
 In order for people to be able to connect to it, you need to open port 19019 (or the one specified in Port).
@@ -190,7 +192,7 @@ There is also a Discord bot. You can read about its configuration separately her
 
 More details on how to configure the mode of exact matching mods.
 
-To install everything correctly, configure your RimWorld so that all mods are taken from the Mods folder (not a single mod from Steam!). Check that everything works fine in a regular game. And copy your Mods folder to the server.
+To install everything correctly, configure your RimWorld so that all mods are taken from the Mods folder (not a single mod from Steam!). Check that everything works fine in a regular game. And copy your Mods folder to the server. You should have at least three folders (inside Mods): Harmony, HugsLib, OnlineCity.
 
 After that, copy the ModsConfig.xml file from the game to the server in the World folder
 %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config
