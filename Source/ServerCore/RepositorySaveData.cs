@@ -101,7 +101,18 @@ namespace ServerOnlineCity
             }
 
             var fileName = fileNameBase + "1";
-            File.WriteAllBytes(fileName, data);
+
+            byte[] dataToSave;
+            if (true)
+            {
+                dataToSave = GZip.ZipByteByte(data);
+            }
+            else
+            {
+                dataToSave = data;
+            }
+
+            File.WriteAllBytes(fileName, dataToSave);
             Loger.Log("Server User " + Path.GetFileNameWithoutExtension(fileName) + " saved.");
         }
 

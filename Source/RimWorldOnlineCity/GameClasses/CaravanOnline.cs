@@ -104,17 +104,31 @@ namespace RimWorldOnlineCity
                 yield return o;
             }
 
-            yield return new FloatMenuOption("OCity_Caravan_Trade".Translate(OnlinePlayerLogin + " " + OnlineName), delegate
-            {
-                caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
-            }, MenuOptionPriority.Default, null, null, 0f, null, this);
+            var player = this.Player;
 
+            // Передача товара
+            var minCostForTrade = 25000; // эту цифру изменять вместе с ServerManager.DoWorld()
+            var costAll = player.CostAllWorldObjects();
+            bool disTrade = player.Public.LastTick < 3600000 / 2 || costAll.MarketValue + costAll.MarketValuePawn < minCostForTrade;
+            var fmoTrade = new FloatMenuOption("OCity_Caravan_Trade".Translate(OnlinePlayerLogin + " " + OnlineName)
+                + (disTrade ? "You are under a year old or cost less than".NeedTranslate() + " " + minCostForTrade.ToString() : "") // "Вам нет года или стоимость меньше"
+                , delegate
+                {
+                    caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
+                }, MenuOptionPriority.Default, null, null, 0f, null, this);
+            if (disTrade)
+            {
+                fmoTrade.Disabled = true;
+            }
+            yield return fmoTrade;
+
+            // Атаковать
             if (SessionClientController.My.EnablePVP
                 && this is BaseOnline 
                 && GameAttacker.CanStart)
             {
                 var dis = AttackUtils.CheckPossibilityAttack(SessionClientController.Data.MyEx
-                    , this.Player
+                    , player
                     , UpdateWorldController.GetMyByLocalId(caravan.ID).ServerId
                     , this.OnlineWObject.ServerId
                     );

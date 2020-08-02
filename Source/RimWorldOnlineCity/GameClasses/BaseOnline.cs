@@ -41,7 +41,7 @@ namespace RimWorldOnlineCity
             ColonyOnExpanding = ContentFinder<Texture2D>.Get("ColonyOnExpanding");
             ColonyOffExpanding = ContentFinder<Texture2D>.Get("ColonyOffExpanding");
 
-            WealthLevels = new int[] { 0, 10_000, 50_000, 100_000, 200_000, 300_000, 500_000, 1_000_000, 2_000_000 };
+            WealthLevels = new int[] { 0, 25_000, 50_000, 100_000, 200_000, 300_000, 500_000, 1_000_000, 2_000_000 };
             WealthTexturesOn = new WealthTexture[WealthLevels.Length];
             WealthTexturesOff = new WealthTexture[WealthLevels.Length];
 
@@ -115,7 +115,7 @@ namespace RimWorldOnlineCity
         {
             for (int i = 1; i < WealthLevels.Length - 1; i++)
             {
-                if (this.OnlineWObject.MarketValue < wealthTextures[i].Wealth)
+                if (this.OnlineWObject.MarketValue + this.OnlineWObject.MarketValuePawn < wealthTextures[i].Wealth)
                 {
                     return wealthTextures[i].Texture;
                 }

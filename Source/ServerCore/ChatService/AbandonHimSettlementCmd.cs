@@ -46,6 +46,7 @@ namespace ServerOnlineCity.ChatService
 
             Repository.DropUserFromMap(killPlayer.Public.Login);
             Repository.GetSaveData.DeletePlayerData(killPlayer.Public.Login);
+            killPlayer.Public.LastSaveTime = DateTime.MinValue;
             Repository.Get.ChangeData = true;
             Loger.Log("Server killhimplease " + killPlayer.Public.Login);
 

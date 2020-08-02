@@ -36,6 +36,7 @@ namespace ServerOnlineCity.ChatService
 
             Repository.DropUserFromMap(player.Public.Login);
             Repository.GetSaveData.DeletePlayerData(player.Public.Login);
+            player.Public.LastSaveTime = DateTime.MinValue;
             Loger.Log("Server killmyallplease " + player.Public.Login);
             player = null; ///  значение передается по ссылке, и успешно обнуляет у передающего класса
             Repository.Get.ChangeData = true;
