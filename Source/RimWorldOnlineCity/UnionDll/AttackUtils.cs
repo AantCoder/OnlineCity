@@ -24,7 +24,8 @@ namespace OCUnion
             }
         }
 
-        public static string CheckPossibilityAttack(IPlayerEx attacker, IPlayerEx host, long attackerWOServerId, long hostWOServerId)
+        public static string CheckPossibilityAttack(IPlayerEx attacker, IPlayerEx host, long attackerWOServerId, long hostWOServerId
+            , bool protectingNovice)
         {
             try
             {
@@ -36,6 +37,7 @@ namespace OCUnion
                     : null
                     ;
                 if (res != null) return res;
+                if (!protectingNovice) return null;
 
                 var hostCosts = host.CostWorldObjects(hostWOServerId);
                 var hostCost = MaxCostAttackerCaravan(hostCosts.MarketValue + hostCosts.MarketValuePawn, true);

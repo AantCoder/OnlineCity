@@ -54,7 +54,19 @@ namespace ServerCore.Model
         /// For using steam workshop folder
         /// </summary>
         [JsonIgnore]
-        public string SteamWorkShopModsDir { get; set; } 
+        public string SteamWorkShopModsDir { get; set; }
+
+        /// <summary>
+        /// Защита начинающих игроков от нападения, а также запрет передавать товары от новых поселений
+        /// Protection of novice players from attack, as well as a ban on transferring goods from new settlements
+        /// </summary>
+        public bool ProtectingNovice { get; set; }
+
+        /// <summary>
+        /// Сервер будет автоматически удалять не развитые поселения за которые давно не играют
+        /// The server will automatically delete undeveloped settlements that have not been played for a long time
+        /// </summary>
+        public bool DeleteAbandonedSettlements { get; set; }
 
         public ServerSettings() { }
 

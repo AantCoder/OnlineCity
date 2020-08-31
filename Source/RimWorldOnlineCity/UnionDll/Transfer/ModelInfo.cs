@@ -27,6 +27,7 @@ namespace Transfer
         public int MinutesIntervalBetweenPVP { get; set; }
         public bool EnableFileLog { get; set; }
         public DateTime TimeChangeEnablePVP { get; set; }
+        public bool ProtectingNovice { get; set; }
 
         public DateTime ServerTime { get; set; }
 

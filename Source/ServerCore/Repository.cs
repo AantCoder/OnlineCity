@@ -52,6 +52,7 @@ namespace ServerOnlineCity
                     var item = data.WorldObjects[i];
                     if (item.LoginOwner != login) continue;
                     //удаление из базы
+                    i--;
                     item.UpdateTime = DateTime.UtcNow;
                     data.WorldObjects.Remove(item);
                     data.WorldObjectsDeleted.Add(item);

@@ -97,6 +97,8 @@ namespace RimWorldOnlineCity
 
         public DateTime TimeChangeEnablePVP { get; set; }
 
+        public bool ProtectingNovice { get; set; }
+
         public bool BackgroundSaveGameOff { get; set; }
 
         public Faction FactionPirate

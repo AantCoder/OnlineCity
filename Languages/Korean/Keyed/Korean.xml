@@ -432,7 +432,9 @@ Create a Settings.json file in the World folder. Here is an example of its conte
   "IsModsWhitelisted": true,
   "DisableDevMode": false,
   "MinutesIntervalBetweenPVP": 20,
-  "ModsDirectory": "c:\\CityOnlineTest19019\\Mods"
+  "ModsDirectory": "c:\\CityOnlineTest19019\\Mods",
+  "ProtectingNovice": true,
+  "DeleteAbandonedSettlements": false
 }
 ServerName and Description - the name and description of the server, while not used anywhere, is not necessary.
 
@@ -447,6 +449,10 @@ ModsDirectory - if IsModsWhitelisted is set to true, then there is a folder that
 DisableDevMode - whether the developer mode will be disabled when players enter online.
 
 MinutesIntervalBetweenPVP - after an attack on one player by another, he cannot be attacked for a given number of minutes. You can put, for example, 0 or 20.
+
+ProtectingNovice - Protection of novice players from attack, as well as a ban on transferring goods from new settlements.
+
+DeleteAbandonedSettlements - The server will automatically delete undeveloped settlements that have not been played for a long time.
 
 
 Run ServerOnlineCity.exe. The console should open, which is the server. The output to it is duplicated to the log files in the World folder.
@@ -498,6 +504,7 @@ If you delete the files {player name}.dat *, then the next time you enter the pl
 If the player’s save is corrupted, you can delete the file {player name}.dat1 and rename the file {player name}.dat2 or {player name}.dat3 to this name
 
 You can regularly delete settlements of players who have played less than a few gaming days and have not entered for a long time. To do this, in the game you can find their settlements on the map by the icon of the smallest house, click on them, then on the information i. Here you can see the total cost of the settlement (for example, if it is less than 30000) and when the user last visited. If you decide to remove the player, then use the command /killhimplease {UserLogin}
+Or the server can do it itself by configuring DeleteAbandonedSettlements.
 
 How to make sure that the player is who he claims to be? For example, if a player writes that his preservation is broken, and he asks to remove his settlement. In this case, ask him to try to enter the game right now. Then ask him to send you his logs for today. Then you can find the lines of his login to the server and compare the time with the logs on the server itself (keep in mind that there may be different time zones).
 

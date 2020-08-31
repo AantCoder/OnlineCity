@@ -72,7 +72,8 @@ namespace ServerOnlineCity.Model
                 Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} canceled: Attack not possible: player offline");
                 return "Attack not possible: player offline";
             }
-            var err = AttackUtils.CheckPossibilityAttack(player, hostPlayer, fromClient.InitiatorPlaceServerId, fromClient.HostPlaceServerId);
+            var err = AttackUtils.CheckPossibilityAttack(player, hostPlayer, fromClient.InitiatorPlaceServerId, fromClient.HostPlaceServerId
+                , ServerManager.ServerSettings.ProtectingNovice);
             if (err != null)
             {
                 Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} canceled: {err}");

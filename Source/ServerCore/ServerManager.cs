@@ -223,17 +223,21 @@ namespace ServerOnlineCity
             Repository.Get.Save();
         }
 
+        private long DoWorldCountRun = -1;
+
         /// <summary>
         /// Общее обслуживание мира
         /// </summary>
         private void DoWorld()
         {
+            DoWorldCountRun++;
+
             HashSet<string> allLogins = null;
             //Есть ли какие-то изменения в списках пользователей
             bool changeInPlayers = false;
 
             ///Обновляем кто кого видит
-            
+
             foreach (var player in Repository.GetData.PlayersAll)
             {
                 var pl = ChatManager.Instance.PublicChat.PartyLogin;
@@ -285,39 +289,45 @@ namespace ServerOnlineCity
 
             /// Удаляем колонии за которые давно не заходили, игровое время которых меньше полугода и ценность в них меньше второй иконки
 
-            var minCostForTrade = 25000; // эту цифру изменять вместе с CaravanOnline.GetFloatMenuOptions()
-            foreach (var player in Repository.GetData.PlayersAll)
+            if (DoWorldCountRun % 10 == 0)
             {
-                if (player.Public.LastSaveTime == DateTime.MinValue) continue;
-                if (player.Public.LastTick > 3600000 / 2) continue;
+                if (ServerManager.ServerSettings.DeleteAbandonedSettlements)
+                {
+                    var minCostForTrade = 25000; // эту цифру изменять вместе с CaravanOnline.GetFloatMenuOptions()
+                    foreach (var player in Repository.GetData.PlayersAll)
+                    {
+                        if (player.Public.LastSaveTime == DateTime.MinValue) continue;
+                        if (player.Public.LastTick > 3600000 / 2) continue;
 
-                if ((DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays < 7) continue;
-                if ((DateTime.UtcNow - player.LastUpdateTime).TotalDays < 7) continue;
-                if ((DateTime.UtcNow - player.Public.LastSaveTime).TotalDays < 7) continue;
+                        if ((DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays < 7) continue;
+                        if ((DateTime.UtcNow - player.LastUpdateTime).TotalDays < 7) continue;
+                        if ((DateTime.UtcNow - player.Public.LastSaveTime).TotalDays < 7) continue;
 
-                if (player.IsAdmin) continue;
+                        if (player.IsAdmin) continue;
 
-                var costAll = player.CostWorldObjects();
-                if (costAll.BaseCount + costAll.CaravanCount == 0) continue;
-                if (costAll.MarketValue + costAll.MarketValuePawn == 0) continue; //какой-то сбой отсутствия данных
-                if (costAll.MarketValue + costAll.MarketValuePawn > minCostForTrade) continue;
-                
-                var msg = $"User {player.Public.Login} deleted settlements (game abandoned): " +
-                    $"cost {costAll.MarketValue + costAll.MarketValuePawn}, " +
-                    $"game days {player.Public.LastTick / 60000}, " +
-                    $"last online (day) {(int)(DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays} ";
+                        var costAll = player.CostWorldObjects();
+                        if (costAll.BaseCount + costAll.CaravanCount == 0) continue;
+                        if (costAll.MarketValue + costAll.MarketValuePawn == 0) continue; //какой-то сбой отсутствия данных
+                        if (costAll.MarketValue + costAll.MarketValuePawn > minCostForTrade) continue;
 
-                //блок удаления из AbandonHimSettlementCmd
+                        var msg = $"User {player.Public.Login} deleted settlements (game abandoned): " +
+                            $"cost {costAll.MarketValue + costAll.MarketValuePawn}, " +
+                            $"game days {player.Public.LastTick / 60000}, " +
+                            $"last online (day) {(int)(DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays} ";
 
-                ChatManager.Instance.AddSystemPostToPublicChat(msg);
+                        //блок удаления из AbandonHimSettlementCmd
 
-                Repository.DropUserFromMap(player.Public.Login);
-                Repository.GetSaveData.DeletePlayerData(player.Public.Login);
-                player.Public.LastSaveTime = DateTime.MinValue;
-                Repository.Get.ChangeData = true;
-                Loger.Log("Server " + msg);
+                        //ChatManager.Instance.AddSystemPostToPublicChat(msg); // раскоментировать, для поста в общий чат
+
+                        Repository.DropUserFromMap(player.Public.Login);
+                        Repository.GetSaveData.DeletePlayerData(player.Public.Login);
+                        player.Public.LastSaveTime = DateTime.MinValue;
+                        Repository.Get.ChangeData = true;
+                        Loger.Log("Server " + msg);
+                    }
+                }
             }
-
+            
             /// Завершение
 
             if (changeInPlayers)

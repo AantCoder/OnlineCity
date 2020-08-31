@@ -606,6 +606,7 @@ namespace RimWorldOnlineCity
             Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
             Data.MinutesIntervalBetweenPVP = serverInfo.MinutesIntervalBetweenPVP;
             Data.TimeChangeEnablePVP = serverInfo.TimeChangeEnablePVP;
+            Data.ProtectingNovice = serverInfo.ProtectingNovice;
             MainHelper.OffAllLog = serverInfo.EnableFileLog;
         }
 

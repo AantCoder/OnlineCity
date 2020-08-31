@@ -5,6 +5,7 @@
  	<url>https://discord.gg/mWshqrh</url> 
 	<supportedVersions>
 	  <li>1.1</li>
+	  <li>1.2</li>
 	</supportedVersions>
  	<description>Online multiplayer mod which allows players to play on the same planet.</description>	
 	<packageId>Aant.OnlineCity</packageId>
