@@ -1,14 +1,9 @@
-﻿using Model;
-using OC.ChatBridgeProvider;
-using OCUnion;
+﻿using OCUnion;
 using System;
 using System.IO;
 using System.Net;
-using System.Windows.Forms;
-using Transfer;
-using Util;
 
-namespace Chat
+namespace OC.Chat
 {
     public class SCC
     {
@@ -47,7 +42,6 @@ namespace Chat
             }
 
             var endPoint = new IPEndPoint(ipAdres, port);
-
 
             return ChatProv.Login(endPoint, login, password);
         }

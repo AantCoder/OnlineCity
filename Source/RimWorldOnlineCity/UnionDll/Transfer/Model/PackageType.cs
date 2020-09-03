@@ -80,11 +80,11 @@ namespace OCUnion.Transfer.Model
         /// <summary>
         /// 19 - написать в чат (id канала, сообщение) //здесь же командами создать канал, добавить в канал и прочее
         /// </summary>
-        Request19 = 19,
+        Request19PostingChat = 19,
         /// <summary>
-        /// 20 - ответ (успешно, сообщение)
+        /// 20 - ответ (сообщение)
         /// </summary>
-        Response20 = 20,
+        Response20PostingChat = 20,
         /// <summary>
         /// 21 - команды работы с биржей 
         /// </summary>
@@ -128,5 +128,34 @@ namespace OCUnion.Transfer.Model
 
         RequestPlayerByToken,
         ResponsePlayerByToken,
+        RequestServerInfo,
+        ResponseServerInfo,
+        /// <summary>
+        /// Отправка запроса с хешем файлов
+        /// </summary>
+        Request35ListFiles,
+        /// <summary>
+        /// Получение ответа cо списком файлов 
+        /// </summary>
+        Response36ListFiles,
+        /// <summary>
+        /// Запрос на получение списка папок для проверки с сервера
+        /// </summary>
+        Request37GetApproveFolders,
+        /// <summary>
+        /// Ответ содержит файл содержащий список папок с сервера
+        /// </summary>
+        Response38GetApproveFolders,
+        /// <summary>
+        /// Уведомление о дисконнекте
+        /// </summary>
+        Request39Disconnect,
+        /// <summary>
+        /// Ответа на дисконнект
+        /// </summary>
+        Response40Disconnect,
+
+        Request41SetPlayerInfo,
+        Response42SetPlayerInfo,
     }
 }

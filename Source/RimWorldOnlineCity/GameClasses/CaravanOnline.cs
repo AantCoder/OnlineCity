@@ -45,11 +45,7 @@ namespace RimWorldOnlineCity
         {
             get
             {
-                return "OCity_Caravan_Player".Translate().Translate(new object[]
-                    {
-                        OnlineName,
-                        OnlinePlayerLogin
-                    });
+                return "OCity_Caravan_Player".Translate(OnlineName, OnlinePlayerLogin);
                 /*
                 return "Караван {0}".Translate(new object[]
                     {
@@ -62,29 +58,27 @@ namespace RimWorldOnlineCity
         public override string GetInspectString()
         {
             if (OnlineWObject == null)
-                return ("OCity_Caravan_Player".Translate() + Environment.NewLine
-                    ).Translate(new object[]
-                    {
-                        OnlineName
-                        , OnlinePlayerLogin
-                    });
+                return "OCity_Caravan_Player".Translate(OnlineName, OnlinePlayerLogin) + Environment.NewLine;
             else
             {
-                return ("OCity_Caravan_Player".Translate() + Environment.NewLine
-                    + "OCity_Caravan_PriceThing".Translate() + Environment.NewLine
-                    + "OCity_Caravan_PriceAnimalsPeople".Translate()
-                    + "OCity_Caravan_Other".Translate()
-                    ).Translate(new object[]
-                    {
+                var s = "OCity_Caravan_Player".Translate() + Environment.NewLine
+                    //+ "OCity_Caravan_PriceThing".Translate() + Environment.NewLine
+                    //+ "OCity_Caravan_PriceAnimalsPeople".Translate()
+                    + "OCity_Caravan_Other".Translate();
+                var s1 = string.Format(s,
                         OnlineName
-                        , OnlinePlayerLogin + (IsOnline ? " Online!" : "") + " (sId:" + OnlineWObject.ServerId +")"
+                        , OnlinePlayerLogin + (IsOnline ? " Online!" : "") + " (sId:" + OnlineWObject.ServerId + ")"
                         , OnlineWObject.MarketValue.ToStringMoney()
                         , OnlineWObject.MarketValuePawn.ToStringMoney()
-                        , OnlineWObject.FreeWeight > 0 && OnlineWObject.FreeWeight < 999999
-                            ? Environment.NewLine + "OCity_Caravan_FreeWeight".Translate() + OnlineWObject.FreeWeight.ToStringMass()
-                            : ""
-                        , "" //todo Environment.NewLine + GameUtils.PlayerTextInfo(OnlineWObject.)
-                    });
+                        )
+                    + ((this is BaseOnline)
+                        ? Environment.NewLine + "OCity_Caravan_PlayerAttackCost".Translate(
+                            AttackUtils.MaxCostAttackerCaravan(OnlineWObject.MarketValue + OnlineWObject.MarketValuePawn, this is BaseOnline).ToStringMoney()).ToString()
+                        : "")
+                    + (OnlineWObject.FreeWeight > 0 && OnlineWObject.FreeWeight < 999999
+                        ? Environment.NewLine + "OCity_Caravan_FreeWeight".Translate().ToString() + OnlineWObject.FreeWeight.ToStringMass()
+                        : "");
+                return s1;
             }
         }
 
@@ -110,26 +104,54 @@ namespace RimWorldOnlineCity
                 yield return o;
             }
 
-            yield return new FloatMenuOption("OCity_Caravan_Trade".Translate(new object[]
-            {
-                OnlinePlayerLogin + " " + OnlineName
-            }), delegate
-            {
-                caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
-            }, MenuOptionPriority.Default, null, null, 0f, null, this);
+            var player = this.Player;
 
-            if (MainHelper.DebugMode) //todo: убрать при релизи pvp
+            // Передача товара
+            var minCostForTrade = 25000; // эту цифру изменять вместе с ServerManager.DoWorld()
+            bool disTrade = false;
+            if (SessionClientController.Data.ProtectingNovice)
             {
-                if (this is BaseOnline && GameAttacker.CanStart)
-                {
-                    yield return new FloatMenuOption(string.Format("Атаковать {0}".NeedTranslate()
-                        , OnlinePlayerLogin + " " + OnlineName
-                    ), delegate
-                    {
-                        caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "attack"), true);
-                    }, MenuOptionPriority.Default, null, null, 0f, null, this);
-                }
+                var costAll = player.CostAllWorldObjects();
+                disTrade = player.Public.LastTick < 3600000 / 2 || costAll.MarketValue + costAll.MarketValuePawn < minCostForTrade;
             }
+            var fmoTrade = new FloatMenuOption("OCity_Caravan_Trade".Translate(OnlinePlayerLogin + " " + OnlineName)
+                + (disTrade ? "You are under a year old or cost less than".NeedTranslate() + " " + minCostForTrade.ToString() : "") // "Вам нет года или стоимость меньше"
+                , delegate
+                {
+                    caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
+                }, MenuOptionPriority.Default, null, null, 0f, null, this);
+            if (disTrade)
+            {
+                fmoTrade.Disabled = true;
+            }
+            yield return fmoTrade;
+
+            // Атаковать
+            if (SessionClientController.My.EnablePVP
+                && this is BaseOnline 
+                && GameAttacker.CanStart)
+            {
+                var dis = AttackUtils.CheckPossibilityAttack(SessionClientController.Data.MyEx
+                    , player
+                    , UpdateWorldController.GetMyByLocalId(caravan.ID).ServerId
+                    , this.OnlineWObject.ServerId
+                    , SessionClientController.Data.ProtectingNovice
+                    );
+                var fmo = new FloatMenuOption("OCity_Caravan_Attack".Translate(OnlinePlayerLogin + " " + OnlineName)
+                    + (dis != null ? " (" + dis + ")" : "")
+                    , delegate
+                {
+                    caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "attack"), true);
+                }, MenuOptionPriority.Default, null, null, 0f, null, this);
+
+                if (dis != null)
+                {
+                    fmo.Disabled = true;
+                }
+
+                yield return fmo;
+            }
+            //}
         }
 
         #region Icons

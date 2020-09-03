@@ -26,11 +26,15 @@ namespace OC.DiscordBotServer.Migrations
 
                     b.Property<DateTime>("LastOnlineTime");
 
+                    b.Property<DateTime>("LastCheckTime");
+
                     b.Property<ulong>("LinkCreator");
 
                     b.Property<int>("Port");
 
                     b.Property<string>("Token");
+
+                    b.Property<int>("LastRecivedPostIndex");
 
                     b.HasKey("Id");
 
@@ -46,10 +50,6 @@ namespace OC.DiscordBotServer.Migrations
                     b.Property<DateTime>("LastActiveTime");
 
                     b.Property<string>("OCLogin");
-
-                    b.Property<string>("Token");
-
-                    b.Property<Guid>("TokenGuid");
 
                     b.HasKey("DiscordIdChanel", "UserId");
 

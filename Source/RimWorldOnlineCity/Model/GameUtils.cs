@@ -7,11 +7,11 @@ using Verse;
 using Model;
 using System.Reflection;
 using System.Xml;
-using HugsLib.Utils;
 using OCUnion;
 using RimWorld.Planet;
 using UnityEngine;
 using OCUnion.Transfer.Model;
+using System.Threading;
 
 namespace RimWorldOnlineCity
 {
@@ -58,7 +58,7 @@ namespace RimWorldOnlineCity
             }
             else
             {
-                TooltipHandler.TipRegion(rect, thing.Def.LabelCap + " из ".NeedTranslate() + thing.StuffDef.LabelAsStuff);
+                TooltipHandler.TipRegion(rect, thing.Def.LabelCap + "OCity_GameUtils_From".Translate() + thing.StuffDef.LabelAsStuff);
                 GUI.color = labelColor;
                 if (withInfo) Widgets.InfoCardButton(rect.x + 24f, rect.y, thing.Def, thing.StuffDef);
                 GUI.color = Color.white;
@@ -214,7 +214,7 @@ namespace RimWorldOnlineCity
                     QualityUtility.TryGetQuality(t, out qq);
                     return new { thing = t, q = qq };
                 })
-                .OrderBy(t => t.thing.def.defName + "#" + ((int)t.q).ToString() + (10000 - t.thing.HitPoints).ToString() + t.thing.stackCount.ToString().PadLeft(6)) 
+                .OrderBy(t => t.thing.def.defName + "#" + ((int)t.q).ToString() + (10000 - t.thing.HitPoints).ToString() + t.thing.stackCount.ToString().PadLeft(6))
                 .Select(t => t.thing)
                 .ToList();
             foreach (var target in targets)
@@ -251,7 +251,7 @@ namespace RimWorldOnlineCity
                     target.NotTrade = true;
                     //Log.Message("NotTrade " + target.Count.ToString() + " > " + select.CountToTransfer.ToString());
                 }
-                else 
+                else
                 {
                     if (setRect && target.Count * rate > select.CountToTransfer)
                     {
@@ -291,13 +291,19 @@ namespace RimWorldOnlineCity
 
         public static void ShortSetupForQuickTestPlay()
         {
-            //частичная копия 
+            //частичная копия
             Current.Game = new Game();
             Current.Game.InitData = new GameInitData();
             Current.Game.Scenario = ScenarioDefOf.Crashlanded.scenario;
             Find.Scenario.PreConfigure();
             Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra, DifficultyDefOf.Rough);
-            Current.Game.World = WorldGenerator.GenerateWorld(0.05f, GenText.RandomSeedString(), OverallRainfall.Normal, OverallTemperature.Normal);
+            Current.Game.World = WorldGenerator.GenerateWorld(
+                0.05f,
+                GenText.RandomSeedString(),
+                OverallRainfall.Normal,
+                OverallTemperature.Normal,
+                OverallPopulation.Little
+                );
         }
 
         /// <summary>
@@ -359,7 +365,7 @@ namespace RimWorldOnlineCity
 
         /// <summary>
         /// Получаем координаты ячейки куда сгружать груз для указанной карты.
-        /// Ячейка - центр склада. Выбирается склад как лучший по: 
+        /// Ячейка - центр склада. Выбирается склад как лучший по:
         /// имеет в названии слово "торг" или "trad", не свалка с именем поумолчанию, самый большой, по названию
         /// </summary>
         public static IntVec3 GetTradeCell(Map map)
@@ -424,10 +430,11 @@ namespace RimWorldOnlineCity
             return SpawnList(map, pawns, true, (p) => true, spawn, (p) => nextCell());
         }
 
-        public static IntVec3 SpawnList(Map map, List<ThingEntry> pawns, bool attackCell
-            , Func<ThingEntry, bool> getPirate
-            , Action<Thing, ThingEntry> spawn = null
+        public static IntVec3 SpawnList<TE>(Map map, List<TE> pawns, bool attackCell
+            , Func<TE, bool> getPirate
+            , Action<Thing, TE> spawn = null
             , Func<Thing, IntVec3> getCell = null)
+            where TE : ThingEntry
         {
             if (MainHelper.DebugMode) Loger.Log("SpawnList...");
 
@@ -436,33 +443,101 @@ namespace RimWorldOnlineCity
                     ?? Find.FactionManager.OfAncientsHostile; //SessionClientController.Data.FactionPirate;
 
             IntVec3 ret = new IntVec3();
-            Thing thinXZ;
-            for (int i = 0; i < pawns.Count; i++)
+            ModBaseData.RunMainThreadSync(() =>
             {
-                var thing = pawns[i];
-                //GenSpawn.Spawn(pawn, cell, map, Rot4.Random, WipeMode.Vanish, false);
-
-                if (MainHelper.DebugMode) Loger.Log("Prepare...");
-                var thin = UpdateWorldController.PrepareSpawnThingEntry(thing, factionPirate, getPirate(thing));
-
-                var cell = getCell != null ? getCell(thin) : thin.Position;
-                if (i == 0) ret = cell;
-                
-                if (MainHelper.DebugMode) try { Loger.Log("Spawn... " + thin.Label); } catch { Loger.Log("Spawn... "); }
-                if (thin is Pawn)
+                Thing thinXZ;
+                for (int i = 0; i < pawns.Count; i++)
                 {
-                    if (MainHelper.DebugMode) Loger.Log("Pawn... " + thin.Position.x + " " + thin.Position.y);
-                    GenSpawn.Spawn((Pawn)thin, cell, map);
+                    var thing = pawns[i];
+                    //GenSpawn.Spawn(pawn, cell, map, Rot4.Random, WipeMode.Vanish, false);
+
+                    if (MainHelper.DebugMode) Loger.Log("Prepare...");
+                    var thin = PrepareSpawnThingEntry(thing, factionPirate, getPirate(thing));
+
+                    var cell = getCell != null ? getCell(thin) : thin.Position;
+                    if (i == 0) ret = cell;
+
+                    //if (MainHelper.DebugMode) 
+                    try 
+                    { 
+                        Loger.Log("Spawn... " + thin.Label); 
+                    } 
+                    catch 
+                    { 
+                        Loger.Log("Spawn... "); 
+                    }
+                    if (thin is Pawn)
+                    {
+                        if (MainHelper.DebugMode) Loger.Log("Pawn... " + thin.Position.x + " " + thin.Position.y);
+                        try
+                        {
+                            GenSpawn.Spawn((Pawn)thin, cell, map);
+                        }
+                        catch(Exception exp)
+                        {
+                            Loger.Log("SpawnList Exception " + thing.Name + ": " + exp.ToString());
+                            Thread.Sleep(5);
+                            GenSpawn.Spawn((Pawn)thin, cell, map);
+                        }
+                    }
+                    else
+                        GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
+                    if (spawn != null) spawn(thin, thing);
+                    if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
                 }
-                else
-                    GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
-                if (spawn != null) spawn(thin, thing);
-                if (MainHelper.DebugMode) Loger.Log("Spawn...OK");
-            }
+
+            });
             return ret;
         }
 
-        public static void ApplyState(Thing thing, AttackThingState state)
+        /// <summary>
+        /// Создает игровой объект. 
+        /// Если это пешка не колонист, то делаем его пиратом заключённым.
+        /// Если freePirate=true, то делаем враждебными пиратами всех из фракции игрока.
+        /// </summary>
+        public static Thing PrepareSpawnThingEntry(ThingEntry thing, Faction factionPirate, bool freePirate = false)
+        {
+            var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
+            //var factionPirateLoadID = factionPirate.GetUniqueLoadID();
+
+            //меняем фракцию на игрока для всех
+            var prisoner = thing.SetFaction(factionColonistLoadID);
+            Thing thin;
+            thin = thing.CreateThing(false);
+            if (MainHelper.DebugMode) Loger.Log("SetFaction...");
+            if (thin.def.CanHaveFaction)
+            {
+                if (MainHelper.DebugMode) Loger.Log("SetFaction...1");
+
+                if (thin is Pawn && (prisoner || freePirate && thin.Faction == Find.FactionManager.OfPlayer))
+                {
+                    //а тут меняем фракцию на пиратов, для тех кому нужно
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...2");
+                    thin.SetFaction(factionPirate);
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...3");
+                    var p = thin as Pawn;
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...4");
+                    if (!freePirate && p.guest != null) p.guest.SetGuestStatus(factionPirate, true);
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...5");
+                }
+                else
+                {
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...6");
+                    thin.SetFaction(Find.FactionManager.OfPlayer);
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...7");
+                }
+            }
+            return thin;
+        }
+
+
+        public static void PawnDestroy(Pawn pawn)
+        {
+            pawn.Destroy(DestroyMode.Vanish);
+            Find.WorldPawns.RemovePawn(pawn); //не проверенное полное удаление, чтобы не появлялось клонов пешки после возврата её назад
+        }
+
+        public static void ApplyState(Thing thing, AttackThingState state, bool pawnHealthStateDead = false)
         {
             //полезное из игры: RecoverFromUnwalkablePositionOrKill
             if (state.StackCount > 0 && thing.stackCount != state.StackCount)
@@ -489,12 +564,19 @@ namespace RimWorldOnlineCity
                 }
             }
 
-            if (thing.def.useHitPoints)
+            if (thing is Fire)
             {
-                Loger.Log("Client ApplyState Set HitPoints " + thing.HitPoints.ToString() + " -> " + state.HitPoints.ToString());
-                thing.HitPoints = state.HitPoints;
+                (thing as Fire).fireSize = (float)state.HitPoints / 10000f;
             }
-
+            else
+            {
+                if (thing.def.useHitPoints)
+                {
+                    Loger.Log("Client ApplyState Set HitPoints " + thing.HitPoints.ToString() + " -> " + state.HitPoints.ToString());
+                    thing.HitPoints = state.HitPoints;
+                }
+            }
+            
             if (thing is Pawn)
             {
                 var pawn = thing as Pawn;
@@ -506,15 +588,18 @@ namespace RimWorldOnlineCity
                     }
                     else if (state.DownState == AttackThingState.PawnHealthState.Dead)
                     {
-                        Loger.Log("Client ApplyState Set pawn state (1): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
-                        HealthUtility.DamageUntilDead(pawn);
-                        //PawnKill(pawn);
+                        if (pawnHealthStateDead)
+                        {
+                            Loger.Log("Client ApplyState Set pawn state (1): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
+                            HealthUtility.DamageUntilDead(pawn);
+                            //PawnKill(pawn);
+                        }
                     }
                     else if (state.DownState == AttackThingState.PawnHealthState.Down)
                     {
                         Loger.Log("Client ApplyState Set pawn state (2): " + pawn.health.State.ToString() + " -> " + state.DownState.ToString());
                         //todo! Применяем наркоз?
-                        HealthUtility.DamageUntilDowned(pawn, true);
+                        HealthUtility.DamageUntilDowned(pawn, false);
                     }
                     else
                     {
@@ -524,7 +609,7 @@ namespace RimWorldOnlineCity
                     }
                 }
             }
-            
+
         }
         /*
         public static void PawnKill(Pawn pawn)
@@ -543,11 +628,16 @@ namespace RimWorldOnlineCity
         }
         */
 
+        private static bool DialodShowing = false;
+        private static Queue<Action> DialodQueue = new Queue<Action>();
+
         public static void ShowDialodOKCancel(string title
             , string text
             , Action ActOK
             , Action ActCancel
-            , GlobalTargetInfo? target = null)
+            , GlobalTargetInfo? target = null
+            , string AltText = null
+            , Action ActAlt = null)
         {
             DiaNode diaNode = new DiaNode(text);
 
@@ -561,27 +651,67 @@ namespace RimWorldOnlineCity
                 diaNode.options.Add(diaOptionT);
             }
 
-            DiaOption diaOption = new DiaOption("OK".NeedTranslate()); //OK -> Принять передачу
-            diaOption.action = ActOK;
+            DiaOption diaOption = new DiaOption("OCity_GameUtils_Ok".Translate()); //OK -> Принять передачу
+            diaOption.action = () => { ActOK(); DialodQueueGoNext(); };
             /*{ спавн пешки бегущей "на помощь"
                 GenSpawn.Spawn(refugee, spawnSpot, map, WipeMode.Vanish);
                 refugee.SetFaction(Faction.OfPlayer, null);
                 CameraJumper.TryJump(refugee);
                 QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDefOf.RaidEnemy, null, raidParms), Find.TickManager.TicksGame + IncidentWorker_RefugeeChased.RaidDelay.RandomInRange, 0);
                 Find.Storyteller.incidentQueue.Add(qi);
-                
+
             };*/
             diaOption.resolveTree = true;
             diaNode.options.Add(diaOption);
 
-            diaOption = new DiaOption("RejectLetter".Translate());
-            //RansomDemand_Reject это "Отказаться"
-            //RejectLetter это Отклонить
-            diaOption.action = ActCancel;
-            diaOption.resolveTree = true;
-            diaNode.options.Add(diaOption);
+            if (!string.IsNullOrEmpty(AltText) && ActAlt != null)
+            {
+                diaOption = new DiaOption(AltText);
+                diaOption.action = () => { ActAlt(); DialodQueueGoNext(); };
+                diaOption.resolveTree = true;
+                diaNode.options.Add(diaOption);
+            }
 
-            Find.WindowStack.Add(new Dialog_NodeTreeWithFactionInfo(diaNode, null, true, true, title));
+            if (ActCancel != null)
+            {
+                diaOption = new DiaOption("RejectLetter".Translate());
+                //RansomDemand_Reject это "Отказаться"
+                //RejectLetter это Отклонить
+                diaOption.action = () => { ActCancel(); DialodQueueGoNext(); };
+                diaOption.resolveTree = true;
+                diaNode.options.Add(diaOption);
+            }
+
+            Action show = () => Find.WindowStack.Add(new Dialog_NodeTreeWithFactionInfo(diaNode, null, true, true, title));
+
+            //если окно одно, то запускаем, если это окно создается при уже открытом другом, то ставим в очередь
+            lock (DialodQueue)
+            {
+                if (!DialodShowing)
+                {
+                    DialodShowing = true;
+                    show();
+                }
+                else
+                {
+                    DialodQueue.Enqueue(show);
+                }
+            }
+        }
+
+        private static void DialodQueueGoNext()
+        {
+            lock (DialodQueue)
+            {
+                if (DialodQueue.Count > 0)
+                {
+                    DialodQueue.Dequeue()();
+                }
+                else
+                {
+                    DialodShowing = false;
+                }
+            }
         }
 
         /// <summary>

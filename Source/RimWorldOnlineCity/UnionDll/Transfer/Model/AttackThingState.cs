@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,7 +37,8 @@ namespace OCUnion.Transfer.Model
             HostThingID = mp.thingIDNumber;
             StackCount = mp.stackCount;
             Position = new IntVec3S(mp.Position);
-            HitPoints = mp.HitPoints;
+            var fire = mp as Fire;
+            HitPoints = fire != null ? (int)(fire.fireSize * 10000f) : mp.HitPoints;
             var pawn = mp as Pawn;
             if (pawn != null)
             {
@@ -50,7 +52,7 @@ namespace OCUnion.Transfer.Model
         public static int GetHash(Thing mp)
         {
             return ((mp.Position.x % 50) * 50 + mp.Position.z % 50)
-                + mp.stackCount * 10000
+                + (mp.stackCount + (mp is Pawn ? (int)(mp as Pawn).health.State : 0)) * 10000
                 + mp.HitPoints * 100000;
         }
 

@@ -2,10 +2,11 @@
 using System;
 using System.Linq;
 
-namespace Chat
+namespace OC.Chat
 {
     public class ChatMan
     {
+
         public string Login(string addr, string login, string pass)
         {
             if (string.IsNullOrEmpty(addr))
@@ -37,8 +38,12 @@ namespace Chat
         public void Send(int index, string text)
         {
             var selectCannal = SCC.ChatProv.Data.Chats[index];
+            var res = SCC.ChatProv.SendMessage(text, selectCannal.Id);
+            if (res != null && res.Status > 0)
+            {
 
-            SCC.ChatProv.SendMessage(text, selectCannal.Id);
+            }
+
             SCC.ChatProv.UpdateChats();
         }
     }

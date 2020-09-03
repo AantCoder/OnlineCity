@@ -1,5 +1,4 @@
-﻿using Harmony;
-using HugsLib.Utils;
+﻿using HarmonyLib;
 using OCUnion;
 using RimWorld;
 using RimWorld.Planet;
@@ -82,12 +81,32 @@ namespace RimWorldOnlineCity
                                 optList.RemoveAt(i--);
                             }
                         }
-                        var item = new ListableOption("Онлайн".NeedTranslate(), delegate
+                        var item = new ListableOption("OCity_MainMenu_Online".Translate(), delegate
                         {
                             Dialog_MainOnlineCity.ShowHide();
                         }, null);
                         optList.Add(item);
-                            
+
+                        if (SessionClientController.Data.AttackModule != null)
+                        {
+                            item = new ListableOption("OCity_MainMenu_Withdraw".Translate(), delegate
+                            {
+                                Loger.Log("Client MainMenu VictoryHost");
+                                SessionClientController.Data.AttackModule.VictoryHostToHost = true;
+                            }, null);
+                            optList.Add(item);
+                        }
+
+                        if (SessionClientController.Data.AttackUsModule != null)
+                        {
+                            item = new ListableOption("OCity_MainMenu_Surrender".Translate(), delegate
+                            {
+                                Loger.Log("Client MainMenu VictoryAttacker");
+                                SessionClientController.Data.AttackUsModule.ConfirmedVictoryAttacker = true;
+                            }, null);
+                            optList.Add(item);
+                        }
+
                         item = new ListableOption("QuitToMainMenu".Translate(), delegate
                         {
                             if (GameExit.BeforeExit != null)
@@ -108,7 +127,7 @@ namespace RimWorldOnlineCity
                         }, null);
                         optList.Add(item);
 
-                        
+
                     }
                 }
             }
@@ -118,5 +137,5 @@ namespace RimWorldOnlineCity
             SessionClientController.Init();
         }
     }
-   
+
 }

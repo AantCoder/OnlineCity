@@ -23,5 +23,14 @@ namespace Model
 
         public List<AttackPawnCommand> UpdateCommand { get; set; }
 
+        public List<int> NeedNewThingIDs { get; set; }
+
+        public bool TestMode { get; set; }
+
+        public DateTime SetPauseOnTime { get; set; }
+
+        public bool VictoryHost { get; set; }
+
+        public bool TerribleFatalError { get; set; }
     }
 }

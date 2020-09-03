@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using Verse;
 using OCUnion;
+using OCUnion.Transfer.Model;
 
 namespace Model
 {
@@ -30,7 +31,7 @@ namespace Model
         /// </summary>
         public string StuffName { get; set; }
         /// <summary>
-        /// Текущая прочность, если 0 считается масксимальной 
+        /// Текущая прочность, если 0 считается масксимальной
         /// Либо минимально требуемая прочность (при Concrete == false)
         /// </summary>
         public int HitPoints { get; set; }
@@ -55,6 +56,8 @@ namespace Model
         /// Прогресс роста. Используется только при переносе объектов (CreateThing CreateTrade)
         /// </summary>
         public float Growth { get; set; }
+
+        public IntVec3S Position { get; set; }
 
         /// <summary>
         /// У нас этого нет, невозможно продать. Вычисляется функцией ExchengeUtils.ChechToSell
@@ -114,14 +117,26 @@ namespace Model
         {
             get
             {
-                return Name + (Count > 1 ? " x" + Count.ToString(): "") + Environment.NewLine
-                    + (Concrete
-                        ? "Качество {0}. Прочность {1} из {2}".NeedTranslate(((QualityCategory)Quality).GetLabel(), HitPoints, MaxHitPoints)
-                            + (WornByCorpse ? " Снято с трупа".NeedTranslate() : "")
-                        : "Качество {0} и лучше. Прочность {1}% и больше".NeedTranslate(((QualityCategory)Quality).GetLabel(), HitPoints)
-                            + (WornByCorpse ? " Может быть снято с трупа".NeedTranslate() : "")
-                        )
-                    ;
+                var result = Name + (Count > 1 ? " x" + Count.ToString() : "") + Environment.NewLine;
+                if (Concrete)
+                {
+                    result += "OCity_ThingTrade_Quality_Strength".Translate(((QualityCategory)Quality).GetLabel(), HitPoints, MaxHitPoints);
+                    if (WornByCorpse)
+                    {
+                        result += "OCity_ThingTrade_Cut_Body_Off".Translate();
+                    }
+
+                }
+                else
+                {
+                    result += "OCity_ThingTrade_QualityBetter_StrengthMore".Translate(((QualityCategory)Quality).GetLabel(), HitPoints);
+                    if (WornByCorpse)
+                    {
+                        result += "OCity_ThingTrade_CouldTake_OffCorpse".Translate();
+                    }
+                }
+
+                return result;
             }
         }
 
@@ -190,7 +205,7 @@ namespace Model
             else
                 return true;
         }
-        
+
         public static ThingTrade CreateTrade(ThingDef thingDef, float minHitPointsPercents, QualityCategory minQualities, int count)
         {
             var that = new ThingTrade();
@@ -210,6 +225,7 @@ namespace Model
             //WornByCorpse
             //Rotation
             //Growth
+            //Position
 
             return that;
         }
@@ -224,9 +240,19 @@ namespace Model
 
             that.DefName = thing.def.defName;
             that.StuffName = thing.Stuff == null ? null : thing.Stuff.defName;
-            that.HitPoints = thing.HitPoints;
-            that.MaxHitPoints = thing.MaxHitPoints;
-            
+
+            var pawn = thing as Pawn;
+            if (pawn == null)
+            {
+                that.HitPoints = thing.HitPoints;
+                that.MaxHitPoints = thing.MaxHitPoints;
+            }
+            else
+            {
+                that.HitPoints = (int)(pawn.health.summaryHealth.SummaryHealthPercent * 100f);
+                that.MaxHitPoints = 100;
+            }
+
             QualityCategory qq;
             if (QualityUtility.TryGetQuality(thing, out qq)) that.Quality = (int)qq;
 
@@ -238,17 +264,21 @@ namespace Model
             Plant thingP = thing as Plant;
             if (thingP != null) that.Growth = thingP.Growth;
 
+            that.Position = new IntVec3S(thing.Position);
+
             return that;
         }
 
-        public Thing CreateThing()
+        public override Thing CreateThing(bool useOriginalID = false, int stackCount = 0)
         {
+            //useOriginalID не используется.
+
             var def = (ThingDef)GenDefDatabase.GetDef(typeof(ThingDef), DefName);
             var stuffDef = !string.IsNullOrEmpty(StuffName) ? (ThingDef)GenDefDatabase.GetDef(typeof(ThingDef), StuffName) : null;
             Thing thing = !string.IsNullOrEmpty(StuffName)
                 ? ThingMaker.MakeThing(def, stuffDef)
                 : ThingMaker.MakeThing(def);
-            thing.stackCount = Count;
+            thing.stackCount = stackCount > 0 ? stackCount : Count;
 
             if (HitPoints > 0) thing.HitPoints = HitPoints;
 
@@ -273,6 +303,8 @@ namespace Model
 
             Plant thingP = thing as Plant;
             if (thingP != null) thingP.Growth = Growth;
+
+            thing.Position = Position.Get();
 
             return thing;
         }

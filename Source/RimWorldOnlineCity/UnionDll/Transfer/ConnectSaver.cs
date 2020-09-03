@@ -35,7 +35,7 @@ namespace Transfer
             while (Clients.Count > 0)
             {
                 Thread.Sleep(60000);
-                var now = DateTime.UtcNow.AddMinutes(5);
+                var now = DateTime.UtcNow.AddMinutes(2);
 
                 lock (Clients)    // for resolving System.InvalidOperationException: 'Коллекция была изменена; невозможно выполнить операцию перечисления.'              
                 {
@@ -48,7 +48,7 @@ namespace Transfer
                         }
                         if (now > client.LastSend)
                         {
-                            //запуск пинга через 5-6 мин после последнего обращения (в т.ч. пинга)
+                            //запуск пинга через 2-3 мин после последнего обращения (в т.ч. пинга)
                             Clients[client](client);
                         }
                     }

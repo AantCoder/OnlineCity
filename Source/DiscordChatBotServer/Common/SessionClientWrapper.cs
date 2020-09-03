@@ -1,11 +1,13 @@
 ﻿using Model;
+using OC.DiscordBotServer.Languages;
 using OC.DiscordBotServer.Models;
 using OCUnion;
+using OCUnion.Transfer;
+using OCUnion.Transfer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Transfer;
 using Util;
 
@@ -13,7 +15,9 @@ namespace OC.DiscordBotServer.Common
 {
     public class SessionClientWrapper : IDisposable
     {
-        private readonly Transfer.SessionClient _sessionClient;
+        public const string DiscrodLogin = "discord";
+
+        private readonly SessionClient _sessionClient;
         public Chanel2Server Chanel2Server { get; }
         private ClientData Data { get; set; }
         public Player My { get; set; }
@@ -47,7 +51,7 @@ namespace OC.DiscordBotServer.Common
 
             lock (_sessionClient)
             {
-                if (!_sessionClient.Login("Discord", pass))
+                if (!_sessionClient.Login(DiscrodLogin, pass))
                 {
                     return false;
                 }
@@ -58,9 +62,14 @@ namespace OC.DiscordBotServer.Common
             return true;
         }
 
+        public void UpdateLastTimeTryToConnect()
+        {
+            Chanel2Server.LastCheckTime = DateTime.UtcNow;
+        }
+
         private void updateClientData()
         {
-            var serverInfo = _sessionClient.GetInfo(true);
+            var serverInfo = _sessionClient.GetInfo(OCUnion.Transfer.ServerInfoType.FullWithDescription);
             My = serverInfo.My;
             Data = new ClientData(My.Login, _sessionClient);
             Data.ServetTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
@@ -68,9 +77,15 @@ namespace OC.DiscordBotServer.Common
 
         public IReadOnlyList<ChatPost> GetChatMessages()
         {
-            ModelUpdateChat dc;
+            var dc = _sessionClient.UpdateChat
+                (
+                 new ModelUpdateTime()
+                 {
+                     Value = Chanel2Server.LastRecivedPostIndex,
+                     Time = Chanel2Server.LastCheckTime,
+                 }
+                );
 
-            dc = _sessionClient.UpdateChat(Data.ChatsTime);
             if (dc == null)
             {
                 Data.LastServerConnectFail = true;
@@ -83,13 +98,12 @@ namespace OC.DiscordBotServer.Common
             }
 
             Data.LastServerConnectFail = false;
-            Data.LastServerConnect = DateTime.UtcNow;
-            var lastMessage = string.Empty;
-            Data.ApplyChats(dc, ref lastMessage);
-            var result = new List<ChatPost>(dc.Chats[0].Posts.Where(x => x.Time > Chanel2Server.LastOnlineTime));
-            Chanel2Server.LastOnlineTime = Data.ChatsTime;
+            Data.LastServerConnect = Chanel2Server.LastOnlineTime = Chanel2Server.LastCheckTime = DateTime.UtcNow;
+            var result = dc.Chats
+                .FirstOrDefault(x => x.Id == 1)?.Posts
+                .Where(x => x.DiscordIdMessage == 0);
 
-            return result;
+            return result.ToList().AsReadOnly();
         }
 
         public void Disconnected(string msg = "Error Connection.")
@@ -98,10 +112,11 @@ namespace OC.DiscordBotServer.Common
             // to do : Notify that the server Disconnected 
         }
 
-        public bool SendMessage(string message)
+        public bool SendMessage(string message, bool isPrivate)
         {
-            if (!_sessionClient.PostingChat(0, message))
+            if (IsLogined)
             {
+                var res = _sessionClient.PostingChat(isPrivate ? 0 : 1, message);
                 Loger.Log(_sessionClient.ErrorMessage);
                 return false;
             }
@@ -112,6 +127,72 @@ namespace OC.DiscordBotServer.Common
         public Player GetPlayerByToken(Guid guidToken)
         {
             return _sessionClient.GetPlayerByToken(guidToken);
+        }
+
+        /*
+        IP: 194.87.95.90
+        Main Official server
+        Location: Moscow
+        Language: Multilingual
+        Hosted by: @Aant
+        */
+        public string GetDescription(ServerInfoType infoType)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("****************");
+            sb.Append("IP: ");
+            sb.Append(Chanel2Server.IP);
+            if (Chanel2Server.Port != SessionClient.DefaultPort)
+            {
+                sb.Append(":");
+                sb.Append(Chanel2Server.Port);
+            }
+
+            sb.AppendLine("Hosted by: @Aant");
+            if (!_sessionClient.IsLogined)
+            {
+                return Translator.ErrServerNotAvailable;
+            }
+
+            var serverInfo = _sessionClient.GetInfo(ServerInfoType.FullWithDescription);
+
+            if (serverInfo == null)
+            {
+                return Translator.ErrServerNotAvailable;
+            }
+
+            sb.AppendLine(serverInfo.Description);
+
+
+            if (infoType != ServerInfoType.FullWithDescription)
+            {
+                sb.AppendLine("Difficulty: " + serverInfo.Difficulty);
+                sb.AppendLine("MapSize: " + serverInfo.MapSize);
+                sb.AppendLine("PlanetCoverage: " + serverInfo.PlanetCoverage);
+                sb.AppendLine("Seed:" + serverInfo.Seed);
+                sb.AppendLine("VersionInfo" + serverInfo.VersionInfo);
+                sb.AppendLine("VersionNum" + serverInfo.VersionNum);
+            }
+
+            sb.AppendLine("****************");
+            sb.AppendLine();
+            sb.AppendLine();
+
+            return sb.ToString();
+        }
+
+        public ModelStatus PostingChat(string owner, string msg, ulong messageId, bool isPrivate = false)
+        {
+            var packet = new ModelPostingChat()
+            {
+                IdChat = isPrivate ? 0 : 1, // system chat: for private command in game
+                Message = msg,
+                Owner = owner,
+                IdDiscordMsg = messageId,
+
+            };
+
+            return _sessionClient.TransObject2<ModelStatus>(packet, PackageType.Request19PostingChat, PackageType.Response20PostingChat);
         }
 
         /// <summary>

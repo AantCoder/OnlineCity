@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using OCUnion;
 using RimWorld;
 using RimWorld.Planet;
@@ -9,7 +9,6 @@ using System.Reflection.Emit;
 using System.Text;
 using UnityEngine.SceneManagement;
 using Verse;
-using HugsLib.Utils;
 
 namespace RimWorldOnlineCity
 {
@@ -80,11 +79,11 @@ namespace RimWorldOnlineCity
     //Дополняем проверку на место для нового поселения
     [HarmonyPatch(typeof(TileFinder))]
     [HarmonyPatch("IsValidTileForNewSettlement")]
-    [HarmonyPatch(typeof(bool), new[] { typeof(int), typeof(StringBuilder) })]
+    //[HarmonyPatch(typeof(bool), new[] { typeof(int), typeof(StringBuilder) })]
     internal class TileFinder_IsValidTileForNewSettlement_Patch
     {
         public static bool Off = false;
-
+        
         [HarmonyPostfix]
         public static void Postfix(ref bool __result, int tile, StringBuilder reason)
         {
@@ -114,7 +113,7 @@ namespace RimWorldOnlineCity
     //Устанавливаем параметры при генерации мира
     [HarmonyPatch(typeof(WorldGenerator))]
     [HarmonyPatch("GenerateWorld")]
-    [HarmonyPatch(new[] { typeof(float), typeof(string), typeof(OverallRainfall), typeof(OverallTemperature) })]
+    //[HarmonyPatch(new[] { typeof(float), typeof(string), typeof(OverallRainfall), typeof(OverallTemperature) })]
     internal class WorldGenerator_GenerateWorld_Patch
     {
         [HarmonyPrefix]
@@ -141,7 +140,7 @@ namespace RimWorldOnlineCity
             }
         }
     }
-
+    
     //событие когда игра готова
     [HarmonyPatch(typeof(Game))]
     [HarmonyPatch("InitNewGame")]
@@ -222,5 +221,25 @@ namespace RimWorldOnlineCity
             }
         }
     }
-        
+
+    /// ////////////////////////////////////////////////////////////
+    
+    //Устанавливаем параметры при генерации мира
+    [HarmonyPatch(typeof(Autosaver))]
+    [HarmonyPatch("DoAutosave")]
+    internal class Autosaver_DoAutosave_Patch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix()
+        {
+            if (SessionClient.Get.IsLogined)
+            {
+                Loger.Log("Client HarmonyPatch Autosaver.DoAutosave cancel");
+                return false;
+            }
+            else
+                return true;
+        }
+    }
+
 }

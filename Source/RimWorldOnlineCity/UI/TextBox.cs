@@ -12,6 +12,7 @@ namespace RimWorldOnlineCity.UI
     {
         public string Text;
         public Vector2 ScrollPosition = new Vector2();
+        public bool Editable;
 
         public void Drow(Rect chatAreaOuter, bool scrollToDown = false)
         {
@@ -28,9 +29,15 @@ namespace RimWorldOnlineCity.UI
 
             ScrollPosition = GUI.BeginScrollView(chatAreaOuter, ScrollPosition, chatAreaInner);
             GUILayout.BeginArea(chatAreaInner);
-            GUILayout.TextField(Text ?? "", "Label");
+            var text = GUILayout.TextArea(Text ?? "", "Label");
+            if (Editable)
+            {
+                Text = text;
+            }
             GUILayout.EndArea();
             GUI.EndScrollView();
+
+
         }
     }
 }

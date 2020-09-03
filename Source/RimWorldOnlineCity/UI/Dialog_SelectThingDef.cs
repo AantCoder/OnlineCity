@@ -6,7 +6,6 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using HugsLib.Utils;
 
 namespace RimWorldOnlineCity.UI
 {
@@ -67,7 +66,7 @@ namespace RimWorldOnlineCity.UI
             /*
             var ev = Event.current;
             if (Widgets.ButtonText(new Rect(0, buttonYStart, btnSize.x, btnSize.y), "OCity_DialogInput_Ok".Translate())
-                || ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
+                || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
             */
             if (SelectThingDef != null)
             {

@@ -7,7 +7,6 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using Transfer;
-using HugsLib.Utils;
 using OCUnion;
 using HugsLib;
 
@@ -28,7 +27,7 @@ namespace RimWorldOnlineCity
 
         public Dialog_Registration()
         {
-            InputAddr = StorageData.GlobalData.LastIP.Value;
+            InputAddr = ModBaseData.GlobalData.LastIP.Value;
             if (string.IsNullOrEmpty(InputAddr))
             {
                 InputAddr = MainHelper.DefaultIP;
@@ -72,16 +71,20 @@ namespace RimWorldOnlineCity
 
             var ev = Event.current;
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 2, buttonYStart, btnSize.x, btnSize.y), "OCity_Dialog_Registration_BtnReg".Translate())
-                || ev.isKey && ev.type == EventType.keyDown && ev.keyCode == KeyCode.Return)
+                || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
             {
                 if (InputAddr.Length > 2 && InputLogin.Length > 2 && InputPassword.Length > 2)
                 {
-                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword);
+                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword
+                        , () => 
+                        { 
+                            SessionClientController.LoginInNewServerIP = ModBaseData.GlobalData.LastIP.Value != InputAddr;
+                            ModBaseData.GlobalData.LastIP.Value = InputAddr;
+                            ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
+                            HugsLibController.SettingsManager.SaveChanges();
+                        });
                     if (msgError == null)
                     {
-                        StorageData.GlobalData.LastIP.Value = InputAddr;
-                        StorageData.GlobalData.LastLoginName.Value = InputLogin;
-                        HugsLibController.SettingsManager.SaveChanges();
                         Close();
                     }
                 }

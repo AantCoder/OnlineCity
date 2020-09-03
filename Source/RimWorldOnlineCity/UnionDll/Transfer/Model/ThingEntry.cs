@@ -61,12 +61,12 @@ namespace Model
             Data = gx.ToXml(thing);
         }
 
-        public virtual Thing CreateThing(bool useOriginalID, int stackCount = 0)
+        public virtual Thing CreateThing(bool useOriginalID = false, int stackCount = 0)
         {
             var gx = new GameXMLUtils();
             Thing thing = gx.FromXml<Thing>(Data);
             thing.stackCount = stackCount == 0 ? Count : stackCount;
-            if (OriginalID <= 0 || useOriginalID)
+            if (OriginalID <= 0 || !useOriginalID)
             {
                 thing.thingIDNumber = -1;
                 ThingIDMaker.GiveIDTo(thing);
@@ -78,24 +78,34 @@ namespace Model
 
         private static int nnnn = 0;
         /// <summary>
-        /// 
+        /// Меняет у людей (всех пешек не животных) фракцию на фракцию игрока (иначе посе спавна без косяков не получается поменять у пешек фракцию на фракцию игрока).
+        /// Возвращает истину, когда это был пират или пленник
         /// </summary>
         /// <param name="fractionColonist"></param>
-        /// <param name="fractionPirate"></param>
         /// <returns>Истина, если это особый вид - пленник</returns>
-        public bool SetFaction(string fractionColonist, string fractionPirate)
+        public bool SetFaction(string fractionColonist)
         {
             if (string.IsNullOrEmpty(Data) || !Data.Contains(" Class=\"Pawn\"")) return false;
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnB" + (++nnnn).ToString() + ".xml", Data);
 
+            //логика коррекции основывается на 3х группыах:
+            //колонист, человек не колонист (пират или пленник), животное
+
             bool col = Data.Contains("<kindDef>Colonist</kindDef>");
-            if (!Data.Contains("<lastJobGiverThinkTree>Animal</lastJobGiverThinkTree>"))
+            if (!col) col = Data.Contains("ColonistGeneral</kindDef>"); //для мода с андроидами
+
+            bool isAnimal = GameXMLUtils.GetByTag(Data, "def") == GameXMLUtils.GetByTag(Data, "kindDef");
+
+            //для всех людей устанавливаем фракцию игрока (у животных не меняем)
+
+            if (!isAnimal)
             {
                 string fraction = fractionColonist; //col ? fractionColonist : fractionPirate;
                 Data = GameXMLUtils.ReplaceByTag(Data, "faction", fraction);
-                Data = GameXMLUtils.ReplaceByTag(Data, "kindDef", "Colonist");//"Pirate"
+                if (!col) Data = GameXMLUtils.ReplaceByTag(Data, "kindDef", "Colonist"); //"Pirate"
                 //if (MainHelper.DebugMode) Loger.Log(" Replace faction=>" + fraction);
             }
+
             //если это гости, то убираем у них это свойство - оно должно выставиться потом
 
             Data = GameXMLUtils.ReplaceByTag(Data, "guest", @"
@@ -104,6 +114,7 @@ namespace Model
     <spotToWaitInsteadOfEscaping>(-1000, -1000, -1000)</spotToWaitInsteadOfEscaping>
     <lastPrisonBreakTicks>-1</lastPrisonBreakTicks>
   ");
+
             /*
             Data = GameXMLUtils.ReplaceByTag(Data, "hostFaction", "null", "<guest>");
             Data = GameXMLUtils.ReplaceByTag(Data, "prisoner", "False", "<guest>");*/
@@ -118,8 +129,10 @@ namespace Model
                 });
                 */
 
+            //возвращаем true, если это человек и не колонист (пират или пленник)
+
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnA" + nnnn.ToString() + ".xml", Data);
-            return !col;
+            return !col && !isAnimal;
         }
     }
 }
