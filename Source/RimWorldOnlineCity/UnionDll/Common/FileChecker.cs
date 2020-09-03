@@ -21,7 +21,7 @@ namespace OCUnion.Common
         /// <summary>
         /// Расширения файлов исключаемые из проверки
         /// </summary>
-        public static readonly string[] ExcludedExternals = new string[] { ".cs", ".csproj", ".sln", ".md", ".gitignore", ".gitattributes", ".wav", ".ogg" }; // , ".png"
+        public static readonly string[] ExcludedExternals = new string[] { ".cs", ".csproj", ".sln", ".gitignore", ".gitattributes"};
 
         public static byte[] GetCheckSum(string fileName)
         {
