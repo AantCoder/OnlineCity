@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using OCUnion;
 using OCUnion.Transfer;
 using OCUnion.Transfer.Model;
 using OCUnion.Transfer.Types;
@@ -26,10 +25,10 @@ namespace ServerOnlineCity.Services
 
         private ModelModsFiles checkFiles(ModelModsFiles packet, ServiceContext context)
         {
-            var modsDir = packet.IsSteam ? ServerManager.ServerSettings.SteamWorkShopModsDir : ServerManager.ServerSettings.ModsDirectory;
-            var NoApproveWorld = packet.IsSteam ? ApproveLoadWorldReason.ModsSteamWorkShopFail : ApproveLoadWorldReason.ModsFilesFail;
-            var workDict = packet.IsSteam ? ServerManager.SteamFilesDict : ServerManager.ModFilesDict;
-            var foldersTree = packet.IsSteam ? ServerManager.ServerSettings.SteamDirConfig.FoldersTree : ServerManager.ServerSettings.ModsDirConfig.FoldersTree;
+            var filesDir = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].Item1;
+            var NoApproveWorld = ServerManager.FileHashChecker.ApproveWorldType[packet.FolderType];
+            var workDict = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].Item3;
+            var foldersTree = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].Item2;
 
             var result = new List<ModelFileInfo>();
 
@@ -44,7 +43,7 @@ namespace ServerOnlineCity.Services
                     {
                         // read file for send to Client      
                         // файл  найден, но хеши не совпадают, необходимо заменить файл
-                        result.Add(GetFile(modsDir, fileInfo.FileName));
+                        result.Add(GetFile(filesDir, fileInfo.FileName));
                     }
                 }
                 else
@@ -64,7 +63,7 @@ namespace ServerOnlineCity.Services
                     context.Player.ApproveLoadWorldReason = context.Player.ApproveLoadWorldReason | ApproveLoadWorldReason.NotAllFilesOnClient;
                     foreach (var fileName in allServerFiles)
                     {
-                        result.Add(GetFile(modsDir, fileName));
+                        result.Add(GetFile(filesDir, fileName));
                     }
                 }
 
@@ -85,7 +84,7 @@ namespace ServerOnlineCity.Services
             return new ModelModsFiles()
             {
                 Files = result,
-                IsSteam = packet.IsSteam,
+                FolderType = packet.FolderType,
                 FoldersTree = foldersTree
             };
         }

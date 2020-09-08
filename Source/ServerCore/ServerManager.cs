@@ -27,9 +27,9 @@ namespace ServerOnlineCity
     {
         public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
         public static ServerSettings ServerSettings = new ServerSettings();
-        public static IReadOnlyDictionary<string, ModelFileInfo> ModFilesDict;
-        public static IReadOnlyDictionary<string, ModelFileInfo> SteamFilesDict;
 
+        public static FileHashChecker FileHashChecker;
+       
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
 
@@ -112,7 +112,7 @@ namespace ServerOnlineCity
             rep.SaveFileName = Path.Combine(path, "World.dat");
             rep.Load();
             CheckDiscrordUser();
-            createFilesDictionary();
+            FileHashChecker = new FileHashChecker(ServerSettings);
 
             //общее обслуживание
             rep.Timer.Add(1000, DoWorld);
@@ -131,71 +131,7 @@ namespace ServerOnlineCity
             Loger.Log($"Server starting on port: {ServerSettings.Port}");
             Connect.Start(null, ServerSettings.Port);
         }
-
-        private void createFilesDictionary()
-        {
-            if (!ServerSettings.IsModsWhitelisted)
-            {
-                return;
-            }
-
-            // 1. Создаем словарь со всеми файлами
-            Loger.Log($"Calc hash {ServerSettings.ModsDirectory}");
-            var modFiles = FileChecker.GenerateHashFiles(ServerSettings.ModsDirectory, Directory.GetDirectories(ServerSettings.ModsDirectory));
-            Loger.Log($"Calc hash {ServerSettings.SteamWorkShopModsDir}");
-            ///!!!!!!!!!!!!!!!! STEAM FOLDER CHECK SWITCH HERE  !!!!!!!!!!!!!!!
-            // 1. Если будем использовать steamworkshop диреторию, эти две строчки ниже закомментировать 
-            // 2. remove JsobIgnrore atribbute in ServerSettings  
-            ServerSettings.SteamWorkShopModsDir = Environment.CurrentDirectory;
-            ///!!!!!!!!!!!!!!!! STEAM FOLDER CHECK SWITCH HERE  !!!!!!!!!!!!!!!
-            var steamFiles = FileChecker.GenerateHashFiles(ServerSettings.SteamWorkShopModsDir, new string[0]);
-
-            ModFilesDict = modFiles.ToDictionary(f => f.FileName);
-            SteamFilesDict = steamFiles.ToDictionary(f => f.FileName);
-
-            // 2. Создаем файлы со списком разрешенных папок, которые отправим клиенту
-            var modsFolders = new ModelFileInfo() // 0 
-            {
-                FileName = "ApprovedMods.txt",
-                Hash = FileChecker.CreateListFolder(ServerSettings.ModsDirectory)
-            }; 
-            var steamFolders = new ModelFileInfo() // 1 
-            {
-                FileName = "ApprovedSteamWorkShop.txt",
-                Hash = FileChecker.CreateListFolder(ServerSettings.SteamWorkShopModsDir)
-            }; 
-            var modsConfigFileName = Path.Combine(ServerSettings.WorkingDirectory, "ModsConfig.xml");
-            var modsConfig = new ModelFileInfo() // 2
-            {
-                FileName = "ModsConfig.xml",
-                Hash = Encoding.UTF8.GetBytes(File.ReadAllText(modsConfigFileName))
-            };
-            // index: 0 - list Folders in Mods dir, 1 -list Folders in Steam dir , 2 - ModsConfig.xml 
-            ServerSettings.AppovedFolderAndConfig = new ModelModsFiles()
-            {
-                Files = new List<ModelFileInfo>()
-                {
-                    modsFolders,
-                    steamFolders,
-                    modsConfig,
-                }
-            };
-
-            ServerSettings.ModsDirConfig = new ModelModsFiles()
-            {
-                IsSteam = false,
-                Files = new List<ModelFileInfo>() { modsFolders },
-                FoldersTree = FoldersTree.GenerateTree(ServerSettings.ModsDirectory),
-            };
-
-            ServerSettings.SteamDirConfig = new ModelModsFiles()
-            {
-                IsSteam = true,
-                Files = new List<ModelFileInfo>() { steamFolders },
-                FoldersTree = FoldersTree.GenerateTree(ServerSettings.SteamWorkShopModsDir),
-            };
-        }
-
+       
         /// <summary>
         /// check and create if it is necessary DiscrordUser
         /// </summary>
@@ -327,7 +263,7 @@ namespace ServerOnlineCity
                     }
                 }
             }
-            
+
             /// Завершение
 
             if (changeInPlayers)
@@ -460,7 +396,7 @@ namespace ServerOnlineCity
             thread.IsBackground = true;
             thread.Start();
         }
-        
+
         private void DoClient(ConnectClient client)
         {
             SessionServer session = null;

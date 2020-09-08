@@ -25,5 +25,9 @@ namespace OCUnion.Transfer.Types
         /// Не все файлы есть у клиента, необходимо догрузить
         /// </summary>
         NotAllFilesOnClient = 4,
+        /// <summary>
+        /// Not all configs are been approved
+        /// </summary>
+        NotAllConfigsOnClient = 8,
     }
 }

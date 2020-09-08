@@ -6,7 +6,7 @@ namespace OCUnion.Transfer.Model
     [Serializable]
     public class ModelModsFiles
     {
-        public bool IsSteam { get; set; }
+        public FolderType FolderType { get; set; }
         /// <summary>
         /// Дерево каталогов которое требуется восстановить
         /// </summary>
@@ -15,5 +15,12 @@ namespace OCUnion.Transfer.Model
         /// Файлы которые находятся в этих директориях
         /// </summary>
         public List<ModelFileInfo> Files { get; set; }
+    }
+
+    public enum FolderType
+    {
+        ModsFolder,
+        SteamFolder,
+        ModsConfigPath,
     }
 }

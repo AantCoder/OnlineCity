@@ -5,6 +5,7 @@ using OCUnion.Transfer.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Verse;
 
@@ -17,6 +18,8 @@ namespace RimWorldOnlineCity.Services
 
         private static List<ModelFileInfo> SteamFiles;
         private static List<ModelFileInfo> ModsFiles;
+        private static List<ModelFileInfo> ModsConfigsFiles;
+
         /// <summary>
         /// Поток который считает хеш сумму файлов
         /// </summary>
@@ -37,11 +40,12 @@ namespace RimWorldOnlineCity.Services
         /// <returns></returns>
         public ApproveLoadWorldReason GenerateRequestAndDoJob(object context)
         {
-            // По хорошему надо разнести на два вызова один для модов второй для стим с передачей параметров через контекст
             Loger.Log("Send hash to server");
-            var modsResCheck = _sessionClient.TransObject2<ModelModsFiles>(generateHashFiles(false), RequestTypePackage, ResponseTypePackage);
-            var steamCheck = _sessionClient.TransObject2<ModelModsFiles>(generateHashFiles(true), RequestTypePackage, ResponseTypePackage);
+            var modsResCheck = _sessionClient.TransObject2<ModelModsFiles>(generateHashFiles(FolderType.ModsFolder), RequestTypePackage, ResponseTypePackage);
+            var steamCheck = _sessionClient.TransObject2<ModelModsFiles>(generateHashFiles(FolderType.SteamFolder), RequestTypePackage, ResponseTypePackage);
+            var modsConfigCheck = _sessionClient.TransObject2<ModelModsFiles>(generateHashFiles(FolderType.ModsConfigPath), RequestTypePackage, ResponseTypePackage);
 
+            Loger.Log($"Send hash {GenFilePaths.ModsFolderPath}");
             ApproveLoadWorldReason result = ApproveLoadWorldReason.LoginOk;
             if (modsResCheck.Files.Count > 0)
             {
@@ -49,10 +53,18 @@ namespace RimWorldOnlineCity.Services
                 FileChecker.FileSynchronization(GenFilePaths.ModsFolderPath, modsResCheck);
             }
 
+            Loger.Log($"Send hash {SteamFolder}");
             if (steamCheck.Files.Count > 0)
             {
                 result = result | ApproveLoadWorldReason.ModsSteamWorkShopFail;
                 FileChecker.FileSynchronization(SteamFolder, steamCheck);
+            }
+
+            Loger.Log($"Send hash {GenFilePaths.ConfigFolderPath}");
+            if (modsConfigCheck.Files.Count > 0)
+            {
+                result = result | ApproveLoadWorldReason.NotAllConfigsOnClient;
+                FileChecker.FileSynchronization(GenFilePaths.ConfigFolderPath, modsConfigCheck);
             }
 
             return result;
@@ -73,7 +85,7 @@ namespace RimWorldOnlineCity.Services
             Loger.Log("Start Hash:" + steamFileName);
             // может быть есть лучше вариант, как указать папку модов со steam ???
             SteamFolder = GenFilePaths.ModsFolderPath.Replace("common\\RimWorld\\Mods", "workshop\\content\\294100");
-            Loger.Log("GenFilePaths.ModsConfigFilePath = " + GenFilePaths.ModsConfigFilePath);
+            Loger.Log("GenFilePaths.ModsConfigFilePath = " + GenFilePaths.ConfigFolderPath);
             if (SteamFolder.Equals(GenFilePaths.ModsFolderPath) || !Directory.Exists(SteamFolder))
             {
                 var steamFolder = Path.Combine(SessionClientController.ConfigPath, "workshop");
@@ -100,7 +112,20 @@ namespace RimWorldOnlineCity.Services
                         ClientHashChecker.ModsFiles = FileChecker.GenerateHashFiles(GenFilePaths.ModsFolderPath, modsListFolder);
                         Loger.Log($"GenerateHashFiles {SteamFolder}");
                         ClientHashChecker.SteamFiles = FileChecker.GenerateHashFiles(SteamFolder, steamListFolder);
+                        Loger.Log($"ModsConfigsFiles {GenFilePaths.ConfigFolderPath}");
 
+                        var dir = new DirectoryInfo(GenFilePaths.ConfigFolderPath);
+                        var parent = dir.Parent.FullName;
+                        var configNameFolder = dir.Name;
+                        var files = FileChecker.GenerateHashFiles(parent, new string[] { configNameFolder });
+                        files.ForEach(f => f.FileName = new FileInfo(f.FileName).Name);
+                        ClientHashChecker.ModsConfigsFiles = files.Where(x => !FileChecker.IgnoredConfigFiles.Contains(new FileInfo(x.FileName).Name)).ToList();
+#if DEBUG
+                        foreach (var file in files)
+                        {
+                            Loger.Log(file.FileName);
+                        }
+#endif
                     }
                     catch (Exception exc)
                     {
@@ -109,12 +134,13 @@ namespace RimWorldOnlineCity.Services
                     CheckHashModsThreadRun = false;
                 }
             });
+
             CheckHashModsThreadRun = true;
             CheckHashModsThread.IsBackground = true;
             CheckHashModsThread.Start();
         }
 
-        private ModelModsFiles generateHashFiles(bool isSteam)
+        private ModelModsFiles generateHashFiles(FolderType folderType)
         {
             if (CheckHashModsThreadRun)
             {
@@ -125,13 +151,21 @@ namespace RimWorldOnlineCity.Services
                 }
             }
 
+            List<ModelFileInfo> files = null;
+            switch (folderType)
+            {
+                case FolderType.ModsFolder: { files = ModsFiles; break; }
+                case FolderType.SteamFolder: { files = SteamFiles; break; }
+                case FolderType.ModsConfigPath: { files = ModsConfigsFiles; break; }
+            }
+
             return
                 new ModelModsFiles()
                 {
-                    IsSteam = isSteam,
-                    Files = isSteam ? SteamFiles : ModsFiles,
-                }
-           ;
+                    FolderType = folderType,
+                    Files = files,
+                };
         }
     }
 }
+

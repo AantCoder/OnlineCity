@@ -18,16 +18,19 @@ namespace RimWorldOnlineCity.Services
         public GetApproveFolders(Transfer.SessionClient sessionClient)
         {
             _sessionClient = sessionClient;
+
         }
 
         public static string GetModsApprovedFoldersFileName(string ip)
         {
-            return Path.Combine(SessionClientController.ConfigPath, ip + "_mods.txt");
+            var path = new DirectoryInfo(GenFilePaths.ConfigFolderPath).Parent.FullName;
+            return Path.Combine(path, "OnlineCity", ip + "_mods.txt");
         }
 
         public static string GetSteamApprovedFoldersFileName(string ip)
         {
-            return Path.Combine(SessionClientController.ConfigPath, ip + "_steam.txt");
+            var path = new DirectoryInfo(GenFilePaths.ConfigFolderPath).Parent.FullName;
+            return Path.Combine(path, "OnlineCity", ip + "_steam.txt");
         }
 
         /// <summary>
@@ -56,15 +59,12 @@ namespace RimWorldOnlineCity.Services
 
             var modsFileName = GetModsApprovedFoldersFileName(ip);
             var steamFileName = GetSteamApprovedFoldersFileName(ip);
-            var modsConfigName = Path.Combine(GenFilePaths.ConfigFolderPath, "ModsConfig.xml"); //%appdata%\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config
 
             var modsListFile = approvedFolders.Files[0].Hash;
             var steamListFile = approvedFolders.Files[1].Hash;
-            var modsConfig = approvedFolders.Files[2].Hash;
 
-            var result = checkAndCreateFile(modsFileName, modsListFile) 
-                & checkAndCreateFile(steamFileName, steamListFile) 
-                & checkAndCreateFile(modsConfigName, modsConfig);
+            var result = checkAndCreateFile(modsFileName, modsListFile)
+                & checkAndCreateFile(steamFileName, steamListFile);
 
             return result;
         }
