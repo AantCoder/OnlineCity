@@ -51,7 +51,7 @@ namespace ServerOnlineCity.ChatService
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, myLogin, chat, "Command only for admin");
             }
 
-            if (argsM[0] == "servertoken")
+            if (argsM[0].ToLower() == "servertoken")
             {
                 Loger.Log($"User {player.Public.Login} request DiscordServer token");
                 var serverToken = Repository.GetPlayerByLogin("discord").DiscordToken;

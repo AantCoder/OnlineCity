@@ -56,9 +56,9 @@ namespace RimWorldOnlineCity
 
             try
             {
-                var workPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-                    , @"..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity");
+                // ..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity
+                var path = new DirectoryInfo(GenFilePaths.ConfigFolderPath).Parent.FullName;
+                var workPath = Path.Combine(path, "OnlineCity");
                 Directory.CreateDirectory(workPath);
                 Loger.PathLog = workPath;
             }
@@ -209,6 +209,7 @@ namespace RimWorldOnlineCity
         /// <param name="single">Будут удалены остальные Варианты сохранений, кроме этого</param>
         public static void SaveGameNow(bool single = false, Action after = null)
         {
+            // checkConfigsBeforeSave(); 
             Loger.Log("Client SaveGameNow single=" + single.ToString());
             SaveGame((content) =>
             {
@@ -223,6 +224,12 @@ namespace RimWorldOnlineCity
                 if (after != null) after();
             });
         }
+
+
+        //////private static checkConfigsBeforeSave() 
+        //////{
+
+        //////}
 
         /// <summary>
         /// Немедленно сохраняет игру и передает на сервер. Должно запускаться уже в потоке LongEventHandler.QueueLongEvent, ожидает окончания соханения
@@ -598,7 +605,7 @@ namespace RimWorldOnlineCity
         }
 
         public static void SetFullInfo(ModelInfo serverInfo)
-        { 
+        {
             My = serverInfo.My;
             Data.DelaySaveGame = serverInfo.DelaySaveGame;
             if (Data.DelaySaveGame == 0) Data.DelaySaveGame = 15;
@@ -882,8 +889,8 @@ namespace RimWorldOnlineCity
                 msg = "OCity_SessionCC_MsgCreateWorlGood".Translate();
             }
 
-            Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_MsgCreatingServer".Translate(), msg, true) 
-            { 
+            Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_MsgCreatingServer".Translate(), msg, true)
+            {
                 PostCloseAction = () =>
                 {
                     GenScene.GoToMainMenu();
@@ -940,7 +947,7 @@ namespace RimWorldOnlineCity
         }
 
         public static bool ReconnectWithTimers()
-        { 
+        {
             Timers.LowLevelStop();
             try
             {
