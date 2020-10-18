@@ -31,9 +31,10 @@ namespace ServerOnlineCity.Services
             var foldersTree = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].Item2;
 
             var result = new List<ModelFileInfo>();
-
             var allServerFiles = new HashSet<string>(workDict.Keys);
-            foreach (var file in packet.Files)
+            var packetFiles = packet.Files != null ? packet.Files : new List<ModelFileInfo>(0);
+
+            foreach (var file in packetFiles)
             {
                 if (workDict.TryGetValue(file.FileName, out ModelFileInfo fileInfo))
                 {
