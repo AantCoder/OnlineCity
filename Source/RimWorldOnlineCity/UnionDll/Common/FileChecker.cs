@@ -21,7 +21,8 @@ namespace OCUnion.Common
         /// <summary>
         /// Расширения файлов исключаемые из проверки
         /// </summary>
-        public static readonly string[] ExcludedExternals = new string[] { ".cs", ".csproj", ".sln", ".md", ".gitignore", ".gitattributes", ".wav", ".ogg" };
+
+        public static readonly string[] ExcludedExternals = new string[] { ".cs", ".csproj", ".sln", ".gitignore", ".gitattributes" };
 
         public static readonly string[] IgnoredConfigFiles = { "KeyPrefs.xml", "Knowledge.xml", "LastPlayedVersion.txt", "Prefs.xml" };
 

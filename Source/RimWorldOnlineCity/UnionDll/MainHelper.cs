@@ -40,7 +40,7 @@ namespace OCUnion
                 {
                     try
                     {
-                        if (CultureFromGame.StartsWith("Russian"))
+                        if (CultureFromGame != null && CultureFromGame.StartsWith("Russian"))
                             CultureValue = CultureInfo.GetCultureInfo("ru-RU");
                         else
                             CultureValue = CultureInfo.InvariantCulture;
