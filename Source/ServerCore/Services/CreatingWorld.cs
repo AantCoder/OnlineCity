@@ -43,6 +43,7 @@ namespace ServerOnlineCity.Services
 
                 var data = Repository.GetData;
                 data.WorldSeed = packet.Seed;
+                data.WorldScenarioName = packet.ScenarioName;
                 data.WorldDifficulty = packet.Difficulty;
                 data.WorldMapSize = packet.MapSize;
                 data.WorldPlanetCoverage = packet.PlanetCoverage;
