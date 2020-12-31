@@ -563,11 +563,13 @@ namespace RimWorldOnlineCity
             Loger.Log("Client TimersStop e");
         }
 
-        public static Scenario GetScenarioDefault()
+        public static Scenario GetScenarioDefault(string scenarioName)
         {
             var listS = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef).ToList();
 
-            var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
+            var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == scenarioName);
+            if (scenarioDefaultMem == null)
+                scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
             if (scenarioDefaultMem == null)
                 scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "OCity_SessionCC_Scenario_Classic".Translate());
             if (scenarioDefaultMem == null)
@@ -639,6 +641,7 @@ namespace RimWorldOnlineCity
                 Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
                 Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin
                     + " Seed=" + serverInfo.Seed
+                    + " Scenario=" + serverInfo.ScenarioName
                     + " NeedCreateWorld=" + serverInfo.NeedCreateWorld
                     + " DelaySaveGame=" + Data.DelaySaveGame
                     + " DisableDevMode=" + Data.DisableDevMode);
@@ -667,15 +670,17 @@ namespace RimWorldOnlineCity
                     {
                         if (!form.ResultOK)
                         {
+                            GetScenarioDefault(form.InputScenario);
                             Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate());
                             return;
                         }
 
                         GameStarter.SetMapSize = int.Parse(form.InputMapSize);
-                        GameStarter.SetPlanetCoverage = float.Parse(form.InputPlanetCoverage) / 100f;
+                        GameStarter.SetPlanetCoverage = form.InputPlanetCoverage / 100f;
                         GameStarter.SetSeed = form.InputSeed;
-                        GameStarter.SetDifficulty = int.Parse(form.InputDifficulty);
-                        GameStarter.SetScenario = GetScenarioDefault();
+                        GameStarter.SetDifficulty = form.InputDifficulty;
+                        GameStarter.SetScenario = GetScenarioDefault(form.InputScenario);
+                        GameStarter.SetScenarioName = form.InputScenario;
 
                         GameStarter.AfterStart = CreatingServerWorld;
                         GameStarter.GameGeneration();
@@ -755,7 +760,7 @@ namespace RimWorldOnlineCity
             GameStarter.SetPlanetCoverage = serverInfo.PlanetCoverage;
             GameStarter.SetSeed = serverInfo.Seed;
             GameStarter.SetDifficulty = serverInfo.Difficulty;
-            GameStarter.SetScenario = GetScenarioDefault();
+            GameStarter.SetScenario = GetScenarioDefault(serverInfo.ScenarioName);
             GameStarter.AfterStart = CreatePlayerMap;
 
             GameStarter.GameGeneration(false);
@@ -767,9 +772,11 @@ namespace RimWorldOnlineCity
             Current.Game.InitData = new GameInitData();
             Current.Game.Scenario = GameStarter.SetScenario;
             Current.Game.Scenario.PreConfigure();
-            Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
+            /* Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
                 , GameStarter.SetDifficulty == 0 ? DifficultyDefOf.Easy
-                    : DifficultyDefOf.Rough);
+                    : DifficultyDefOf.Rough); */
+            Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
+                , DefDatabase<DifficultyDef>.AllDefs.FirstOrDefault( d => d.LabelCap == GameStarter.SetDifficulty));
 
             Loger.Log("Client InitConnected() ExistMap2");
             Current.Game.World = WorldGenerator.GenerateWorld(
@@ -869,6 +876,7 @@ namespace RimWorldOnlineCity
             toServ.MapSize = GameStarter.SetMapSize;
             toServ.PlanetCoverage = GameStarter.SetPlanetCoverage;
             toServ.Seed = GameStarter.SetSeed;
+            toServ.ScenarioName = GameStarter.SetScenarioName;
             toServ.Difficulty = GameStarter.SetDifficulty;
             /*
             toServ.WObjects = Find.World.worldObjects.AllWorldObjects

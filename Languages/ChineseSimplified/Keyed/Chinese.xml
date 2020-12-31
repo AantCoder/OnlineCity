@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
 	<!-- MainMenu.cs -->
@@ -87,7 +87,7 @@
 	<OCity_Dialog_CreateWorld_Seed>种子</OCity_Dialog_CreateWorld_Seed>
 	<OCity_Dialog_CreateWorld_Difficulty>难度。从0(非常简单)到2(难度)的整数。</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>当地地图的大小(200--小，400--大)</OCity_Dialog_CreateWorld_MapSize>
-	<OCity_Dialog_CreateWorld_PercentWorld>占地球表面生成量的百分比(从5到100)</OCity_Dialog_CreateWorld_PercentWorld>
+	<OCity_Dialog_CreateWorld_PercentWorld>占地球表面生成量的百分比(从5到100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>登录</OCity_LoginForm_BtnEnter>
@@ -266,7 +266,8 @@
 
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> 作者AantCoder.</OCity_AboutTabText>
-	<OCity_AboutGeneralText>Greetings, colonizer!
+	<OCity_AboutGeneralText>
+		Greetings, colonizer!
 
 OnlineCity - is a network game module for the RimWorld survival simulator. It allows multiple players to play on the same planet online.
 
@@ -376,13 +377,12 @@ The extreme position on the border of the map is not available due to the patch.
 Additionally, it may be interesting:
 
 In the ModsConfig.xml file, the list of mods should start with
-    <li> brrainz.harmony </li>
-    <li> ludeon.rimworld </li>
-    <li> unlimitedhugs.hugslib </li>
-And end (preferably at the very end):
-    <li> aant.onlinecity </li>
-
-Common problems:
+		<li> brrainz.harmony </li>
+		<li> ludeon.rimworld </li>
+		<li> unlimitedhugs.hugslib </li>
+		And end (preferably at the very end):
+		<li> aant.onlinecity </li>
+		Common problems:
 
 * If your computer can barely handle RimWorld, then keep in mind that with this mod the memory requirement is slightly increased. It is recommended to play on a 64-bit operating system.
 
@@ -582,6 +582,6 @@ Discord: https://discord.gg/5DzWrnR
 Official VK mod group: https://vk.com/rimworldonline
 Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
 GitHub: https://github.com/AantCoder/OnlineCity
-</OCity_AboutGeneralText>
+	</OCity_AboutGeneralText>
 
 </LanguageData>
