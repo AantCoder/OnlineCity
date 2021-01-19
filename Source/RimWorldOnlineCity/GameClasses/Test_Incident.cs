@@ -1,5 +1,4 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +7,7 @@ using Verse;
 
 namespace OC_Incidents
 {
-	public class Test_Incident : IncidentWorker //самопальный ивент. всё равно наследование от того же интерфейса что и у остальных
+	public class Test_Incident : IncidentWorker //самодельный ивент. всё равно наследование от того же интерфейса что и у остальных
 	{
 		public bool TryExecuteEvent()
         {

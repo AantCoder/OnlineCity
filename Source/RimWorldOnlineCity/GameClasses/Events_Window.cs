@@ -6,7 +6,7 @@ using Verse;
 using RimWorld;
 using UnityEngine;
 
-namespace Window
+namespace Event_Window
 {
     class Events_Window : MainTabWindow  // ui для отладки ивентов, нужно будет убрать
     {

@@ -31,6 +31,7 @@ namespace Transfer
         CreateThings = 0,
         DeleteByServerId,
         AttackCancel,
-        AttackTechnicalVictory
+        AttackTechnicalVictory,
+        StartEvent
     }
 }
