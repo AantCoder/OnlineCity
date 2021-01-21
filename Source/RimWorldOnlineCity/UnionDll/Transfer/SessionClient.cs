@@ -354,5 +354,14 @@ namespace Transfer
 
             return stat;
         }
+
+        //WIP World Object
+        public ModelWorldObjectOnline GetWorldObjectUpdate()
+        {
+            Loger.Log("Client Get WorldObject From Server");
+            var packet = new ModelInt() { Value = 1 };
+            var stat = TransObject<ModelWorldObjectOnline>(packet, 31, 32);
+            return stat;
+        }
     }
 }

@@ -79,12 +79,12 @@ namespace RimWorldOnlineCity
             {
                 Command((connect) =>
                 {
-                    //собираем пакет на сервер
+                    //собираем пакет на сервер // collecting the package on the server
                     var toServ = new ModelPlayToServer()
                     {
                         UpdateTime = Data.UpdateTime, //время прошлого запроса
                     };
-                    //данные сохранения игры
+                    //данные сохранения игры // save game data
                     if (Data.SaveFileData != null)
                     {
                         toServ.SaveFileData = Data.SaveFileData;
@@ -92,12 +92,17 @@ namespace RimWorldOnlineCity
                         Data.SaveFileData = null;
                     }
 
-                    //собираем данные с планеты
-                    if (!firstRun) UpdateWorldController.SendToServer(toServ);
+                    //собираем данные с планеты // collecting data from the planet
+                    if (!firstRun) UpdateWorldController.SendToServer(toServ, firstRun, null);
 
-                    if (firstRun) GetPlayersInfoCountRequest = 0;
+                    if (firstRun) {
+                        GetPlayersInfoCountRequest = 0;
+                        ModelWorldObjectOnline fromServWObject = connect.GetWorldObjectUpdate();
+                        UpdateWorldController.SendToServer(toServ, firstRun, fromServWObject);
+                    }
 
                     //запрос на информацию об игроках. Можно будет ограничить редкое получение для тех кто оффлайн
+                    //request for information about players. It will be possible to limit the rare receipt for those who are offline
                     if (Data.Chats != null && Data.Chats[0].PartyLogin != null)
                     {
                         if (Data.Players == null || Data.Players.Count == 0
@@ -117,20 +122,21 @@ namespace RimWorldOnlineCity
                     }
 
                     //отправляем на сервер, получаем ответ
+                    //we send to the server, we get a response2
                     ModelPlayToClient fromServ = connect.PlayInfo(toServ);
-
                     //Loger.Log("Client UpdateWorld 5 ");
                     Loger.Log("Client " + My.Login + " UpdateWorld "
-                        + string.Format("Отпр. свои {0}, своиDel {1}{5}. Пришло {2}, del {3}, игроков {8}, посылок {4}{6}{7}"
-                            , toServ.WObjects == null ? 0 : toServ.WObjects.Count
-                            , toServ.WObjectsToDelete == null ? 0 : toServ.WObjectsToDelete.Count
-                            , fromServ.WObjects == null ? 0 : fromServ.WObjects.Count
-                            , fromServ.WObjectsToDelete == null ? 0 : fromServ.WObjectsToDelete.Count
-                            , fromServ.Mails == null ? 0 : fromServ.Mails.Count
-                            , toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : ", сейв"
-                            , fromServ.AreAttacking ? " Атакуют!" : ""
-                            , fromServ.NeedSaveAndExit ? " Команда на отключение" : ""
-                            , fromServ.PlayersInfo == null ? "null" : fromServ.PlayersInfo.Count.ToString()
+                        + string.Format("To Server. Objects {0}, To Delete {1}{5}. From Server {2}, Deleted {3}, Players {8}, Mail {4}, isAttacking? {6}, NeedSaveAndExit? {7}, OnlineWorldObject {9}"
+                            , toServ.WObjects == null ? 0 : toServ.WObjects.Count // 0
+                            , toServ.WObjectsToDelete == null ? 0 : toServ.WObjectsToDelete.Count // 1
+                            , fromServ.WObjects == null ? 0 : fromServ.WObjects.Count // 2
+                            , fromServ.WObjectsToDelete == null ? 0 : fromServ.WObjectsToDelete.Count // 3
+                            , fromServ.Mails == null ? 0 : fromServ.Mails.Count // 4
+                            , toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : ", сейв" // 5
+                            , fromServ.AreAttacking ? " Attacking!" : "" // 6 
+                            , fromServ.NeedSaveAndExit ? "Disconnect command" : "" // 7
+                            , fromServ.PlayersInfo == null ? "null" : fromServ.PlayersInfo.Count.ToString() // 8
+                            , fromServ.OnlineWObjectList == null ? 0 : fromServ.OnlineWObjectList.Count() // 9
                             ));
 
                     //сохраняем время актуальности данных
@@ -154,7 +160,7 @@ namespace RimWorldOnlineCity
                         }
                     }
 
-                    //обновляем планету
+                    //обновляем планету // updating the planet
                     UpdateWorldController.LoadFromServer(fromServ, firstRun);
 
                     //обновляем инфу по поселениям
@@ -809,6 +815,15 @@ namespace RimWorldOnlineCity
 
         }
 
+        public static WorldObjectOnline GetWorldObjects(WorldObject obj)
+        {
+            var worldObject = new WorldObjectOnline();
+            worldObject.Name = obj.LabelCap;
+            worldObject.Tile = obj.Tile;
+            worldObject.FactionGroup = obj?.Faction?.def?.LabelCap;
+            return worldObject;
+        }
+
         public static bool CheckFiles()
         {
             // 1. Шаг Проверяем что список модов совпадает и получены файлы для проверки
@@ -868,6 +883,7 @@ namespace RimWorldOnlineCity
         {
             Loger.Log("Client CreatingServerWorld()");
             //todo Удаление лишнего, добавление того, что нужно в пустом новом мире на сервере
+            //todo Remove unnecessary, add what you need in an empty new world on the server
 
             //to do
 
