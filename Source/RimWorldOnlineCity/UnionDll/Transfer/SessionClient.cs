@@ -360,7 +360,7 @@ namespace Transfer
         {
             Loger.Log("Client Get WorldObject From Server");
             var packet = new ModelInt() { Value = 1 };
-            var stat = TransObject<ModelWorldObjectOnline>(packet, 31, 32);
+            var stat = TransObject<ModelWorldObjectOnline>(packet, 43, 44);
             return stat;
         }
     }

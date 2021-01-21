@@ -1,6 +1,5 @@
 ﻿using System.Linq;
-using Newtonsoft.Json;
-using OCUnion;
+using OCUnion.Transfer.Model;
 using ServerOnlineCity.Model;
 using Transfer;
 
@@ -8,9 +7,9 @@ namespace ServerOnlineCity.Services
 {
     internal sealed class UpdateWorldObjectOnline : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 31;
+        public int RequestTypePackage => (int)PackageType.Request43WObjectUpdate;
 
-        public int ResponseTypePackage => 32;
+        public int ResponseTypePackage => (int)PackageType.Response44WObjectUpdate;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
@@ -28,8 +27,6 @@ namespace ServerOnlineCity.Services
                toClientWObject.WObjectOnlineList = data.WorldObjectOnlineList;
             }
 
-            //var json = JsonConvert.SerializeObject(toClientWObject, Formatting.Indented);
-            //Loger.Log("GetWorldObjectUpdate >> " + json);
             return toClientWObject;
         }
     }
