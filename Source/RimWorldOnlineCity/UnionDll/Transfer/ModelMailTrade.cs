@@ -23,10 +23,12 @@ namespace Transfer
         #region For StartEvent
 
         public RaidTypes RaidType { get; set; }
-        public float RaidMult { get; set; }
+        public int RaidMult { get; set; }
         public RaidStrategys RaidStrategy { get; set; }
         public RaidArrivalModes RaidArrivalMode { get; set; }
         public string RaidFaction { get; set; }
+
+        public bool isCustomer = false;
 
         #endregion
 

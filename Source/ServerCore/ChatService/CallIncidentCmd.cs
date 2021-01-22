@@ -70,6 +70,14 @@ namespace ServerOnlineCity.ChatService
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[1] + " not found");
             }
 
+            //проверка на платёжеспособность
+            var paymentPacket = new ModelMailTrade();
+            paymentPacket.To = player.Public;
+            paymentPacket.RaidType = RaidTypes.Raid;
+            paymentPacket.RaidMult = mult;
+            paymentPacket.isCustomer = true;
+            player.Mails.Add(paymentPacket);
+
             var msg = argsM[0] + " lvl " + mult + " for user " + targetPlayer.Public.Login + " from " + ownLogin;
             _chatManager.AddSystemPostToPublicChat(msg);
 
@@ -79,6 +87,7 @@ namespace ServerOnlineCity.ChatService
             packet.To = targetPlayer.Public;
             packet.RaidType = RaidTypes.Raid;
             packet.RaidMult = mult;
+            packet.isCustomer = false;
             //todo use Raid*
 
             Loger.Log("Server test call " + argsM[0] + " " + targetPlayer.Public.Login);
