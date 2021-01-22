@@ -75,10 +75,10 @@ namespace ServerOnlineCity.ChatService
 
             //формируем пакет
             var packet = new ModelMailTrade();
-            packet.Type = ModelMailTradeType.StartEvent;
+            packet.Type = ModelMailTradeType.StartIncident;
             packet.To = targetPlayer.Public;
-            packet.RaidType = RaidTypes.Raid;
-            packet.RaidMult = mult;
+            packet.IncidentType = IncidentTypes.Raid;
+            packet.IncidentMult = mult;
             //todo use Raid*
 
             Loger.Log("Server test call " + argsM[0] + " " + targetPlayer.Public.Login);
@@ -95,7 +95,7 @@ namespace ServerOnlineCity.ChatService
                             "Достигнуто максимальное количество инциндентов для этого игрока за час".NeedTranslate());
                 }
 
-                if (targetPlayer.Mails.Count(m => m.Type == ModelMailTradeType.StartEvent) > RaidInOffline)
+                if (targetPlayer.Mails.Count(m => m.Type == ModelMailTradeType.StartIncident) > RaidInOffline)
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                         "Достигнуто максимальное количество инциндентов для этого игрока".NeedTranslate());
 

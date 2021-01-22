@@ -15,6 +15,10 @@ namespace Transfer
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
         private Object LockObj = new Object();
+
+        public Func<int, string, ModelStatus> OnPostingChatAfter;
+        public Action<int, string, ModelStatus> OnPostingChatBefore;
+
         #region
 
         public volatile bool IsLogined = false;
@@ -340,10 +344,19 @@ namespace Transfer
         public ModelStatus PostingChat(int chatId, string msg)
         {
             Loger.Log("Client PostingChat " + chatId.ToString() + ", " + msg);
+
+            if (OnPostingChatAfter != null)
+            {
+                var cancel = OnPostingChatAfter(chatId, msg);
+                if (cancel != null) return cancel;
+            }
+
             var packet = new ModelPostingChat() { IdChat = chatId, Message = msg };
             var stat = TransObject<ModelStatus>(packet, 19, 20);
 
             ErrorMessage = stat?.Message;
+
+            if (OnPostingChatBefore != null) OnPostingChatBefore(chatId, msg, stat);
 
             return stat;
         }
