@@ -62,7 +62,9 @@ namespace Transfer
     }
     public enum IncidentArrivalModes
     {
-        EdgeWalkIn
+        EdgeWalkIn,
+        RandomDrop,
+        CenterDrop,
     }
 
     #endregion

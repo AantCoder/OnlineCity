@@ -18,6 +18,8 @@ namespace ServerOnlineCity.ChatService
         public Grants GrantsForRun => Grants.UsualUser | Grants.SuperAdmin | Grants.Moderator | Grants.DiscordBot;
 
         public string Help => ChatManager.prefix + "call {raid|caravan|...} {UserLogin} [{params}]";
+        //  /call raid Aant 4 air
+        //  walk, random, air
 
         private readonly ChatManager _chatManager;
 
@@ -55,6 +57,21 @@ namespace ServerOnlineCity.ChatService
                         "Укажите допустимый тип инциндента".NeedTranslate());
             }
 
+            IncidentArrivalModes arrivalMode = IncidentArrivalModes.EdgeWalkIn;
+            if (argsM.Count > 3)
+            {
+                switch (argsM[3])
+                {
+                    case "walk":
+                    case "random":
+                        arrivalMode = IncidentArrivalModes.RandomDrop;
+                        break;
+                    case "air":
+                        arrivalMode = IncidentArrivalModes.CenterDrop;
+                        break;
+                }
+            }
+
             //собираем данные
             PlayerServer targetPlayer = Repository.GetPlayerByLogin(argsM[1]);
 
@@ -78,13 +95,15 @@ namespace ServerOnlineCity.ChatService
             packet.Type = ModelMailTradeType.StartIncident;
             packet.To = targetPlayer.Public;
             packet.IncidentType = IncidentTypes.Raid;
+            packet.IncidentArrivalMode = arrivalMode;
             packet.IncidentMult = mult;
+
             //todo use Raid*
 
             Loger.Log("Server test call " + argsM[0] + " " + targetPlayer.Public.Login);
-            
+
             //проверка на допустимость и добавление инциндента. Возможно подобную проверку делать при добавлении инциндента из любого места
-            lock (targetPlayer)
+            /*lock (targetPlayer)
             {
                 var now = DateTime.UtcNow;
                 if (targetPlayer.LastIncidents.Count > 0)
@@ -101,9 +120,12 @@ namespace ServerOnlineCity.ChatService
 
                 targetPlayer.Mails.Add(packet);
                 targetPlayer.LastIncidents.Add(now);
-            } //не мешайте тестить!!!11!1!
+            }*/ //не мешайте тестить!!!11!1!
 
-            //targetPlayer.Mails.Add(packet);
+            lock (targetPlayer)
+            {
+                targetPlayer.Mails.Add(packet);
+            }
 
             return new ModelStatus() { Status = 0 };
         }
