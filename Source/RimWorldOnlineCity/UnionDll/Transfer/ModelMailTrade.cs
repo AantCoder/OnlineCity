@@ -20,6 +20,16 @@ namespace Transfer
         public List<ThingEntry> Things { get; set; }
         public long PlaceServerId { get; set; }
 
+        #region For StartEvent
+
+        public RaidTypes RaidType { get; set; }
+        public float RaidMult { get; set; }
+        public RaidStrategys RaidStrategy { get; set; }
+        public RaidArrivalModes RaidArrivalMode { get; set; }
+        public string RaidFaction { get; set; }
+
+        #endregion
+
         public string ContentString()
         {
             return Things == null ? "" : Things.Aggregate("", (r, i) => r + Environment.NewLine + i.Name + " x" + i.Count);
@@ -34,4 +44,27 @@ namespace Transfer
         AttackTechnicalVictory,
         StartEvent
     }
+
+
+    #region For StartEvent
+
+    public enum RaidTypes
+    {
+        Raid,
+        Caravan,
+        ChunkDrop,
+        Infistation,
+        Quest,
+    }
+    public enum RaidStrategys
+    {
+        ImmediateAttack
+    }
+    public enum RaidArrivalModes
+    {
+        EdgeWalkIn
+    }
+
+    #endregion
+
 }

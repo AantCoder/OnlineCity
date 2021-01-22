@@ -99,9 +99,12 @@ namespace RimWorldOnlineCity
 
         public static void MailProcessStartEvent(ModelMailTrade mail)
         {
-            var incident = new OC_Incidents.Raid();
-            int mult = mail.Tile;
-            incident.TryExecuteEvent(mult);
+            var incident = new RimWorldOnlineCity.Incidents().GetIncident(mail.RaidType);
+            incident.mult = mail.RaidMult;
+            incident.arrivalMode = mail.RaidArrivalMode;
+            incident.strategy = mail.RaidStrategy;
+            incident.faction = mail.RaidFaction;
+            incident.TryExecuteEvent();
         }
 
         #region CreateThings

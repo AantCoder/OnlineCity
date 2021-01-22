@@ -49,6 +49,9 @@ namespace ServerOnlineCity.Model
         public List<ModelMailTrade> Mails = new List<ModelMailTrade>();
 
         [NonSerialized]
+        public List<DateTime> LastIncidents = new List<DateTime>();
+
+        [NonSerialized]
         public AttackServer AttackData;
 
         /// <summary>
