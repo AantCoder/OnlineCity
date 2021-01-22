@@ -18,13 +18,13 @@ namespace RimWorldOnlineCity
          * ModelMailTrade если нужны доп параметры (стараться не раздувать или отрефакторить и разделить контейнер для разных типов писем)
          * MailController.MailProcessStartEvent если были добавлены доп параметр
         */
-        public OCIncident GetIncident(RaidTypes type)
+        public OCIncident GetIncident(IncidentTypes type)
         {
-            return type == RaidTypes.Raid ? new IncidentRaid()
-                : type == RaidTypes.Caravan ? new IncidentCaravan()
-                : type == RaidTypes.ChunkDrop ? new IncidentChunkDrop()
-                : type == RaidTypes.Infistation ? new IncidentInfistation()
-                : type == RaidTypes.Quest ? new IncidentQuest()
+            return type == IncidentTypes.Raid ? new IncidentRaid()
+                : type == IncidentTypes.Caravan ? new IncidentCaravan()
+                : type == IncidentTypes.ChunkDrop ? new IncidentChunkDrop()
+                : type == IncidentTypes.Infistation ? new IncidentInfistation()
+                : type == IncidentTypes.Quest ? new IncidentQuest()
                 : (OCIncident)null;
         }
     }

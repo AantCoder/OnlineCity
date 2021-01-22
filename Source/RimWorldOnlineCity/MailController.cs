@@ -20,7 +20,7 @@ namespace RimWorldOnlineCity
             { ModelMailTradeType.DeleteByServerId, MailProcessDeleteByServerId},
             { ModelMailTradeType.AttackCancel, MailProcessAttackCancel},
             { ModelMailTradeType.AttackTechnicalVictory, MailProcessAttackTechnicalVictory},
-            { ModelMailTradeType.StartEvent, MailProcessStartEvent},
+            { ModelMailTradeType.StartIncident, MailProcessStartEvent},
         };
 
         public static void MailArrived(ModelMailTrade mail)
@@ -99,29 +99,12 @@ namespace RimWorldOnlineCity
 
         public static void MailProcessStartEvent(ModelMailTrade mail)
         {
-            if (mail.isCustomer)
-            {
-                int cost = 100 * mail.RaidMult;
-                int gold = Find.CurrentMap.resourceCounter.GetCount(ThingDefOf.Gold);
-                if(gold >= cost)
-                {
-                    //забрать золото, зелёный свет рейду
-                }
-                else
-                {
-                    //рейда не будет 
-                    //todo: сообщение что недостаточно денег
-                }
-            }
-            else
-            {
-                var incident = new RimWorldOnlineCity.Incidents().GetIncident(mail.RaidType);
-                incident.mult = mail.RaidMult;
-                incident.arrivalMode = mail.RaidArrivalMode;
-                incident.strategy = mail.RaidStrategy;
-                incident.faction = mail.RaidFaction;
-                incident.TryExecuteEvent();
-            }
+            var incident = new RimWorldOnlineCity.Incidents().GetIncident(mail.IncidentType);
+            incident.mult = mail.IncidentMult;
+            incident.arrivalMode = mail.IncidentArrivalMode;
+            incident.strategy = mail.IncidentStrategy;
+            incident.faction = mail.IncidentFaction;
+            incident.TryExecuteEvent();
         }
 
         #region CreateThings

@@ -10,8 +10,8 @@ namespace RimWorldOnlineCity
     public abstract class OCIncident
     {
         public float mult = 1;
-        public RaidStrategys strategy = RaidStrategys.ImmediateAttack;
-        public RaidArrivalModes arrivalMode = RaidArrivalModes.EdgeWalkIn;
+        public IncidentStrategys strategy = IncidentStrategys.ImmediateAttack;
+        public IncidentArrivalModes arrivalMode = IncidentArrivalModes.EdgeWalkIn;
         public string faction = null;
 
         public abstract bool TryExecuteEvent();

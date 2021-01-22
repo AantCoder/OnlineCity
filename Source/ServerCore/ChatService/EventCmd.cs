@@ -54,7 +54,7 @@ namespace ServerOnlineCity.ChatService
             //вызвать у клиента метод TryExecuteEvent через Mail. надо это делать в другом месте
 
             var packet = new ModelMailTrade();
-            packet.Type = ModelMailTradeType.StartEvent;
+            packet.Type = ModelMailTradeType.StartIncident;
             packet.To = targetPlayer.Public;
             packet.Tile = mult;
 

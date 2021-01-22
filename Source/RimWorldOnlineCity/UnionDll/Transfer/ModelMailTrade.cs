@@ -20,15 +20,13 @@ namespace Transfer
         public List<ThingEntry> Things { get; set; }
         public long PlaceServerId { get; set; }
 
-        #region For StartEvent
+        #region For StartIncident
 
-        public RaidTypes RaidType { get; set; }
-        public int RaidMult { get; set; }
-        public RaidStrategys RaidStrategy { get; set; }
-        public RaidArrivalModes RaidArrivalMode { get; set; }
-        public string RaidFaction { get; set; }
-
-        public bool isCustomer = false;
+        public IncidentTypes IncidentType { get; set; }
+        public float IncidentMult { get; set; }
+        public IncidentStrategys IncidentStrategy { get; set; }
+        public IncidentArrivalModes IncidentArrivalMode { get; set; }
+        public string IncidentFaction { get; set; }
 
         #endregion
 
@@ -44,13 +42,13 @@ namespace Transfer
         DeleteByServerId,
         AttackCancel,
         AttackTechnicalVictory,
-        StartEvent
+        StartIncident
     }
 
 
-    #region For StartEvent
+    #region For StartIncident
 
-    public enum RaidTypes
+    public enum IncidentTypes
     {
         Raid,
         Caravan,
@@ -58,11 +56,11 @@ namespace Transfer
         Infistation,
         Quest,
     }
-    public enum RaidStrategys
+    public enum IncidentStrategys
     {
         ImmediateAttack
     }
-    public enum RaidArrivalModes
+    public enum IncidentArrivalModes
     {
         EdgeWalkIn
     }

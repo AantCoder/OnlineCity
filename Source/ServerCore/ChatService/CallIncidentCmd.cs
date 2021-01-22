@@ -70,24 +70,15 @@ namespace ServerOnlineCity.ChatService
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[1] + " not found");
             }
 
-            //проверка на платёжеспособность
-            var paymentPacket = new ModelMailTrade();
-            paymentPacket.To = player.Public;
-            paymentPacket.RaidType = RaidTypes.Raid;
-            paymentPacket.RaidMult = mult;
-            paymentPacket.isCustomer = true;
-            player.Mails.Add(paymentPacket);
-
             var msg = argsM[0] + " lvl " + mult + " for user " + targetPlayer.Public.Login + " from " + ownLogin;
             _chatManager.AddSystemPostToPublicChat(msg);
 
             //формируем пакет
             var packet = new ModelMailTrade();
-            packet.Type = ModelMailTradeType.StartEvent;
+            packet.Type = ModelMailTradeType.StartIncident;
             packet.To = targetPlayer.Public;
-            packet.RaidType = RaidTypes.Raid;
-            packet.RaidMult = mult;
-            packet.isCustomer = false;
+            packet.IncidentType = IncidentTypes.Raid;
+            packet.IncidentMult = mult;
             //todo use Raid*
 
             Loger.Log("Server test call " + argsM[0] + " " + targetPlayer.Public.Login);
@@ -104,13 +95,15 @@ namespace ServerOnlineCity.ChatService
                             "Достигнуто максимальное количество инциндентов для этого игрока за час".NeedTranslate());
                 }
 
-                if (targetPlayer.Mails.Count(m => m.Type == ModelMailTradeType.StartEvent) > RaidInOffline)
+                if (targetPlayer.Mails.Count(m => m.Type == ModelMailTradeType.StartIncident) > RaidInOffline)
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                         "Достигнуто максимальное количество инциндентов для этого игрока".NeedTranslate());
 
                 targetPlayer.Mails.Add(packet);
                 targetPlayer.LastIncidents.Add(now);
-            }
+            } //не мешайте тестить!!!11!1!
+
+            //targetPlayer.Mails.Add(packet);
 
             return new ModelStatus() { Status = 0 };
         }

@@ -22,7 +22,7 @@ namespace RimWorldOnlineCity
 
             if (Widgets.ButtonText(new Rect(0, 10, 250, 35), $"do_Test_raid"))
             {
-                var incident = new RimWorldOnlineCity.Incidents().GetIncident(RaidTypes.Raid);
+                var incident = new RimWorldOnlineCity.Incidents().GetIncident(IncidentTypes.Raid);
                 //incident.mult = ;
                 //incident.arrivalMode = ;
                 //incident.strategy = ;
