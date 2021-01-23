@@ -17,5 +17,8 @@ namespace Transfer
         public bool SingleSave { get; set; }
         public long LastTick { get; set; }
         public List<string> GetPlayersInfo { get; set; }
+        public List<WorldObjectOnline> OnlineWObjectList { get; set; }
+        public List<WorldObjectOnline> OnlineWObjectToAdd { get; set; }
+        public List<WorldObjectOnline> OnlineWObjectToDelete { get; set; }
     }
 }

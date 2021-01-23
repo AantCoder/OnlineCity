@@ -14,6 +14,7 @@ namespace Transfer
     {
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
+
         private Object LockObj = new Object();
 
         public Action<int, string, ModelStatus> OnPostingChatAfter;
@@ -352,6 +353,7 @@ namespace Transfer
             }
 
             var packet = new ModelPostingChat() { IdChat = chatId, Message = msg };
+
             var stat = TransObject<ModelStatus>(packet, 19, 20);
 
             ErrorMessage = stat?.Message;
@@ -365,6 +367,15 @@ namespace Transfer
         {
             var stat = TransObject2<Player>(guidToken, PackageType.RequestPlayerByToken, PackageType.ResponsePlayerByToken);
 
+            return stat;
+        }
+
+        //WIP World Object
+        public ModelWorldObjectOnline GetWorldObjectUpdate()
+        {
+            Loger.Log("Client Get WorldObject From Server");
+            var packet = new ModelInt() { Value = 1 };
+            var stat = TransObject<ModelWorldObjectOnline>(packet, 43, 44);
             return stat;
         }
     }

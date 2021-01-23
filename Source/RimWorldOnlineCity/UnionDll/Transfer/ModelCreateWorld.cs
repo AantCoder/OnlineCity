@@ -11,7 +11,8 @@ namespace Transfer
     public class ModelCreateWorld
     {
         public string Seed { get; set; }
-        public int Difficulty { get; set; }
+        public string ScenarioName { get; set; }
+        public string Difficulty { get; set; }
         public int MapSize { get; set; }
         public float PlanetCoverage { get; set; }
 
