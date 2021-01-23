@@ -103,7 +103,7 @@ namespace ServerOnlineCity.ChatService
             Loger.Log("Server test call " + argsM[0] + " " + targetPlayer.Public.Login);
 
             //проверка на допустимость и добавление инциндента. Возможно подобную проверку делать при добавлении инциндента из любого места
-            lock (targetPlayer)
+            /*lock (targetPlayer)
             {
                 var now = DateTime.UtcNow;
                 if (targetPlayer.LastIncidents.Count > 0)
@@ -120,12 +120,12 @@ namespace ServerOnlineCity.ChatService
 
                 targetPlayer.Mails.Add(packet);
                 targetPlayer.LastIncidents.Add(now);
-            } // мешает тестить!!!11!1!
+            }*/ // мешает тестить!!!11!1!
 
-            /*lock (targetPlayer)
+            lock (targetPlayer)
             {
                 targetPlayer.Mails.Add(packet);
-            }*/
+            }
 
             return new ModelStatus() { Status = 0 };
         }
