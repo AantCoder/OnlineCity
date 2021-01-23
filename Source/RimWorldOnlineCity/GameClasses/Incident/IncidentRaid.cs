@@ -17,8 +17,8 @@ namespace RimWorldOnlineCity
         public override bool TryExecuteEvent()
         {
             IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
-            parms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
-            parms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn;
+            parms.raidStrategy = GetStrategy(strategy);
+            parms.raidArrivalMode = GetArrivalMode(arrivalMode);
             parms.customLetterLabel = "test raid";
             parms.customLetterText = "teast raid again";
             parms.faction = null;
@@ -35,5 +35,22 @@ namespace RimWorldOnlineCity
             return true;
         }
 
+        public static RaidStrategyDef GetStrategy(Transfer.IncidentStrategys strat)
+        {
+            return RaidStrategyDefOf.ImmediateAttack;
+        }
+
+        public static PawnsArrivalModeDef GetArrivalMode(Transfer.IncidentArrivalModes arrive)
+        {
+            switch (arrive)
+            {
+                case Transfer.IncidentArrivalModes.RandomDrop:
+                    return PawnsArrivalModeDefOf.RandomDrop;
+                case Transfer.IncidentArrivalModes.CenterDrop:
+                    return PawnsArrivalModeDefOf.CenterDrop;
+                default:
+                    return PawnsArrivalModeDefOf.EdgeWalkIn;
+            }
+        }
     }
 }

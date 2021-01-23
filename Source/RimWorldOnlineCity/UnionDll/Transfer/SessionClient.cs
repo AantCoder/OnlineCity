@@ -16,8 +16,8 @@ namespace Transfer
         public const bool UseCryptoKeys = false;
         private Object LockObj = new Object();
 
-        public Func<int, string, ModelStatus> OnPostingChatAfter;
-        public Action<int, string, ModelStatus> OnPostingChatBefore;
+        public Action<int, string, ModelStatus> OnPostingChatAfter;
+        public Func<int, string, ModelStatus> OnPostingChatBefore;
 
         #region
 
@@ -345,9 +345,9 @@ namespace Transfer
         {
             Loger.Log("Client PostingChat " + chatId.ToString() + ", " + msg);
 
-            if (OnPostingChatAfter != null)
+            if (OnPostingChatBefore != null)
             {
-                var cancel = OnPostingChatAfter(chatId, msg);
+                var cancel = OnPostingChatBefore(chatId, msg);
                 if (cancel != null) return cancel;
             }
 
@@ -356,7 +356,7 @@ namespace Transfer
 
             ErrorMessage = stat?.Message;
 
-            if (OnPostingChatBefore != null) OnPostingChatBefore(chatId, msg, stat);
+            if (OnPostingChatAfter != null) OnPostingChatAfter(chatId, msg, stat);
 
             return stat;
         }

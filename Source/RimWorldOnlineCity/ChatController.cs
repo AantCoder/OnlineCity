@@ -32,11 +32,11 @@ namespace RimWorldOnlineCity
         /// <param name="chatId"></param>
         /// <param name="msg"></param>
         /// <returns>Если не null, то на сервер не отправляется, а сразу выходит с данным ответом</returns>
-        private static ModelStatus After(int chatId, string msg)
+        private static ModelStatus Before(int chatId, string msg)
         {
             if (msg.Trim().ToLower().StartsWith("/call"))
             {
-                return AfterStartIncident(chatId, msg);
+                return BeforeStartIncident(chatId, msg);
             }
             //при ошибке вызвать так: return new ModelStatus() { Status = 1 }; //что внтри сейчас никто не проверяет, просто чтоб не null
             return null;
@@ -48,16 +48,16 @@ namespace RimWorldOnlineCity
         /// <param name="chatId"></param>
         /// <param name="msg"></param>
         /// <param name="stat"></param>
-        private static void Before(int chatId, string msg, ModelStatus stat)
+        private static void After(int chatId, string msg, ModelStatus stat)
         {
             if (msg.Trim().ToLower().StartsWith("/call"))
             {
-                BeforeStartIncident(chatId, msg, stat);
+                AfterStartIncident(chatId, msg, stat);
             }
         }
 
         #region For StartIncident
-        private static ModelStatus AfterStartIncident(int chatId, string msg)
+        private static ModelStatus BeforeStartIncident(int chatId, string msg)
         {
             //разбираем аргументы в кавычках '. Удвоенная кавычка указывает на её символ.
             string command;
@@ -65,12 +65,14 @@ namespace RimWorldOnlineCity
             ChatUtils.ParceCommand(msg, out command, out args);
 
             //todo: проверка, что денег хватает
+            int cost = CalculateRaidCost(Int32.Parse(args[2]));
             int gold = Find.CurrentMap.resourceCounter.GetCount(ThingDefOf.Gold);
-            if (gold < 100500) return new ModelStatus() { Status = 1 };
-            else return null;
+            if (gold < cost) return new ModelStatus() { Status = 1 };
+            else 
+                return null;
         }
 
-        private static void BeforeStartIncident(int chatId, string msg, ModelStatus stat)
+        private static void AfterStartIncident(int chatId, string msg, ModelStatus stat)
         {
             if (stat.Status == 0)
             {
@@ -79,8 +81,25 @@ namespace RimWorldOnlineCity
                 List<string> args;
                 ChatUtils.ParceCommand(msg, out command, out args);
 
-                //todo: отнимаем нужное кол-во денег
-
+                //отнимаем нужное кол-во денег(золото или серебро... или что-нибудь ещё)
+                int cost = CalculateRaidCost(Int32.Parse(args[2]));
+                List<Thing> things = GameUtils.GetAllThings(Find.CurrentMap);
+                foreach(Thing thing in things)
+                {
+                    if(thing.def == ThingDefOf.Gold)
+                    {
+                        if (thing.stackCount < cost)
+                        {
+                            cost -= thing.stackCount;
+                            thing.Destroy();
+                        }
+                        else
+                        {
+                            thing.SplitOff(cost);
+                            break;
+                        }
+                    }
+                }
                 //принудительное сохранение
                 SessionClientController.SaveGameNow(true);
             }
@@ -90,6 +109,12 @@ namespace RimWorldOnlineCity
                 var errorMessage = string.IsNullOrEmpty(stat.Message) ? "Error call" : stat.Message.Translate().ToString();
                 Find.WindowStack.Add(new Dialog_Input(errorMessage, msg, true));
             }
+        }
+
+        private static int CalculateRaidCost(int mult)
+        {
+            //потребуются вычисления сложнее
+            return 100 * mult;
         }
 
         #endregion
