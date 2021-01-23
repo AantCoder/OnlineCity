@@ -20,6 +20,16 @@ namespace Transfer
         public List<ThingEntry> Things { get; set; }
         public long PlaceServerId { get; set; }
 
+        #region For StartIncident
+
+        public IncidentTypes IncidentType { get; set; }
+        public float IncidentMult { get; set; }
+        public IncidentStrategys IncidentStrategy { get; set; }
+        public IncidentArrivalModes IncidentArrivalMode { get; set; }
+        public string IncidentFaction { get; set; }
+
+        #endregion
+
         public string ContentString()
         {
             return Things == null ? "" : Things.Aggregate("", (r, i) => r + Environment.NewLine + i.Name + " x" + i.Count);
@@ -31,6 +41,32 @@ namespace Transfer
         CreateThings = 0,
         DeleteByServerId,
         AttackCancel,
-        AttackTechnicalVictory
+        AttackTechnicalVictory,
+        StartIncident
     }
+
+
+    #region For StartIncident
+
+    public enum IncidentTypes
+    {
+        Raid,
+        Caravan,
+        ChunkDrop,
+        Infistation,
+        Quest,
+    }
+    public enum IncidentStrategys
+    {
+        ImmediateAttack
+    }
+    public enum IncidentArrivalModes
+    {
+        EdgeWalkIn,
+        RandomDrop,
+        CenterDrop,
+    }
+
+    #endregion
+
 }

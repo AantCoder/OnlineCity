@@ -20,6 +20,7 @@ namespace RimWorldOnlineCity
             { ModelMailTradeType.DeleteByServerId, MailProcessDeleteByServerId},
             { ModelMailTradeType.AttackCancel, MailProcessAttackCancel},
             { ModelMailTradeType.AttackTechnicalVictory, MailProcessAttackTechnicalVictory},
+            { ModelMailTradeType.StartIncident, MailProcessStartEvent},
         };
 
         public static void MailArrived(ModelMailTrade mail)
@@ -92,6 +93,18 @@ namespace RimWorldOnlineCity
             }
 
             return place;
+        }
+
+       
+
+        public static void MailProcessStartEvent(ModelMailTrade mail)
+        {
+            var incident = new RimWorldOnlineCity.Incidents().GetIncident(mail.IncidentType);
+            incident.mult = mail.IncidentMult;
+            incident.arrivalMode = mail.IncidentArrivalMode;
+            incident.strategy = mail.IncidentStrategy;
+            incident.faction = mail.IncidentFaction;
+            incident.TryExecuteEvent();
         }
 
         #region CreateThings

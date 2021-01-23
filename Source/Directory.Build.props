@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
 	<PropertyGroup>
-		<SteamFolder>E:\SteamLibrary\steamapps\</SteamFolder>
+		<SteamFolder>C:\SteamLibrary\steamapps\</SteamFolder>
 		<!--<RimWorldFolder>..\..\..\..\</RimWorldFolder>-->
 		<RimWorldFolder>$(SteamFolder)common\RimWorld\</RimWorldFolder>
 		<RimWorldFolderBin>$(RimWorldFolder)RimWorldWin64_Data\Managed\</RimWorldFolderBin>
