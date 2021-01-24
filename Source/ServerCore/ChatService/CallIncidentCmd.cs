@@ -63,6 +63,8 @@ namespace ServerOnlineCity.ChatService
                 switch (argsM[3])
                 {
                     case "walk":
+                        arrivalMode = IncidentArrivalModes.EdgeWalkIn;
+                        break;
                     case "random":
                         arrivalMode = IncidentArrivalModes.RandomDrop;
                         break;
@@ -87,7 +89,7 @@ namespace ServerOnlineCity.ChatService
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[1] + " not found");
             }
 
-            var msg = argsM[0] + " lvl " + mult + " for user " + targetPlayer.Public.Login + " from " + ownLogin;
+            var msg = argsM[0] + " lvl " + mult + " for user " + targetPlayer.Public.Login + " from " + ownLogin + " " + argsM[3] + " " + argsM[4];
             _chatManager.AddSystemPostToPublicChat(msg);
 
             //формируем пакет
@@ -97,6 +99,25 @@ namespace ServerOnlineCity.ChatService
             packet.IncidentType = IncidentTypes.Raid;
             packet.IncidentArrivalMode = arrivalMode;
             packet.IncidentMult = mult;
+            packet.IncidentFaction = null;
+
+            if (argsM.Count > 4) // заменить на enum бы
+            {
+                switch (argsM[4])
+                {
+                    case "mech":
+                        packet.IncidentFaction = "mech";
+                        break;
+                    case "pirate":
+                        packet.IncidentFaction = "pirate";
+                        break;
+                    case "tribe":
+                        packet.IncidentFaction = "tribe";
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             //todo use Raid*
 
