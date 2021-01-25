@@ -56,6 +56,12 @@ namespace ServerOnlineCity.ChatService
                 case "infistation":
                     type = IncidentTypes.Infistation;
                     break;
+                case "bombing":
+                    type = IncidentTypes.Bombing;
+                    break;
+                case "acid":
+                    type = IncidentTypes.Acid;
+                    break;
                 default:
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                         "Укажите допустимый тип инциндента".NeedTranslate());
