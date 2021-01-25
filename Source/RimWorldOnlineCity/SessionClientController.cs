@@ -97,7 +97,7 @@ namespace RimWorldOnlineCity
 
                     if (firstRun) {
                         GetPlayersInfoCountRequest = 0;
-                        ModelWorldObjectOnline fromServWObject = connect.GetWorldObjectUpdate();
+                        ModelGameServerInfo fromServWObject = connect.GetGameServerInfo();
                         UpdateWorldController.SendToServer(toServ, firstRun, fromServWObject);
                     }
 
@@ -136,7 +136,7 @@ namespace RimWorldOnlineCity
                             , fromServ.AreAttacking ? " Attacking!" : "" // 6 
                             , fromServ.NeedSaveAndExit ? "Disconnect command" : "" // 7
                             , fromServ.PlayersInfo == null ? "null" : fromServ.PlayersInfo.Count.ToString() // 8
-                            , fromServ.OnlineWObjectList == null ? 0 : fromServ.OnlineWObjectList.Count() // 9
+                            , fromServ.WObjectOnlineList == null ? 0 : fromServ.WObjectOnlineList.Count() // 9
                             ));
 
                     //сохраняем время актуальности данных

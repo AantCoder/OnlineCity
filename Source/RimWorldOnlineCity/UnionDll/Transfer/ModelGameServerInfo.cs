@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Transfer
 {
     [Serializable]
-    public class ModelWorldObjectOnline
+    public class ModelGameServerInfo
     {
         public List<WorldObjectOnline> WObjectOnlineList  { get; set; }
     }

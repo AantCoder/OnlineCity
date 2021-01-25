@@ -48,7 +48,7 @@ namespace RimWorldOnlineCity
             InputScenario = "none";
             InputDifficulty = "none";
             InputMapSize = "300";
-            InputPlanetCoverage = 5f;
+            InputPlanetCoverage = Prefs.DevMode ? 5f : 30f;
         }
         
 
@@ -166,7 +166,14 @@ namespace RimWorldOnlineCity
             //rect.y += textEditSize.y;
 
             mainListing.Label("OCity_Dialog_CreateWorld_PercentWorld".Translate(Mathf.Round(InputPlanetCoverage).ToString()), -1f, null);
-            InputPlanetCoverage = mainListing.Slider(Mathf.Round(InputPlanetCoverage), 5f, 100f);
+            if (Prefs.DevMode)
+            {
+                InputPlanetCoverage = mainListing.Slider(Mathf.Round(InputPlanetCoverage), 5f, 100f);
+            }
+            else
+            {
+                InputPlanetCoverage = mainListing.Slider(Mathf.Round(InputPlanetCoverage), 30f, 100f);
+            }
 
 
             if (NeedFockus)

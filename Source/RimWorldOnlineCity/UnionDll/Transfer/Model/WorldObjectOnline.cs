@@ -12,6 +12,7 @@ namespace Model
         public string Name { get; set; }
         public int Tile { get; set; }
         public string FactionGroup { get; set; }
+        public string FactionDef { get; set; }
 
     }
 }

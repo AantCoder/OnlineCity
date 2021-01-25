@@ -159,28 +159,28 @@ namespace ServerOnlineCity.Services
                     //World Object Online
                     try
                     {
-                        if (packet.OnlineWObjectToDelete != null && packet.OnlineWObjectToDelete.Count > 0)
+                        if (packet.WObjectOnlineToDelete != null && packet.WObjectOnlineToDelete.Count > 0)
                         {
-                            data.WorldObjectOnlineList.RemoveAll(data => packet.OnlineWObjectToDelete.Any(pkt => ValidateWorldObject(pkt, data)));
+                            data.WorldObjectOnlineList.RemoveAll(data => packet.WObjectOnlineToDelete.Any(pkt => ValidateWorldObject(pkt, data)));
                         }
-                        if (packet.OnlineWObjectToAdd != null && packet.OnlineWObjectToAdd.Count > 0)
+                        if (packet.WObjectOnlineToAdd != null && packet.WObjectOnlineToAdd.Count > 0)
                         {
-                            data.WorldObjectOnlineList.AddRange(packet.OnlineWObjectToAdd);
+                            data.WorldObjectOnlineList.AddRange(packet.WObjectOnlineToAdd);
                         }
 
-                        if(packet.OnlineWObjectList != null && packet.OnlineWObjectList.Count > 0)
+                        if(packet.WObjectOnlineList != null && packet.WObjectOnlineList.Count > 0)
                         {
                             if (data.WorldObjectOnlineList.Count == 0)
                             {
-                                data.WorldObjectOnlineList = packet.OnlineWObjectList;
+                                data.WorldObjectOnlineList = packet.WObjectOnlineList;
                             }
                             else if (data.WorldObjectOnlineList != null && data.WorldObjectOnlineList.Count > 0)
                             {
-                                toClient.OnlineWObjectToDelete = packet.OnlineWObjectList.Where(pkt => !data.WorldObjectOnlineList.Any(data => ValidateWorldObject(pkt, data))).ToList();
-                                toClient.OnlineWObjectToAdd = data.WorldObjectOnlineList.Where(data => !packet.OnlineWObjectList.Any(pkt => ValidateWorldObject(pkt, data))).ToList();
+                                toClient.WObjectOnlineToDelete = packet.WObjectOnlineList.Where(pkt => !data.WorldObjectOnlineList.Any(data => ValidateWorldObject(pkt, data))).ToList();
+                                toClient.WObjectOnlineToAdd = data.WorldObjectOnlineList.Where(data => !packet.WObjectOnlineList.Any(pkt => ValidateWorldObject(pkt, data))).ToList();
                             }
                         }
-                        toClient.OnlineWObjectList = data.WorldObjectOnlineList;
+                        toClient.WObjectOnlineList = data.WorldObjectOnlineList;
                     }
                     catch
                     {
