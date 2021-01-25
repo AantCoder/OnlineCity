@@ -1068,6 +1068,7 @@ namespace RimWorldOnlineCity
                 MainButtonWorker_OC.ShowOnStart();
                 UpdateWorldController.ClearWorld();
                 UpdateWorldController.InitGame();
+                ChatController.Init(true); 
                 Data.UpdateTime = DateTime.MinValue;
                 UpdateWorld(true);
 
