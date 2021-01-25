@@ -46,15 +46,33 @@ namespace ServerOnlineCity.ChatService
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                     "Укажите тип инциндента и игрока, для некоторых действий возможны дополнительные параметры".NeedTranslate());
 
+            //собираем данные
+            IncidentTypes type = IncidentTypes.Raid;
             switch (argsM[0])
             {
                 case "raid":
-                case "caravan":
+                    type = IncidentTypes.Raid;
+                    break;
+                case "infistation":
+                    type = IncidentTypes.Infistation;
                     break;
                 default:
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                         "Укажите допустимый тип инциндента".NeedTranslate());
             }
+
+            PlayerServer targetPlayer = Repository.GetPlayerByLogin(argsM[1]);
+            if (targetPlayer == null)
+            {
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[1] + " not found");
+            }
+
+            int mult = 1;
+            if (argsM.Count > 2)
+            {
+                mult = Int32.Parse(argsM[2]);
+            }
+            mult = mult > 10 ? 10 : mult;
 
             //  walk, random, air
             IncidentArrivalModes arrivalMode = IncidentArrivalModes.EdgeWalkIn;
@@ -74,52 +92,37 @@ namespace ServerOnlineCity.ChatService
                 }
             }
 
-            //собираем данные
-            PlayerServer targetPlayer = Repository.GetPlayerByLogin(argsM[1]);
-
-            int mult = 1;
-            if(argsM.Count > 2)
-            {
-                mult = Int32.Parse(argsM[2]);
-            }
-            mult = mult > 10 ? 10 : mult;
-
-            if (targetPlayer == null)
-            {
-                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[1] + " not found");
-            }
-
-            var msg = argsM[0] + " lvl " + mult + " for user " + targetPlayer.Public.Login + " from " + ownLogin + " " + argsM[3] + " " + argsM[4];
-            _chatManager.AddSystemPostToPublicChat(msg);
-
-            //формируем пакет
-            var packet = new ModelMailTrade();
-            packet.Type = ModelMailTradeType.StartIncident;
-            packet.To = targetPlayer.Public;
-            packet.IncidentType = IncidentTypes.Raid;
-            packet.IncidentArrivalMode = arrivalMode;
-            packet.IncidentMult = mult;
-            packet.IncidentFaction = null;
-
+            string faction = null;
             if (argsM.Count > 4) // заменить на enum бы
             {
                 switch (argsM[4])
                 {
                     case "mech":
-                        packet.IncidentFaction = "mech";
+                        faction = "mech";
                         break;
                     case "pirate":
-                        packet.IncidentFaction = "pirate";
+                        faction = "pirate";
                         break;
                     case "tribe":
-                        packet.IncidentFaction = "tribe";
+                        faction = "tribe";
                         break;
                     default:
                         break;
                 }
             }
 
-            //todo use Raid*
+            var msg = argsM[0] + " lvl " + mult + " for user " + targetPlayer.Public.Login + " from " + ownLogin;
+            _chatManager.AddSystemPostToPublicChat(msg);
+
+            
+            //формируем пакет
+            var packet = new ModelMailTrade();
+            packet.Type = ModelMailTradeType.StartIncident;
+            packet.To = targetPlayer.Public;
+            packet.IncidentType = type;
+            packet.IncidentArrivalMode = arrivalMode;
+            packet.IncidentMult = mult;
+            packet.IncidentFaction = faction;
 
             Loger.Log("Server test call " + argsM[0] + " " + targetPlayer.Public.Login);
 

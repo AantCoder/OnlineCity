@@ -64,7 +64,7 @@ namespace RimWorldOnlineCity
             List<string> args;
             ChatUtils.ParceCommand(msg, out command, out args);
 
-            //todo: проверка, что денег хватает
+            //проверка, что денег хватает
             int cost = CalculateRaidCost(Int32.Parse(args[2]));
             int gold = Find.CurrentMap.resourceCounter.GetCount(ThingDefOf.Gold);
             if (gold < cost) return new ModelStatus() { Status = 1 };
