@@ -14,7 +14,6 @@ namespace Transfer
     {
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
-
         private Object LockObj = new Object();
 
         public Action<int, string, ModelStatus> OnPostingChatAfter;

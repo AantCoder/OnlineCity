@@ -4,38 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace RimWorldOnlineCity
 {
-    public class IncidentRaid : OCIncident //попытка использовать уже существующий ивент
+    class IncidentAcid : OCIncident
     {
-        public int cost;
-
-        //protected IncidentParms Parms => Find.CurrentMap != null ? StorytellerUtility.DefaultParmsNow(incident.category, Find.CurrentMap) : null;
-
         public override bool TryExecuteEvent()
         {
-            if (!IncidentDefOf.RaidEnemy.Worker.TryExecute(GetParms()))
+            if (!IncidentDefOf.ToxicFallout.Worker.TryExecute(GetParms()))
             {
-                Messages.Message($"Failed_Test_Raid", MessageTypeDefOf.RejectInput);
+                Messages.Message($"Failed_Acid_Rain", MessageTypeDefOf.RejectInput);
                 return false;
             }
             return true;
         }
-
         private IncidentParms GetParms()
         {
             parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
-            parms.raidStrategy = GetStrategy(strategy);
-            parms.raidArrivalMode = GetArrivalMode(arrivalMode);
-            parms.customLetterLabel = "Охотники за головами";
-            parms.customLetterText = "Ваше поселение атакуют наёмники";
-            parms.biocodeApparelChance = 1f;
-            parms.biocodeWeaponsChance = 1f;
-            parms.dontUseSingleUseRocketLaunchers = false;
-            parms.generateFightersOnly = false;
-            parms.raidNeverFleeIndividual = true;
+            parms.customLetterLabel = "Хим Атака!";
+            parms.customLetterText = "Над вашим поселением распылили облако химикатов";
             parms.faction = GetFaction();
             parms.forced = true;  //игнорировать все условия для события
             parms.target = Find.CurrentMap;
