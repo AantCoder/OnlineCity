@@ -53,10 +53,10 @@ namespace ServerOnlineCity.ChatService
                 case "raid":
                     type = IncidentTypes.Raid;
                     break;
-                case "infistation":
+                case "inf":
                     type = IncidentTypes.Infistation;
                     break;
-                case "bombing":
+                case "bomb":
                     type = IncidentTypes.Bombing;
                     break;
                 case "acid":

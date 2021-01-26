@@ -15,6 +15,7 @@ namespace RimWorldOnlineCity
         public IncidentStrategys strategy = IncidentStrategys.ImmediateAttack;
         public IncidentArrivalModes arrivalMode = IncidentArrivalModes.EdgeWalkIn;
         public string faction = null;
+        public IncidentParms parms;
 
         public abstract bool TryExecuteEvent();
 
@@ -55,14 +56,22 @@ namespace RimWorldOnlineCity
                         }
                         
                     }
-                    return fac; */
-
+                    return fac; */  // может оно не глючит?
+                    //todo: поиск начинает глючить при добавлении фракций из модов
                     return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate" && f.def.techLevel >= TechLevel.Industrial && f.def.techLevel < TechLevel.Archotech);
                 case "tribe":
                     return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Tribe" && f.def.techLevel <= TechLevel.Medieval);
                 default:
                     return null;
             }
+        }
+        
+        public float CalculatePoints()
+        {
+            float points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap);
+
+            //todo: переопределить формулу в каждом потомке ИЛИ проверять остальные параметры и добавлять множитель
+            return points*mult;
         }
     }
 

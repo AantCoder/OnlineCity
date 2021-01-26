@@ -12,13 +12,13 @@ namespace RimWorldOnlineCity
     {
         public override bool TryExecuteEvent()
         {
-            IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
+            parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
             parms.customLetterLabel = "test chunk drop";
             parms.customLetterText = "test chunk drop";
             parms.faction = null;
             parms.forced = true;  //игнорировать все условия для события
             parms.target = Find.CurrentMap;
-            parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap);
+            parms.points = CalculatePoints();
 
             if (!IncidentDefOf.ShipChunkDrop.Worker.TryExecute(parms))
             {

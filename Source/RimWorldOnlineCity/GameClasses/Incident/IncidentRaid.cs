@@ -26,11 +26,11 @@ namespace RimWorldOnlineCity
 
         private IncidentParms GetParms()
         {
-            IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
+            parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
             parms.raidStrategy = GetStrategy(strategy);
             parms.raidArrivalMode = GetArrivalMode(arrivalMode);
-            parms.customLetterLabel = "test raid";
-            parms.customLetterText = "teast raid again";
+            parms.customLetterLabel = "Охотники за головами";
+            parms.customLetterText = "Ваше поселение атакуют наёмники";
             parms.biocodeApparelChance = 1f;
             parms.biocodeWeaponsChance = 1f;
             parms.dontUseSingleUseRocketLaunchers = false;
@@ -39,7 +39,7 @@ namespace RimWorldOnlineCity
             parms.faction = GetFaction();
             parms.forced = true;  //игнорировать все условия для события
             parms.target = Find.CurrentMap;
-            parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult;
+            parms.points = CalculatePoints();
             //parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult >= StorytellerUtility.GlobalPointsMax ? StorytellerUtility.GlobalPointsMax : StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult;
             return parms;
         }

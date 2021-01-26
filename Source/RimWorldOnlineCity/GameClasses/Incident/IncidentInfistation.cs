@@ -14,7 +14,7 @@ namespace RimWorldOnlineCity
         {
             if (!IncidentDefOf.Infestation.Worker.TryExecute(GetParms()))
             {
-                Messages.Message($"Failed_Test_quest", MessageTypeDefOf.RejectInput);
+                Messages.Message($"Failed_infestation", MessageTypeDefOf.RejectInput);
                 return false;
             }
 
@@ -23,13 +23,13 @@ namespace RimWorldOnlineCity
 
         private IncidentParms GetParms()
         {
-            IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
-            parms.customLetterLabel = "test infistation";
-            parms.customLetterText = "test infistation";
+            parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
+            parms.customLetterLabel = "Жуки!";
+            parms.customLetterText = "Кто-то приманил жуков на поверхность с помощью низкочастотных вибраций";
             parms.forced = true;  //игнорировать все условия для события
             parms.faction = Find.FactionManager.OfInsects;
             parms.target = Find.CurrentMap;
-            parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult;
+            parms.points = CalculatePoints();
             //parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult >= StorytellerUtility.GlobalPointsMax ? StorytellerUtility.GlobalPointsMax : StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult;
             return parms;
         }

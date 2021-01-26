@@ -12,17 +12,17 @@ namespace RimWorldOnlineCity
     {
         public override bool TryExecuteEvent()
         {
-            IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
+            parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
             parms.customLetterLabel = "Trade caravan";
             parms.customLetterText = "trade caravan arrived";
             parms.faction = null;
             parms.forced = true;  //игнорировать все условия для события
             parms.target = Find.CurrentMap;
-            parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap);
+            parms.points = CalculatePoints();
 
             if (!IncidentDefOf.TraderCaravanArrival.Worker.TryExecute(parms))
             {
-                Messages.Message($"Failed_Test_quest", MessageTypeDefOf.RejectInput);
+                Messages.Message($"Failed_Test_Caravan", MessageTypeDefOf.RejectInput);
                 return false;
             }
 
