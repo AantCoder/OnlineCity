@@ -33,8 +33,11 @@ namespace RimWorldOnlineCity
 
             var allWorldObjects = allWorldObjectsArr.Where(wo => wo != null).ToList();
 
-            try
+            if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
             {
+
+                try
+                {
                 // Game on init
                 if(firstRun && modelWorldObjectOnline != null)
                 {
@@ -51,6 +54,8 @@ namespace RimWorldOnlineCity
                 Loger.Log("Exception >> " + e);
                 Log.Error("SendToServer FirstRun error");
                 return;
+            }
+
             }
 
             //Loger.Log("Client TestBagSD 035");
@@ -76,6 +81,9 @@ namespace RimWorldOnlineCity
 
             toServ.WObjectsToDelete = ToDelete;
 
+
+            if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
+            {
             //  Non-Player World Objects
             try
             {
@@ -99,11 +107,13 @@ namespace RimWorldOnlineCity
             {
                 Loger.Log("Exception >> " + e);
                 Log.Error("ERROR SendToServer WorldObject Online");
+                }
             }
         }
 
         public static void LoadFromServer(ModelPlayToClient fromServ, bool removeMissing)
         {
+
             /*var testF = Find.FactionManager.AllFactions.ToList();
             Loger.Log("---------------------------------------------------------------");
             foreach (var f in testF)
@@ -125,8 +135,8 @@ namespace RimWorldOnlineCity
             Loger.Log("---------------------------------------------------------------");
             */
 
-            ApplyNonPlayerWorldObject(fromServ);
-
+            if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
+            	ApplyNonPlayerWorldObject(fromServ);
 
             if (removeMissing)
             {

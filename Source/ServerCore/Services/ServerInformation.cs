@@ -126,6 +126,7 @@ namespace ServerOnlineCity.Services
                 MinutesIntervalBetweenPVP = ServerManager.ServerSettings.MinutesIntervalBetweenPVP,
                 EnableFileLog = player.SettingEnableFileLog,
                 TimeChangeEnablePVP = player.TimeChangeEnablePVP,
+                GeneralSettings = ServerManager.ServerSettings.GeneralSettings,
                 ProtectingNovice = ServerManager.ServerSettings.ProtectingNovice,
             };
 

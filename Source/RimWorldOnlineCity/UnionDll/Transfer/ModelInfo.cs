@@ -1,4 +1,5 @@
 ﻿using Model;
+using OCUnion;
 using System;
 
 namespace Transfer
@@ -29,6 +30,7 @@ namespace Transfer
         public bool EnableFileLog { get; set; }
         public DateTime TimeChangeEnablePVP { get; set; }
         public bool ProtectingNovice { get; set; }
+        public ServerGeneralSettings GeneralSettings { get; set; }
 
         public DateTime ServerTime { get; set; }
 
@@ -41,5 +43,6 @@ namespace Transfer
         /// Заполняется только при WorldLoad() GetInfo = 3
         /// </summary>
         public byte[] SaveFileData { get; set; }
+
     }
 }
