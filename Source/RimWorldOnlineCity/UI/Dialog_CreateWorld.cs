@@ -19,12 +19,14 @@ namespace RimWorldOnlineCity
         public Action PostCloseAction;
 
         public string InputSeed { get; private set; }
+        public string InputScenario { get; private set; }
         public string InputDifficulty { get; private set; }
         public string InputMapSize { get; private set; }
-        public string InputPlanetCoverage { get; private set; }
+        public float InputPlanetCoverage { get; private set; }
 
         public override Vector2 InitialSize
         {
+            // get { return new Vector2(400f, 350f); }
             get { return new Vector2(400f, 350f); } //новое поле ввода с описанием +50
         }
 
@@ -43,9 +45,10 @@ namespace RimWorldOnlineCity
             */
 
             InputSeed = "";
-            InputDifficulty = "2";
+            InputScenario = "none";
+            InputDifficulty = "none";
             InputMapSize = "300";
-            InputPlanetCoverage = "100";
+            InputPlanetCoverage = Prefs.DevMode ? 5f : 30f;
         }
         
 
@@ -60,7 +63,6 @@ namespace RimWorldOnlineCity
             if (!ResultOK) InputText = null;
             if (PostCloseAction != null) PostCloseAction();
         }
-
         public override void DoWindowContents(Rect inRect)
         {
             const float mainListingSpacing = 6f;
@@ -72,13 +74,18 @@ namespace RimWorldOnlineCity
             if (Widgets.ButtonText(new Rect(0, buttonYStart, btnSize.x, btnSize.y), "OCity_Dialog_CreateWorld_BtnOk".Translate())
                 || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
             {
-                int ii;
-                if (string.IsNullOrEmpty(InputSeed)
-                    || !int.TryParse(InputDifficulty, out ii) || ii < 0 || ii > 2
-                    || !int.TryParse(InputPlanetCoverage, out ii) || ii < 5 || ii > 100
+                if (string.IsNullOrEmpty(InputSeed) 
+                    || string.IsNullOrEmpty(InputScenario) || string.Equals("none", InputScenario)
+                    || string.IsNullOrEmpty(InputDifficulty) || string.Equals("none", InputDifficulty)
+                    || !(((int)InputPlanetCoverage) >= 5 && ((int)InputPlanetCoverage <= 100))
                     )
                 {
-                    Find.WindowStack.Add(new Dialog_Input("OCity_Dialog_CreateWorld_Err".Translate(), "OCity_Dialog_CreateWorld_Err2".Translate(), true));
+                    var errText = checkInvalidValue(string.IsNullOrEmpty(InputSeed), 
+                        string.IsNullOrEmpty(InputScenario) || string.Equals("none", InputScenario), 
+                        string.IsNullOrEmpty(InputDifficulty) || string.Equals("none", InputDifficulty),
+                        !(((int)InputPlanetCoverage) >= 5 && ((int)InputPlanetCoverage <= 100)));
+                 
+                    Find.WindowStack.Add(new Dialog_Input("OCity_Dialog_CreateWorld_Err".Translate(), "OCity_Dialog_CreateWorld_Err2".Translate(errText), true));
                 }
                 else
                 {
@@ -105,11 +112,8 @@ namespace RimWorldOnlineCity
             var textEditSize = new Vector2(150f, 25f);
             var rect = new Rect(0, 70f, inRect.width, textEditSize.y);
 
-            Widgets.Label(rect, "OCity_Dialog_CreateWorld_Seed".Translate());
-            rect.y += textEditSize.y;
-            GUI.SetNextControlName("StartTextField");
-            InputSeed = GUI.TextField(rect, InputSeed, 100);
-            rect.y += textEditSize.y;
+            mainListing.Label("OCity_Dialog_CreateWorld_Seed".Translate(), -1f, null);
+            InputSeed = mainListing.TextEntry(InputSeed, 1);
 
             /*
             Widgets.Label(rect, "Общее количество осадков");
@@ -124,10 +128,36 @@ namespace RimWorldOnlineCity
             rect.y += textEditSize.y;
             */
 
-            Widgets.Label(rect, "OCity_Dialog_CreateWorld_Difficulty".Translate());
-            rect.y += textEditSize.y;
-            InputDifficulty = GUI.TextField(rect, InputDifficulty, 1);
-            rect.y += textEditSize.y;
+            
+            mainListing.Gap(6f);
+            var sList = ScenarioLister.AllScenarios().ToList();
+            if (mainListing.ButtonTextLabeled("OCity_Dialog_CreateWorld_Scenario".Translate(), InputScenario))
+            {
+                List<FloatMenuOption> floatList1 = new List<FloatMenuOption>();
+                foreach (var s in sList)
+                {
+                    floatList1.Add(new FloatMenuOption(s.name, delegate
+                    {
+                        InputScenario = s.name;
+                    }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                }
+                Find.WindowStack.Add(new FloatMenu(floatList1));
+            }
+
+            mainListing.Gap(6f);
+            if (mainListing.ButtonTextLabeled("OCity_Dialog_CreateWorld_Difficulty".Translate(), InputDifficulty))
+            {
+                List<FloatMenuOption> floatList1 = new List<FloatMenuOption>();
+                foreach (DifficultyDef difficultyDef in DefDatabase<DifficultyDef>.AllDefs)
+                {
+                    if(difficultyDef.LabelCap != "Custom")
+                        floatList1.Add(new FloatMenuOption(difficultyDef.LabelCap, delegate
+                        { 
+                            InputDifficulty = difficultyDef.LabelCap;
+                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                }
+                Find.WindowStack.Add(new FloatMenu(floatList1));
+            }
 
             //это уже не надо, каждый выбирает при старте
             //Widgets.Label(rect, "OCity_Dialog_CreateWorld_MapSize".Translate());  
@@ -135,10 +165,16 @@ namespace RimWorldOnlineCity
             //InputMapSize = GUI.TextField(rect, InputMapSize, 3);
             //rect.y += textEditSize.y;
 
-            Widgets.Label(rect, "OCity_Dialog_CreateWorld_PercentWorld".Translate());
-            rect.y += textEditSize.y;
-            InputPlanetCoverage = GUI.TextField(rect, InputPlanetCoverage, 3);
-            rect.y += textEditSize.y;
+            mainListing.Label("OCity_Dialog_CreateWorld_PercentWorld".Translate(Mathf.Round(InputPlanetCoverage).ToString()), -1f, null);
+            if (Prefs.DevMode)
+            {
+                InputPlanetCoverage = mainListing.Slider(Mathf.Round(InputPlanetCoverage), 5f, 100f);
+            }
+            else
+            {
+                InputPlanetCoverage = mainListing.Slider(Mathf.Round(InputPlanetCoverage), 30f, 100f);
+            }
+
 
             if (NeedFockus)
             {
@@ -148,6 +184,19 @@ namespace RimWorldOnlineCity
 
             mainListing.End();
         }
-        
+       
+        private string checkInvalidValue(bool isSeedErr, bool isScenarioErr, bool isDiffErr, bool isCoverageErr)
+        {
+            List<string> text = new List<string>();
+            if (isSeedErr)
+            {   text.Add("Seed"); }
+            if (isScenarioErr)
+            {   text.Add("Scenario"); }
+            if (isDiffErr)
+            {   text.Add("Difficulty"); }
+            if (isCoverageErr)
+            {   text.Add("Coverage"); }
+            return string.Join(", ", text);
+        }
     }
 }

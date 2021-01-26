@@ -143,11 +143,9 @@ namespace ServerOnlineCity.ChatService
                         return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                             "Достигнуто максимальное количество инциндентов для этого игрока за час".NeedTranslate());
                 }
-
                 if (targetPlayer.Mails.Count(m => m.Type == ModelMailTradeType.StartIncident) > RaidInOffline)
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                         "Достигнуто максимальное количество инциндентов для этого игрока".NeedTranslate());
-
                 targetPlayer.Mails.Add(packet);
                 targetPlayer.LastIncidents.Add(now);
             }*/ // мешает тестить!!!11!1!

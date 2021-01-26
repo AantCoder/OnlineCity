@@ -49,7 +49,7 @@ namespace ServerOnlineCity.Model
         public List<ModelMailTrade> Mails = new List<ModelMailTrade>();
 
         [NonSerialized]
-        public List<DateTime> LastIncidents = new List<DateTime>();
+        public long LastTickIncidents;
 
         [NonSerialized]
         public AttackServer AttackData;

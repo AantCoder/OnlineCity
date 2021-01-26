@@ -1,4 +1,5 @@
 ﻿using Model;
+using OCUnion;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -100,6 +101,8 @@ namespace RimWorldOnlineCity
         public bool ProtectingNovice { get; set; }
 
         public bool BackgroundSaveGameOff { get; set; }
+
+        public ServerGeneralSettings GeneralSettings { get; set; }
 
         public Faction FactionPirate
         {

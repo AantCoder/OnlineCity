@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
 	<!-- MainMenu.cs -->
@@ -87,7 +87,7 @@
 	<OCity_Dialog_CreateWorld_Seed>Зерно</OCity_Dialog_CreateWorld_Seed>
 	<OCity_Dialog_CreateWorld_Difficulty>Сложность. Целое от 0 (очень просто) до 2 (тяжело)</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Размер карты местности (200 - малая, 400 - огромная)</OCity_Dialog_CreateWorld_MapSize>
-	<OCity_Dialog_CreateWorld_PercentWorld>Процент генерации поверхности планеты (от 5 до 100)</OCity_Dialog_CreateWorld_PercentWorld>
+	<OCity_Dialog_CreateWorld_PercentWorld>Процент генерации поверхности планеты (от 5 до 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>Вход</OCity_LoginForm_BtnEnter>
@@ -266,7 +266,8 @@
 
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText>Автор Василий Иванов aka Aant.</OCity_AboutTabText>
-	<OCity_AboutGeneralText>Приветствую тебя, Колонизатор!
+	<OCity_AboutGeneralText>
+		Приветствую тебя, Колонизатор!
 
 OnlineCity - представляет из себя модуль сетевой игры для симулятора выживания RimWorld. Он позволяет нескольким игрокам играть на одной планете в режиме онлайн.
 
@@ -375,14 +376,13 @@ OnlineCity - представляет из себя модуль сетевой 
 
 Дополнительно может быть интересно:
 
-В файле ModsConfig.xml список модов должен начинаться с 
-    <li>brrainz.harmony</li>
-    <li>ludeon.rimworld</li>
-    <li>unlimitedhugs.hugslib</li>	
-И заканчиваться (желательно в самый конец):
-    <li>aant.onlinecity</li>
-
-Часто возникающие проблемы:
+В файле ModsConfig.xml список модов должен начинаться с
+		<li>brrainz.harmony</li>
+		<li>ludeon.rimworld</li>
+		<li>unlimitedhugs.hugslib</li>
+		И заканчиваться (желательно в самый конец):
+		<li>aant.onlinecity</li>
+		Часто возникающие проблемы:
 
 * Если ваш компьютер едва справляется с RimWorld, то имейте в виду, что с этим модом требование к памяти несколько увеличено. Рекомендуется играть на 64-битной операционной системе.
 
@@ -584,7 +584,6 @@ Discord:  https://discord.gg/5DzWrnR
 Оф. группа мода ВК:  https://vk.com/rimworldonline
 Trello:  https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
 GitHub:  https://github.com/AantCoder/OnlineCity
-
-</OCity_AboutGeneralText>
+	</OCity_AboutGeneralText>
 
 </LanguageData>
