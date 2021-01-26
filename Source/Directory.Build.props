@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-	<PropertyGroup>
-		<SteamFolder>C:\SteamLibrary\steamapps\</SteamFolder>
-		<!--<RimWorldFolder>..\..\..\..\</RimWorldFolder>-->
-		<RimWorldFolder>$(SteamFolder)common\RimWorld\</RimWorldFolder>
-		<RimWorldFolderBin>$(RimWorldFolder)RimWorldWin64_Data\Managed\</RimWorldFolderBin>
-		<SteamWorkShopFolder>$(SteamFolder)workshop\content\294100\</SteamWorkShopFolder>
-		<RimWorldDlls>$(RimWorldFolderBin)*.*</RimWorldDlls>
-		<PlatformTarget>x64</PlatformTarget>
-	</PropertyGroup>
+  <PropertyGroup>
+    <SteamFolder>c:\Program Files (x86)\Steam\steamapps\</SteamFolder>
+    <!--<RimWorldFolder>..\..\..\..\</RimWorldFolder>-->
+    <RimWorldFolder>$(SteamFolder)common\RimWorld\</RimWorldFolder>
+    <RimWorldFolderBin>$(RimWorldFolder)RimWorldWin64_Data\Managed\</RimWorldFolderBin>
+    <SteamWorkShopFolder>$(SteamFolder)workshop\content\294100\</SteamWorkShopFolder>
+    <RimWorldDlls>$(RimWorldFolderBin)*.*</RimWorldDlls>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
 </Project>

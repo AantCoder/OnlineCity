@@ -1,4 +1,5 @@
-﻿using OCUnion.Common;
+﻿using OCUnion;
+using OCUnion.Common;
 using OCUnion.Transfer.Model;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -30,6 +31,8 @@ namespace ServerCore.Model
         public bool DisableDevMode { get; set; }
 
         public int MinutesIntervalBetweenPVP { get; set; }
+
+        public ServerGeneralSettings GeneralSettings { get; set; }
 
         /// <summary>
         /// Рабочая директория
@@ -79,7 +82,10 @@ namespace ServerCore.Model
         [JsonIgnore]
         public string ModsConfigFiles { get; set; }
 
-        public ServerSettings() { }
+        public ServerSettings() 
+        {
+            GeneralSettings = GeneralSettings.SetDefault();
+        }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

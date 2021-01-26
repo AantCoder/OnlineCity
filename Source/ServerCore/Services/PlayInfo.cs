@@ -157,34 +157,37 @@ namespace ServerOnlineCity.Services
                     }
 
                     //World Object Online
-                    try
+                    if (ServerManager.ServerSettings.GeneralSettings.EquableWorldObjects)
                     {
-                        if (packet.OnlineWObjectToDelete != null && packet.OnlineWObjectToDelete.Count > 0)
+                        try
                         {
-                            data.WorldObjectOnlineList.RemoveAll(data => packet.OnlineWObjectToDelete.Any(pkt => ValidateWorldObject(pkt, data)));
-                        }
-                        if (packet.OnlineWObjectToAdd != null && packet.OnlineWObjectToAdd.Count > 0)
-                        {
-                            data.WorldObjectOnlineList.AddRange(packet.OnlineWObjectToAdd);
-                        }
+                            if (packet.OnlineWObjectToDelete != null && packet.OnlineWObjectToDelete.Count > 0)
+                            {
+                                data.WorldObjectOnlineList.RemoveAll(data => packet.OnlineWObjectToDelete.Any(pkt => ValidateWorldObject(pkt, data)));
+                            }
+                            if (packet.OnlineWObjectToAdd != null && packet.OnlineWObjectToAdd.Count > 0)
+                            {
+                                data.WorldObjectOnlineList.AddRange(packet.OnlineWObjectToAdd);
+                            }
 
-                        if(packet.OnlineWObjectList != null && packet.OnlineWObjectList.Count > 0)
-                        {
-                            if (data.WorldObjectOnlineList.Count == 0)
+                            if (packet.OnlineWObjectList != null && packet.OnlineWObjectList.Count > 0)
                             {
-                                data.WorldObjectOnlineList = packet.OnlineWObjectList;
+                                if (data.WorldObjectOnlineList.Count == 0)
+                                {
+                                    data.WorldObjectOnlineList = packet.OnlineWObjectList;
+                                }
+                                else if (data.WorldObjectOnlineList != null && data.WorldObjectOnlineList.Count > 0)
+                                {
+                                    toClient.OnlineWObjectToDelete = packet.OnlineWObjectList.Where(pkt => !data.WorldObjectOnlineList.Any(data => ValidateWorldObject(pkt, data))).ToList();
+                                    toClient.OnlineWObjectToAdd = data.WorldObjectOnlineList.Where(data => !packet.OnlineWObjectList.Any(pkt => ValidateWorldObject(pkt, data))).ToList();
+                                }
                             }
-                            else if (data.WorldObjectOnlineList != null && data.WorldObjectOnlineList.Count > 0)
-                            {
-                                toClient.OnlineWObjectToDelete = packet.OnlineWObjectList.Where(pkt => !data.WorldObjectOnlineList.Any(data => ValidateWorldObject(pkt, data))).ToList();
-                                toClient.OnlineWObjectToAdd = data.WorldObjectOnlineList.Where(data => !packet.OnlineWObjectList.Any(pkt => ValidateWorldObject(pkt, data))).ToList();
-                            }
+                            toClient.OnlineWObjectList = data.WorldObjectOnlineList;
                         }
-                        toClient.OnlineWObjectList = data.WorldObjectOnlineList;
-                    }
-                    catch
-                    {
-                        Loger.Log("ERROR PLAYINFO World Object Online");
+                        catch
+                        {
+                            Loger.Log("ERROR PLAYINFO World Object Online");
+                        }
                     }
 
                     //завершили сбор информации клиенту
