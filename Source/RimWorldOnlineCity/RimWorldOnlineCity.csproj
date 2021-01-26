@@ -110,6 +110,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatController.cs" />
+    <Compile Include="GameClasses\Incident\IncidentAcid.cs" />
+    <Compile Include="GameClasses\Incident\IncidentBombing.cs" />
     <Compile Include="GameClasses\Incident\IncidentInfistation.cs" />
     <Compile Include="GameClasses\Incident\IncidentCaravan.cs" />
     <Compile Include="GameClasses\Incident\IncidentChunkDrop.cs" />
