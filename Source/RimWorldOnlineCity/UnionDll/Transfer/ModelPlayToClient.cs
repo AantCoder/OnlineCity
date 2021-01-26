@@ -19,8 +19,8 @@ namespace Transfer
         public bool AreAttacking { get; set; }
         public bool NeedSaveAndExit { get; set; }
         public string KeyReconnect { get; set; }
-        public List<WorldObjectOnline> OnlineWObjectList { get; set; }
-        public List<WorldObjectOnline> OnlineWObjectToAdd { get; set; }
-        public List<WorldObjectOnline> OnlineWObjectToDelete { get; set; }
+        public List<WorldObjectOnline> WObjectOnlineList { get; set; }
+        public List<WorldObjectOnline> WObjectOnlineToAdd { get; set; }
+        public List<WorldObjectOnline> WObjectOnlineToDelete { get; set; }
     }
 }

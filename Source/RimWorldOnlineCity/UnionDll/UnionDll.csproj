@@ -86,7 +86,7 @@
     <Compile Include="Loger.cs" />
     <Compile Include="Transfer\ConnectSaver.cs" />
     <Compile Include="Transfer\FolderTree.cs" />
-    <Compile Include="Transfer\ModelWorldObjectOnline.cs" />
+    <Compile Include="Transfer\ModelGameServerInfo.cs" />
     <Compile Include="Transfer\Model\AttackCorpse.cs" />
     <Compile Include="Transfer\Model\IPlayerEx.cs" />
     <Compile Include="Transfer\Model\ModelFileInfo.cs" />

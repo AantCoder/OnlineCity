@@ -24,7 +24,7 @@ namespace RimWorldOnlineCity
         private static List<WorldObjectEntry> LastSendMyWorldObjects { get; set; }
         private static List<WorldObjectOnline> LastWorldObjectOnline { get; set; }
 
-        public static void SendToServer(ModelPlayToServer toServ, bool firstRun, ModelWorldObjectOnline modelWorldObjectOnline)
+        public static void SendToServer(ModelPlayToServer toServ, bool firstRun, ModelGameServerInfo modelWorldObjectOnline)
         {
             toServ.LastTick = (long)Find.TickManager.TicksGame;
 
@@ -35,21 +35,27 @@ namespace RimWorldOnlineCity
 
             if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
             {
+
                 try
                 {
-                    // Game on init
-                    if (firstRun && modelWorldObjectOnline != null && modelWorldObjectOnline.WObjectOnlineList.Count > 0)
-                    {
-                        toServ.OnlineWObjectList = allWorldObjectsArr.Where(wo => wo is Settlement)
-                                                             .Where(wo => wo.HasName && !wo.Faction.IsPlayer).Select(obj => GetWorldObjects(obj)).ToList();
-                        return;
-                    }
-                }
-                catch
+                // Game on init
+                if(firstRun && modelWorldObjectOnline != null)
                 {
-                    Log.Message("SendToServer FirstRun error");
+                    if (modelWorldObjectOnline.WObjectOnlineList.Count > 0)
+                    {
+                        toServ.WObjectOnlineList = allWorldObjectsArr.Where(wo => wo is Settlement)
+                                                             .Where(wo => wo.HasName && !wo.Faction.IsPlayer).Select(obj => GetWorldObjects(obj)).ToList();
+                    }
                     return;
                 }
+            }
+            catch(Exception e)
+            {
+                Loger.Log("Exception >> " + e);
+                Log.Error("SendToServer FirstRun error");
+                return;
+            }
+
             }
 
             //Loger.Log("Client TestBagSD 035");
@@ -75,86 +81,62 @@ namespace RimWorldOnlineCity
 
             toServ.WObjectsToDelete = ToDelete;
 
+
             if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
             {
-                try
+            //  Non-Player World Objects
+            try
+            {
+                var OnlineWObjArr = allWorldObjectsArr.Where(wo => wo is Settlement)
+                                      .Where(wo => wo.HasName && !wo.Faction.IsPlayer);
+                if (!firstRun)
                 {
-                    var OnlineWObjArr = allWorldObjectsArr.Where(wo => wo is Settlement)
-                                                          .Where(wo => wo.HasName && !wo.Faction.IsPlayer);
-
-                    if (!firstRun && LastWorldObjectOnline != null && LastWorldObjectOnline.Count > 0)
+                    if (LastWorldObjectOnline != null && LastWorldObjectOnline.Count > 0)
                     {
-                        toServ.OnlineWObjectToDelete = LastWorldObjectOnline.Where(WOnline => !OnlineWObjArr.Any(wo => ValidateOnlineWorldObject(WOnline, wo))).ToList();
+                        toServ.WObjectOnlineToDelete = LastWorldObjectOnline.Where(WOnline => !OnlineWObjArr.Any(wo => ValidateOnlineWorldObject(WOnline, wo))).ToList();
 
-                        toServ.OnlineWObjectToAdd = OnlineWObjArr.Where(wo => !LastWorldObjectOnline.Any(WOnline => ValidateOnlineWorldObject(WOnline, wo)))
-                                                                      .Select(obj => GetWorldObjects(obj)).ToList();
+                        toServ.WObjectOnlineToAdd = OnlineWObjArr.Where(wo => !LastWorldObjectOnline.Any(WOnline => ValidateOnlineWorldObject(WOnline, wo)))
+                                                                    .Select(obj => GetWorldObjects(obj)).ToList();
                     }
-
-                    toServ.OnlineWObjectList = allWorldObjectsArr.Where(wo => wo is Settlement)
-                                                                 .Where(wo => wo.HasName && !wo.Faction.IsPlayer).Select(obj => GetWorldObjects(obj)).ToList();
-
-                    LastWorldObjectOnline = toServ.OnlineWObjectList;
-
                 }
-                catch (Exception e)
-                {
-                    Loger.Log("Exception >> " + e);
-                    Loger.Log("ERROR SendToServer WorldObject Online");
+
+                toServ.WObjectOnlineList = OnlineWObjArr.Select(obj => GetWorldObjects(obj)).ToList();
+                LastWorldObjectOnline = toServ.WObjectOnlineList;
+            }
+            catch(Exception e)
+            {
+                Loger.Log("Exception >> " + e);
+                Log.Error("ERROR SendToServer WorldObject Online");
                 }
             }
         }
 
         public static void LoadFromServer(ModelPlayToClient fromServ, bool removeMissing)
         {
-            if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
+
+            /*var testF = Find.FactionManager.AllFactions.ToList();
+            Loger.Log("---------------------------------------------------------------");
+            foreach (var f in testF)
             {
-                try
-                {
-                    if (fromServ.OnlineWObjectToDelete != null && fromServ.OnlineWObjectToDelete.Count > 0)
-                    {
-                        var objectToDelete = Find.WorldObjects.AllWorldObjects.Where(wo => wo is Settlement)
-                                                            .Where(wo => wo.HasName && !wo.Faction.IsPlayer)
-                                                            .Where(o => fromServ.OnlineWObjectToDelete.Any(fs => ValidateOnlineWorldObject(fs, o))).ToList();
-
-                        if (fromServ.OnlineWObjectToDelete.Count > 0)
-                        {
-                            for (var i = 0; i < fromServ.OnlineWObjectToDelete.Count; i++)
-                            {
-                                Find.WorldObjects.Remove(objectToDelete[i]);
-                                if (LastWorldObjectOnline != null && LastWorldObjectOnline.Count > 0)
-                                {
-                                    LastWorldObjectOnline.RemoveAll(WOnline => objectToDelete.Any(o => ValidateOnlineWorldObject(WOnline, o)));
-                                }
-                            }
-                        }
-                    }
-
-                    if (fromServ.OnlineWObjectToAdd != null && fromServ.OnlineWObjectToAdd.Count > 0)
-                    {
-                        for (var i = 0; i < fromServ.OnlineWObjectToAdd.Count; i++)
-                        {
-                            if (!Find.WorldObjects.AnySettlementAt(fromServ.OnlineWObjectToAdd[i].Tile))
-                            {
-                                Faction faction = Find.FactionManager.AllFactions.FirstOrDefault(fm => fm.def.LabelCap == fromServ.OnlineWObjectToAdd[i].FactionGroup);
-                                var npcBase = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-                                npcBase.SetFaction(faction);
-                                npcBase.Tile = fromServ.OnlineWObjectToAdd[i].Tile;
-                                npcBase.Name = fromServ.OnlineWObjectToAdd[i].Name;
-                                Find.WorldObjects.Add(npcBase);
-                                //LastWorldObjectOnline.Add(fromServ.OnlineWObjectToAdd[i]);
-                            }
-                            else
-                            {
-                                Loger.Log("Can't Add Settlement. Tile is already occupied " + Find.WorldObjects.SettlementAt(fromServ.OnlineWObjectToAdd[i].Tile));
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Loger.Log("Exception LoadFromServer >> " + e);
-                }
+                Loger.Log("Faction group >> " + f.Name);
+                Loger.Log("Faction LabelCap >> " + f.def.LabelCap);
+                Loger.Log("Faction defName >> " + f.def.defName);
+                Loger.Log(" ");
             }
+            Loger.Log("---------------------------------------------------------------");
+            Loger.Log("FactionDef def in DefDatabase<FactionDef>.AllDefs >>>");
+            foreach (FactionDef def in DefDatabase<FactionDef>.AllDefs)
+            {
+                Loger.Log("FactionDef isPlayer >>> " + def.isPlayer);
+                Loger.Log("FactionDef LabelCap >> " + def.LabelCap);
+                Loger.Log("FactionDef defName >> " + def.defName);
+                Loger.Log(" ");
+            }
+            Loger.Log("---------------------------------------------------------------");
+            */
+
+            if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
+            	ApplyNonPlayerWorldObject(fromServ);
 
             if (removeMissing)
             {
@@ -652,11 +634,70 @@ namespace RimWorldOnlineCity
                 Find.WorldObjects.Remove(worldObject);
             }
         }
+
+        #endregion
+
         public static void InitGame()
         {
             WorldObjectEntrys = new Dictionary<int, WorldObjectEntry>();
             ConverterServerId = new Dictionary<long, int>();
             ToDelete = null;
+        }
+
+        #region Non-Player World Objects
+        private static void ApplyNonPlayerWorldObject(ModelPlayToClient fromServ)
+        {
+            try
+            {
+                if (fromServ.WObjectOnlineToDelete != null && fromServ.WObjectOnlineToDelete.Count > 0)
+                {
+                    var objectToDelete = Find.WorldObjects.AllWorldObjects.Where(wo => wo is Settlement)
+                                                     .Where(wo => wo.HasName && !wo.Faction.IsPlayer)
+                                                     .Where(o => fromServ.WObjectOnlineToDelete.Any(fs => ValidateOnlineWorldObject(fs, o))).ToList();
+                    objectToDelete.ForEach(o => Find.WorldObjects.Remove(o));
+                    if (LastWorldObjectOnline != null && LastWorldObjectOnline.Count > 0)
+                    {
+                        LastWorldObjectOnline.RemoveAll(WOnline => objectToDelete.Any(o => ValidateOnlineWorldObject(WOnline, o)));
+                    }
+                }
+
+                if (fromServ.WObjectOnlineToAdd != null && fromServ.WObjectOnlineToAdd.Count > 0)
+                {
+                    for (var i = 0; i < fromServ.WObjectOnlineToAdd.Count; i++)
+                    {
+                        if (!Find.WorldObjects.AnySettlementAt(fromServ.WObjectOnlineToAdd[i].Tile))
+                        {
+                            Faction faction = Find.FactionManager.AllFactions.FirstOrDefault(fm => fm.def.LabelCap == fromServ.WObjectOnlineToAdd[i].FactionGroup);
+                            if (faction != null)
+                            {
+                                Loger.Log("fromServ.WObjectOnlineToAdd[i].Name >> " + fromServ.WObjectOnlineToAdd[i].Name);
+                                Loger.Log("fromServ.WObjectOnlineToAdd[i].FactionDef >> " + fromServ.WObjectOnlineToAdd[i].FactionDef);
+                                Loger.Log("fromServ.WObjectOnlineToAdd[i].FactionGroup >> " + fromServ.WObjectOnlineToAdd[i].FactionGroup);
+                                var npcBase = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+                                npcBase.SetFaction(faction);
+                                npcBase.Tile = fromServ.WObjectOnlineToAdd[i].Tile;
+                                npcBase.Name = fromServ.WObjectOnlineToAdd[i].Name;
+                                Find.WorldObjects.Add(npcBase);
+                                //LastWorldObjectOnline.Add(fromServ.OnlineWObjectToAdd[i]);
+                            }
+                            else
+                            {
+                                Loger.Log("Faction is missing or not found : " + fromServ.WObjectOnlineToAdd[i].FactionGroup);
+                                Loger.Log("Skipping ToAdd Settlement : " + fromServ.WObjectOnlineToAdd[i].Name);
+                            }
+
+                        }
+                        else
+                        {
+                            Loger.Log("Can't Add Settlement. Tile is already occupied " + Find.WorldObjects.SettlementAt(fromServ.WObjectOnlineToAdd[i].Tile));
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Exception LoadFromServer >> " + e);
+            }
         }
 
         public static WorldObjectOnline GetWorldObjects(WorldObject obj)
@@ -665,6 +706,7 @@ namespace RimWorldOnlineCity
             worldObject.Name = obj.LabelCap;
             worldObject.Tile = obj.Tile;
             worldObject.FactionGroup = obj?.Faction?.def?.LabelCap;
+            worldObject.FactionDef = obj?.Faction?.def?.defName;
             return worldObject;
         }
 
@@ -677,7 +719,13 @@ namespace RimWorldOnlineCity
             }
             return false;
         }
+        #endregion
 
+        #region
+        public static void HandleWObjectFaction()
+        {
+            //! WIP Handling of World Objects faction missing in game client
+        }
         #endregion
     }
 }

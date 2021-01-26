@@ -353,7 +353,6 @@ namespace Transfer
             }
 
             var packet = new ModelPostingChat() { IdChat = chatId, Message = msg };
-
             var stat = TransObject<ModelStatus>(packet, 19, 20);
 
             ErrorMessage = stat?.Message;
@@ -371,11 +370,11 @@ namespace Transfer
         }
 
         //WIP World Object
-        public ModelWorldObjectOnline GetWorldObjectUpdate()
+        public ModelGameServerInfo GetGameServerInfo()
         {
             Loger.Log("Client Get WorldObject From Server");
             var packet = new ModelInt() { Value = 1 };
-            var stat = TransObject<ModelWorldObjectOnline>(packet, 43, 44);
+            var stat = TransObject<ModelGameServerInfo>(packet, 43, 44);
             return stat;
         }
     }

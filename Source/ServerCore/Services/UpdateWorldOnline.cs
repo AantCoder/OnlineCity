@@ -1,11 +1,10 @@
-﻿using System.Linq;
-using OCUnion.Transfer.Model;
+﻿using OCUnion.Transfer.Model;
 using ServerOnlineCity.Model;
 using Transfer;
 
 namespace ServerOnlineCity.Services
 {
-    internal sealed class UpdateWorldObjectOnline : IGenerateResponseContainer
+    internal sealed class UpdateWorldOnline : IGenerateResponseContainer
     {
         public int RequestTypePackage => (int)PackageType.Request43WObjectUpdate;
 
@@ -18,13 +17,13 @@ namespace ServerOnlineCity.Services
             return result;
         }
 
-        private ModelWorldObjectOnline GetWorldObjectUpdate(ModelInt packet, ServiceContext context)
+        private ModelGameServerInfo GetWorldObjectUpdate(ModelInt packet, ServiceContext context)
         {
             var data = Repository.GetData;
-            var toClientWObject = new ModelWorldObjectOnline();
+            var toClientWObject = new ModelGameServerInfo();
             if (packet != null)
             {
-               toClientWObject.WObjectOnlineList = data.WorldObjectOnlineList;
+                toClientWObject.WObjectOnlineList = data.WorldObjectOnlineList;
             }
 
             return toClientWObject;
