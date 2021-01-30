@@ -15,6 +15,10 @@ namespace Transfer
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
         private Object LockObj = new Object();
+
+        public Action<int, string, ModelStatus> OnPostingChatAfter;
+        public Func<int, string, ModelStatus> OnPostingChatBefore;
+
         #region
 
         public volatile bool IsLogined = false;
@@ -340,10 +344,19 @@ namespace Transfer
         public ModelStatus PostingChat(int chatId, string msg)
         {
             Loger.Log("Client PostingChat " + chatId.ToString() + ", " + msg);
+
+            if (OnPostingChatBefore != null)
+            {
+                var cancel = OnPostingChatBefore(chatId, msg);
+                if (cancel != null) return cancel;
+            }
+
             var packet = new ModelPostingChat() { IdChat = chatId, Message = msg };
             var stat = TransObject<ModelStatus>(packet, 19, 20);
 
             ErrorMessage = stat?.Message;
+
+            if (OnPostingChatAfter != null) OnPostingChatAfter(chatId, msg, stat);
 
             return stat;
         }
@@ -352,6 +365,15 @@ namespace Transfer
         {
             var stat = TransObject2<Player>(guidToken, PackageType.RequestPlayerByToken, PackageType.ResponsePlayerByToken);
 
+            return stat;
+        }
+
+        //WIP World Object
+        public ModelGameServerInfo GetGameServerInfo()
+        {
+            Loger.Log("Client Get WorldObject From Server");
+            var packet = new ModelInt() { Value = 1 };
+            var stat = TransObject<ModelGameServerInfo>(packet, 43, 44);
             return stat;
         }
     }

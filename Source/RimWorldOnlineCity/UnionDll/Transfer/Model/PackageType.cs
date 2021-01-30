@@ -157,5 +157,13 @@ namespace OCUnion.Transfer.Model
 
         Request41SetPlayerInfo,
         Response42SetPlayerInfo,
+        /// <summary>
+        /// World Object Online GetWorldObjectUpdate()
+        /// </summary>
+        Request43WObjectUpdate,
+        /// <summary>
+        /// World Object Online GetWorldObjectUpdate()
+        /// </summary>
+        Response44WObjectUpdate,
     }
 }

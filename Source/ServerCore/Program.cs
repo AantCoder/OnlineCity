@@ -22,12 +22,14 @@ namespace ServerOnlineCity
             //Loger.LogMessage += (msg) => Console.WriteLine(msg);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
+            Manager = new ServerManager();
+            if (!Manager.StartPrepare(workPath)) return;
+
             var th = new Thread(CommandInput);
             th.IsBackground = true;
             th.Start();
 
-            Manager = new ServerManager();
-            Manager.Start(workPath);
+            Manager.Start();
         }
 
         private static void CommandInput()
