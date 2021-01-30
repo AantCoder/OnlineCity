@@ -101,7 +101,8 @@ namespace RimWorldOnlineCity
                     }
                 }
                 //принудительное сохранение
-                SessionClientController.SaveGameNow(true);
+                if (!SessionClientController.Data.BackgroundSaveGameOff)
+                    SessionClientController.SaveGameNow(true);
             }
             else
             {
