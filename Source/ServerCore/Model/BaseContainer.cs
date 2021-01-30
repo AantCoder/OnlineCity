@@ -28,7 +28,8 @@ namespace ServerOnlineCity.Model
         }
 
         public string WorldSeed { get; set; }
-        public int WorldDifficulty { get; set; }
+        public string WorldScenarioName { get; set; }
+        public string WorldDifficulty { get; set; }
         public int WorldMapSize { get; set; }
         public float WorldPlanetCoverage { get; set; }
         public long MaxServerIdWorldObjectEntry { get; set; }
@@ -39,6 +40,9 @@ namespace ServerOnlineCity.Model
         public List<WorldObjectEntry> WorldObjects { get; set; }
         public List<WorldObjectEntry> WorldObjectsDeleted { get; set; }
         public List<OrderTrade> Orders { get; set; }
+        
+        // WorldObject Online
+        public List<WorldObjectOnline> WorldObjectOnlineList { get; set; }
 
         [NonSerialized]
         public bool EverybodyLogoff;
@@ -68,6 +72,7 @@ namespace ServerOnlineCity.Model
             WorldObjectsDeleted = new List<WorldObjectEntry>();
             Orders = new List<OrderTrade>();
             VersionNum = MainHelper.VersionNum;
+            WorldObjectOnlineList = new List<WorldObjectOnline>();
         }
 
         public long GetWorldObjectEntryId()

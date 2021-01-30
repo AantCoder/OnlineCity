@@ -367,5 +367,14 @@ namespace Transfer
 
             return stat;
         }
+
+        //WIP World Object
+        public ModelGameServerInfo GetGameServerInfo()
+        {
+            Loger.Log("Client Get WorldObject From Server");
+            var packet = new ModelInt() { Value = 1 };
+            var stat = TransObject<ModelGameServerInfo>(packet, 43, 44);
+            return stat;
+        }
     }
 }

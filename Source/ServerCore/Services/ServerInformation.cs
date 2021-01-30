@@ -113,6 +113,7 @@ namespace ServerOnlineCity.Services
                 VersionInfo = MainHelper.VersionInfo,
                 VersionNum = MainHelper.VersionNum,
                 Seed = data.WorldSeed ?? "",
+                ScenarioName = data.WorldScenarioName,
                 MapSize = data.WorldMapSize,
                 PlanetCoverage = data.WorldPlanetCoverage,
                 Difficulty = data.WorldDifficulty,
@@ -125,6 +126,7 @@ namespace ServerOnlineCity.Services
                 MinutesIntervalBetweenPVP = ServerManager.ServerSettings.MinutesIntervalBetweenPVP,
                 EnableFileLog = player.SettingEnableFileLog,
                 TimeChangeEnablePVP = player.TimeChangeEnablePVP,
+                GeneralSettings = ServerManager.ServerSettings.GeneralSettings,
                 ProtectingNovice = ServerManager.ServerSettings.ProtectingNovice,
             };
 
