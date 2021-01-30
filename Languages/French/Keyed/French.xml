@@ -257,6 +257,14 @@ Prix des personnes et des animaux: {3}</OCity_Caravan_Other>
 	<OCity_GameAttack_Host_Atack_Repulsed>Vous avez repousser l'attaque! :)</OCity_GameAttack_Host_Atack_Repulsed>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>Les ennemies qui ne pouvaient pas s'enfuir resteront sur la carte, mais ils ont perdus le contact avec leur chef.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
+	<!-- OCIncidents -->
+	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
+	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
+	<OC_Incidents_Acid_Label>Gas atack!</OC_Incidents_Acid_Label>
+	<OC_Incidents_Acid_Text>Toxic gas has been sprayed over your settlement</OC_Incidents_Acid_Text>
+	<OC_Incidents_Inf_Label>Man-made Infestation!</OC_Incidents_Inf_Label>
+	<OC_Incidents_Inf_Text>Someone lured the swarm to the surface with high frequency vibrations</OC_Incidents_Inf_Text>
+	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Déconnecté.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Connexion interrompue</OCity_SCC_DisconnectedShow> -->

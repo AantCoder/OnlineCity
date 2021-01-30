@@ -29,8 +29,8 @@ namespace RimWorldOnlineCity
             parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
             parms.raidStrategy = GetStrategy(strategy);
             parms.raidArrivalMode = GetArrivalMode(arrivalMode);
-            parms.customLetterLabel = "Охотники за головами";
-            parms.customLetterText = "Ваше поселение атакуют наёмники";
+            parms.customLetterLabel = "OC_Incidents_Raid_Label".Translate();
+            parms.customLetterText = "OC_Incidents_Raid_Text".Translate();
             parms.biocodeApparelChance = 1f;
             parms.biocodeWeaponsChance = 1f;
             parms.dontUseSingleUseRocketLaunchers = false;

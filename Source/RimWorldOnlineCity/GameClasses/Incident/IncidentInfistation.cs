@@ -24,8 +24,8 @@ namespace RimWorldOnlineCity
         private IncidentParms GetParms()
         {
             parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
-            parms.customLetterLabel = "Жуки!";
-            parms.customLetterText = "Кто-то приманил жуков на поверхность с помощью низкочастотных вибраций";
+            parms.customLetterLabel = "OC_Incidents_Inf_Label".Translate();
+            parms.customLetterText = "OC_Incidents_Inf_Text".Translate();
             parms.forced = true;  //игнорировать все условия для события
             parms.faction = Find.FactionManager.OfInsects;
             parms.target = Find.CurrentMap;

@@ -23,8 +23,8 @@ namespace RimWorldOnlineCity
         private IncidentParms GetParms()
         {
             parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
-            parms.customLetterLabel = "Хим Атака!";
-            parms.customLetterText = "Над вашим поселением распылили облако химикатов";
+            parms.customLetterLabel = "OC_Incidents_Acid_Label".Translate();
+            parms.customLetterText = "OC_Incidents_Acid_Text".Translate();
             parms.faction = GetFaction();
             parms.forced = true;  //игнорировать все условия для события
             parms.target = Find.CurrentMap;
