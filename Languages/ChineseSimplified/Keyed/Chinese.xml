@@ -254,6 +254,14 @@
 	<OCity_GameAttack_Host_Atack_Repulsed>你击退了攻击！ :) </OCity_GameAttack_Host_Atack_Repulsed>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>跑不掉的敌人会留在地图上，但他们已经和指挥官失去了联系</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
+	<!-- OCIncidents -->
+	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
+	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
+	<OC_Incidents_Acid_Label>Gas atack!</OC_Incidents_Acid_Label>
+	<OC_Incidents_Acid_Text>Toxic gas has been sprayed over your settlement</OC_Incidents_Acid_Text>
+	<OC_Incidents_Inf_Label>Man-made Infestation!</OC_Incidents_Inf_Label>
+	<OC_Incidents_Inf_Text>Someone lured the swarm to the surface with high frequency vibrations</OC_Incidents_Inf_Text>
+	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Ошибка соединения.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
