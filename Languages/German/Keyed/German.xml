@@ -85,7 +85,9 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_Dialog_CreateWorld_Err2>Ungültige Parameter</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Abbrechen</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Seed</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_Difficulty>Spiel Schwierigkeitsgrad von 0 (sehr einfach) bis 2 (schwer)</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_ScenarioErr>Please select a Scenario</OCity_Dialog_CreateWorld_ScenarioErr>
+	<OCity_Dialog_CreateWorld_Scenario>Select Scenario</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Difficulty>Select Difficulty</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Die Größe der Karte (200 - klein, 400 - riesig)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>Prozentsatz der Generation der Planetenoberfläche (ab 5 bis zu 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 

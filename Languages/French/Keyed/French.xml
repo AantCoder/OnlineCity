@@ -85,7 +85,9 @@ Prix des personnes et des animaux: {3}</OCity_Caravan_Other>
 	<OCity_Dialog_CreateWorld_Err2>Paramètres invalides</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Annuler</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Graine</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_Difficulty>Difficulté. Nombre de 0 (très simple) à 2 (difficile)</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_ScenarioErr>Please select a Scenario</OCity_Dialog_CreateWorld_ScenarioErr>
+	<OCity_Dialog_CreateWorld_Scenario>Select Scenario</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Difficulty>Select Difficulty</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Taille de la carte locale (200 - petite, 400 - ludeonicrous)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>Pourcentage de génération de la planète (de 5 à 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 

@@ -44,7 +44,7 @@ namespace ServerOnlineCity.ChatService
             //базовая проверка аргументов
             if (argsM.Count < 2)
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                    "Укажите тип инциндента и игрока, для некоторых действий возможны дополнительные параметры".NeedTranslate());
+                    "OC_Incidents_CallIncidents_Err1".NeedTranslate());
 
             //собираем данные
             IncidentTypes type = IncidentTypes.Raid;
@@ -64,7 +64,7 @@ namespace ServerOnlineCity.ChatService
                     break;
                 default:
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                        "Укажите допустимый тип инциндента".NeedTranslate());
+                        "OC_Incidents_CallIncidents_TypeErr".NeedTranslate());
             }
 
             PlayerServer targetPlayer = Repository.GetPlayerByLogin(argsM[1]);

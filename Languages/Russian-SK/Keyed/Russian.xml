@@ -85,7 +85,8 @@
 	<OCity_Dialog_CreateWorld_Err2>Неверно заполнены параметры</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Отмена</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Зерно</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_Difficulty>Сложность. Целое от 0 (очень просто) до 2 (тяжело)</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_Scenario>Сценарий</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Difficulty>Сложность</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Размер карты местности (200 - малая, 400 - огромная)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>Процент генерации поверхности планеты (от 5 до 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 

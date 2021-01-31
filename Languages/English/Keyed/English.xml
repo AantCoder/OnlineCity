@@ -260,6 +260,8 @@ Pawn wealth: {3}</OCity_Caravan_Other>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>The enemies who couldn't get away will stay on the map, but they've lost touch with their commander.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- OCIncidents -->
+	<OC_Incidents_CallIncidents_Err1>Enter incident type and player. Some incidents require additional parameters</OC_Incidents_CallIncidents_Err1>
+	<OC_Incidents_CallIncidents_TypeErr>Enter allowed incident type</OC_Incidents_CallIncidents_TypeErr>
 	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
 	<OC_Incidents_Acid_Label>Gas atack!</OC_Incidents_Acid_Label>
