@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
 	<!-- MainMenu.cs -->
@@ -87,7 +87,7 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_Dialog_CreateWorld_Seed>Seed</OCity_Dialog_CreateWorld_Seed>
 	<OCity_Dialog_CreateWorld_Difficulty>Spiel Schwierigkeitsgrad von 0 (sehr einfach) bis 2 (schwer)</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Die Größe der Karte (200 - klein, 400 - riesig)</OCity_Dialog_CreateWorld_MapSize>
-	<OCity_Dialog_CreateWorld_PercentWorld>Prozentsatz der Generation der Planetenoberfläche (ab 5 bis zu 100)</OCity_Dialog_CreateWorld_PercentWorld>
+	<OCity_Dialog_CreateWorld_PercentWorld>Prozentsatz der Generation der Planetenoberfläche (ab 5 bis zu 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>Anmelden</OCity_LoginForm_BtnEnter>
@@ -257,6 +257,14 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_GameAttack_Host_Atack_Repulsed>You repulsed that attack! :)</OCity_GameAttack_Host_Atack_Repulsed>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>The enemies who couldn't get away will stay on the map, but they've lost touch with their commander.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
+	<!-- OCIncidents -->
+	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
+	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
+	<OC_Incidents_Acid_Label>Gas atack!</OC_Incidents_Acid_Label>
+	<OC_Incidents_Acid_Text>Toxic gas has been sprayed over your settlement</OC_Incidents_Acid_Text>
+	<OC_Incidents_Inf_Label>Man-made Infestation!</OC_Incidents_Inf_Label>
+	<OC_Incidents_Inf_Text>Someone lured the swarm to the surface with high frequency vibrations</OC_Incidents_Inf_Text>
+	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Verbindungsfehler</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Verbindung abgebrochen</OCity_SCC_DisconnectedShow> -->
@@ -269,7 +277,8 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> Autor Vasily Ivanov alias Aant.</OCity_AboutTabText>
-	<OCity_AboutGeneralText>Greetings, colonizer!
+	<OCity_AboutGeneralText>
+		Greetings, colonizer!
 
 OnlineCity - is a network game module for the RimWorld survival simulator. It allows multiple players to play on the same planet online.
 
@@ -379,13 +388,12 @@ The extreme position on the border of the map is not available due to the patch.
 Additionally, it may be interesting:
 
 In the ModsConfig.xml file, the list of mods should start with
-    <li> brrainz.harmony </li>
-    <li> ludeon.rimworld </li>
-    <li> unlimitedhugs.hugslib </li>
-And end (preferably at the very end):
-    <li> aant.onlinecity </li>
-
-Common problems:
+		<li> brrainz.harmony </li>
+		<li> ludeon.rimworld </li>
+		<li> unlimitedhugs.hugslib </li>
+		And end (preferably at the very end):
+		<li> aant.onlinecity </li>
+		Common problems:
 
 * If your computer can barely handle RimWorld, then keep in mind that with this mod the memory requirement is slightly increased. It is recommended to play on a 64-bit operating system.
 
@@ -585,6 +593,5 @@ Discord: https://discord.gg/5DzWrnR
 Official VK mod group: https://vk.com/rimworldonline
 Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
 GitHub: https://github.com/AantCoder/OnlineCity
-
-</OCity_AboutGeneralText>
+	</OCity_AboutGeneralText>
 </LanguageData>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<MainButtonDef>
+		<defName>Test</defName>
+		<label>test</label>
+		<description>experiment!</description>
+		<tabWindowClass>RimWorldOnlineCity.MainTabTestButton</tabWindowClass>
+		<canBeTutorDenied>false</canBeTutorDenied>
+		<order>490</order>
+		<validWithoutMap>true</validWithoutMap>
+		<minimized>True</minimized>
+	</MainButtonDef>
+</Defs>
