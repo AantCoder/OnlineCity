@@ -22,6 +22,7 @@ namespace RimWorldOnlineCity
             { typeof(ModelMailAttackCancel), MailProcessAttackCancel},
             { typeof(ModelMailAttackTechnicalVictory), MailProcessAttackTechnicalVictory},
             { typeof(ModelMailStartIncident), MailProcessStartIncident},
+            { typeof(ModelMailMessadge), MailProcessMessadge}
         };
 
         public static void MailArrived(ModelMail mail)
@@ -95,6 +96,12 @@ namespace RimWorldOnlineCity
             }
 
             return place;
+        }
+
+        public static void MailProcessMessadge(ModelMail incoming)
+        {
+            var msg = (ModelMailMessadge)incoming;
+            Find.LetterStack.ReceiveLetter(msg.label, msg.text, LetterDefOf.ThreatBig);
         }
 
         #region MailProcessStartIncident
