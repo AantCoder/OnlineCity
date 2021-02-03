@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Verse;
-using RimWorld;
 
 namespace Transfer.ModelMails
 {
@@ -14,10 +12,21 @@ namespace Transfer.ModelMails
     {
         public string label;
         public string text;
-        public LetterDef def = LetterDefOf.NeutralEvent;
+        public MessadgeTypes type = MessadgeTypes.Neutral;
         public override string GetHash()
         {
             return "NotContent";
+        }
+
+        public enum MessadgeTypes
+        {
+            ThreatBig,
+            ThreatSmall,
+            Negative,
+            Neutral,
+            Positive,
+            Death,
+            Visitor,
         }
     }
 }

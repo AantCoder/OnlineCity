@@ -91,6 +91,7 @@
     <Compile Include="Transfer\ModelMails\ModelMailAttackCancel.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailAttackTechnicalVictory.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailDeleteWO.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailMessadge.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailStartIncident.cs" />
     <Compile Include="Transfer\Model\AttackCorpse.cs" />
     <Compile Include="Transfer\Model\IPlayerEx.cs" />

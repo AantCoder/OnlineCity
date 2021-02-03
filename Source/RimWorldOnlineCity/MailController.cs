@@ -101,7 +101,35 @@ namespace RimWorldOnlineCity
         public static void MailProcessMessadge(ModelMail incoming)
         {
             var msg = (ModelMailMessadge)incoming;
-            Find.LetterStack.ReceiveLetter(msg.label, msg.text, LetterDefOf.ThreatBig);
+            LetterDef def;
+            switch (msg.type)
+            {
+                case ModelMailMessadge.MessadgeTypes.ThreatBig:
+                    def = LetterDefOf.ThreatBig;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.ThreatSmall:
+                    def = LetterDefOf.ThreatSmall;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Death:
+                    def = LetterDefOf.Death;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Negative:
+                    def = LetterDefOf.NegativeEvent;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Neutral:
+                    def = LetterDefOf.NeutralEvent;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Positive:
+                    def = LetterDefOf.PositiveEvent;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Visitor:
+                    def = LetterDefOf.AcceptVisitors;
+                    break;
+                default:
+                    def = LetterDefOf.NeutralEvent;
+                    break;
+            }
+            Find.LetterStack.ReceiveLetter(msg.label, msg.text, def);
         }
 
         #region MailProcessStartIncident
