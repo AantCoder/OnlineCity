@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Transfer;
+using Transfer.ModelMails;
 
 namespace ServerOnlineCity.ChatService
 {
@@ -147,10 +148,10 @@ namespace ServerOnlineCity.ChatService
 
             
             //формируем пакет
-            var packet = new ModelMailTrade();
-            packet.Type = ModelMailTradeType.StartIncident;
+            var packet = new ModelMailStartIncident();
             packet.From = player.Public;
             packet.To = targetPlayer.Public;
+            packet.NeedSaveGame = true;
             packet.IncidentType = type;
             packet.IncidentArrivalMode = arrivalMode;
             packet.IncidentMult = mult;
@@ -161,10 +162,11 @@ namespace ServerOnlineCity.ChatService
             //проверка на допустимость и добавление инциндента. Возможно подобную проверку делать при добавлении инциндента из любого места
             lock (targetPlayer)
             {
-                if (targetPlayer.Mails.Count(m => m.Type == ModelMailTradeType.StartIncident && m.From.Login == ownLogin) > 1)
+                if (targetPlayer.Mails.Count(m => m is ModelMailStartIncident && m.From.Login == ownLogin) > 1)
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                         "Ваш прошлый инциндент для этого игрока ещё не сработал".NeedTranslate());
-                /* todo!!!
+                
+                /* // для тестов:
                 var now = DateTime.UtcNow;
                 if (targetPlayer.LastIncidents.Count > 0)
                 {
@@ -173,19 +175,13 @@ namespace ServerOnlineCity.ChatService
                         return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                             "Достигнуто максимальное количество инциндентов для этого игрока за час".NeedTranslate());
                 }
-                if (targetPlayer.Mails.Count(m => m.Type == ModelMailTradeType.StartIncident) > RaidInOffline)
+                if (targetPlayer.Mails.Count(m => m is ModelMailStartIncident) > RaidInOffline)
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                         "Достигнуто максимальное количество инциндентов для этого игрока".NeedTranslate());
-                
-                targetPlayer.Mails.Add(packet);
                 targetPlayer.LastIncidents.Add(now);
                 */
-            }
-            /* // для тестов:
-            lock (targetPlayer)
-            {
                 targetPlayer.Mails.Add(packet);
-            }*/
+            }
 
             return new ModelStatus() { Status = 0 };
         }

@@ -1,13 +1,14 @@
-﻿using ServerOnlineCity.Model;
+﻿using OCUnion.Transfer.Model;
+using ServerOnlineCity.Model;
 using Transfer;
 
 namespace ServerOnlineCity.Services
 {
     internal sealed class ExchengeBuy : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 23;
+        public int RequestTypePackage => (int)PackageType.Request23;
 
-        public int ResponseTypePackage => 24;
+        public int ResponseTypePackage => (int)PackageType.Response24;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {

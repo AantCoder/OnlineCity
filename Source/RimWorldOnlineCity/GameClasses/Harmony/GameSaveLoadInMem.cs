@@ -11,7 +11,6 @@ using Verse;
 
 namespace RimWorldOnlineCity.GameClasses.Harmony
 {
-    //Следим за включением режима разработчика, если он отключен
     [HarmonyPatch(typeof(ScribeLoader))]
     [HarmonyPatch("InitLoading")]
     internal class ScribeLoader_InitLoading_Patch
@@ -116,7 +115,6 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
 	}
 
-	//Следим за включением режима разработчика, если он отключен
 	[HarmonyPatch(typeof(ScribeSaver))]
 	[HarmonyPatch("InitSaving")]
 	internal class ScribeSaver_InitSaving_Patch

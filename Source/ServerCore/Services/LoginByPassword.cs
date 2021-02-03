@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using OCUnion;
+using OCUnion.Transfer.Model;
 using ServerOnlineCity.Model;
 using Transfer;
+using Transfer.ModelMails;
 
 namespace ServerOnlineCity.Services
 {
     internal sealed class LoginByPassword : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 3;
+        public int RequestTypePackage => (int)PackageType.Request3Login;
 
-        public int ResponseTypePackage => 4;
+        public int ResponseTypePackage => (int)PackageType.Response4Login;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
@@ -51,6 +53,18 @@ namespace ServerOnlineCity.Services
                 };
             }
 
+            //перед входом закрываем все подключения этого же игрока
+            context.AllSessionAction(session =>
+            {
+                var sc = session.GetContext();
+                if (sc == null 
+                    || sc.Player?.Public?.Login != player.Public.Login
+                    || sc == context) return;
+
+                Loger.Log("Disconnect old session at relogin " + player.Public.Login);
+                session.Dispose();
+            });
+
             //действия перед входом
             player.ExitReason = OCUnion.Transfer.DisconnectReason.AllGood;
             player.ApproveLoadWorldReason = OCUnion.Transfer.Types.ApproveLoadWorldReason.LoginOk;
@@ -67,7 +81,7 @@ namespace ServerOnlineCity.Services
                 {
                     for (int i = 0; i < player.Mails.Count; i++)
                     {
-                        if (player.Mails[i].Type == ModelMailTradeType.AttackCancel)
+                        if (player.Mails[i] is ModelMailAttackCancel)
                         {
                             player.Mails.RemoveAt(i--);
                         }

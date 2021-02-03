@@ -6,11 +6,13 @@ using Verse;
 using RimWorld;
 using UnityEngine;
 using Transfer;
+using Transfer.ModelMails;
 
 namespace RimWorldOnlineCity
 {
     class MainTabTestButton : MainTabWindow  // ui для отладки ивентов, нужно будет убрать
     {
+
         public override Vector2 InitialSize => new Vector2(600, 400);
 
         public override void DoWindowContents(Rect inRect) //окно с кнопками вызовов ивентов

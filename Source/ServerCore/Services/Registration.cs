@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using OCUnion;
+using OCUnion.Transfer.Model;
 using ServerOnlineCity.Model;
 using Transfer;
 
@@ -7,9 +8,9 @@ namespace ServerOnlineCity.Services
 {
     internal sealed class Registration : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 1;
+        public int RequestTypePackage => (int)PackageType.Request1Register;
 
-        public int ResponseTypePackage => 2;
+        public int ResponseTypePackage => (int)PackageType.Response2Register;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {

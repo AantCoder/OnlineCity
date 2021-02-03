@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Transfer;
 using RimWorld;
 using Verse;
+using Transfer.ModelMails;
 
 namespace RimWorldOnlineCity
 {
@@ -19,20 +20,20 @@ namespace RimWorldOnlineCity
 
         public abstract bool TryExecuteEvent();
 
-        public static RaidStrategyDef GetStrategy(Transfer.IncidentStrategys strat)
+        public static RaidStrategyDef GetStrategy(IncidentStrategys strat)
         {
             return RaidStrategyDefOf.ImmediateAttack;
         }
 
-        public static PawnsArrivalModeDef GetArrivalMode(Transfer.IncidentArrivalModes arrive)
+        public static PawnsArrivalModeDef GetArrivalMode(IncidentArrivalModes arrive)
         {
             switch (arrive)
             {
-                case Transfer.IncidentArrivalModes.EdgeWalkIn:
+                case IncidentArrivalModes.EdgeWalkIn:
                     return PawnsArrivalModeDefOf.EdgeWalkIn;
-                case Transfer.IncidentArrivalModes.RandomDrop:
+                case IncidentArrivalModes.RandomDrop:
                     return PawnsArrivalModeDefOf.RandomDrop;
-                case Transfer.IncidentArrivalModes.CenterDrop:
+                case IncidentArrivalModes.CenterDrop:
                     return PawnsArrivalModeDefOf.CenterDrop;
                 default:
                     return PawnsArrivalModeDefOf.EdgeWalkIn;

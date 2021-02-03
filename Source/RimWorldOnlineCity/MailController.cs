@@ -8,36 +8,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Transfer;
+using Transfer.ModelMails;
 using Verse;
 
 namespace RimWorldOnlineCity
 {
     static class MailController
     {
-        private static Dictionary<ModelMailTradeType, Action<ModelMailTrade>> TypeMailProcessing = new Dictionary<ModelMailTradeType, Action<ModelMailTrade>>()
+        private static Dictionary<Type, Action<ModelMail>> TypeMailProcessing = new Dictionary<Type, Action<ModelMail>>()
         {
-            { ModelMailTradeType.CreateThings, MailProcessCreateThings},
-            { ModelMailTradeType.DeleteByServerId, MailProcessDeleteByServerId},
-            { ModelMailTradeType.AttackCancel, MailProcessAttackCancel},
-            { ModelMailTradeType.AttackTechnicalVictory, MailProcessAttackTechnicalVictory},
-            { ModelMailTradeType.StartIncident, MailProcessStartEvent},
+            { typeof(ModelMailTrade), MailProcessCreateThings},
+            { typeof(ModelMailDeleteWO), MailProcessDeleteByServerId},
+            { typeof(ModelMailAttackCancel), MailProcessAttackCancel},
+            { typeof(ModelMailAttackTechnicalVictory), MailProcessAttackTechnicalVictory},
+            { typeof(ModelMailStartIncident), MailProcessStartIncident},
         };
 
-        public static void MailArrived(ModelMailTrade mail)
+        public static void MailArrived(ModelMail mail)
         {
             try
             {
                 if (mail.To == null
                     || mail.To.Login != SessionClientController.My.Login) return;
 
-                Action<ModelMailTrade> action;
-                if (TypeMailProcessing.TryGetValue(mail.Type, out action))
+                Action<ModelMail> action;
+                if (TypeMailProcessing.TryGetValue(mail.GetType(), out action))
                 {
                     action(mail);
                 }
                 else
                 {
-                    Loger.Log("Mail fail: error type " + mail.Type);
+                    Loger.Log("Mail fail: error type " + mail.GetType().Name);
                 }
             }
             catch(Exception e)
@@ -46,7 +47,8 @@ namespace RimWorldOnlineCity
             }
         }
 
-        private static WorldObject GetPlace(ModelMailTrade mail, bool softSettlement = true, bool softNewCaravan = false)
+        private static WorldObject GetPlace<TMailPlace>(TMailPlace mail, bool softSettlement = true, bool softNewCaravan = false)
+            where TMailPlace : ModelMail, IModelMailPlace
         {
             if (mail.PlaceServerId <= 0)
             {
@@ -95,8 +97,11 @@ namespace RimWorldOnlineCity
             return place;
         }
 
-        public static void MailProcessStartEvent(ModelMailTrade mail)
+        #region MailProcessStartIncident
+        public static void MailProcessStartIncident(ModelMail incoming)
         {
+            var mail = (ModelMailStartIncident)incoming;
+
             Find.TickManager.Pause();
             
             var incident = new Incidents().GetIncident(mail.IncidentType);
@@ -108,10 +113,13 @@ namespace RimWorldOnlineCity
 
             if (!SessionClientController.Data.BackgroundSaveGameOff) SessionClientController.SaveGameNow(true);
         }
+        #endregion
 
         #region CreateThings
-        public static void MailProcessCreateThings(ModelMailTrade mail)
-        { 
+        public static void MailProcessCreateThings(ModelMail incoming)
+        {
+            ModelMailTrade mail = (ModelMailTrade)incoming;
+
             if (mail.Things == null
                 || mail.Things.Count == 0
                 || mail.PlaceServerId <= 0)
@@ -215,8 +223,10 @@ namespace RimWorldOnlineCity
         #endregion CreateThings
 
         #region DeleteByServerId
-        public static void MailProcessDeleteByServerId(ModelMailTrade mail)
+        public static void MailProcessDeleteByServerId(ModelMail incoming)
         {
+            var mail = (ModelMailDeleteWO)incoming;
+
             Loger.Log("Client MailProcessDeleteByServerId " + mail.PlaceServerId);
 
             if (mail.PlaceServerId <= 0)
@@ -237,8 +247,10 @@ namespace RimWorldOnlineCity
         #endregion DeleteByServerId
 
         #region AttackCancel
-        public static void MailProcessAttackCancel(ModelMailTrade mail)
+        public static void MailProcessAttackCancel(ModelMail incoming)
         {
+            var mail = (ModelMailAttackCancel)incoming;
+
             Loger.Log("Client MailProcessAttackCancel");
 
             GameAttackTrigger_Patch.ForceSpeed = -1f; //на всякий случай
@@ -250,8 +262,10 @@ namespace RimWorldOnlineCity
         #endregion AttackCancel
 
         #region TechnicalVictory
-        public static void MailProcessAttackTechnicalVictory(ModelMailTrade mail)
+        public static void MailProcessAttackTechnicalVictory(ModelMail incoming)
         {
+            var mail = (ModelMailAttackTechnicalVictory)incoming;
+
             Loger.Log("Client MailProcessAttackTechnicalVictory");
 
             if (SessionClientController.Data.AttackModule != null)

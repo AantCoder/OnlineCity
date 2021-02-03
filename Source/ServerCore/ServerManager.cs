@@ -271,10 +271,7 @@ namespace ServerOnlineCity
 
                         //ChatManager.Instance.AddSystemPostToPublicChat(msg); // раскоментировать, для поста в общий чат
 
-                        Repository.DropUserFromMap(player.Public.Login);
-                        Repository.GetSaveData.DeletePlayerData(player.Public.Login);
-                        player.Public.LastSaveTime = DateTime.MinValue;
-                        Repository.Get.ChangeData = true;
+                        player.AbandonSettlement();
                         Loger.Log("Server " + msg);
                     }
                 }
@@ -413,6 +410,24 @@ namespace ServerOnlineCity
             thread.Start();
         }
 
+        private List<SessionServer> Sessions = new List<SessionServer>();
+
+        /// <summary>
+        /// Обработать в событии все активные сессии. Корректно завершить выбранные сессии только через этот механизм
+        /// </summary>
+        /// <param name="act"></param>
+        private void SessionsAction(Action<SessionServer> act)
+        {
+            lock (Sessions)
+            {
+                for(int i = 0; i < Sessions.Count; i++)
+                {
+                    if (Sessions[i].IsActive) act(Sessions[i]);
+                    if (!Sessions[i].IsActive) Sessions.RemoveAt(i--);
+                }
+            }
+        }
+
         private void DoClient(ConnectClient client)
         {
             SessionServer session = null;
@@ -423,7 +438,15 @@ namespace ServerOnlineCity
                 {
                     Loger.Log($"New connect {addrIP} (connects: {ActiveClientCount})");
                     session = new SessionServer();
-                    session.Do(client);
+                    lock (Sessions)
+                    {
+                        Sessions.Add(session);
+                    }
+                    session.Do(client, SessionsAction);
+                }
+                catch (ObjectDisposedException)
+                {
+                    Loger.Log("Abort connect Relogin " + addrIP);
                 }
                 catch (Transfer.ConnectClient.ConnectSilenceTimeOutException)
                 {

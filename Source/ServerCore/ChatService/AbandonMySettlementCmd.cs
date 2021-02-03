@@ -31,15 +31,12 @@ namespace ServerOnlineCity.ChatService
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.OnlyForPublicChannel, player.Public.Login, chat, "Operation only for the shared channel");
             }
 
-            var msg = "User " + player.Public.Login + " deleted settlements.";
-            _chatManager.AddSystemPostToPublicChat(msg);
+            //var msg = "User " + player.Public.Login + " deleted settlements.";
+            //_chatManager.AddSystemPostToPublicChat(msg); //раскомментировать, чтобы постить в общем чате всем
 
-            Repository.DropUserFromMap(player.Public.Login);
-            Repository.GetSaveData.DeletePlayerData(player.Public.Login);
-            player.Public.LastSaveTime = DateTime.MinValue;
+            player.AbandonSettlement();
             Loger.Log("Server killmyallplease " + player.Public.Login);
             player = null; ///  значение передается по ссылке, и успешно обнуляет у передающего класса
-            Repository.Get.ChangeData = true;
 
             return new ModelStatus()
             {

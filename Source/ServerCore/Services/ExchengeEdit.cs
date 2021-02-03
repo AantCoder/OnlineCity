@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Model;
 using OCUnion;
+using OCUnion.Transfer.Model;
 using ServerOnlineCity.Model;
 using Transfer;
 
@@ -10,9 +11,9 @@ namespace ServerOnlineCity.Services
 {
     internal sealed class ExchengeEdit : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 21;
+        public int RequestTypePackage => (int)PackageType.Request21;
 
-        public int ResponseTypePackage => 22;
+        public int ResponseTypePackage => (int)PackageType.Response22;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {

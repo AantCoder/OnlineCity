@@ -5,14 +5,15 @@ using Model;
 using ServerOnlineCity.Model;
 using ServerOnlineCity.Common;
 using System.Collections.Generic;
+using OCUnion.Transfer.Model;
 
 namespace ServerOnlineCity.Services
 {
     public sealed class UpdateChat : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 17;
+        public int RequestTypePackage => (int)PackageType.Request17;
 
-        public int ResponseTypePackage => 18;
+        public int ResponseTypePackage => (int)PackageType.Response18;
 
         private readonly ChatManager _chatManager = ChatManager.Instance;
 
