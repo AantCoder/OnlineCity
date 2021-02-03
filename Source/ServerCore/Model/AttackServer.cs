@@ -6,6 +6,7 @@ using Model;
 using OCUnion;
 using OCUnion.Transfer.Model;
 using Transfer;
+using Transfer.ModelMails;
 
 namespace ServerOnlineCity.Model
 {
@@ -459,9 +460,8 @@ namespace ServerOnlineCity.Model
         {
             var data = Repository.GetData;
             //команда хосту
-            var packet = new ModelMailTrade()
+            var packet = new ModelMailAttackCancel()
             {
-                Type = ModelMailTradeType.AttackCancel,
                 From = data.PlayersAll[0].Public,
                 To = Host.Public,
             };
@@ -470,9 +470,8 @@ namespace ServerOnlineCity.Model
                 Host.Mails.Add(packet);
             }
             //команда атакующему
-            packet = new ModelMailTrade()
+            packet = new ModelMailAttackCancel()
             {
-                Type = ModelMailTradeType.AttackCancel,
                 From = data.PlayersAll[0].Public,
                 To = Attacker.Public,
             };
@@ -552,9 +551,8 @@ namespace ServerOnlineCity.Model
                         Loger.Log("Server AttackServer Fail attacker off in progress" + logDet);
 
                         //команда хосту
-                        var packet = new ModelMailTrade()
+                        ModelMail packet = new ModelMailAttackTechnicalVictory()
                         {
-                            Type = ModelMailTradeType.AttackTechnicalVictory,
                             From = data.PlayersAll[0].Public,
                             To = Host.Public,
                         };
@@ -563,15 +561,13 @@ namespace ServerOnlineCity.Model
                             Host.Mails.Add(packet);
                         }
                         //команда атакующему
-                        packet = new ModelMailTrade()
+                        packet = new ModelMailAttackCancel()
                         {
-                            Type = ModelMailTradeType.AttackCancel,
                             From = data.PlayersAll[0].Public,
                             To = Attacker.Public,
                         };
-                        var packet2 = new ModelMailTrade()
+                        var packet2 = new ModelMailDeleteWO()
                         {
-                            Type = ModelMailTradeType.DeleteByServerId,
                             From = data.PlayersAll[0].Public,
                             To = Attacker.Public,
                             PlaceServerId = InitiatorPlaceServerId,
@@ -587,15 +583,13 @@ namespace ServerOnlineCity.Model
                 else
                 {   //Если отключился хост
                     //то уничтожение поселения хоста
-                    var packet1 = new ModelMailTrade()
+                    var packet1 = new ModelMailAttackCancel()
                     {
-                        Type = ModelMailTradeType.AttackCancel,
                         From = data.PlayersAll[0].Public,
                         To = Host.Public,
                     };
-                    var packet2 = new ModelMailTrade()
+                    var packet2 = new ModelMailDeleteWO()
                     {
-                        Type = ModelMailTradeType.DeleteByServerId,
                         From = data.PlayersAll[0].Public,
                         To = Host.Public,
                         PlaceServerId = HostPlaceServerId,
@@ -612,9 +606,8 @@ namespace ServerOnlineCity.Model
                         Loger.Log("Server AttackServer Fail host off in start" + logDet);
 
                         //команда атакующему
-                        var packet = new ModelMailTrade()
+                        var packet = new ModelMailAttackCancel()
                         {
-                            Type = ModelMailTradeType.AttackCancel,
                             From = data.PlayersAll[0].Public,
                             To = Attacker.Public,
                         };
@@ -629,9 +622,8 @@ namespace ServerOnlineCity.Model
                         Loger.Log("Server AttackServer Fail host off in progress" + logDet);
 
                         //команда атакующему
-                        var packet = new ModelMailTrade()
+                        var packet = new ModelMailAttackTechnicalVictory()
                         {
-                            Type = ModelMailTradeType.AttackTechnicalVictory,
                             From = data.PlayersAll[0].Public,
                             To = Attacker.Public,
                         };

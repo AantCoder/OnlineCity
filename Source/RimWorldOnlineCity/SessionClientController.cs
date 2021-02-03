@@ -992,7 +992,8 @@ namespace RimWorldOnlineCity
 
         public static bool ReconnectWithTimers()
         {
-            Timers.LowLevelStop();
+            Timers.Pause = true;
+            SessionClient.IsRelogin = true;
             try
             {
                 var repeat = 3;
@@ -1018,7 +1019,8 @@ namespace RimWorldOnlineCity
             }
             finally
             {
-                Timers.LowLevelStart();
+                Timers.Pause = false;
+                SessionClient.IsRelogin = false;
             }
         }
 
