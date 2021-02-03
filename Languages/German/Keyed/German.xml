@@ -260,13 +260,18 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>The enemies who couldn't get away will stay on the map, but they've lost touch with their commander.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- OCIncidents -->
+	<OC_Incidents_CallIncidents_Err1>Enter incident type and player. Some incidents require additional parameters</OC_Incidents_CallIncidents_Err1>
+	<OC_Incidents_CallIncidents_TypeErr>Enter allowed incident type</OC_Incidents_CallIncidents_TypeErr>
+	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Reached max number of incidents in hour</OC_Incidents_CallIncidents_MaxIncidentsInHour>
+	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Reached max number of incodents for this player</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+
 	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
 	<OC_Incidents_Acid_Label>Gas atack!</OC_Incidents_Acid_Label>
 	<OC_Incidents_Acid_Text>Toxic gas has been sprayed over your settlement</OC_Incidents_Acid_Text>
 	<OC_Incidents_Inf_Label>Man-made Infestation!</OC_Incidents_Inf_Label>
 	<OC_Incidents_Inf_Text>Someone lured the swarm to the surface with high frequency vibrations</OC_Incidents_Inf_Text>
-	
+
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Verbindungsfehler</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Verbindung abgebrochen</OCity_SCC_DisconnectedShow> -->

@@ -260,6 +260,11 @@ Prix des personnes et des animaux: {3}</OCity_Caravan_Other>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>Les ennemies qui ne pouvaient pas s'enfuir resteront sur la carte, mais ils ont perdus le contact avec leur chef.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- OCIncidents -->
+	<OC_Incidents_CallIncidents_Err1>Enter incident type and player. Some incidents require additional parameters</OC_Incidents_CallIncidents_Err1>
+	<OC_Incidents_CallIncidents_TypeErr>Enter allowed incident type</OC_Incidents_CallIncidents_TypeErr>
+	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Reached max number of incidents in hour</OC_Incidents_CallIncidents_MaxIncidentsInHour>
+	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Reached max number of incodents for this player</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+
 	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
 	<OC_Incidents_Acid_Label>Gas atack!</OC_Incidents_Acid_Label>
