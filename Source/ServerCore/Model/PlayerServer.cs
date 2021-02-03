@@ -122,6 +122,14 @@ namespace ServerOnlineCity.Model
             return values;
         }
 
+        public float AllCostWorldObjects()
+        {
+            var costAll = CostWorldObjects();
+            if (costAll.BaseCount + costAll.CaravanCount == 0) return 0;
+            if (costAll.MarketValue + costAll.MarketValuePawn == 0) return -1; //какой-то сбой отсутствия данных
+            return costAll.MarketValue + costAll.MarketValuePawn;
+        }
+
         public bool GetKeyReconnect()
         {
             if ((DateTime.UtcNow - KeyReconnectTime).TotalMinutes < 30

@@ -95,16 +95,18 @@ namespace RimWorldOnlineCity
             return place;
         }
 
-       
-
         public static void MailProcessStartEvent(ModelMailTrade mail)
         {
-            var incident = new RimWorldOnlineCity.Incidents().GetIncident(mail.IncidentType);
+            Find.TickManager.Pause();
+            
+            var incident = new Incidents().GetIncident(mail.IncidentType);
             incident.mult = mail.IncidentMult;
             incident.arrivalMode = mail.IncidentArrivalMode;
             incident.strategy = mail.IncidentStrategy;
             incident.faction = mail.IncidentFaction;
             incident.TryExecuteEvent();
+
+            if (!SessionClientController.Data.BackgroundSaveGameOff) SessionClientController.SaveGameNow(true);
         }
 
         #region CreateThings

@@ -25,7 +25,7 @@ namespace Model
 
         public long LastTick { get; set; }
 
-        public bool EnablePVP { get; set; } = true; //todo После доработки интерфейса убрать
+        public bool EnablePVP { get; set; }
 
         public string DiscordUserName { get; set; }
 

@@ -56,9 +56,9 @@ namespace ServerOnlineCity.ChatService
                 case "inf":
                     type = IncidentTypes.Infistation;
                     break;
-                case "bomb":
-                    type = IncidentTypes.Bombing;
-                    break;
+                //case "bomb":
+                //   type = IncidentTypes.Bombing;
+                //  break;
                 case "acid":
                     type = IncidentTypes.Acid;
                     break;
@@ -71,6 +71,31 @@ namespace ServerOnlineCity.ChatService
             if (targetPlayer == null)
             {
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[1] + " not found");
+            }
+            if (targetPlayer == player)
+            {
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
+                "Нельзя указывать самого себя".NeedTranslate());
+            }
+            if (player.Public.LastTick / 3600000 < 2)
+            {
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
+                "Нападать можно после 2х лет своего развития".NeedTranslate());
+            }
+            if (targetPlayer.Public.LastTick / 3600000 < 2)
+            {
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
+                "Нападать можно после 2х лет развития цели нападения".NeedTranslate());
+            }
+            if (player.AllCostWorldObjects() < 100000f)
+            {
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
+                "У вас слишком маленькая стоимость поселения".NeedTranslate());
+            }
+            if (targetPlayer.AllCostWorldObjects() < 100000f)
+            {
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
+                "У цели нападения слишком маленькая стоимость поселения".NeedTranslate());
             }
 
             int mult = 1;
@@ -124,6 +149,7 @@ namespace ServerOnlineCity.ChatService
             //формируем пакет
             var packet = new ModelMailTrade();
             packet.Type = ModelMailTradeType.StartIncident;
+            packet.From = player.Public;
             packet.To = targetPlayer.Public;
             packet.IncidentType = type;
             packet.IncidentArrivalMode = arrivalMode;
@@ -133,8 +159,12 @@ namespace ServerOnlineCity.ChatService
             Loger.Log("Server test call " + argsM[0] + " " + targetPlayer.Public.Login);
 
             //проверка на допустимость и добавление инциндента. Возможно подобную проверку делать при добавлении инциндента из любого места
-            /*lock (targetPlayer)
+            lock (targetPlayer)
             {
+                if (targetPlayer.Mails.Count(m => m.Type == ModelMailTradeType.StartIncident && m.From.Login == ownLogin) > 1)
+                    return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
+                        "Ваш прошлый инциндент для этого игрока ещё не сработал".NeedTranslate());
+                /* todo!!!
                 var now = DateTime.UtcNow;
                 if (targetPlayer.LastIncidents.Count > 0)
                 {
@@ -146,14 +176,16 @@ namespace ServerOnlineCity.ChatService
                 if (targetPlayer.Mails.Count(m => m.Type == ModelMailTradeType.StartIncident) > RaidInOffline)
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                         "Достигнуто максимальное количество инциндентов для этого игрока".NeedTranslate());
+                
                 targetPlayer.Mails.Add(packet);
                 targetPlayer.LastIncidents.Add(now);
-            }*/ // мешает тестить!!!11!1!
-
+                */
+            }
+            /* // для тестов:
             lock (targetPlayer)
             {
                 targetPlayer.Mails.Add(packet);
-            }
+            }*/
 
             return new ModelStatus() { Status = 0 };
         }
