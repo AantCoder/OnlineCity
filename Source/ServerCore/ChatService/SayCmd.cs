@@ -30,8 +30,22 @@ namespace ServerOnlineCity.ChatService
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
             var ownLogin = player.Public.Login;
-
+            if (argsM.Count < 3)
+            {
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
+                   "Необходимо минимум 3 аргумента: имя игрока, заголовок, текст".NeedTranslate());
+            }
+            
             PlayerServer targetPlayer = Repository.GetPlayerByLogin(argsM[1]);
+            if (targetPlayer == null)
+            {
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[1] + " not found");
+            }
+            if (targetPlayer == player)
+            {
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
+                "Нельзя указывать самого себя".NeedTranslate());
+            }
 
             ModelMailMessadge.MessadgeTypes type = ModelMailMessadge.MessadgeTypes.Neutral;
             string label;
@@ -60,13 +74,19 @@ namespace ServerOnlineCity.ChatService
                     case "/visitor":
                         type = ModelMailMessadge.MessadgeTypes.Visitor;
                         break;
+                    case "/nuetral":
+                        type = ModelMailMessadge.MessadgeTypes.Neutral;
+                        break;
+                    default:
+                        return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
+                        "Неверный тип сообщения".NeedTranslate());
                 }
                 argNum++;
             }
 
             label = argsM[argNum++];
 
-            while(argNum < argsM.Count())
+            while(argNum < argsM.Count)
             {
                 text += argsM[argNum++] + " ";
             }
