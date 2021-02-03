@@ -165,21 +165,22 @@ namespace ServerOnlineCity.ChatService
                 if (targetPlayer.Mails.Count(m => m is ModelMailStartIncident && m.From.Login == ownLogin) > 1)
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                         "Ваш прошлый инциндент для этого игрока ещё не сработал".NeedTranslate());
-                
-                /* // для тестов:
+
+                /* // для тестов: 
                 var now = DateTime.UtcNow;
                 if (targetPlayer.LastIncidents.Count > 0)
                 {
                     targetPlayer.LastIncidents = targetPlayer.LastIncidents.Where(i => (now - i).TotalHours < 1).ToList();
                     if (targetPlayer.LastIncidents.Count >= RaidInHours)
                         return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                            "Достигнуто максимальное количество инциндентов для этого игрока за час".NeedTranslate());
+                            "OC_Incidents_CallIncidents_MaxIncidentsInHour".NeedTranslate());
                 }
                 if (targetPlayer.Mails.Count(m => m is ModelMailStartIncident) > RaidInOffline)
                     return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                        "Достигнуто максимальное количество инциндентов для этого игрока".NeedTranslate());
+                        "OC_Incidents_CallIncidents_MaxIncidentsCnt".NeedTranslate());
                 targetPlayer.LastIncidents.Add(now);
                 */
+
                 targetPlayer.Mails.Add(packet);
             }
 
