@@ -16,7 +16,6 @@ namespace ServerOnlineCity.ChatService
     {
         public string CmdID => "call";
 
-        //todo: только для модераторов и админов?
         public Grants GrantsForRun => Grants.UsualUser | Grants.SuperAdmin | Grants.Moderator | Grants.DiscordBot;
 
         public string Help => ChatManager.prefix + "call {raid|caravan|...} {UserLogin} [{params}]";
@@ -47,26 +46,32 @@ namespace ServerOnlineCity.ChatService
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[1] + " not found");
             }
 
-            int mult = 1;
+            long serverId = 0;
             if (argsM.Count > 2)
             {
-                mult = Int32.Parse(argsM[2]);
+                serverId = Int64.Parse(argsM[2]);
+            }
+
+            int mult = 1;
+            if (argsM.Count > 3)
+            {
+                mult = Int32.Parse(argsM[3]);
             }
 
             //  walk, random, air
             IncidentArrivalModes? arrivalMode = null;
-            if (argsM.Count > 3)
+            if (argsM.Count > 4)
             {
-                arrivalMode = CallIncident.ParseArrivalMode(argsM[3]);
+                arrivalMode = CallIncident.ParseArrivalMode(argsM[4]);
             }
 
             string faction = null;
-            if (argsM.Count > 4)
+            if (argsM.Count > 5)
             {
-                faction = CallIncident.ParseFaction(argsM[4]);
+                faction = CallIncident.ParseFaction(argsM[5]);
             }
 
-            var error = CallIncident.CreateIncident(player, targetPlayer, type, mult, arrivalMode, faction);
+            var error = CallIncident.CreateIncident(player, targetPlayer, serverId, type, mult, arrivalMode, faction);
             if (error != null) return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat, error);
 
             //var msg = argsM[0] + " lvl " + mult + " for user " + targetPlayer.Public.Login + " from " + ownLogin;

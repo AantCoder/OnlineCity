@@ -15,7 +15,7 @@ namespace ServerOnlineCity.ChatService
     {
         public string CmdID => "say";
 
-        //todo: только для модераторов и админов?
+        //только для модераторов и админов
         public Grants GrantsForRun => Grants.SuperAdmin | Grants.Moderator | Grants.DiscordBot;
 
         public string Help => ChatManager.prefix + "say {UserLogin | system} {/color} {Label} {text}";
@@ -92,13 +92,14 @@ namespace ServerOnlineCity.ChatService
             }
 
             //формируем пакет
-            var packet = new ModelMailMessadge();
-            packet.From = player.Public;
-            packet.To = targetPlayer.Public;
-            packet.type = type;
-            packet.label = label;
-            packet.text = text;
-            packet.NeedSaveGame = true;
+            var packet = new ModelMailMessadge()
+            {
+                From = player.Public,
+                To = targetPlayer.Public,
+                type = type,
+                label = label,
+                text = text,
+            };
 
             Loger.Log("say to " + targetPlayer.Public.Login);
 

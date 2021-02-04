@@ -16,9 +16,19 @@ namespace OCUnion
         public bool IncidentEnable { get; set; }
 
         /// <summary>
-        /// Сколько разрешено инцендентов за 10 игровых дней
+        /// Сколько разрешено инцендентов в очереди
         /// </summary>
-        public int IncidentCountIn10Days { get; set; }
+        public int IncidentCountInOffline { get; set; }
+
+        /// <summary>
+        /// Максимальный коэф. силы инцендентов
+        /// </summary>
+        public int IncidentMaxMult { get; set; }
+
+        /// <summary>
+        /// Минимальная пауза между инциндентами в тиках (1 день = 60000)
+        /// </summary>
+        public int IncidentTickDelayBetween { get; set; }
 
         /// <summary>
         /// Модификатор стоимости найма в процентах
@@ -59,7 +69,11 @@ namespace OCUnion
         {
             IncidentEnable = true;
 
-            IncidentCountIn10Days = 10;
+            IncidentCountInOffline = 2;
+
+            IncidentMaxMult = 10;
+
+            IncidentTickDelayBetween = 60000;
 
             IncidentCostPrecent = 100;
 

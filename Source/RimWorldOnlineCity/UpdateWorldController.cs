@@ -185,7 +185,6 @@ namespace RimWorldOnlineCity
                         : new CaravanOnline() { Tile = wo.Tile, OnlineWObject = wo })
                     .ToList();
                     */
-                //todo test it (Нет цены своих колоний)
             }
 
             //пришла посылка от каравана другого игрока
@@ -608,11 +607,11 @@ namespace RimWorldOnlineCity
 
         public static void DeleteWorldObject(WorldObjectEntry worldObjectEntry)
         {
-            List<WorldObject> allWorldObjects = Find.WorldObjects.AllWorldObjects;
             
             //поиск уже существующих
             CaravanOnline worldObject = null;
             /*
+            List<WorldObject> allWorldObjects = Find.WorldObjects.AllWorldObjects;
             int existId;
             if (ConverterServerId.TryGetValue(worldObjectEntry.ServerId, out existId))
             {

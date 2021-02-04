@@ -7,6 +7,8 @@ using Transfer;
 using RimWorld;
 using Verse;
 using Transfer.ModelMails;
+using RimWorld.Planet;
+using OCUnion;
 
 namespace RimWorldOnlineCity
 {
@@ -17,6 +19,7 @@ namespace RimWorldOnlineCity
         public IncidentArrivalModes arrivalMode = IncidentArrivalModes.EdgeWalkIn;
         public string faction = null;
         public IncidentParms parms;
+        public WorldObject place;
 
         public abstract bool TryExecuteEvent();
 
@@ -69,10 +72,37 @@ namespace RimWorldOnlineCity
         
         public float CalculatePoints()
         {
-            float points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap);
+            var target = (place as Settlement)?.Map ?? Find.CurrentMap;
 
-            //todo: переопределить формулу в каждом потомке ИЛИ проверять остальные параметры и добавлять множитель
-            return points*mult;
+            float points = StorytellerUtility.DefaultThreatPointsNow(target);
+
+            //Можно переопределить формулу в каждом потомке ИЛИ проверять остальные параметры и добавлять множитель
+            var resultPoints = points * mult
+                * (float)SessionClientController.Data.GeneralSettings.IncidentPowerPrecent / 100f;
+
+            Loger.Log($"CalculatePoints(). points={(int)points} resultPoints={resultPoints}");
+
+            return resultPoints;
+        }
+
+        public static int CalculateRaidCost(long serverId, int mult)
+        {
+            //var serverId = UpdateWorldController.GetServerInfo(wo).ServerId;
+            var target = UpdateWorldController.GetOtherByServerId(serverId) as BaseOnline;
+            if (target == null) return -1;
+            
+            var costs = target.Player.CostWorldObjects(serverId);
+            var cost = AttackUtils.MaxCostAttackerCaravan(costs.MarketValue + costs.MarketValuePawn, true);
+            if (cost <= 0) return -1;
+
+            //{цена поселения защитника/100 000}^(2/3) * 100 * lvl
+
+            var raidCost = (int)(Math.Pow(cost / 100000f, 2f / 3f) * 100f * (float)mult
+                * (float)SessionClientController.Data.GeneralSettings.IncidentCostPrecent / 100f);
+
+            Loger.Log($"CalculateRaidCost({serverId}, {mult}). targetCost={(int)cost} raidCost={raidCost}");
+            
+            return raidCost;
         }
     }
 
