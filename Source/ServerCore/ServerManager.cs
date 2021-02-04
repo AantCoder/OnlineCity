@@ -198,7 +198,7 @@ namespace ServerOnlineCity
                 changeInPlayers = true;
 
                 if (player.IsAdmin
-                    || true //todo переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
+                    || true //to do переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
                     )
                 {
                     if (allLogins == null) allLogins = new HashSet<string>(Repository.GetData.PlayersAll.Select(p => p.Public.Login));
@@ -221,10 +221,10 @@ namespace ServerOnlineCity
                         .ToList();
 
                     //те, кто запустил спутники
-                    //todo когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
+                    //to do когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
 
                     //и те кто географически рядом
-                    //todo
+                    //to do
 
                     //себя и system
                     if (!plNeed.Any(p => p == player.Public.Login)) plNeed.Add(player.Public.Login);

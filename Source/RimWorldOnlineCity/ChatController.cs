@@ -65,9 +65,9 @@ namespace RimWorldOnlineCity
             ChatUtils.ParceCommand(msg, out command, out args);
 
             //проверка, что денег хватает
-            int cost = CalculateRaidCost(Int32.Parse(args[2]));
-            int gold = Find.CurrentMap.resourceCounter.GetCount(ThingDefOf.Gold);
-            if (gold < cost) return new ModelStatus() { Status = 1 };
+            int cost = OCIncident.CalculateRaidCost(Int64.Parse(args[2]), Int32.Parse(args[3]));
+            int gold = Find.CurrentMap?.resourceCounter.GetCount(ThingDefOf.Gold) ?? -1;
+            if (cost < 0 || gold < 0 || gold < cost) return new ModelStatus() { Status = 1 };
             else 
                 return null;
         }
@@ -82,7 +82,7 @@ namespace RimWorldOnlineCity
                 ChatUtils.ParceCommand(msg, out command, out args);
 
                 //отнимаем нужное кол-во денег(золото или серебро... или что-нибудь ещё)
-                int cost = CalculateRaidCost(Int32.Parse(args[2]));
+                int cost = OCIncident.CalculateRaidCost(Int64.Parse(args[2]), Int32.Parse(args[3]));
                 List<Thing> things = GameUtils.GetAllThings(Find.CurrentMap);
                 foreach(Thing thing in things)
                 {
@@ -111,13 +111,6 @@ namespace RimWorldOnlineCity
                 Find.WindowStack.Add(new Dialog_Input(errorMessage, msg, true));
             }
         }
-
-        private static int CalculateRaidCost(int mult)
-        {
-            //потребуются вычисления сложнее
-            return 100 * mult;
-        }
-
         #endregion
 
     }

@@ -59,7 +59,7 @@ namespace RimWorldOnlineCity
             //находим наш объект, кому пришла передача
             var placeId = UpdateWorldController.GetLocalIdByServerId(mail.PlaceServerId);
 
-            Loger.Log("Mail " + placeId + " "
+            Loger.Log($"Mail {mail.GetType().Name} {placeId} "
                 + (mail.From == null ? "-" : mail.From.Login) + "->"
                 + (mail.To == null ? "-" : mail.To.Login) + ":"
                 + mail.ContentString());
@@ -98,6 +98,7 @@ namespace RimWorldOnlineCity
             return place;
         }
 
+        #region MailProcessMessadge
         public static void MailProcessMessadge(ModelMail incoming)
         {
             var msg = (ModelMailMessadge)incoming;
@@ -131,6 +132,7 @@ namespace RimWorldOnlineCity
             }
             Find.LetterStack.ReceiveLetter(msg.label, msg.text, def);
         }
+        #endregion
 
         #region MailProcessStartIncident
         public static void MailProcessStartIncident(ModelMail incoming)
@@ -144,6 +146,7 @@ namespace RimWorldOnlineCity
             incident.arrivalMode = mail.IncidentArrivalMode;
             incident.strategy = mail.IncidentStrategy;
             incident.faction = mail.IncidentFaction;
+            incident.place = GetPlace(mail);
             incident.TryExecuteEvent();
 
             if (!SessionClientController.Data.BackgroundSaveGameOff) SessionClientController.SaveGameNow(true);

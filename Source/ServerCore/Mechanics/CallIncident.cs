@@ -10,48 +10,45 @@ namespace ServerOnlineCity.Mechanics
 {
     public static class CallIncident
     {
-        /// <summary>
-        /// Максимум за последний час
-        /// </summary>
-        private static int RaidInHours = 5;
-
-        /// <summary>
-        /// Максимум до момента получения игроком накопленных инциндентов
-        /// </summary>
-        private static int RaidInOffline = 3;
-
         public static string CreateIncident(PlayerServer player
             , PlayerServer targetPlayer
+            , long serverId
             , IncidentTypes? type
             , int mult
             , IncidentArrivalModes? arrivalMode
             , string faction)
         {
+            if (!ServerManager.ServerSettings.GeneralSettings.IncidentEnable) return "Инцинденты отключены на этом сервере".NeedTranslate();
+
             if (type == null) return "OC_Incidents_CallIncidents_TypeErr";
 
             if (targetPlayer == player) return "Нельзя указывать самого себя".NeedTranslate();
-            
+
             if (player.Public.LastTick / 3600000 < 2) return "Нападать можно после 2х лет своего развития".NeedTranslate();
-            
+
             if (targetPlayer.Public.LastTick / 3600000 < 2) return "Нападать можно после 2х лет развития цели нападения".NeedTranslate();
-            
+
             if (player.AllCostWorldObjects() < 100000f) return "У вас слишком маленькая стоимость поселения".NeedTranslate();
-            
+
             if (targetPlayer.AllCostWorldObjects() < 100000f) return "У цели нападения слишком маленькая стоимость поселения".NeedTranslate();
 
-            mult = mult > 10 ? 10 : mult;
+            mult = mult > ServerManager.ServerSettings.GeneralSettings.IncidentMaxMult ? ServerManager.ServerSettings.GeneralSettings.IncidentMaxMult : mult;
 
             if (arrivalMode == null) arrivalMode = IncidentArrivalModes.EdgeWalkIn;
 
             //формируем пакет
-            var packet = new ModelMailStartIncident();
-            packet.From = player.Public;
-            packet.To = targetPlayer.Public;
-            packet.NeedSaveGame = true;
-            packet.IncidentType = type.Value;
-            packet.IncidentArrivalMode = arrivalMode.Value;
-            packet.IncidentMult = mult;
-            packet.IncidentFaction = faction;
+            var packet = new ModelMailStartIncident()
+            {
+                From = player.Public,
+                To = targetPlayer.Public,
+                PlaceServerId = serverId,
+                NeedSaveGame = true,
+                IncidentType = type.Value,
+                IncidentArrivalMode = arrivalMode.Value,
+                IncidentMult = mult,
+                IncidentFaction = faction
+            };
+            var fPacket = new FMailIncident(packet);
 
             Loger.Log("Server test call " + type.Value + " " + targetPlayer.Public.Login);
 
@@ -59,34 +56,26 @@ namespace ServerOnlineCity.Mechanics
             lock (targetPlayer)
             {
                 var ownLogin = player.Public.Login;
+                var list = targetPlayer.FunctionMails
+                    .Where(m => m is FMailIncident)
+                    .Cast<FMailIncident>()
+                    .Where(m => m.NumberOrder == fPacket.NumberOrder);
 
-                //if (targetPlayer.Mails.Count(m => m is ModelMailStartIncident && m.From.Login == ownLogin) > 1)
-                if (targetPlayer.FunctionMails.Count(m => (m as FMailIncident)?.Mail.From.Login == ownLogin) > 1)
-                    return "Ваш прошлый инциндент для этого игрока ещё не сработал".NeedTranslate();
-
-                /* todo
-                var now = DateTime.UtcNow;
-                if (targetPlayer.LastIncidents.Count > 0)
-                {
-                    targetPlayer.LastIncidents = targetPlayer.LastIncidents.Where(i => (now - i).TotalHours < 1).ToList();
-                    if (targetPlayer.LastIncidents.Count >= RaidInHours)
-                        return "OC_Incidents_CallIncidents_MaxIncidentsInHour".NeedTranslate();
-                }
-                if (targetPlayer.Mails.Count(m => m is ModelMailStartIncident) > RaidInOffline)
+                if (list.Count() > ServerManager.ServerSettings.GeneralSettings.IncidentCountInOffline)
                     return "OC_Incidents_CallIncidents_MaxIncidentsCnt".NeedTranslate();
 
-                targetPlayer.LastIncidents.Add(now);
-                */
+                if (list.Count(m => m.Mail.From.Login == ownLogin) > 1)
+                    return "Ваш прошлый инциндент для этого игрока ещё не сработал".NeedTranslate();
 
                 //targetPlayer.Mails.Add(packet);
                 //Вместо немедленной отправки, делаем это через обработчик отложенной отправки, для паузы между рейдами
-                targetPlayer.FunctionMails.Add(new FMailIncident() { Mail = packet });
+                targetPlayer.FunctionMails.Add(fPacket);
             }
 
             return null;
         }
 
-        internal static IncidentTypes? ParseIncidentTypes(string arg)
+        public static IncidentTypes? ParseIncidentTypes(string arg)
         {
             switch (arg.ToLower().Trim())
             {

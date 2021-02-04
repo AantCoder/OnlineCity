@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,9 @@ namespace RimWorldOnlineCity
 
         private IncidentParms GetParms()
         {
-            parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
+            var target = (place as Settlement)?.Map ?? Find.CurrentMap;
+
+            parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, target);
             parms.raidStrategy = GetStrategy(strategy);
             parms.raidArrivalMode = GetArrivalMode(arrivalMode);
             parms.customLetterLabel = "OC_Incidents_Raid_Label".Translate();
@@ -38,7 +41,7 @@ namespace RimWorldOnlineCity
             parms.raidNeverFleeIndividual = true;
             parms.faction = GetFaction();
             parms.forced = true;  //игнорировать все условия для события
-            parms.target = Find.CurrentMap;
+            parms.target = target;
             parms.points = CalculatePoints();
             //parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult >= StorytellerUtility.GlobalPointsMax ? StorytellerUtility.GlobalPointsMax : StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult;
             return parms;

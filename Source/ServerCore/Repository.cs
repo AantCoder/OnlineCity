@@ -101,7 +101,7 @@ namespace ServerOnlineCity
                         + Data.PlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
                         );
 
-                    ChatManager.Instance.NewChatManager(Data.MaxIdChat, Data.PlayersAll[0].Chats.Keys.First());
+                    ChatManager.Instance.NewChatManager(Data.MaxIdChat, Data.PlayerSystem.Chats.Keys.First());
                 }
             }
 

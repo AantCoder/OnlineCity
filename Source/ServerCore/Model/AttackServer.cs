@@ -462,7 +462,7 @@ namespace ServerOnlineCity.Model
             //команда хосту
             var packet = new ModelMailAttackCancel()
             {
-                From = data.PlayersAll[0].Public,
+                From = data.PlayerSystem.Public,
                 To = Host.Public,
             };
             lock (Host)
@@ -472,7 +472,7 @@ namespace ServerOnlineCity.Model
             //команда атакующему
             packet = new ModelMailAttackCancel()
             {
-                From = data.PlayersAll[0].Public,
+                From = data.PlayerSystem.Public,
                 To = Attacker.Public,
             };
             lock (Attacker)
@@ -553,7 +553,7 @@ namespace ServerOnlineCity.Model
                         //команда хосту
                         ModelMail packet = new ModelMailAttackTechnicalVictory()
                         {
-                            From = data.PlayersAll[0].Public,
+                            From = data.PlayerSystem.Public,
                             To = Host.Public,
                         };
                         lock (Host)
@@ -563,12 +563,12 @@ namespace ServerOnlineCity.Model
                         //команда атакующему
                         packet = new ModelMailAttackCancel()
                         {
-                            From = data.PlayersAll[0].Public,
+                            From = data.PlayerSystem.Public,
                             To = Attacker.Public,
                         };
                         var packet2 = new ModelMailDeleteWO()
                         {
-                            From = data.PlayersAll[0].Public,
+                            From = data.PlayerSystem.Public,
                             To = Attacker.Public,
                             PlaceServerId = InitiatorPlaceServerId,
                             Tile = InitiatorPlaceTile,
@@ -585,12 +585,12 @@ namespace ServerOnlineCity.Model
                     //то уничтожение поселения хоста
                     var packet1 = new ModelMailAttackCancel()
                     {
-                        From = data.PlayersAll[0].Public,
+                        From = data.PlayerSystem.Public,
                         To = Host.Public,
                     };
                     var packet2 = new ModelMailDeleteWO()
                     {
-                        From = data.PlayersAll[0].Public,
+                        From = data.PlayerSystem.Public,
                         To = Host.Public,
                         PlaceServerId = HostPlaceServerId,
                     };
@@ -608,7 +608,7 @@ namespace ServerOnlineCity.Model
                         //команда атакующему
                         var packet = new ModelMailAttackCancel()
                         {
-                            From = data.PlayersAll[0].Public,
+                            From = data.PlayerSystem.Public,
                             To = Attacker.Public,
                         };
                         lock (Attacker)
@@ -624,7 +624,7 @@ namespace ServerOnlineCity.Model
                         //команда атакующему
                         var packet = new ModelMailAttackTechnicalVictory()
                         {
-                            From = data.PlayersAll[0].Public,
+                            From = data.PlayerSystem.Public,
                             To = Attacker.Public,
                         };
                         lock (Attacker)

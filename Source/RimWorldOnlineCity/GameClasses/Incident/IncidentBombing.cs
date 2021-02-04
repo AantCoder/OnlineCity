@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,9 @@ namespace RimWorldOnlineCity
         //protected IncidentParms Parms => Find.CurrentMap != null ? StorytellerUtility.DefaultParmsNow(incident.category, Find.CurrentMap) : null;
 
         public override bool TryExecuteEvent()
-        {
-			Map map = Find.CurrentMap;
+		{
+			var map = (place as Settlement)?.Map ?? Find.CurrentMap;
+
 			if (!TryFindCell(out var cell, map)) // здесь берётся целевая точка
 			{
 				return false;
