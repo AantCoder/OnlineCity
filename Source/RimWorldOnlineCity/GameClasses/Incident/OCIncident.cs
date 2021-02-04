@@ -72,6 +72,8 @@ namespace RimWorldOnlineCity
         
         public float CalculatePoints()
         {
+            Loger.Log("IncidentLod OCIncident.CalculatePoints 1");
+
             var target = (place as Settlement)?.Map ?? Find.CurrentMap;
 
             float points = StorytellerUtility.DefaultThreatPointsNow(target);
@@ -82,11 +84,14 @@ namespace RimWorldOnlineCity
 
             Loger.Log($"CalculatePoints(). points={(int)points} resultPoints={resultPoints}");
 
+            Loger.Log("IncidentLod OCIncident.CalculatePoints 2");
+
             return resultPoints;
         }
 
         public static int CalculateRaidCost(long serverId, int mult)
         {
+            Loger.Log("IncidentLod OCIncident.CalculateRaidCost 1");
             //var serverId = UpdateWorldController.GetServerInfo(wo).ServerId;
             var target = UpdateWorldController.GetOtherByServerId(serverId) as BaseOnline;
             if (target == null) return -1;
@@ -101,10 +106,10 @@ namespace RimWorldOnlineCity
                 * (float)SessionClientController.Data.GeneralSettings.IncidentCostPrecent / 100f);
 
             Loger.Log($"CalculateRaidCost({serverId}, {mult}). targetCost={(int)cost} raidCost={raidCost}");
-            
+
+            Loger.Log("IncidentLod OCIncident.CalculateRaidCost 2");
+
             return raidCost;
         }
     }
-
-
 }

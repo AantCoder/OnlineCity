@@ -18,7 +18,7 @@ namespace ServerOnlineCity.ChatService
 
         public Grants GrantsForRun => Grants.UsualUser | Grants.SuperAdmin | Grants.Moderator | Grants.DiscordBot;
 
-        public string Help => ChatManager.prefix + "call {raid|caravan|...} {UserLogin} [{params}]";
+        public string Help => ChatManager.prefix + "call {raid|caravan|...} {UserLogin} {serverId|0} {level 1-10} [{params}]";
         //  /call raid Aant 4 air
 
         private readonly ChatManager _chatManager;
@@ -30,6 +30,7 @@ namespace ServerOnlineCity.ChatService
 
         public ModelStatus Execute(ref PlayerServer player, Chat chat, List<string> argsM)
         {
+            Loger.Log("IncidentLod CallIncidentCmd Execute 1");
             var ownLogin = player.Public.Login;
             
             //базовая проверка аргументов
@@ -71,11 +72,18 @@ namespace ServerOnlineCity.ChatService
                 faction = CallIncident.ParseFaction(argsM[5]);
             }
 
+            Loger.Log("IncidentLod CallIncidentCmd Execute 2");
             var error = CallIncident.CreateIncident(player, targetPlayer, serverId, type, mult, arrivalMode, faction);
-            if (error != null) return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat, error);
+            if (error != null)
+            {
+                Loger.Log("IncidentLod CallIncidentCmd Execute error: " + error);
+                return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat, error);
+            }
 
             //var msg = argsM[0] + " lvl " + mult + " for user " + targetPlayer.Public.Login + " from " + ownLogin;
             //_chatManager.AddSystemPostToPublicChat(msg);
+
+            Loger.Log("IncidentLod CallIncidentCmd Execute 3");
 
             return new ModelStatus() { Status = 0 };
         }

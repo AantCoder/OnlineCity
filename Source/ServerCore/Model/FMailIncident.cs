@@ -71,6 +71,7 @@ namespace ServerOnlineCity.Model
 
         public bool Run(ServiceContext context)
         {
+            Loger.Log($"IncidentLod FMailIncident.Run 1 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
             ///Определяем прошел ли срок с момента запуска последнего события
             if (!AlreadyStart)
             {

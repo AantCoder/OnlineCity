@@ -18,6 +18,8 @@ namespace ServerOnlineCity.Mechanics
             , IncidentArrivalModes? arrivalMode
             , string faction)
         {
+            Loger.Log("IncidentLod CallIncident.CreateIncident 1");
+
             if (!ServerManager.ServerSettings.GeneralSettings.IncidentEnable) return "Инцинденты отключены на этом сервере".NeedTranslate();
 
             if (type == null) return "OC_Incidents_CallIncidents_TypeErr";
@@ -31,6 +33,8 @@ namespace ServerOnlineCity.Mechanics
             if (player.AllCostWorldObjects() < 100000f) return "У вас слишком маленькая стоимость поселения".NeedTranslate();
 
             if (targetPlayer.AllCostWorldObjects() < 100000f) return "У цели нападения слишком маленькая стоимость поселения".NeedTranslate();
+
+            Loger.Log("IncidentLod CallIncident.CreateIncident 2");
 
             mult = mult > ServerManager.ServerSettings.GeneralSettings.IncidentMaxMult ? ServerManager.ServerSettings.GeneralSettings.IncidentMaxMult : mult;
 
@@ -71,6 +75,8 @@ namespace ServerOnlineCity.Mechanics
                 //Вместо немедленной отправки, делаем это через обработчик отложенной отправки, для паузы между рейдами
                 targetPlayer.FunctionMails.Add(fPacket);
             }
+            
+            Loger.Log("IncidentLod CallIncident.CreateIncident 3");
 
             return null;
         }
