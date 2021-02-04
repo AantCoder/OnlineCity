@@ -201,6 +201,16 @@ namespace ServerOnlineCity.Services
                     context.Player.LastUpdateTime = timeNow;
                 }
 
+                //обновляем состояние отложенной отправки писем
+                if (context.Player.FunctionMails.Count > 0)
+                {
+                    for (int i = 0; i < context.Player.FunctionMails.Count; i++)
+                    {
+                        var needRemove = context.Player.FunctionMails[i].Run(context);
+                        if (needRemove) context.Player.FunctionMails.RemoveAt(i--);
+                    }
+                }
+
                 //прикрепляем письма
                 //если есть команда на отключение без сохранения, то посылаем только одно это письмо
                 var md = context.Player.Mails.FirstOrDefault(m => m is ModelMailAttackCancel);

@@ -55,6 +55,14 @@ namespace ServerOnlineCity.Model
         /// </summary>
         public List<ModelMail> MailsConfirmationSave = new List<ModelMail>();
 
+        /// <summary>
+        /// Письма с командами. Они непосредственно не отправляются игроку, а 
+        /// запускают специальный обработчик перед отправкой Mails, который может создать обычное письмо ModelMail.
+        /// Смотри класс PlayInfo.
+        /// Можно использовать для любого фонового механизма для игрока, который требует обработки раз в 5 секунд (время синхронизации планеты)
+        /// </summary>
+        public List<IFunctionMail> FunctionMails = new List<IFunctionMail>();
+
         [NonSerialized]
         public long LastTickIncidents;
 
