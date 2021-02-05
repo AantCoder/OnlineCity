@@ -18,7 +18,7 @@ namespace ServerOnlineCity.ChatService
         //только для модераторов и админов
         public Grants GrantsForRun => Grants.SuperAdmin | Grants.Moderator | Grants.DiscordBot;
 
-        public string Help => ChatManager.prefix + "say {UserLogin | system} {/color} {Label} {text}";
+        public string Help => ChatManager.prefix + "/say {UserLogin | system} {/color} {Label} {text}";
 
         private readonly ChatManager _chatManager;
 
@@ -35,8 +35,9 @@ namespace ServerOnlineCity.ChatService
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
                    "Необходимо минимум 3 аргумента: имя игрока, заголовок, текст".NeedTranslate());
             }
-            
-            PlayerServer targetPlayer = Repository.GetPlayerByLogin(argsM[1]);
+            int argNum = 0;
+
+            PlayerServer targetPlayer = Repository.GetPlayerByLogin(argsM[argNum++]);
             if (targetPlayer == null)
             {
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[1] + " not found");
@@ -50,7 +51,7 @@ namespace ServerOnlineCity.ChatService
             ModelMailMessadge.MessadgeTypes type = ModelMailMessadge.MessadgeTypes.Neutral;
             string label;
             string text = "";
-            int argNum = 2;
+            
             if(argsM[argNum][0] == '/')
             {
                 var str = argsM[argNum].ToLower();
@@ -74,7 +75,7 @@ namespace ServerOnlineCity.ChatService
                     case "/visitor":
                         type = ModelMailMessadge.MessadgeTypes.Visitor;
                         break;
-                    case "/nuetral":
+                    case "/neutral":
                         type = ModelMailMessadge.MessadgeTypes.Neutral;
                         break;
                     default:
