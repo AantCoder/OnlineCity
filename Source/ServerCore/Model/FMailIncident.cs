@@ -188,7 +188,7 @@ namespace ServerOnlineCity.Model
 
         private long CalcDelayStart()
         {
-            return NumberOrder == 3 ? ServerManager.ServerSettings.GeneralSettings.IncidentTickDelayBetween : 0;
+            return NumberOrder == 3 ? 30000 /*ServerManager.ServerSettings.GeneralSettings.IncidentTickDelayBetween / 2f*/ : 0;
         }
 
         private long CalcDelayEnd()

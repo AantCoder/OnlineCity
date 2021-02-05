@@ -73,19 +73,15 @@ namespace RimWorldOnlineCity
         public float CalculatePoints()
         {
             Loger.Log("IncidentLod OCIncident.CalculatePoints 1");
-
             var target = (place as Settlement)?.Map ?? Find.CurrentMap;
 
             float points = StorytellerUtility.DefaultThreatPointsNow(target);
-
             //Можно переопределить формулу в каждом потомке ИЛИ проверять остальные параметры и добавлять множитель
             var resultPoints = points * mult
                 * (float)SessionClientController.Data.GeneralSettings.IncidentPowerPrecent / 100f;
 
             Loger.Log($"CalculatePoints(). points={(int)points} resultPoints={resultPoints}");
-
             Loger.Log("IncidentLod OCIncident.CalculatePoints 2");
-
             return resultPoints;
         }
 
@@ -94,21 +90,17 @@ namespace RimWorldOnlineCity
             Loger.Log("IncidentLod OCIncident.CalculateRaidCost 1");
             //var serverId = UpdateWorldController.GetServerInfo(wo).ServerId;
             var target = UpdateWorldController.GetOtherByServerId(serverId) as BaseOnline;
-            if (target == null) return -1;
-            
+            if (target == null) return -1;            
             var costs = target.Player.CostWorldObjects(serverId);
-            var cost = AttackUtils.MaxCostAttackerCaravan(costs.MarketValue + costs.MarketValuePawn, true);
+            var cost = costs.MarketValue + costs.MarketValuePawn;
             if (cost <= 0) return -1;
 
             //{цена поселения защитника/100 000}^(2/3) * 100 * lvl
-
             var raidCost = (int)(Math.Pow(cost / 100000f, 2f / 3f) * 100f * (float)mult
                 * (float)SessionClientController.Data.GeneralSettings.IncidentCostPrecent / 100f);
 
             Loger.Log($"CalculateRaidCost({serverId}, {mult}). targetCost={(int)cost} raidCost={raidCost}");
-
             Loger.Log("IncidentLod OCIncident.CalculateRaidCost 2");
-
             return raidCost;
         }
     }
