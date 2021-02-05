@@ -109,7 +109,7 @@ namespace ServerOnlineCity.Mechanics
                 case "walk":
                     return IncidentArrivalModes.EdgeWalkIn;
                 default:
-                    return null;
+                    return IncidentArrivalModes.EdgeWalkIn;
             }
         }
 
@@ -124,7 +124,7 @@ namespace ServerOnlineCity.Mechanics
                 case "tribe":
                     return "tribe";
                 default:
-                    return null;
+                    return "tribe";
             }
         }
     }

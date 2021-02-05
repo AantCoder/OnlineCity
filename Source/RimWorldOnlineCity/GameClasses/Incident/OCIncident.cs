@@ -66,7 +66,7 @@ namespace RimWorldOnlineCity
                 case "tribe":
                     return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Tribe" && f.def.techLevel <= TechLevel.Medieval);
                 default:
-                    return null;
+                    return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Tribe" && f.def.techLevel <= TechLevel.Medieval); ;
             }
         }
         
