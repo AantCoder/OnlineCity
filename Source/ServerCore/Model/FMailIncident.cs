@@ -71,6 +71,7 @@ namespace ServerOnlineCity.Model
 
         public bool Run(ServiceContext context)
         {
+            Loger.Log($"IncidentLod FMailIncident.Run 1 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
             ///Определяем прошел ли срок с момента запуска последнего события
             if (!AlreadyStart)
             {
@@ -187,7 +188,7 @@ namespace ServerOnlineCity.Model
 
         private long CalcDelayStart()
         {
-            return NumberOrder == 3 ? ServerManager.ServerSettings.GeneralSettings.IncidentTickDelayBetween : 0;
+            return NumberOrder == 3 ? 30000 /*ServerManager.ServerSettings.GeneralSettings.IncidentTickDelayBetween / 2f*/ : 0;
         }
 
         private long CalcDelayEnd()

@@ -148,6 +148,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 				Scribe.mode = LoadSaveMode.Saving;
 				var saveStream = SaveData = new MemoryStream();
 				//var saveStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+				File.WriteAllText(filePath, "Online save");
 				that.Field("saveStream").SetValue(saveStream);
 
 				XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();

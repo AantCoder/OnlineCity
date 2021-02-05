@@ -137,6 +137,7 @@ namespace RimWorldOnlineCity
         #region MailProcessStartIncident
         public static void MailProcessStartIncident(ModelMail incoming)
         {
+            Loger.Log("IncidentLod MailController.MailProcessStartIncident 1");
             var mail = (ModelMailStartIncident)incoming;
 
             Find.TickManager.Pause();
@@ -150,6 +151,7 @@ namespace RimWorldOnlineCity
             incident.TryExecuteEvent();
 
             if (!SessionClientController.Data.BackgroundSaveGameOff) SessionClientController.SaveGameNow(true);
+            Loger.Log("IncidentLod MailController.MailProcessStartIncident 2");
         }
         #endregion
 
