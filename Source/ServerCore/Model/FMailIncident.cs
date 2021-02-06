@@ -71,7 +71,6 @@ namespace ServerOnlineCity.Model
 
         public bool Run(ServiceContext context)
         {
-            Loger.Log($"IncidentLod FMailIncident.Run 1 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
             ///Определяем прошел ли срок с момента запуска последнего события
             if (!AlreadyStart)
             {
@@ -86,6 +85,7 @@ namespace ServerOnlineCity.Model
                 SendTick = context.Player.Public.LastTick + delay;
                 if (delay > 0)
                 {
+                    Loger.Log($"IncidentLod FMailIncident.Run 1 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
                     context.Player.Mails.Add(GetWarningMail(context));
                     return false;
                 }
@@ -96,6 +96,7 @@ namespace ServerOnlineCity.Model
 
             if (!MailSended)
             {
+                Loger.Log($"IncidentLod FMailIncident.Run 2 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
                 context.Player.Mails.Add(Mail);
                 SendTick = context.Player.Public.LastTick;
                 MailSended = true;
@@ -109,6 +110,7 @@ namespace ServerOnlineCity.Model
             ///После суток оцениваем задержку и устанавливаем поле EndTick.
             if (EndTick == 0)
             {
+                Loger.Log($"IncidentLod FMailIncident.Run 3 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
                 CostAfter = GetCostTarget(context.Player);
                 EndTick = SendTick + CalcDelayEnd();
                 if (MainHelper.DebugMode)
@@ -133,6 +135,7 @@ namespace ServerOnlineCity.Model
             ///Просто ждем окончания EndTick и убираем себя, чтобы очистить очередь ожидания.
             if (context.Player.Public.LastTick < EndTick) return false;
 
+            Loger.Log($"IncidentLod FMailIncident.Run 4 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
             if (MainHelper.DebugMode)
             {
                 context.Player.Mails.Add(new ModelMailMessadge()
