@@ -220,7 +220,12 @@ namespace RimWorldOnlineCity
                     if (MainHelper.DebugMode) Loger.Log("Spawn...");
                     if (thin is Pawn)
                     {
-                        GenSpawn.Spawn((Pawn)thin, cell, map);
+                        var p = thin as Pawn;
+                        if(p.Faction != Faction.OfPlayer)
+                        {
+                            p.health.AddHediff(HediffDefOf.Anesthetic);
+                        }
+                        GenSpawn.Spawn(p, cell, map);
                     }
                     else
                         GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);

@@ -509,7 +509,9 @@ namespace RimWorldOnlineCity
             {
                 if (MainHelper.DebugMode) Loger.Log("SetFaction...1");
 
-                if (thin is Pawn && (prisoner || freePirate && thin.Faction == Find.FactionManager.OfPlayer))
+                //полностью заменено флагом в ThingEntry.cs
+                //можно удалить?
+                /*if (thin is Pawn && (prisoner || freePirate && thin.Faction == Find.FactionManager.OfPlayer))
                 {
                     //а тут меняем фракцию на пиратов, для тех кому нужно
                     if (MainHelper.DebugMode) Loger.Log("SetFaction...2");
@@ -525,7 +527,7 @@ namespace RimWorldOnlineCity
                     if (MainHelper.DebugMode) Loger.Log("SetFaction...6");
                     thin.SetFaction(Find.FactionManager.OfPlayer);
                     if (MainHelper.DebugMode) Loger.Log("SetFaction...7");
-                }
+                }*/
             }
             return thin;
         }
