@@ -64,7 +64,7 @@ namespace Model
             Data = gx.ToXml(thing);
         }
 
-        public virtual Thing CreateThing(bool useOriginalID = false, int stackCount = 0)
+        public virtual Thing CreateThing(bool useOriginalID = false, int stackCount = 0, bool needPirate = false)
         {
             var gx = new GameXMLUtils();
             Thing thing = gx.FromXml<Thing>(Data);
@@ -78,15 +78,25 @@ namespace Model
             {
                 thing.thingIDNumber = OriginalID;
             }
-            if (isColonist)
-            {
-                thing.SetFaction(Faction.OfPlayer);
-            }
-            else
-            {
-                thing.SetFaction(Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate"));
-            }
+
+            SetFaction(thing, isColonist && !needPirate);
+
             return thing;
+        }
+
+        protected void SetFaction(Thing thing, bool isColonist)
+        {
+            if (thing.def.CanHaveFaction)
+            {
+                if (isColonist)
+                {
+                    thing.SetFaction(Faction.OfPlayer);
+                }
+                else
+                {
+                    thing.SetFaction(Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate"));
+                }
+            }
         }
 
         private static int nnnn = 0;
