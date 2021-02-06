@@ -62,11 +62,11 @@ namespace RimWorldOnlineCity
                     }
                     return fac; */  // может оно не глючит?
                     //todo: поиск начинает глючить при добавлении фракций из модов
-                    return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate" && f.def.techLevel >= TechLevel.Industrial && f.def.techLevel < TechLevel.Archotech);
+                    return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate" && f.def.humanlikeFaction == true && f.def.techLevel >= TechLevel.Industrial && f.def.techLevel < TechLevel.Archotech);
                 case "tribe":
-                    return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Tribe" && f.def.techLevel <= TechLevel.Medieval);
+                    return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Tribe" && f.def.humanlikeFaction == true && f.def.techLevel <= TechLevel.Medieval);
                 default:
-                    return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Tribe" && f.def.techLevel <= TechLevel.Medieval); ;
+                    return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Tribe" && f.def.humanlikeFaction == true && f.def.techLevel <= TechLevel.Medieval); ;
             }
         }
         

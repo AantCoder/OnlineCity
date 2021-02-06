@@ -37,6 +37,8 @@ namespace Model
         /// </summary>
         public int TransportID { get; set; }
 
+        public bool isColonist { get; set; }
+
         protected ThingEntry()
         { }
 
@@ -53,6 +55,7 @@ namespace Model
             Name = thing.LabelCapNoCount;
             Count = count;
             OriginalID = thing.thingIDNumber;
+            isColonist = thing.Faction == Faction.OfPlayer ? true : false;
         }
 
         protected void SetData(Thing thing)
@@ -72,7 +75,17 @@ namespace Model
                 ThingIDMaker.GiveIDTo(thing);
             }
             else
+            {
                 thing.thingIDNumber = OriginalID;
+            }
+            if (isColonist)
+            {
+                thing.SetFaction(Faction.OfPlayer);
+            }
+            else
+            {
+                thing.SetFaction(Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate"));
+            }
             return thing;
         }
 
