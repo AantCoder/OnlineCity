@@ -327,8 +327,8 @@ namespace RimWorldOnlineCity
                 Find.SignalManager.RegisterReceiver(pawn);
             }
             */
-            if (pawn.Faction != Faction.OfPlayer)
-                pawn.SetFaction(Faction.OfPlayer, null);
+            /*if (pawn.Faction != Faction.OfPlayer)
+                pawn.SetFaction(Faction.OfPlayer);*/
             if (!pawn.IsWorldPawn())
             {
                 Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Decide);
