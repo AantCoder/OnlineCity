@@ -64,6 +64,10 @@ namespace ServerOnlineCity.Services
                             {
                                 if (context.Player.MailsConfirmationSave.Count > 0)
                                 {
+                                    for (int i = 0; i < context.Player.MailsConfirmationSave.Count; i++) 
+                                        context.Player.MailsConfirmationSave[i].NeedSaveGame = false;
+
+                                    Loger.Log($"MailsConfirmationSave add {context.Player.MailsConfirmationSave.Count} (mails={context.Player.Mails.Count})");
                                     //Ого! Игрок не сохранился после приема письма, с обязательным сохранением после получения
                                     //Отправляем письма ещё раз
                                     if (context.Player.Mails.Count == 0)
@@ -77,6 +81,7 @@ namespace ServerOnlineCity.Services
                                             .ToList();
                                         context.Player.Mails.AddRange(ms);
                                     }
+                                    Loger.Log($"MailsConfirmationSave (mails={context.Player.Mails.Count})");
                                 }
                             }
 

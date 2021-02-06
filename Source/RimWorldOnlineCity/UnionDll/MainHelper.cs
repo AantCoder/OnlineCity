@@ -26,7 +26,7 @@ namespace OCUnion
         /// Для автоматической проверки: версия клиента должна быть больше или равна версии сервера
         /// </summary>
         //public static readonly long  VersionNum = Assembly.GetExecutingAssembly().GetName().Version.Revision;
-        public static long VersionNum = 30046;
+        public static long VersionNum = 30047;
 
         public static string DefaultIP = DebugMode ? "localhost" : "rimworld.online"; // rimworld.online 194.87.95.90:19020
 
