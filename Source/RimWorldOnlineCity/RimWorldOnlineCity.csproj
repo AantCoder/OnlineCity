@@ -110,6 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatController.cs" />
+    <Compile Include="GameClasses\Harmony\GameSaveLoadInMem.cs" />
+    <Compile Include="GameClasses\Incident\IncidentAcid.cs" />
+    <Compile Include="GameClasses\Incident\IncidentBombing.cs" />
     <Compile Include="GameClasses\Incident\IncidentInfistation.cs" />
     <Compile Include="GameClasses\Incident\IncidentCaravan.cs" />
     <Compile Include="GameClasses\Incident\IncidentChunkDrop.cs" />
@@ -139,7 +142,7 @@
     <Compile Include="GameClasses\Harmony\GameLoader.cs" />
     <Compile Include="GameClasses\Harmony\GameStarter.cs" />
     <Compile Include="GameStarterSelectPawns.cs" />
-    <Compile Include="Model\GameUtils.cs" />
+    <Compile Include="GameUtils.cs" />
     <Compile Include="GameClasses\Harmony\MainMenu.cs" />
     <Compile Include="GameClasses\ModDefOf.cs" />
     <Compile Include="GameClasses\StartPoint.cs" />

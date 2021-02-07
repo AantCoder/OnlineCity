@@ -1,5 +1,6 @@
 ﻿using Model;
 using OCUnion;
+using OCUnion.Transfer.Model;
 using ServerOnlineCity.Model;
 using System;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace ServerOnlineCity.Services
 {
     internal sealed class AttackOnlineInitiator : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 27;
+        public int RequestTypePackage => (int)PackageType.Request27;
 
-        public int ResponseTypePackage => 28;
+        public int ResponseTypePackage => (int)PackageType.Response28;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {

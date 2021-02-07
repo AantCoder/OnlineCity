@@ -33,77 +33,88 @@ namespace RimWorldOnlineCity
 
             var allWorldObjects = allWorldObjectsArr.Where(wo => wo != null).ToList();
 
-            try
+            if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
             {
-                // Game on init
-                if(firstRun && modelWorldObjectOnline != null)
+
+                try
                 {
-                    if (modelWorldObjectOnline.WObjectOnlineList.Count > 0)
+                    // Game on init
+                    if (firstRun && modelWorldObjectOnline != null)
                     {
-                        toServ.WObjectOnlineList = allWorldObjectsArr.Where(wo => wo is Settlement)
-                                                             .Where(wo => wo.HasName && !wo.Faction.IsPlayer).Select(obj => GetWorldObjects(obj)).ToList();
+                        if (modelWorldObjectOnline.WObjectOnlineList.Count > 0)
+                        {
+                            toServ.WObjectOnlineList = allWorldObjectsArr.Where(wo => wo is Settlement)
+                                                                 .Where(wo => wo.HasName && !wo.Faction.IsPlayer).Select(obj => GetWorldObjects(obj)).ToList();
+                        }
+                        return;
                     }
+                }
+                catch (Exception e)
+                {
+                    Loger.Log("Exception >> " + e);
+                    Log.Error("SendToServer FirstRun error");
                     return;
                 }
             }
-            catch(Exception e)
-            {
-                Loger.Log("Exception >> " + e);
-                Log.Error("SendToServer FirstRun error");
-                return;
-            }
 
-            //Loger.Log("Client TestBagSD 035");
-            Dictionary<Map, List<Pawn>> cacheColonists = new Dictionary<Map, List<Pawn>>();
-            //отправка всех новых и измененных объектов игрока
-            toServ.WObjects = allWorldObjects
-                .Where(o => o.Faction?.IsPlayer == true //o.Faction != null && o.Faction.IsPlayer
-                    && (o is Settlement || o is Caravan)) //Чтобы отсеч разные карты событий
-                .Select(o => GetWorldObjectEntry(o, cacheColonists))
-                .ToList();
-            LastSendMyWorldObjects = toServ.WObjects;
-
-            //Loger.Log("Client TestBagSD 036");
-            //свои объекты которые удалил пользователь с последнего обновления
-            if (ToDelete != null)
+            if (!firstRun)
             {
-                var toDeleteNewNow = WorldObjectEntrys
-                    .Where(p => !allWorldObjects.Any(wo => wo.ID == p.Key))
-                    .Select(p => p.Value)
+                //Loger.Log("Client TestBagSD 035");
+                Dictionary<Map, List<Pawn>> cacheColonists = new Dictionary<Map, List<Pawn>>();
+                //отправка всех новых и измененных объектов игрока
+                toServ.WObjects = allWorldObjects
+                    .Where(o => o.Faction?.IsPlayer == true //o.Faction != null && o.Faction.IsPlayer
+                        && (o is Settlement || o is Caravan)) //Чтобы отсеч разные карты событий
+                    .Select(o => GetWorldObjectEntry(o, cacheColonists))
                     .ToList();
-                ToDelete.AddRange(toDeleteNewNow);
-            }
+                LastSendMyWorldObjects = toServ.WObjects;
 
-            toServ.WObjectsToDelete = ToDelete;
-
-            //  Non-Player World Objects
-            try
-            {
-                var OnlineWObjArr = allWorldObjectsArr.Where(wo => wo is Settlement)
-                                      .Where(wo => wo.HasName && !wo.Faction.IsPlayer);
-                if (!firstRun)
+                //Loger.Log("Client TestBagSD 036");
+                //свои объекты которые удалил пользователь с последнего обновления
+                if (ToDelete != null)
                 {
-                    if (LastWorldObjectOnline != null && LastWorldObjectOnline.Count > 0)
-                    {
-                        toServ.WObjectOnlineToDelete = LastWorldObjectOnline.Where(WOnline => !OnlineWObjArr.Any(wo => ValidateOnlineWorldObject(WOnline, wo))).ToList();
-
-                        toServ.WObjectOnlineToAdd = OnlineWObjArr.Where(wo => !LastWorldObjectOnline.Any(WOnline => ValidateOnlineWorldObject(WOnline, wo)))
-                                                                    .Select(obj => GetWorldObjects(obj)).ToList();
-                    }
+                    var toDeleteNewNow = WorldObjectEntrys
+                        .Where(p => !allWorldObjects.Any(wo => wo.ID == p.Key))
+                        .Select(p => p.Value)
+                        .ToList();
+                    ToDelete.AddRange(toDeleteNewNow);
                 }
 
-                toServ.WObjectOnlineList = OnlineWObjArr.Select(obj => GetWorldObjects(obj)).ToList();
-                LastWorldObjectOnline = toServ.WObjectOnlineList;
+                toServ.WObjectsToDelete = ToDelete;
             }
-            catch(Exception e)
+
+            if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
             {
-                Loger.Log("Exception >> " + e);
-                Log.Error("ERROR SendToServer WorldObject Online");
+                //  Non-Player World Objects
+                try
+                {
+                    var OnlineWObjArr = allWorldObjectsArr.Where(wo => wo is Settlement)
+                                          .Where(wo => wo.HasName && !wo.Faction.IsPlayer);
+                    if (!firstRun)
+                    {
+                        if (LastWorldObjectOnline != null && LastWorldObjectOnline.Count > 0)
+                        {
+                            toServ.WObjectOnlineToDelete = LastWorldObjectOnline.Where(WOnline => !OnlineWObjArr.Any(wo => ValidateOnlineWorldObject(WOnline, wo))).ToList();
+
+                            toServ.WObjectOnlineToAdd = OnlineWObjArr.Where(wo => !LastWorldObjectOnline.Any(WOnline => ValidateOnlineWorldObject(WOnline, wo)))
+                                                                        .Select(obj => GetWorldObjects(obj)).ToList();
+                        }
+                    }
+
+                    toServ.WObjectOnlineList = OnlineWObjArr.Select(obj => GetWorldObjects(obj)).ToList();
+                    LastWorldObjectOnline = toServ.WObjectOnlineList;
+                }
+                catch (Exception e)
+                {
+                    Loger.Log("Exception >> " + e);
+                    Log.Error("ERROR SendToServer WorldObject Online");
+                }
             }
         }
 
         public static void LoadFromServer(ModelPlayToClient fromServ, bool removeMissing)
         {
+
             /*var testF = Find.FactionManager.AllFactions.ToList();
             Loger.Log("---------------------------------------------------------------");
             foreach (var f in testF)
@@ -125,8 +136,8 @@ namespace RimWorldOnlineCity
             Loger.Log("---------------------------------------------------------------");
             */
 
-            ApplyNonPlayerWorldObject(fromServ);
-
+            if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
+            	ApplyNonPlayerWorldObject(fromServ);
 
             if (removeMissing)
             {
@@ -174,7 +185,6 @@ namespace RimWorldOnlineCity
                         : new CaravanOnline() { Tile = wo.Tile, OnlineWObject = wo })
                     .ToList();
                     */
-                //todo test it (Нет цены своих колоний)
             }
 
             //пришла посылка от каравана другого игрока
@@ -597,11 +607,11 @@ namespace RimWorldOnlineCity
 
         public static void DeleteWorldObject(WorldObjectEntry worldObjectEntry)
         {
-            List<WorldObject> allWorldObjects = Find.WorldObjects.AllWorldObjects;
             
             //поиск уже существующих
             CaravanOnline worldObject = null;
             /*
+            List<WorldObject> allWorldObjects = Find.WorldObjects.AllWorldObjects;
             int existId;
             if (ConverterServerId.TryGetValue(worldObjectEntry.ServerId, out existId))
             {

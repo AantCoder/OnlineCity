@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using RimWorld;
 using Transfer;
+using Transfer.ModelMails;
 using Verse;
 
 namespace RimWorldOnlineCity
@@ -25,6 +26,8 @@ namespace RimWorldOnlineCity
                 : type == IncidentTypes.ChunkDrop ? new IncidentChunkDrop()
                 : type == IncidentTypes.Infistation ? new IncidentInfistation()
                 : type == IncidentTypes.Quest ? new IncidentQuest()
+                : type == IncidentTypes.Bombing ? new IncidentBombing()
+                : type == IncidentTypes.Acid ? new IncidentAcid()
                 : (OCIncident)null;
         }
     }

@@ -51,10 +51,19 @@ namespace ServerOnlineCity
             get { return _ActiveClientCount; }
         }
 
-        public void Start(string path)
+        private string GetSettingsFileName(string path)
         {
-            //var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
-            var jsonFile = Path.Combine(path, "Settings.json");
+            return Path.Combine(path, "Settings.json");
+        }
+
+        private string GetWorldFileName(string path)
+        {
+            return Path.Combine(path, "World.dat");
+        }
+
+        public bool StartPrepare(string path)
+        {
+            var jsonFile = GetSettingsFileName(path);
             if (!File.Exists(jsonFile))
             {
                 using (StreamWriter file = File.CreateText(jsonFile))
@@ -67,7 +76,7 @@ namespace ServerOnlineCity
                 Console.WriteLine($"RU: Настройте сервер, заполните {jsonFile}");
                 Console.WriteLine("Enter some key");
                 Console.ReadKey();
-                return;
+                return false;
             }
             else
             {
@@ -91,7 +100,7 @@ namespace ServerOnlineCity
                         }
 
                         Console.ReadKey();
-                        return;
+                        return false;
                     }
                 }
                 catch (Exception ex)
@@ -100,7 +109,7 @@ namespace ServerOnlineCity
                     Console.WriteLine($"RU: Проверьте настройки сервера {jsonFile}");
                     Console.WriteLine("EN: Check Settings.json");
                     Console.ReadKey();
-                    return;
+                    return false;
                 }
             }
 
@@ -109,10 +118,17 @@ namespace ServerOnlineCity
             Loger.IsServer = true;
 
             var rep = Repository.Get;
-            rep.SaveFileName = Path.Combine(path, "World.dat");
+            rep.SaveFileName = GetWorldFileName(path);
             rep.Load();
             CheckDiscrordUser();
             FileHashChecker = new FileHashChecker(ServerSettings);
+
+            return true;
+        }
+
+        public void Start()
+        {
+            var rep = Repository.Get;
 
             //общее обслуживание
             rep.Timer.Add(1000, DoWorld);
@@ -182,7 +198,7 @@ namespace ServerOnlineCity
                 changeInPlayers = true;
 
                 if (player.IsAdmin
-                    || true //todo переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
+                    || true //to do переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
                     )
                 {
                     if (allLogins == null) allLogins = new HashSet<string>(Repository.GetData.PlayersAll.Select(p => p.Public.Login));
@@ -205,10 +221,10 @@ namespace ServerOnlineCity
                         .ToList();
 
                     //те, кто запустил спутники
-                    //todo когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
+                    //to do когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
 
                     //и те кто географически рядом
-                    //todo
+                    //to do
 
                     //себя и system
                     if (!plNeed.Any(p => p == player.Public.Login)) plNeed.Add(player.Public.Login);
@@ -255,10 +271,7 @@ namespace ServerOnlineCity
 
                         //ChatManager.Instance.AddSystemPostToPublicChat(msg); // раскоментировать, для поста в общий чат
 
-                        Repository.DropUserFromMap(player.Public.Login);
-                        Repository.GetSaveData.DeletePlayerData(player.Public.Login);
-                        player.Public.LastSaveTime = DateTime.MinValue;
-                        Repository.Get.ChangeData = true;
+                        player.AbandonSettlement();
                         Loger.Log("Server " + msg);
                     }
                 }
@@ -397,6 +410,24 @@ namespace ServerOnlineCity
             thread.Start();
         }
 
+        private List<SessionServer> Sessions = new List<SessionServer>();
+
+        /// <summary>
+        /// Обработать в событии все активные сессии. Корректно завершить выбранные сессии только через этот механизм
+        /// </summary>
+        /// <param name="act"></param>
+        private void SessionsAction(Action<SessionServer> act)
+        {
+            lock (Sessions)
+            {
+                for(int i = 0; i < Sessions.Count; i++)
+                {
+                    if (Sessions[i].IsActive) act(Sessions[i]);
+                    if (!Sessions[i].IsActive) Sessions.RemoveAt(i--);
+                }
+            }
+        }
+
         private void DoClient(ConnectClient client)
         {
             SessionServer session = null;
@@ -407,7 +438,15 @@ namespace ServerOnlineCity
                 {
                     Loger.Log($"New connect {addrIP} (connects: {ActiveClientCount})");
                     session = new SessionServer();
-                    session.Do(client);
+                    lock (Sessions)
+                    {
+                        Sessions.Add(session);
+                    }
+                    session.Do(client, SessionsAction);
+                }
+                catch (ObjectDisposedException)
+                {
+                    Loger.Log("Abort connect Relogin " + addrIP);
                 }
                 catch (Transfer.ConnectClient.ConnectSilenceTimeOutException)
                 {

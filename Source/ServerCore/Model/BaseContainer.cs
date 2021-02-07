@@ -18,6 +18,7 @@ namespace ServerOnlineCity.Model
         //public long VersionNum => long.Parse((Version ?? "0").Where(c => Char.IsDigit(c)).Aggregate("0", (r, i) => r + i));
 
         public List<PlayerServer> PlayersAll { get; set; }
+        public PlayerServer PlayerSystem { get { return PlayersAll[0]; } }
 
         [NonSerialized]
         public ConcurrentDictionary<string, PlayerServer> PlayersAllDic;

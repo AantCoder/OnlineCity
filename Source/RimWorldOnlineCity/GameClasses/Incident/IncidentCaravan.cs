@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +13,19 @@ namespace RimWorldOnlineCity
     {
         public override bool TryExecuteEvent()
         {
-            IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
+            var target = (place as Settlement)?.Map ?? Find.CurrentMap;
+
+            parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, target);
             parms.customLetterLabel = "Trade caravan";
             parms.customLetterText = "trade caravan arrived";
             parms.faction = null;
             parms.forced = true;  //игнорировать все условия для события
-            parms.target = Find.CurrentMap;
-            parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap);
+            parms.target = target;
+            parms.points = CalculatePoints();
 
             if (!IncidentDefOf.TraderCaravanArrival.Worker.TryExecute(parms))
             {
-                Messages.Message($"Failed_Test_quest", MessageTypeDefOf.RejectInput);
+                Messages.Message($"Failed_Test_Caravan", MessageTypeDefOf.RejectInput);
                 return false;
             }
 

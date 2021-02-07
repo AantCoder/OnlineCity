@@ -8,36 +8,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Transfer;
+using Transfer.ModelMails;
 using Verse;
 
 namespace RimWorldOnlineCity
 {
     static class MailController
     {
-        private static Dictionary<ModelMailTradeType, Action<ModelMailTrade>> TypeMailProcessing = new Dictionary<ModelMailTradeType, Action<ModelMailTrade>>()
+        private static Dictionary<Type, Action<ModelMail>> TypeMailProcessing = new Dictionary<Type, Action<ModelMail>>()
         {
-            { ModelMailTradeType.CreateThings, MailProcessCreateThings},
-            { ModelMailTradeType.DeleteByServerId, MailProcessDeleteByServerId},
-            { ModelMailTradeType.AttackCancel, MailProcessAttackCancel},
-            { ModelMailTradeType.AttackTechnicalVictory, MailProcessAttackTechnicalVictory},
-            { ModelMailTradeType.StartIncident, MailProcessStartEvent},
+            { typeof(ModelMailTrade), MailProcessCreateThings},
+            { typeof(ModelMailDeleteWO), MailProcessDeleteByServerId},
+            { typeof(ModelMailAttackCancel), MailProcessAttackCancel},
+            { typeof(ModelMailAttackTechnicalVictory), MailProcessAttackTechnicalVictory},
+            { typeof(ModelMailStartIncident), MailProcessStartIncident},
+            { typeof(ModelMailMessadge), MailProcessMessadge}
         };
 
-        public static void MailArrived(ModelMailTrade mail)
+        public static void MailArrived(ModelMail mail)
         {
             try
             {
                 if (mail.To == null
                     || mail.To.Login != SessionClientController.My.Login) return;
 
-                Action<ModelMailTrade> action;
-                if (TypeMailProcessing.TryGetValue(mail.Type, out action))
+                Action<ModelMail> action;
+                if (TypeMailProcessing.TryGetValue(mail.GetType(), out action))
                 {
+                    Loger.Log($"Mail {mail.GetType().Name} "
+                        + (mail.From == null ? "-" : mail.From.Login) + "->"
+                        + (mail.To == null ? "-" : mail.To.Login) + ":"
+                        + mail.ContentString()
+                        + "  hash=" + mail.GetHash());
                     action(mail);
                 }
                 else
                 {
-                    Loger.Log("Mail fail: error type " + mail.Type);
+                    Loger.Log("Mail fail: error type " + mail.GetType().Name);
                 }
             }
             catch(Exception e)
@@ -46,7 +53,8 @@ namespace RimWorldOnlineCity
             }
         }
 
-        private static WorldObject GetPlace(ModelMailTrade mail, bool softSettlement = true, bool softNewCaravan = false)
+        private static WorldObject GetPlace<TMailPlace>(TMailPlace mail, bool softSettlement = true, bool softNewCaravan = false)
+            where TMailPlace : ModelMail, IModelMailPlace
         {
             if (mail.PlaceServerId <= 0)
             {
@@ -56,10 +64,6 @@ namespace RimWorldOnlineCity
             //находим наш объект, кому пришла передача
             var placeId = UpdateWorldController.GetLocalIdByServerId(mail.PlaceServerId);
 
-            Loger.Log("Mail " + placeId + " "
-                + (mail.From == null ? "-" : mail.From.Login) + "->"
-                + (mail.To == null ? "-" : mail.To.Login) + ":"
-                + mail.ContentString());
             WorldObject place = null;
             if (placeId == 0)
             {
@@ -95,21 +99,68 @@ namespace RimWorldOnlineCity
             return place;
         }
 
-       
-
-        public static void MailProcessStartEvent(ModelMailTrade mail)
+        #region MailProcessMessadge
+        public static void MailProcessMessadge(ModelMail incoming)
         {
-            var incident = new RimWorldOnlineCity.Incidents().GetIncident(mail.IncidentType);
+            var msg = (ModelMailMessadge)incoming;
+            LetterDef def;
+            switch (msg.type)
+            {
+                case ModelMailMessadge.MessadgeTypes.ThreatBig:
+                    def = LetterDefOf.ThreatBig;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.ThreatSmall:
+                    def = LetterDefOf.ThreatSmall;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Death:
+                    def = LetterDefOf.Death;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Negative:
+                    def = LetterDefOf.NegativeEvent;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Neutral:
+                    def = LetterDefOf.NeutralEvent;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Positive:
+                    def = LetterDefOf.PositiveEvent;
+                    break;
+                case ModelMailMessadge.MessadgeTypes.Visitor:
+                    def = LetterDefOf.AcceptVisitors;
+                    break;
+                default:
+                    def = LetterDefOf.NeutralEvent;
+                    break;
+            }
+            Find.LetterStack.ReceiveLetter(msg.label, msg.text, def);
+        }
+        #endregion
+
+        #region MailProcessStartIncident
+        public static void MailProcessStartIncident(ModelMail incoming)
+        {
+            Loger.Log("IncidentLod MailController.MailProcessStartIncident 1");
+            var mail = (ModelMailStartIncident)incoming;
+
+            Find.TickManager.Pause();
+            
+            var incident = new Incidents().GetIncident(mail.IncidentType);
             incident.mult = mail.IncidentMult;
             incident.arrivalMode = mail.IncidentArrivalMode;
             incident.strategy = mail.IncidentStrategy;
             incident.faction = mail.IncidentFaction;
+            incident.place = GetPlace(mail);
             incident.TryExecuteEvent();
+
+            if (!SessionClientController.Data.BackgroundSaveGameOff) SessionClientController.SaveGameNow(true);
+            Loger.Log("IncidentLod MailController.MailProcessStartIncident 2");
         }
+        #endregion
 
         #region CreateThings
-        public static void MailProcessCreateThings(ModelMailTrade mail)
-        { 
+        public static void MailProcessCreateThings(ModelMail incoming)
+        {
+            ModelMailTrade mail = (ModelMailTrade)incoming;
+
             if (mail.Things == null
                 || mail.Things.Count == 0
                 || mail.PlaceServerId <= 0)
@@ -170,7 +221,12 @@ namespace RimWorldOnlineCity
                     if (MainHelper.DebugMode) Loger.Log("Spawn...");
                     if (thin is Pawn)
                     {
-                        GenSpawn.Spawn((Pawn)thin, cell, map);
+                        var p = thin as Pawn;
+                        if(p.Faction != Faction.OfPlayer)
+                        {
+                            p.health.AddHediff(HediffDefOf.Anesthetic);
+                        }
+                        GenSpawn.Spawn(p, cell, map);
                     }
                     else
                         GenDrop.TryDropSpawn(thin, cell, map, ThingPlaceMode.Near, out thinXZ, null);
@@ -213,8 +269,10 @@ namespace RimWorldOnlineCity
         #endregion CreateThings
 
         #region DeleteByServerId
-        public static void MailProcessDeleteByServerId(ModelMailTrade mail)
+        public static void MailProcessDeleteByServerId(ModelMail incoming)
         {
+            var mail = (ModelMailDeleteWO)incoming;
+
             Loger.Log("Client MailProcessDeleteByServerId " + mail.PlaceServerId);
 
             if (mail.PlaceServerId <= 0)
@@ -235,8 +293,10 @@ namespace RimWorldOnlineCity
         #endregion DeleteByServerId
 
         #region AttackCancel
-        public static void MailProcessAttackCancel(ModelMailTrade mail)
+        public static void MailProcessAttackCancel(ModelMail incoming)
         {
+            var mail = (ModelMailAttackCancel)incoming;
+
             Loger.Log("Client MailProcessAttackCancel");
 
             GameAttackTrigger_Patch.ForceSpeed = -1f; //на всякий случай
@@ -248,8 +308,10 @@ namespace RimWorldOnlineCity
         #endregion AttackCancel
 
         #region TechnicalVictory
-        public static void MailProcessAttackTechnicalVictory(ModelMailTrade mail)
+        public static void MailProcessAttackTechnicalVictory(ModelMail incoming)
         {
+            var mail = (ModelMailAttackTechnicalVictory)incoming;
+
             Loger.Log("Client MailProcessAttackTechnicalVictory");
 
             if (SessionClientController.Data.AttackModule != null)

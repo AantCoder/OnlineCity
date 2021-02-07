@@ -37,6 +37,8 @@ namespace Model
         /// </summary>
         public int TransportID { get; set; }
 
+        public bool isColonist { get; set; }
+
         protected ThingEntry()
         { }
 
@@ -53,6 +55,7 @@ namespace Model
             Name = thing.LabelCapNoCount;
             Count = count;
             OriginalID = thing.thingIDNumber;
+            isColonist = thing.Faction == Faction.OfPlayer ? true : false;
         }
 
         protected void SetData(Thing thing)
@@ -61,7 +64,7 @@ namespace Model
             Data = gx.ToXml(thing);
         }
 
-        public virtual Thing CreateThing(bool useOriginalID = false, int stackCount = 0)
+        public virtual Thing CreateThing(bool useOriginalID = false, int stackCount = 0, bool needPirate = false)
         {
             var gx = new GameXMLUtils();
             Thing thing = gx.FromXml<Thing>(Data);
@@ -72,8 +75,28 @@ namespace Model
                 ThingIDMaker.GiveIDTo(thing);
             }
             else
+            {
                 thing.thingIDNumber = OriginalID;
+            }
+
+            SetFaction(thing, isColonist && !needPirate);
+
             return thing;
+        }
+
+        protected void SetFaction(Thing thing, bool isColonist)
+        {
+            if (thing.def.CanHaveFaction)
+            {
+                if (isColonist)
+                {
+                    thing.SetFaction(Faction.OfPlayer);
+                }
+                else
+                {
+                    thing.SetFaction(Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate"));
+                }
+            }
         }
 
         private static int nnnn = 0;

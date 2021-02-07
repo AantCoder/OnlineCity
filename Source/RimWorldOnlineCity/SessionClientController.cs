@@ -4,6 +4,7 @@ using OCUnion.Common;
 using OCUnion.Transfer;
 using RimWorld;
 using RimWorld.Planet;
+using RimWorldOnlineCity.GameClasses.Harmony;
 using RimWorldOnlineCity.Services;
 using System;
 using System.Collections.Generic;
@@ -198,14 +199,30 @@ namespace RimWorldOnlineCity
             }
         }
 
+        private static byte[] SaveGameCore()
+        {
+            byte[] content;
+            try
+            {
+                ScribeSaver_InitSaving_Patch.Enable = true;
+                GameDataSaveLoader.SaveGame(SaveName);
+                //content = File.ReadAllBytes(SaveFullName);
+                content = ScribeSaver_InitSaving_Patch.SaveData.ToArray();
+            }
+            finally
+            {
+                ScribeSaver_InitSaving_Patch.Enable = false;
+                ScribeSaver_InitSaving_Patch.SaveData = null;
+            }
+            return content;
+        }
+
         private static void SaveGame(Action<byte[]> saved)
         {
-            Loger.Log("Client SaveGame() " + SaveFullName);
+            Loger.Log("Client SaveGame() ");
             LongEventHandler.QueueLongEvent(() =>
             {
-                GameDataSaveLoader.SaveGame(SaveName);
-                var content = File.ReadAllBytes(SaveFullName);
-                saved(content);
+                saved(SaveGameCore());
             }, "Autosaving", false, null);
         }
 
@@ -231,12 +248,6 @@ namespace RimWorldOnlineCity
             });
         }
 
-
-        //////private static checkConfigsBeforeSave() 
-        //////{
-
-        //////}
-
         /// <summary>
         /// Немедленно сохраняет игру и передает на сервер. Должно запускаться уже в потоке LongEventHandler.QueueLongEvent, ожидает окончания соханения
         /// </summary>
@@ -245,14 +256,16 @@ namespace RimWorldOnlineCity
         {
             Loger.Log($"Client {SessionClientController.My.Login} SaveGameNowInEvent single=" + single.ToString());
 
-            GameDataSaveLoader.SaveGame(SaveName);
-            var content = File.ReadAllBytes(SaveFullName);
+            var content = SaveGameCore();
 
             if (content.Length > 1024)
             {
                 Data.SaveFileData = content;
                 Data.SingleSave = single;
                 UpdateWorld(false);
+
+                //записываем файл только для удобства игрока, чтобы он у него был
+                File.WriteAllBytes(SaveFullName, content);
 
                 Loger.Log($"Client {SessionClientController.My.Login} SaveGameNowInEvent OK");
             }
@@ -621,6 +634,7 @@ namespace RimWorldOnlineCity
             Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
             Data.MinutesIntervalBetweenPVP = serverInfo.MinutesIntervalBetweenPVP;
             Data.TimeChangeEnablePVP = serverInfo.TimeChangeEnablePVP;
+            Data.GeneralSettings = serverInfo.GeneralSettings;
             Data.ProtectingNovice = serverInfo.ProtectingNovice;
             MainHelper.OffAllLog = serverInfo.EnableFileLog;
         }
@@ -717,7 +731,6 @@ namespace RimWorldOnlineCity
             var connect = SessionClient.Get;
             var worldData = connect.WorldLoad();
 
-            File.WriteAllBytes(SaveFullName, worldData.SaveFileData);
             Action loadAction = () =>
             {
                 LongEventHandler.QueueLongEvent(delegate
@@ -726,6 +739,9 @@ namespace RimWorldOnlineCity
                     GameLoades.AfterLoad = () =>
                     {
                         GameLoades.AfterLoad = null;
+
+                        ScribeLoader_InitLoading_Patch.Enable = false;
+                        ScribeLoader_InitLoading_Patch.LoadData = null;
 
                         //Непосредственно после загрузки игры
                         InitGame();
@@ -754,6 +770,10 @@ namespace RimWorldOnlineCity
                     */
                 }, "Play", "LoadingLongEvent", false, null);
             };
+
+            ScribeLoader_InitLoading_Patch.Enable = true;
+            ScribeLoader_InitLoading_Patch.LoadData = worldData.SaveFileData;
+
             PreLoadUtility.CheckVersionAndLoad(SaveFullName, ScribeMetaHeaderUtility.ScribeHeaderMode.Map, loadAction);
         }
 
@@ -882,8 +902,8 @@ namespace RimWorldOnlineCity
         private static void CreatingServerWorld()
         {
             Loger.Log("Client CreatingServerWorld()");
-            //todo Удаление лишнего, добавление того, что нужно в пустом новом мире на сервере
-            //todo Remove unnecessary, add what you need in an empty new world on the server
+            //Удаление лишнего, добавление того, что нужно в пустом новом мире на сервере
+            //Remove unnecessary, add what you need in an empty new world on the server
 
             //to do
 
@@ -972,7 +992,8 @@ namespace RimWorldOnlineCity
 
         public static bool ReconnectWithTimers()
         {
-            Timers.LowLevelStop();
+            Timers.Pause = true;
+            SessionClient.IsRelogin = true;
             try
             {
                 var repeat = 3;
@@ -998,7 +1019,8 @@ namespace RimWorldOnlineCity
             }
             finally
             {
-                Timers.LowLevelStart();
+                Timers.Pause = false;
+                SessionClient.IsRelogin = false;
             }
         }
 
@@ -1093,17 +1115,9 @@ namespace RimWorldOnlineCity
 
                         if (!Data.BackgroundSaveGameOff)
                         {
-                            Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit " + SaveFullName);
-                            GameDataSaveLoader.SaveGame(SaveName);
-                            var content = File.ReadAllBytes(SaveFullName);
-                            if (content.Length > 1024)
-                            {
-                                Data.SaveFileData = content;
-                                Data.SingleSave = false;
-                                UpdateWorld(false);
+                            Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit ");
 
-                                Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit OK");
-                            }
+                            SaveGameNowInEvent();
                         }
                         SessionClient.Get.Disconnect();
                     }
@@ -1123,5 +1137,6 @@ namespace RimWorldOnlineCity
                 SessionClient.Get.Disconnect();
             }
         }
+
     }
 }

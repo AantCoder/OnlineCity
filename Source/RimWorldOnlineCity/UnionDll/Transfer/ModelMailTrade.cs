@@ -23,7 +23,7 @@ namespace Transfer
         #region For StartIncident
 
         public IncidentTypes IncidentType { get; set; }
-        public float IncidentMult { get; set; }
+        public int IncidentMult { get; set; }
         public IncidentStrategys IncidentStrategy { get; set; }
         public IncidentArrivalModes IncidentArrivalMode { get; set; }
         public string IncidentFaction { get; set; }
@@ -55,6 +55,8 @@ namespace Transfer
         ChunkDrop,
         Infistation,
         Quest,
+        Bombing,
+        Acid,
     }
     public enum IncidentStrategys
     {

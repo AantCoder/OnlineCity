@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,18 +17,7 @@ namespace RimWorldOnlineCity
 
         public override bool TryExecuteEvent()
         {
-            IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, Current.Game.AnyPlayerHomeMap);
-            parms.raidStrategy = GetStrategy(strategy);
-            parms.raidArrivalMode = GetArrivalMode(arrivalMode);
-            parms.customLetterLabel = "test raid";
-            parms.customLetterText = "teast raid again";
-            parms.faction = null;
-            parms.forced = true;  //игнорировать все условия для события
-            parms.target = Find.CurrentMap;
-            parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult;
-            //parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult >= StorytellerUtility.GlobalPointsMax ? StorytellerUtility.GlobalPointsMax : StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult;
-
-            if (!IncidentDefOf.RaidEnemy.Worker.TryExecute(parms))
+            if (!IncidentDefOf.RaidEnemy.Worker.TryExecute(GetParms()))
             {
                 Messages.Message($"Failed_Test_Raid", MessageTypeDefOf.RejectInput);
                 return false;
@@ -35,22 +25,26 @@ namespace RimWorldOnlineCity
             return true;
         }
 
-        public static RaidStrategyDef GetStrategy(Transfer.IncidentStrategys strat)
+        private IncidentParms GetParms()
         {
-            return RaidStrategyDefOf.ImmediateAttack;
-        }
+            var target = (place as Settlement)?.Map ?? Find.CurrentMap;
 
-        public static PawnsArrivalModeDef GetArrivalMode(Transfer.IncidentArrivalModes arrive)
-        {
-            switch (arrive)
-            {
-                case Transfer.IncidentArrivalModes.RandomDrop:
-                    return PawnsArrivalModeDefOf.RandomDrop;
-                case Transfer.IncidentArrivalModes.CenterDrop:
-                    return PawnsArrivalModeDefOf.CenterDrop;
-                default:
-                    return PawnsArrivalModeDefOf.EdgeWalkIn;
-            }
+            parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, target);
+            parms.raidStrategy = GetStrategy(strategy);
+            parms.raidArrivalMode = GetArrivalMode(arrivalMode);
+            parms.customLetterLabel = "OC_Incidents_Raid_Label".Translate();
+            parms.customLetterText = "OC_Incidents_Raid_Text".Translate();
+            parms.biocodeApparelChance = 1f;
+            parms.biocodeWeaponsChance = 1f;
+            parms.dontUseSingleUseRocketLaunchers = false;
+            parms.generateFightersOnly = false;
+            parms.raidNeverFleeIndividual = true;
+            parms.faction = GetFaction();
+            parms.forced = true;  //игнорировать все условия для события
+            parms.target = target;
+            parms.points = CalculatePoints();
+            //parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult >= StorytellerUtility.GlobalPointsMax ? StorytellerUtility.GlobalPointsMax : StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult;
+            return parms;
         }
     }
 }

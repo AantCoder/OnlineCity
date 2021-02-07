@@ -84,7 +84,9 @@
 	<OCity_Dialog_CreateWorld_Err2>잘못된 매개 변수</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>취소</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>시드</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_Difficulty>난이도 0~2 중 입력</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_ScenarioErr>Please select a Scenario</OCity_Dialog_CreateWorld_ScenarioErr>
+	<OCity_Dialog_CreateWorld_Scenario>Select Scenario</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Difficulty>Select Difficulty</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>맵 크기 입력 200~400</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>지구 표면 생성 비율 (5~100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
@@ -255,6 +257,19 @@
 	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>당신은 졌고 정착지는 점령당하였습니다. :(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
 	<OCity_GameAttack_Host_Atack_Repulsed>방어에 성공했습니다! :)</OCity_GameAttack_Host_Atack_Repulsed>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>밖으로 나갈수 없는 적들은 나가지 않지만, 다른 플레이어에게 조정되지 않습니다.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
+
+	<!-- OCIncidents -->
+	<OC_Incidents_CallIncidents_Err1>Enter incident type and player. Some incidents require additional parameters</OC_Incidents_CallIncidents_Err1>
+	<OC_Incidents_CallIncidents_TypeErr>Enter allowed incident type</OC_Incidents_CallIncidents_TypeErr>
+	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Reached max number of incidents in hour</OC_Incidents_CallIncidents_MaxIncidentsInHour>
+	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Reached max number of incodents for this player</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+
+	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
+	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
+	<OC_Incidents_Acid_Label>Gas atack!</OC_Incidents_Acid_Label>
+	<OC_Incidents_Acid_Text>Toxic gas has been sprayed over your settlement</OC_Incidents_Acid_Text>
+	<OC_Incidents_Inf_Label>Man-made Infestation!</OC_Incidents_Inf_Label>
+	<OC_Incidents_Inf_Text>Someone lured the swarm to the surface with high frequency vibrations</OC_Incidents_Inf_Text>
 
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>연결 실패.</OCity_SCC_Disconnected>

@@ -327,8 +327,8 @@ namespace RimWorldOnlineCity
                 Find.SignalManager.RegisterReceiver(pawn);
             }
             */
-            if (pawn.Faction != Faction.OfPlayer)
-                pawn.SetFaction(Faction.OfPlayer, null);
+            /*if (pawn.Faction != Faction.OfPlayer)
+                pawn.SetFaction(Faction.OfPlayer);*/
             if (!pawn.IsWorldPawn())
             {
                 Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Decide);
@@ -501,32 +501,9 @@ namespace RimWorldOnlineCity
             //var factionPirateLoadID = factionPirate.GetUniqueLoadID();
 
             //меняем фракцию на игрока для всех
-            var prisoner = thing.SetFaction(factionColonistLoadID);
+            thing.SetFaction(factionColonistLoadID);
             Thing thin;
-            thin = thing.CreateThing(false);
-            if (MainHelper.DebugMode) Loger.Log("SetFaction...");
-            if (thin.def.CanHaveFaction)
-            {
-                if (MainHelper.DebugMode) Loger.Log("SetFaction...1");
-
-                if (thin is Pawn && (prisoner || freePirate && thin.Faction == Find.FactionManager.OfPlayer))
-                {
-                    //а тут меняем фракцию на пиратов, для тех кому нужно
-                    if (MainHelper.DebugMode) Loger.Log("SetFaction...2");
-                    thin.SetFaction(factionPirate);
-                    if (MainHelper.DebugMode) Loger.Log("SetFaction...3");
-                    var p = thin as Pawn;
-                    if (MainHelper.DebugMode) Loger.Log("SetFaction...4");
-                    if (!freePirate && p.guest != null) p.guest.SetGuestStatus(factionPirate, true);
-                    if (MainHelper.DebugMode) Loger.Log("SetFaction...5");
-                }
-                else
-                {
-                    if (MainHelper.DebugMode) Loger.Log("SetFaction...6");
-                    thin.SetFaction(Find.FactionManager.OfPlayer);
-                    if (MainHelper.DebugMode) Loger.Log("SetFaction...7");
-                }
-            }
+            thin = thing.CreateThing(false, 0, freePirate);
             return thin;
         }
 
