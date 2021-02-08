@@ -40,19 +40,10 @@ namespace ServerCore.Model
         [JsonIgnore]
         public string WorkingDirectory { get; set; }
 
-        [JsonIgnore]
-        public ModelModsFiles AppovedFolderAndConfig { get; set; }
-
         /// <summary>
         /// Директория где храняется моды
         /// </summary>
         public string ModsDirectory { get; set; } = "C:\\Games\\RimWorld\\Mods";
-
-        /// <summary>
-        /// For using steam workshop folder
-        /// </summary>
-        [JsonIgnore]
-        public string SteamWorkShopModsDir { get; set; }
 
         /// <summary>
         /// Защита начинающих игроков от нападения, а также запрет передавать товары от новых поселений
@@ -76,13 +67,15 @@ namespace ServerCore.Model
         /// </summary>
         public string[] IgnoredLocalConfigFiles { get; set; } = FileChecker.IgnoredConfigFiles;
 
+        public string[] IgnoredLocalModFiles { get; set; } = FileChecker.IgnoredModFiles;
+
         /// <summary>
         /// Contains config files
         /// </summary>
         [JsonIgnore]
         public string ModsConfigFiles { get; set; }
 
-        public ServerSettings() 
+        public ServerSettings()
         {
             GeneralSettings = GeneralSettings.SetDefault();
         }

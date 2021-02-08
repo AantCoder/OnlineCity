@@ -138,14 +138,8 @@ namespace OCUnion.Transfer.Model
         /// Получение ответа cо списком файлов 
         /// </summary>
         Response36ListFiles,
-        /// <summary>
-        /// Запрос на получение списка папок для проверки с сервера
-        /// </summary>
-        Request37GetApproveFolders,
-        /// <summary>
-        /// Ответ содержит файл содержащий список папок с сервера
-        /// </summary>
-        Response38GetApproveFolders,
+       
+       
         /// <summary>
         /// Уведомление о дисконнекте
         /// </summary>

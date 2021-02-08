@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace OCUnion.Transfer.Model
 {
@@ -17,10 +18,12 @@ namespace OCUnion.Transfer.Model
         public List<ModelFileInfo> Files { get; set; }
     }
 
+    [Serializable]
     public enum FolderType
     {
+        [Description("Mods folder")]
         ModsFolder,
-        SteamFolder,
+        [Description("Configs folder")]
         ModsConfigPath,
     }
 }

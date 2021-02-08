@@ -14,12 +14,17 @@ namespace ServerOnlineCity
 {
     public class FileHashChecker
     {
+        //TO DO: refatoring : Tuple содержит очень много элементов, сложно читать, разбить на класс с полями
+
         /// <summary>
         /// Item1 Server Directory 
         /// Item2 Folder Tree
-        /// hash Files in this dir
+        /// Item3 hash Files in this dir
+        /// Item4 string [] IgrnoredFiles
         /// </summary>
-        public IReadOnlyDictionary<FolderType, Tuple<string, FoldersTree, IReadOnlyDictionary<string, ModelFileInfo>>> CheckedDirAndFiles { get; private set; }
+        public IReadOnlyDictionary<FolderType,
+            Tuple<string, FoldersTree, IReadOnlyDictionary<string, ModelFileInfo>, string[]>> CheckedDirAndFiles
+        { get; private set; }
 
         public IReadOnlyDictionary<FolderType, ApproveLoadWorldReason> ApproveWorldType { get; private set; }
 
@@ -30,79 +35,60 @@ namespace ServerOnlineCity
                 return;
             }
 
-            serverSettings.SteamWorkShopModsDir = Environment.CurrentDirectory;
-
-            // 2. Создаем файлы со списком разрешенных папок, которые отправим клиенту
-            var modsFolders = new ModelFileInfo() // 0 
-            {
-                FileName = "ApprovedMods.txt",
-                Hash = FileChecker.CreateListFolder(serverSettings.ModsDirectory)
-            };
-            var steamFolders = new ModelFileInfo() // 1 
-            {
-                FileName = "ApprovedSteamWorkShop.txt",
-                Hash = FileChecker.CreateListFolder(serverSettings.SteamWorkShopModsDir)
-            };
-
-            // index: 0 - list Folders in Mods dir, 1 -list Folders in Steam dir          
-
-            serverSettings.AppovedFolderAndConfig = new ModelModsFiles()
-            {
-                Files = new List<ModelFileInfo>()
-                {
-                    modsFolders,
-                    steamFolders,
-                }
-            };
-
             setupApproveWorldType(serverSettings);
 
-            var result = new Dictionary<FolderType, Tuple<string, FoldersTree, IReadOnlyDictionary<string, ModelFileInfo>>>();
+            var result = new Dictionary<FolderType, Tuple<string, FoldersTree, IReadOnlyDictionary<string, ModelFileInfo>, string[]>>();
 
             var folderTree = FoldersTree.GenerateTree(serverSettings.ModsDirectory);
-            result.Add(FolderType.ModsFolder, Tuple.Create(serverSettings.ModsDirectory, folderTree, getModFiles(serverSettings)));
-
-            folderTree = FoldersTree.GenerateTree(serverSettings.SteamWorkShopModsDir);
-            result.Add(FolderType.SteamFolder, Tuple.Create(serverSettings.SteamWorkShopModsDir, folderTree, getSteamFiles(serverSettings)));
+            result.Add(FolderType.ModsFolder, Tuple.Create(serverSettings.ModsDirectory, folderTree, getModFiles(serverSettings), serverSettings.IgnoredLocalModFiles));
 
             folderTree = new FoldersTree();
-            result.Add(FolderType.ModsConfigPath, Tuple.Create(serverSettings.ModsConfigsDirectoryPath, folderTree, getModsConfigFiles(serverSettings)));
+            result.Add(FolderType.ModsConfigPath, Tuple.Create(serverSettings.ModsConfigsDirectoryPath, folderTree, getModsConfigFiles(serverSettings), serverSettings.IgnoredLocalConfigFiles));
 
             CheckedDirAndFiles = result;
         }
 
-        private IReadOnlyDictionary<string, ModelFileInfo> getModFiles(ServerSettings serverSettings)
+        private void writeFolderNameToServerLog(string folderName, int folderindex)
         {
-            var files = FileChecker.GenerateHashFiles(serverSettings.ModsDirectory, Directory.GetDirectories(serverSettings.ModsDirectory));
-            Loger.Log($"Hashed {files.Count} files from ModsDirectory={serverSettings.ModsDirectory}");
-            return files.ToDictionary(f => f.FileName);
-        }
-
-        private IReadOnlyDictionary<string, ModelFileInfo> getSteamFiles(ServerSettings serverSettings)
-        {
-            // Steam folder not check
-            var files = FileChecker.GenerateHashFiles(serverSettings.SteamWorkShopModsDir, new string[0]); //Directory.GetDirectories(serverSettings.SteamWorkShopModsDir)
-            return files.ToDictionary(f => f.FileName);
+            Loger.Log($"Check {folderName}");
         }
 
         private IReadOnlyDictionary<string, ModelFileInfo> getModsConfigFiles(ServerSettings serverSettings)
         {
-            var dir = new DirectoryInfo(serverSettings.ModsConfigsDirectoryPath);
+            var checkedFiles = FileChecker.GenerateHashFiles(serverSettings.ModsConfigsDirectoryPath, writeFolderNameToServerLog);
 
-            var parent = dir.Parent.FullName;
-            var name = dir.Name;
-
-            var files = FileChecker.GenerateHashFiles(parent, new string[] { name })
-                .Where(x => !serverSettings.IgnoredLocalConfigFiles.Contains(new FileInfo(x.FileName).Name));
-
-            foreach (var f in files)
-            {
-                f.FileName = new FileInfo(f.FileName).Name;
-            }
+            // TO DO : refactoring not caclulate hash for ignored files ( for faster start )
+            // TO DO : refactoring: Объеденить методы getModsConfigFiles   getModFiles в один с передачей параметров
+            var files = checkedFiles
+                .Where(x => !FileNameContainsIgnored(new FileInfo(x.FileName).Name, serverSettings.IgnoredLocalConfigFiles));
 
             var res = files.ToDictionary(f => f.FileName);
             Loger.Log($"Hashed {res.Count} files from ModsConfigsDirectoryPath={serverSettings.ModsConfigsDirectoryPath}");
 
+            return res;
+        }
+
+        public static bool FileNameContainsIgnored(string fileName, string[] ignored)
+        {
+            foreach (var ignoredFName in ignored)
+            {
+                if (fileName.EndsWith(ignoredFName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private IReadOnlyDictionary<string, ModelFileInfo> getModFiles(ServerSettings serverSettings)
+        {
+            var checkedFiles = FileChecker.GenerateHashFiles(serverSettings.ModsDirectory, writeFolderNameToServerLog);
+            var files = checkedFiles
+                .Where(x => !FileNameContainsIgnored(new FileInfo(x.FileName).Name, serverSettings.IgnoredLocalModFiles));
+
+            var res = files.ToDictionary(f => f.FileName);
+            Loger.Log($"Hashed {res.Count} files from ModsDirectory={serverSettings.ModsDirectory}");
             return res;
         }
 
@@ -111,7 +97,6 @@ namespace ServerOnlineCity
             var approveWorldType = new Dictionary<FolderType, ApproveLoadWorldReason>()
             {
                 { FolderType.ModsFolder, ApproveLoadWorldReason.ModsFilesFail  },
-                { FolderType.SteamFolder, ApproveLoadWorldReason.ModsSteamWorkShopFail },
                 { FolderType.ModsConfigPath, ApproveLoadWorldReason.NotAllConfigsOnClient},
             };
 

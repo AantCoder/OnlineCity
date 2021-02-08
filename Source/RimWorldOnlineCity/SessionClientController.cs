@@ -2,15 +2,20 @@
 using OCUnion;
 using OCUnion.Common;
 using OCUnion.Transfer;
+using OCUnion.Transfer.Model;
 using RimWorld;
 using RimWorld.Planet;
+using RimWorldOnlineCity.ClientHashCheck;
+using RimWorldOnlineCity.GameClasses.Harmony;
 using RimWorldOnlineCity.Services;
+using RimWorldOnlineCity.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Transfer;
 using Util;
 using Verse;
@@ -40,6 +45,8 @@ namespace RimWorldOnlineCity
 
         public static bool LoginInNewServerIP { get; set; }
 
+        public static IClientFileChecker[] ClientFileCheckers { get; private set; }
+
         /// <summary>
         /// Инициализация при старте игры. Как можно раньше
         /// </summary>
@@ -66,9 +73,35 @@ namespace RimWorldOnlineCity
 
             Loger.Log("Client Init " + MainHelper.VersionInfo);
             Loger.Log("Client Language: " + Prefs.LangFolderName);
-
             Loger.Log("Client MainThreadNum=" + ModBaseData.GlobalData.MainThreadNum.ToString());
+
+            calculateHash();
         }
+
+        private static void calculateHash()
+        {
+            UpdateModsWindow.WindowTitle = "Calculate hash for local files".NeedTranslate();
+            Find.WindowStack.Add(new UpdateModsWindow());
+            var factory = new ClientFileCheckerFactory();
+
+            var folderTypeValues = Enum.GetValues(typeof(FolderType));
+            ClientFileCheckers = new ClientFileChecker[folderTypeValues.Length];
+            var filesCount = 0;
+            foreach (FolderType folderType in folderTypeValues)
+            {
+                UpdateModsWindow.WindowTitle = "Calculate hash for: " + folderType.ToString();
+                ClientFileCheckers[(int)folderType] = factory.GetFileChecker(folderType);
+                ClientFileCheckers[(int)folderType].CalculateHash();
+                filesCount += ClientFileCheckers[(int)folderType].FilesHash.Count;
+            }
+
+
+            UpdateModsWindow.WindowTitle = "Calculate hash completed";
+            UpdateModsWindow.HashStatus = "Mods Config files: " + ClientFileCheckers[(int)FolderType.ModsConfigPath].FilesHash.Count.ToString() + "\n" +
+            "Mods files: " + ClientFileCheckers[(int)FolderType.ModsFolder].FilesHash.Count.ToString();
+            //Task.Run(() => ClientHashChecker.StartGenerateHashFiles());
+        }
+
 
         private static object UpdatingWorld = new Object();
         private static int GetPlayersInfoCountRequest = 0;
@@ -79,12 +112,12 @@ namespace RimWorldOnlineCity
             {
                 Command((connect) =>
                 {
-                    //собираем пакет на сервер
+                    //собираем пакет на сервер // collecting the package on the server
                     var toServ = new ModelPlayToServer()
                     {
                         UpdateTime = Data.UpdateTime, //время прошлого запроса
                     };
-                    //данные сохранения игры
+                    //данные сохранения игры // save game data
                     if (Data.SaveFileData != null)
                     {
                         toServ.SaveFileData = Data.SaveFileData;
@@ -92,12 +125,18 @@ namespace RimWorldOnlineCity
                         Data.SaveFileData = null;
                     }
 
-                    //собираем данные с планеты
-                    if (!firstRun) UpdateWorldController.SendToServer(toServ);
+                    //собираем данные с планеты // collecting data from the planet
+                    if (!firstRun) UpdateWorldController.SendToServer(toServ, firstRun, null);
 
-                    if (firstRun) GetPlayersInfoCountRequest = 0;
+                    if (firstRun)
+                    {
+                        GetPlayersInfoCountRequest = 0;
+                        ModelGameServerInfo fromServWObject = connect.GetGameServerInfo();
+                        UpdateWorldController.SendToServer(toServ, firstRun, fromServWObject);
+                    }
 
                     //запрос на информацию об игроках. Можно будет ограничить редкое получение для тех кто оффлайн
+                    //request for information about players. It will be possible to limit the rare receipt for those who are offline
                     if (Data.Chats != null && Data.Chats[0].PartyLogin != null)
                     {
                         if (Data.Players == null || Data.Players.Count == 0
@@ -117,20 +156,21 @@ namespace RimWorldOnlineCity
                     }
 
                     //отправляем на сервер, получаем ответ
+                    //we send to the server, we get a response2
                     ModelPlayToClient fromServ = connect.PlayInfo(toServ);
-
                     //Loger.Log("Client UpdateWorld 5 ");
                     Loger.Log("Client " + My.Login + " UpdateWorld "
-                        + string.Format("Отпр. свои {0}, своиDel {1}{5}. Пришло {2}, del {3}, игроков {8}, посылок {4}{6}{7}"
-                            , toServ.WObjects == null ? 0 : toServ.WObjects.Count
-                            , toServ.WObjectsToDelete == null ? 0 : toServ.WObjectsToDelete.Count
-                            , fromServ.WObjects == null ? 0 : fromServ.WObjects.Count
-                            , fromServ.WObjectsToDelete == null ? 0 : fromServ.WObjectsToDelete.Count
-                            , fromServ.Mails == null ? 0 : fromServ.Mails.Count
-                            , toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : ", сейв"
-                            , fromServ.AreAttacking ? " Атакуют!" : ""
-                            , fromServ.NeedSaveAndExit ? " Команда на отключение" : ""
-                            , fromServ.PlayersInfo == null ? "null" : fromServ.PlayersInfo.Count.ToString()
+                        + string.Format("To Server. Objects {0}, To Delete {1}{5}. From Server {2}, Deleted {3}, Players {8}, Mail {4}, isAttacking? {6}, NeedSaveAndExit? {7}, OnlineWorldObject {9}"
+                            , toServ.WObjects == null ? 0 : toServ.WObjects.Count // 0
+                            , toServ.WObjectsToDelete == null ? 0 : toServ.WObjectsToDelete.Count // 1
+                            , fromServ.WObjects == null ? 0 : fromServ.WObjects.Count // 2
+                            , fromServ.WObjectsToDelete == null ? 0 : fromServ.WObjectsToDelete.Count // 3
+                            , fromServ.Mails == null ? 0 : fromServ.Mails.Count // 4
+                            , toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : ", сейв" // 5
+                            , fromServ.AreAttacking ? " Attacking!" : "" // 6 
+                            , fromServ.NeedSaveAndExit ? "Disconnect command" : "" // 7
+                            , fromServ.PlayersInfo == null ? "null" : fromServ.PlayersInfo.Count.ToString() // 8
+                            , fromServ.WObjectOnlineList == null ? 0 : fromServ.WObjectOnlineList.Count() // 9
                             ));
 
                     //сохраняем время актуальности данных
@@ -154,7 +194,7 @@ namespace RimWorldOnlineCity
                         }
                     }
 
-                    //обновляем планету
+                    //обновляем планету // updating the planet
                     UpdateWorldController.LoadFromServer(fromServ, firstRun);
 
                     //обновляем инфу по поселениям
@@ -192,14 +232,30 @@ namespace RimWorldOnlineCity
             }
         }
 
+        private static byte[] SaveGameCore()
+        {
+            byte[] content;
+            try
+            {
+                ScribeSaver_InitSaving_Patch.Enable = true;
+                GameDataSaveLoader.SaveGame(SaveName);
+                //content = File.ReadAllBytes(SaveFullName);
+                content = ScribeSaver_InitSaving_Patch.SaveData.ToArray();
+            }
+            finally
+            {
+                ScribeSaver_InitSaving_Patch.Enable = false;
+                ScribeSaver_InitSaving_Patch.SaveData = null;
+            }
+            return content;
+        }
+
         private static void SaveGame(Action<byte[]> saved)
         {
-            Loger.Log("Client SaveGame() " + SaveFullName);
+            Loger.Log("Client SaveGame() ");
             LongEventHandler.QueueLongEvent(() =>
             {
-                GameDataSaveLoader.SaveGame(SaveName);
-                var content = File.ReadAllBytes(SaveFullName);
-                saved(content);
+                saved(SaveGameCore());
             }, "Autosaving", false, null);
         }
 
@@ -225,12 +281,6 @@ namespace RimWorldOnlineCity
             });
         }
 
-
-        //////private static checkConfigsBeforeSave() 
-        //////{
-
-        //////}
-
         /// <summary>
         /// Немедленно сохраняет игру и передает на сервер. Должно запускаться уже в потоке LongEventHandler.QueueLongEvent, ожидает окончания соханения
         /// </summary>
@@ -239,14 +289,16 @@ namespace RimWorldOnlineCity
         {
             Loger.Log($"Client {SessionClientController.My.Login} SaveGameNowInEvent single=" + single.ToString());
 
-            GameDataSaveLoader.SaveGame(SaveName);
-            var content = File.ReadAllBytes(SaveFullName);
+            var content = SaveGameCore();
 
             if (content.Length > 1024)
             {
                 Data.SaveFileData = content;
                 Data.SingleSave = single;
                 UpdateWorld(false);
+
+                //записываем файл только для удобства игрока, чтобы он у него был
+                File.WriteAllBytes(SaveFullName, content);
 
                 Loger.Log($"Client {SessionClientController.My.Login} SaveGameNowInEvent OK");
             }
@@ -563,11 +615,13 @@ namespace RimWorldOnlineCity
             Loger.Log("Client TimersStop e");
         }
 
-        public static Scenario GetScenarioDefault()
+        public static Scenario GetScenarioDefault(string scenarioName)
         {
             var listS = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef).ToList();
 
-            var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
+            var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == scenarioName);
+            if (scenarioDefaultMem == null)
+                scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "Crashlanded");
             if (scenarioDefaultMem == null)
                 scenarioDefaultMem = listS.FirstOrDefault(s => s.name == "OCity_SessionCC_Scenario_Classic".Translate());
             if (scenarioDefaultMem == null)
@@ -613,6 +667,7 @@ namespace RimWorldOnlineCity
             Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
             Data.MinutesIntervalBetweenPVP = serverInfo.MinutesIntervalBetweenPVP;
             Data.TimeChangeEnablePVP = serverInfo.TimeChangeEnablePVP;
+            Data.GeneralSettings = serverInfo.GeneralSettings;
             Data.ProtectingNovice = serverInfo.ProtectingNovice;
             MainHelper.OffAllLog = serverInfo.EnableFileLog;
         }
@@ -639,6 +694,7 @@ namespace RimWorldOnlineCity
                 Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
                 Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin
                     + " Seed=" + serverInfo.Seed
+                    + " Scenario=" + serverInfo.ScenarioName
                     + " NeedCreateWorld=" + serverInfo.NeedCreateWorld
                     + " DelaySaveGame=" + Data.DelaySaveGame
                     + " DisableDevMode=" + Data.DisableDevMode);
@@ -667,15 +723,17 @@ namespace RimWorldOnlineCity
                     {
                         if (!form.ResultOK)
                         {
+                            GetScenarioDefault(form.InputScenario);
                             Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate());
                             return;
                         }
 
                         GameStarter.SetMapSize = int.Parse(form.InputMapSize);
-                        GameStarter.SetPlanetCoverage = float.Parse(form.InputPlanetCoverage) / 100f;
+                        GameStarter.SetPlanetCoverage = form.InputPlanetCoverage / 100f;
                         GameStarter.SetSeed = form.InputSeed;
-                        GameStarter.SetDifficulty = int.Parse(form.InputDifficulty);
-                        GameStarter.SetScenario = GetScenarioDefault();
+                        GameStarter.SetDifficulty = form.InputDifficulty;
+                        GameStarter.SetScenario = GetScenarioDefault(form.InputScenario);
+                        GameStarter.SetScenarioName = form.InputScenario;
 
                         GameStarter.AfterStart = CreatingServerWorld;
                         GameStarter.GameGeneration();
@@ -706,7 +764,6 @@ namespace RimWorldOnlineCity
             var connect = SessionClient.Get;
             var worldData = connect.WorldLoad();
 
-            File.WriteAllBytes(SaveFullName, worldData.SaveFileData);
             Action loadAction = () =>
             {
                 LongEventHandler.QueueLongEvent(delegate
@@ -715,6 +772,9 @@ namespace RimWorldOnlineCity
                     GameLoades.AfterLoad = () =>
                     {
                         GameLoades.AfterLoad = null;
+
+                        ScribeLoader_InitLoading_Patch.Enable = false;
+                        ScribeLoader_InitLoading_Patch.LoadData = null;
 
                         //Непосредственно после загрузки игры
                         InitGame();
@@ -743,6 +803,10 @@ namespace RimWorldOnlineCity
                     */
                 }, "Play", "LoadingLongEvent", false, null);
             };
+
+            ScribeLoader_InitLoading_Patch.Enable = true;
+            ScribeLoader_InitLoading_Patch.LoadData = worldData.SaveFileData;
+
             PreLoadUtility.CheckVersionAndLoad(SaveFullName, ScribeMetaHeaderUtility.ScribeHeaderMode.Map, loadAction);
         }
 
@@ -755,7 +819,7 @@ namespace RimWorldOnlineCity
             GameStarter.SetPlanetCoverage = serverInfo.PlanetCoverage;
             GameStarter.SetSeed = serverInfo.Seed;
             GameStarter.SetDifficulty = serverInfo.Difficulty;
-            GameStarter.SetScenario = GetScenarioDefault();
+            GameStarter.SetScenario = GetScenarioDefault(serverInfo.ScenarioName);
             GameStarter.AfterStart = CreatePlayerMap;
 
             GameStarter.GameGeneration(false);
@@ -767,9 +831,11 @@ namespace RimWorldOnlineCity
             Current.Game.InitData = new GameInitData();
             Current.Game.Scenario = GameStarter.SetScenario;
             Current.Game.Scenario.PreConfigure();
-            Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
+            /* Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
                 , GameStarter.SetDifficulty == 0 ? DifficultyDefOf.Easy
-                    : DifficultyDefOf.Rough);
+                    : DifficultyDefOf.Rough); */
+            Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
+                , DefDatabase<DifficultyDef>.AllDefs.FirstOrDefault(d => d.LabelCap == GameStarter.SetDifficulty));
 
             Loger.Log("Client InitConnected() ExistMap2");
             Current.Game.World = WorldGenerator.GenerateWorld(
@@ -802,29 +868,35 @@ namespace RimWorldOnlineCity
 
         }
 
+        public static WorldObjectOnline GetWorldObjects(WorldObject obj)
+        {
+            var worldObject = new WorldObjectOnline();
+            worldObject.Name = obj.LabelCap;
+            worldObject.Tile = obj.Tile;
+            worldObject.FactionGroup = obj?.Faction?.def?.LabelCap;
+            return worldObject;
+        }
+
         public static bool CheckFiles()
         {
-            // 1. Шаг Проверяем что список модов совпадает и получены файлы для проверки
-            var ip = ModBaseData.GlobalData.LastIP.Value.Replace(":", "_");
-            var ap = new GetApproveFolders(SessionClient.Get);
-            var approveModList = ap.GenerateRequestAndDoJob(ip);
+            if (ClientFileCheckers == null || ClientFileCheckers.Any(x => x == null))
+            {
+                return false;
+            }
 
-            var modsCheckFileName = GetApproveFolders.GetModsApprovedFoldersFileName(ip);
-            var steamCheckFileName = GetApproveFolders.GetSteamApprovedFoldersFileName(ip);
+            Find.WindowStack.Add(new UpdateModsWindow());
 
-            Loger.Log(modsCheckFileName);
-            Loger.Log(steamCheckFileName);
-
-            // 2. Запускаем пересчет хеша после получения папок проверки с сервера.
-            // Если файлы которые содержат папки для проверки,то При инициализации мода сразу же запускаем подсчет контрольной суммы файлов
-            ClientHashChecker.StartGenerateHashFiles(modsCheckFileName, steamCheckFileName);
-
-            // 3. Полученный хеш отправляем серверу для проверки
             var fc = new ClientHashChecker(SessionClient.Get);
-            var res = fc.GenerateRequestAndDoJob(null);
+            var approveModList = true;
+            foreach (var clientFileChecker in ClientFileCheckers)
+            {
+                var res = (int)fc.GenerateRequestAndDoJob(clientFileChecker);
+                approveModList = approveModList && ((int)res == 0);
+            }
 
-            Loger.Log(res.ToString());
-            return approveModList && res == 0;
+            UpdateModsWindow.WindowTitle = $"Check files from Server is Completed. Close Window . . .";
+
+            return approveModList;
         }
 
         public static Page GetFirstConfigPage()
@@ -861,6 +933,7 @@ namespace RimWorldOnlineCity
         {
             Loger.Log("Client CreatingServerWorld()");
             //todo Удаление лишнего, добавление того, что нужно в пустом новом мире на сервере
+            //todo Remove unnecessary, add what you need in an empty new world on the server
 
             //to do
 
@@ -869,6 +942,7 @@ namespace RimWorldOnlineCity
             toServ.MapSize = GameStarter.SetMapSize;
             toServ.PlanetCoverage = GameStarter.SetPlanetCoverage;
             toServ.Seed = GameStarter.SetSeed;
+            toServ.ScenarioName = GameStarter.SetScenarioName;
             toServ.Difficulty = GameStarter.SetDifficulty;
             /*
             toServ.WObjects = Find.World.worldObjects.AllWorldObjects
@@ -1044,6 +1118,7 @@ namespace RimWorldOnlineCity
                 MainButtonWorker_OC.ShowOnStart();
                 UpdateWorldController.ClearWorld();
                 UpdateWorldController.InitGame();
+                ChatController.Init(true);
                 Data.UpdateTime = DateTime.MinValue;
                 UpdateWorld(true);
 
@@ -1068,17 +1143,9 @@ namespace RimWorldOnlineCity
 
                         if (!Data.BackgroundSaveGameOff)
                         {
-                            Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit " + SaveFullName);
-                            GameDataSaveLoader.SaveGame(SaveName);
-                            var content = File.ReadAllBytes(SaveFullName);
-                            if (content.Length > 1024)
-                            {
-                                Data.SaveFileData = content;
-                                Data.SingleSave = false;
-                                UpdateWorld(false);
+                            Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit ");
 
-                                Loger.Log($"Client {SessionClientController.My.Login} SaveGameBeforeExit OK");
-                            }
+                            SaveGameNowInEvent();
                         }
                         SessionClient.Get.Disconnect();
                     }
@@ -1098,5 +1165,6 @@ namespace RimWorldOnlineCity
                 SessionClient.Get.Disconnect();
             }
         }
+
     }
 }

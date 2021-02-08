@@ -22,7 +22,7 @@ namespace OCUnion.Common
         /// Расширения файлов исключаемые из проверки
         /// </summary>
 
-        public static readonly string[] ExcludedExternals = new string[] { ".cs", ".csproj", ".sln", ".gitignore", ".gitattributes" };
+        public static readonly string[] IgnoredModFiles = new string[] { ".cs", ".csproj", ".sln", ".gitignore", ".gitattributes" };
 
         public static readonly string[] IgnoredConfigFiles = { "KeyPrefs.xml", "Knowledge.xml", "LastPlayedVersion.txt", "Prefs.xml" };
 
@@ -83,7 +83,14 @@ namespace OCUnion.Common
             }
         }
 
-        public static List<ModelFileInfo> GenerateHashFiles(string rootFolder, string[] checkFolders)
+        /// <summary>
+        /// Generate hash for all files contains in root folder 
+        /// </summary>
+        /// <param name="rootFolder">can be null, then calc hash for all folder </param>
+        /// <param name="checkFolders"></param>
+        /// <param name="onStartUpdateFolder"> string : </param>
+        /// <returns></returns>
+        public static List<ModelFileInfo> GenerateHashFiles(string rootFolder, Action<string, int> onStartUpdateFolder)
         {
             var result = new List<ModelFileInfo>();
 
@@ -93,15 +100,20 @@ namespace OCUnion.Common
                 return result;
             }
 
-            // Файл который есть у клиента не найден, проверяем Первую директорию    
-            foreach (var folder in checkFolders)
-            {
+            var checkFolders = Directory.GetDirectories(rootFolder);
 
+
+            // Файл который есть у клиента не найден, проверяем Первую директорию    
+            for (var i = 0; i < checkFolders.Length; i++)
+            {
+                var folder = checkFolders[i];
+                onStartUpdateFolder?.Invoke(folder, i);
 #if DEBUG
                 var di = new DirectoryInfo(folder);
                 if ("OnlineCity".Equals(di.Name))
                     continue;
 #endif
+
                 var checkFolder = Path.Combine(rootFolder, folder);
                 if (Directory.Exists(checkFolder))
                 {
@@ -171,7 +183,7 @@ namespace OCUnion.Common
 
         private static bool ApproveExt(string fileName)
         {
-            foreach (var ext in ExcludedExternals)
+            foreach (var ext in IgnoredModFiles)
             {
                 if (fileName.EndsWith(ext))
                 {

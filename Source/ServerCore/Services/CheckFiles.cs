@@ -29,18 +29,24 @@ namespace ServerOnlineCity.Services
             var NoApproveWorld = ServerManager.FileHashChecker.ApproveWorldType[packet.FolderType];
             var workDict = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].Item3;
             var foldersTree = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].Item2;
+            var ignoredFiles = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].Item4;
 
             var result = new List<ModelFileInfo>();
             var allServerFiles = new HashSet<string>(workDict.Keys);
             var packetFiles = packet.Files != null ? packet.Files : new List<ModelFileInfo>(0);
 
-            foreach (var file in packetFiles)
+            foreach (var modelFile in packetFiles)
             {
-                if (workDict.TryGetValue(file.FileName, out ModelFileInfo fileInfo))
+                if (FileHashChecker.FileNameContainsIgnored(modelFile.FileName, ignoredFiles))
                 {
-                    allServerFiles.Remove(file.FileName); // 
+                    continue;
+                }
 
-                    if (!ModelFileInfo.UnsafeByteArraysEquale(file.Hash, fileInfo.Hash))
+                if (workDict.TryGetValue(modelFile.FileName, out ModelFileInfo fileInfo))
+                {
+                    allServerFiles.Remove(modelFile.FileName); // 
+
+                    if (!ModelFileInfo.UnsafeByteArraysEquale(modelFile.Hash, fileInfo.Hash))
                     {
                         // read file for send to Client      
                         // файл  найден, но хеши не совпадают, необходимо заменить файл
@@ -51,8 +57,8 @@ namespace ServerOnlineCity.Services
                 {
                     // mark file for delete 
                     // Если файл с таким именем не найден, помечаем файл на удаление
-                    file.Hash = null;
-                    result.Add(file);
+                    modelFile.Hash = null;
+                    result.Add(modelFile);
                 }
             }
 

@@ -51,8 +51,6 @@ namespace RimWorldOnlineCity
         [HarmonyPrefix]
         public static void Prefix(Rect rect, List<ListableOption> optList)
         {
-
-            //File.WriteAllText(Loger.PathLog + @"optList.txt", DevelopTest.TextObj(optList), Encoding.UTF8);
             if (optList.Count > 0 && optList[0].GetType() == typeof(ListableOption))
             {
                 if (Current.ProgramState == ProgramState.Entry)
@@ -137,5 +135,4 @@ namespace RimWorldOnlineCity
             SessionClientController.Init();
         }
     }
-
 }
