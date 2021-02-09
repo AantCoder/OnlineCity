@@ -73,12 +73,10 @@ namespace RimWorldOnlineCity
 
             Loger.Log("Client Init " + MainHelper.VersionInfo);
             Loger.Log("Client Language: " + Prefs.LangFolderName);
-            Loger.Log("Client MainThreadNum=" + ModBaseData.GlobalData.MainThreadNum.ToString());
-
-            calculateHash();
+            Loger.Log("Client MainThreadNum=" + ModBaseData.GlobalData.MainThreadNum.ToString());          
         }
 
-        private static void calculateHash()
+        public static void CalculateHash()
         {
             UpdateModsWindow.WindowTitle = "Calculate hash for local files".NeedTranslate();
             Find.WindowStack.Add(new UpdateModsWindow());
