@@ -146,6 +146,7 @@
     <Compile Include="GameClasses\Harmony\MainMenu.cs" />
     <Compile Include="GameClasses\ModDefOf.cs" />
     <Compile Include="GameClasses\StartPoint.cs" />
+    <Compile Include="UI\Dialog_BaseOnlineButton.cs" />
     <Compile Include="UI\Dialog_Exchenge.cs" />
     <Compile Include="UI\Dialog_TextOut.cs" />
     <Compile Include="UI\Dialog_SelectThingDef.cs" />

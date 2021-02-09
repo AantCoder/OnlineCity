@@ -1,5 +1,6 @@
 ﻿using OCUnion;
 using RimWorld.Planet;
+using RimWorldOnlineCity.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -125,6 +126,33 @@ namespace RimWorldOnlineCity
         }
 
         #endregion
+
+        
+		public static readonly Texture2D BaseOnlineButtonIcon = ContentFinder<Texture2D>.Get("UI/Buttons/OpenSpecificTab");
+
+        //Install.png (стрелка вниз)   LaunchReport.png (лист с текстом)    OpenSpecificTab (лист с пунктами) 
+        //SellableItems.png (тележка с вопросом)  ShowMap.png (лупа с деревьями)    ResourceReadoutCategorized.png (контекстное меню)
+        //Trade.png (рукопожатие с $)   Trade.png (вопрос)  Tame.png (рука)
+        //TradeMode.png ($)     ShowRoomStats.png (Графики)     Quest.png(воцклицательный знак)     UI/Commands/SelectAllTransporters (капсулы)
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            foreach (Gizmo gizmo in base.GetGizmos())
+            {
+                yield return gizmo;
+            }
+
+            Command_Action command_Action = new Command_Action();
+            command_Action.defaultLabel = "Взаимодействие с {0}".NeedTranslate(OnlinePlayerLogin);
+            command_Action.defaultDesc = "Взаимодействие с поселением {0} игрока {1}".NeedTranslate(OnlineName, OnlinePlayerLogin);
+            command_Action.icon = BaseOnlineButtonIcon;
+            command_Action.action = delegate
+            {
+                Find.WindowStack.Add(new Dialog_BaseOnlineButton(this));
+
+            };
+            yield return command_Action;
+        }
     }
 
     public class WealthTexture
