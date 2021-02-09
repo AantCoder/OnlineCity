@@ -1,4 +1,5 @@
-﻿using OCUnion.Common;
+﻿using OCUnion;
+using OCUnion.Common;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -59,21 +60,46 @@ namespace RimWorldOnlineCity
         #region For StartIncident
         private static ModelStatus BeforeStartIncident(int chatId, string msg)
         {
+            Loger.Log("IncidentLod ChatController.BeforeStartIncident 1 msg:" + msg);
             //разбираем аргументы в кавычках '. Удвоенная кавычка указывает на её символ.
             string command;
             List<string> args;
             ChatUtils.ParceCommand(msg, out command, out args);
 
+            if (args.Count < 3)
+            {
+                var errorMessage = "Неверно заданы аргументы".NeedTranslate().ToString();
+                Loger.Log("IncidentLod ChatController.BeforeStartIncident errorMessage:" + errorMessage);
+                Find.WindowStack.Add(new Dialog_Input(errorMessage, msg, true));
+
+                return new ModelStatus() { Status = 1 };
+            }
+
             //проверка, что денег хватает
-            int cost = CalculateRaidCost(Int32.Parse(args[2]));
-            int gold = Find.CurrentMap.resourceCounter.GetCount(ThingDefOf.Gold);
-            if (gold < cost) return new ModelStatus() { Status = 1 };
-            else 
+            int cost = OCIncident.CalculateRaidCost(Int64.Parse(args[2]), Int32.Parse(args[3]));
+            int gold = Find.CurrentMap?.resourceCounter.GetCount(ThingDefOf.Gold) ?? -1;
+            if (cost < 0 || gold < 0 || gold < cost)
+            {
+                Loger.Log("IncidentLod ChatController.BeforeStartIncident no");
+
+                var errorMessage = cost < 0 || gold < 0
+                    ? "Ошибка определения стоимости".NeedTranslate().ToString() + $" cost={cost} gold={gold}"
+                    : "Недостаточно золота {0} из {1}, нехватает {2}".NeedTranslate(gold, cost, cost - gold).ToString();
+                Loger.Log("IncidentLod ChatController.BeforeStartIncident errorMessage:" + errorMessage);
+                Find.WindowStack.Add(new Dialog_Input(errorMessage, msg, true));
+
+                return new ModelStatus() { Status = 1 };
+            }
+            else
+            {
+                Loger.Log("IncidentLod ChatController.BeforeStartIncident ok");
                 return null;
+            }
         }
 
         private static void AfterStartIncident(int chatId, string msg, ModelStatus stat)
         {
+            Loger.Log("IncidentLod ChatController.AfterStartIncident 1 msg:" + msg);
             if (stat.Status == 0)
             {
                 //разбираем аргументы в кавычках '. Удвоенная кавычка указывает на её символ.
@@ -81,8 +107,14 @@ namespace RimWorldOnlineCity
                 List<string> args;
                 ChatUtils.ParceCommand(msg, out command, out args);
 
+                if (args.Count < 3)
+                {
+                    Loger.Log("IncidentLod ChatController.AfterStartIncident 1 error");
+                    return;
+                }
+
                 //отнимаем нужное кол-во денег(золото или серебро... или что-нибудь ещё)
-                int cost = CalculateRaidCost(Int32.Parse(args[2]));
+                int cost = OCIncident.CalculateRaidCost(Int64.Parse(args[2]), Int32.Parse(args[3]));
                 List<Thing> things = GameUtils.GetAllThings(Find.CurrentMap);
                 foreach(Thing thing in things)
                 {
@@ -100,24 +132,20 @@ namespace RimWorldOnlineCity
                         }
                     }
                 }
+                Loger.Log("IncidentLod ChatController.AfterStartIncident 2");
                 //принудительное сохранение
                 if (!SessionClientController.Data.BackgroundSaveGameOff)
                     SessionClientController.SaveGameNow(true);
+                Loger.Log("IncidentLod ChatController.AfterStartIncident 3");
             }
             else
             {
                 //выводим сообщение с ошибкой
                 var errorMessage = string.IsNullOrEmpty(stat.Message) ? "Error call" : stat.Message.Translate().ToString();
+                Loger.Log("IncidentLod ChatController.AfterStartIncident errorMessage:" + errorMessage);
                 Find.WindowStack.Add(new Dialog_Input(errorMessage, msg, true));
             }
         }
-
-        private static int CalculateRaidCost(int mult)
-        {
-            //потребуются вычисления сложнее
-            return 100 * mult;
-        }
-
         #endregion
 
     }

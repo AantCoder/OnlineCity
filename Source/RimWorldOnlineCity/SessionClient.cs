@@ -1,7 +1,10 @@
 ﻿using Model;
 using OCUnion;
+using OCUnion.Transfer;
+using OCUnion.Transfer.Model;
 using System.Collections.Generic;
 using Transfer;
+using Transfer.ModelMails;
 
 namespace RimWorldOnlineCity
 {
@@ -23,15 +26,15 @@ namespace RimWorldOnlineCity
         public ModelInfo WorldLoad()
         {
             Loger.Log("Client WorldLoad (GetInfo 3)");
-            var packet = new ModelInt() { Value = 3 };
-            var stat = TransObject<ModelInfo>(packet, 5, 6);
+            var packet = new ModelInt() { Value = (long)ServerInfoType.SendSave };
+            var stat = TransObject<ModelInfo>(packet, (int)PackageType.Request5UserInfo, (int)PackageType.Response6UserInfo);
             return stat;
         }
 
         public bool CreateWorld(ModelCreateWorld packet)
         {
             Loger.Log("Client CreateWorld");
-            var stat = TransObject<ModelStatus>(packet, 7, 8);
+            var stat = TransObject<ModelStatus>(packet, (int)PackageType.Request7CreateWorld, (int)PackageType.Response8WorldCreated);
 
             if (stat != null && stat.Status != 0)
             {
@@ -40,34 +43,19 @@ namespace RimWorldOnlineCity
             }
             return stat != null;
         }
-
-        /*
-        public bool CreatePlayerMap(ModelCreatePlayerMap packet)
-        {
-            Loger.Log("Client CreatePlayerMap");
-            var stat = TransObject<ModelStatus>(packet, 9, 10);
-            if (stat != null && stat.Status != 0)
-            {
-                ErrorMessage = stat.Message;
-                return false;
-            }
-            return stat != null;
-        }
-        */
 
         public bool SendThings(List<ThingEntry> sendThings, string myLogin, string onlinePlayerLogin, long serverId, int tile)
         {
             Loger.Log("Client SendThings");
             var packet = new ModelMailTrade()
             {
-                Type = ModelMailTradeType.CreateThings,
                 From = new Player() { Login = myLogin },
                 To = new Player() { Login = onlinePlayerLogin },
                 Tile = tile,
                 PlaceServerId = serverId,
                 Things = sendThings
             };
-            var stat = TransObject<ModelStatus>(packet, 15, 16);
+            var stat = TransObject<ModelStatus>(packet, (int)PackageType.Request15, (int)PackageType.Response16);
 
             if (stat != null && stat.Status != 0)
             {
@@ -81,7 +69,7 @@ namespace RimWorldOnlineCity
         public bool ExchengeEdit(OrderTrade order)
         {
             Loger.Log("Client ExchengeEdit " + order.ToString());
-            var stat = TransObject<ModelStatus>(order, 21, 22);
+            var stat = TransObject<ModelStatus>(order, (int)PackageType.Request21, (int)PackageType.Response22);
 
             if (stat != null && stat.Status != 0)
             {
@@ -95,7 +83,7 @@ namespace RimWorldOnlineCity
         public bool ExchengeBuy(ModelOrderBuy buy)
         {
             Loger.Log("Client ExchengeBuy id=" + buy.OrderId.ToString() + " count=" + buy.Count.ToString());
-            var stat = TransObject<ModelStatus>(buy, 23, 24);
+            var stat = TransObject<ModelStatus>(buy, (int)PackageType.Request23, (int)PackageType.Response24);
 
             if (stat != null && stat.Status != 0)
             {
@@ -109,7 +97,7 @@ namespace RimWorldOnlineCity
         public List<OrderTrade> ExchengeLoad()
         {
             Loger.Log("Client ExchengeLoad");
-            var stat = TransObject<ModelOrderLoad>(new ModelStatus(), 25, 26);
+            var stat = TransObject<ModelOrderLoad>(new ModelStatus(), (int)PackageType.Request25, (int)PackageType.Response26);
 
             if (stat != null && stat.Status != 0)
             {
@@ -123,7 +111,7 @@ namespace RimWorldOnlineCity
         public AttackInitiatorFromSrv AttackOnlineInitiator(AttackInitiatorToSrv fromClient)
         {
             //Loger.Log("Client AttackOnlineInitiator " + fromClient.State);
-            var stat = TransObject<AttackInitiatorFromSrv>(fromClient, 27, 28);
+            var stat = TransObject<AttackInitiatorFromSrv>(fromClient, (int)PackageType.Request27, (int)PackageType.Response28);
 
             return stat;
         }
@@ -131,7 +119,7 @@ namespace RimWorldOnlineCity
         public AttackHostFromSrv AttackOnlineHost(AttackHostToSrv fromClient)
         {
             //Loger.Log("Client AttackOnlineHost " + fromClient.State);
-            var stat = TransObject<AttackHostFromSrv>(fromClient, 29, 30);
+            var stat = TransObject<AttackHostFromSrv>(fromClient, (int)PackageType.Request29, (int)PackageType.Response30);
 
             return stat;
         }

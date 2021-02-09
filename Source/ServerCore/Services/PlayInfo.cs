@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Model;
 using OCUnion;
+using OCUnion.Transfer.Model;
 using ServerOnlineCity.Common;
 using ServerOnlineCity.Model;
 using Transfer;
+using Transfer.ModelMails;
 
 namespace ServerOnlineCity.Services
 {
     internal sealed class PlayInfo : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 11;
+        public int RequestTypePackage => (int)PackageType.Request11;
 
-        public int ResponseTypePackage => 12;
+        public int ResponseTypePackage => (int)PackageType.Response12;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
@@ -46,6 +48,10 @@ namespace ServerOnlineCity.Services
                 {
                     Repository.GetSaveData.SavePlayerData(context.Player.Public.Login, packet.SaveFileData, packet.SingleSave);
                     context.Player.Public.LastSaveTime = timeNow;
+
+                    //Действия при сохранении, оно происодит только здесь!
+                    context.Player.MailsConfirmationSave = new List<ModelMail>();
+
                     Repository.Get.ChangeData = true;
                 }
                 context.Player.Public.LastTick = packet.LastTick;
@@ -195,17 +201,28 @@ namespace ServerOnlineCity.Services
                     context.Player.LastUpdateTime = timeNow;
                 }
 
+                //обновляем состояние отложенной отправки писем
+                if (context.Player.FunctionMails.Count > 0)
+                {
+                    for (int i = 0; i < context.Player.FunctionMails.Count; i++)
+                    {
+                        var needRemove = context.Player.FunctionMails[i].Run(context);
+                        if (needRemove) context.Player.FunctionMails.RemoveAt(i--);
+                    }
+                }
+
                 //прикрепляем письма
                 //если есть команда на отключение без сохранения, то посылаем только одно это письмо
-                var md = context.Player.Mails.FirstOrDefault(m => m.Type == ModelMailTradeType.AttackCancel);
+                var md = context.Player.Mails.FirstOrDefault(m => m is ModelMailAttackCancel);
                 if (md == null)
                 {
                     toClient.Mails = context.Player.Mails;
-                    context.Player.Mails = new List<ModelMailTrade>();
+                    context.Player.MailsConfirmationSave.AddRange(context.Player.Mails.Where(m => m.NeedSaveGame).ToList());
+                    context.Player.Mails = new List<ModelMail>();
                 }
                 else
                 {
-                    toClient.Mails = new List<ModelMailTrade>() { md };
+                    toClient.Mails = new List<ModelMail>() { md };
                     context.Player.Mails.Remove(md);
                 }
 

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OCUnion</RootNamespace>
     <AssemblyName>OCUnion</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -87,6 +87,12 @@
     <Compile Include="Transfer\ConnectSaver.cs" />
     <Compile Include="Transfer\FolderTree.cs" />
     <Compile Include="Transfer\ModelGameServerInfo.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMail.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailAttackCancel.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailAttackTechnicalVictory.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailDeleteWO.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailMessadge.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailStartIncident.cs" />
     <Compile Include="Transfer\Model\AttackCorpse.cs" />
     <Compile Include="Transfer\Model\IPlayerEx.cs" />
     <Compile Include="Transfer\Model\ModelFileInfo.cs" />
@@ -127,7 +133,7 @@
     <Compile Include="Transfer\ModelInfo.cs" />
     <Compile Include="Transfer\ModelInt.cs" />
     <Compile Include="Transfer\ModelLogin.cs" />
-    <Compile Include="Transfer\ModelMailTrade.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailTrade.cs" />
     <Compile Include="Transfer\ModelPlayToServer.cs" />
     <Compile Include="Transfer\ModelPlayToClient.cs" />
     <Compile Include="Transfer\ModelPostingChat.cs" />
@@ -142,6 +148,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

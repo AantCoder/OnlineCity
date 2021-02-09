@@ -73,7 +73,8 @@ namespace RimWorldOnlineCity
 
             Loger.Log("Client Init " + MainHelper.VersionInfo);
             Loger.Log("Client Language: " + Prefs.LangFolderName);
-            Loger.Log("Client MainThreadNum=" + ModBaseData.GlobalData.MainThreadNum.ToString());          
+
+            Loger.Log("Client MainThreadNum=" + ModBaseData.GlobalData.MainThreadNum.ToString());
         }
 
         public static void CalculateHash()
@@ -930,8 +931,8 @@ namespace RimWorldOnlineCity
         private static void CreatingServerWorld()
         {
             Loger.Log("Client CreatingServerWorld()");
-            //todo Удаление лишнего, добавление того, что нужно в пустом новом мире на сервере
-            //todo Remove unnecessary, add what you need in an empty new world on the server
+            //Удаление лишнего, добавление того, что нужно в пустом новом мире на сервере
+            //Remove unnecessary, add what you need in an empty new world on the server
 
             //to do
 
@@ -1020,7 +1021,8 @@ namespace RimWorldOnlineCity
 
         public static bool ReconnectWithTimers()
         {
-            Timers.LowLevelStop();
+            Timers.Pause = true;
+            SessionClient.IsRelogin = true;
             try
             {
                 var repeat = 3;
@@ -1046,7 +1048,8 @@ namespace RimWorldOnlineCity
             }
             finally
             {
-                Timers.LowLevelStart();
+                Timers.Pause = false;
+                SessionClient.IsRelogin = false;
             }
         }
 

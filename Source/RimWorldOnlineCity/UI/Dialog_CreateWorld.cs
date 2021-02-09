@@ -27,7 +27,7 @@ namespace RimWorldOnlineCity
         public override Vector2 InitialSize
         {
             // get { return new Vector2(400f, 350f); }
-            get { return new Vector2(400f, 350f); } //новое поле ввода с описанием +50
+            get { return new Vector2(500f, 350f); } //новое поле ввода с описанием +50
         }
 
         public Dialog_CreateWorld()

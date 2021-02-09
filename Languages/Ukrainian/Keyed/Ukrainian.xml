@@ -85,7 +85,9 @@
 	<OCity_Dialog_CreateWorld_Err2>Невірно заповнені параметри</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Відміна</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Зерно</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_Difficulty>Складність. Ціле вид 0 (дуже просто) до 2 (складно)</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_ScenarioErr>Please select a Scenario</OCity_Dialog_CreateWorld_ScenarioErr>
+	<OCity_Dialog_CreateWorld_Scenario>Select Scenario</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Difficulty>Select Difficulty</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Розмір карти місцевості (200 - мала, 400 - величезна)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>Відсоток генерації поверхні планети (від 5 до 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
@@ -258,13 +260,18 @@
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>The enemies who couldn't get away will stay on the map, but they've lost touch with their commander.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- OCIncidents -->
+	<OC_Incidents_CallIncidents_Err1>Укажите тип инциндента и игрока, для некоторых действий возможны дополнительные параметры</OC_Incidents_CallIncidents_Err1>
+	<OC_Incidents_CallIncidents_TypeErr>Укажите допустимый тип инциндента</OC_Incidents_CallIncidents_TypeErr>
+	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Достигнуто максимальное количество инциндентов для этого игрока за час</OC_Incidents_CallIncidents_MaxIncidentsInHour>
+	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Достигнуто максимальное количество инциндентов для этого игрока</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+
 	<OC_Incidents_Raid_Label>Охотники за головами!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>К вашему поселению подходят наёмники</OC_Incidents_Raid_Text>
 	<OC_Incidents_Acid_Label>Хим атака!</OC_Incidents_Acid_Label>
 	<OC_Incidents_Acid_Text>Над вашим поселением распылили токсичный газ</OC_Incidents_Acid_Text>
 	<OC_Incidents_Inf_Label>Жуки!</OC_Incidents_Inf_Label>
 	<OC_Incidents_Inf_Text>Кто-то приманил жуков на поверхность с помощью высокочастотных вибраций</OC_Incidents_Inf_Text>
-	
+
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Помилка з'еднання.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>З'еднання перервано</OCity_SCC_DisconnectedShow> -->

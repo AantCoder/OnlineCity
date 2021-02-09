@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using RimWorld;
 using Transfer;
+using Transfer.ModelMails;
 using Verse;
 
 namespace RimWorldOnlineCity

@@ -11,7 +11,6 @@ using Verse;
 
 namespace RimWorldOnlineCity.GameClasses.Harmony
 {
-    //Следим за включением режима разработчика, если он отключен
     [HarmonyPatch(typeof(ScribeLoader))]
     [HarmonyPatch("InitLoading")]
     internal class ScribeLoader_InitLoading_Patch
@@ -116,7 +115,6 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
 	}
 
-	//Следим за включением режима разработчика, если он отключен
 	[HarmonyPatch(typeof(ScribeSaver))]
 	[HarmonyPatch("InitSaving")]
 	internal class ScribeSaver_InitSaving_Patch
@@ -150,6 +148,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 				Scribe.mode = LoadSaveMode.Saving;
 				var saveStream = SaveData = new MemoryStream();
 				//var saveStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+				File.WriteAllText(filePath, "Online save");
 				that.Field("saveStream").SetValue(saveStream);
 
 				XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();

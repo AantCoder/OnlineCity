@@ -13,20 +13,20 @@ namespace OCUnion
         /// <summary>
         /// Активирует разрабатваемые блоки и дополнительное логирования
         /// </summary>
-        public static bool DebugMode = false;
+        public static bool DebugMode = true;
         /// <summary>
         /// Отключить все логи в файл и консоль. Сервер всегда меняет значение на false
         /// </summary>
         public static bool OffAllLog = false;
 
         //public static string VersionInfo = $"Version {Assembly.GetExecutingAssembly().FullName}";
-        public static string VersionInfo = "Version 0.03.46a from 2020.08.31";
+        public static string VersionInfo = "Version 0.03.47a from 2021.02.04";
 
         /// <summary>
         /// Для автоматической проверки: версия клиента должна быть больше или равна версии сервера
         /// </summary>
         //public static readonly long  VersionNum = Assembly.GetExecutingAssembly().GetName().Version.Revision;
-        public static long VersionNum = 30046;
+        public static long VersionNum = 30047;
 
         public static string DefaultIP = DebugMode ? "localhost" : "rimworld.online"; // rimworld.online 194.87.95.90:19020
 

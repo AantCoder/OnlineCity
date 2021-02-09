@@ -198,7 +198,7 @@ namespace ServerOnlineCity
                 changeInPlayers = true;
 
                 if (player.IsAdmin
-                    || true //todo переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
+                    || true //to do переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
                     )
                 {
                     if (allLogins == null) allLogins = new HashSet<string>(Repository.GetData.PlayersAll.Select(p => p.Public.Login));
@@ -221,10 +221,10 @@ namespace ServerOnlineCity
                         .ToList();
 
                     //те, кто запустил спутники
-                    //todo когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
+                    //to do когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
 
                     //и те кто географически рядом
-                    //todo
+                    //to do
 
                     //себя и system
                     if (!plNeed.Any(p => p == player.Public.Login)) plNeed.Add(player.Public.Login);
@@ -271,10 +271,7 @@ namespace ServerOnlineCity
 
                         //ChatManager.Instance.AddSystemPostToPublicChat(msg); // раскоментировать, для поста в общий чат
 
-                        Repository.DropUserFromMap(player.Public.Login);
-                        Repository.GetSaveData.DeletePlayerData(player.Public.Login);
-                        player.Public.LastSaveTime = DateTime.MinValue;
-                        Repository.Get.ChangeData = true;
+                        player.AbandonSettlement();
                         Loger.Log("Server " + msg);
                     }
                 }
@@ -413,6 +410,24 @@ namespace ServerOnlineCity
             thread.Start();
         }
 
+        private List<SessionServer> Sessions = new List<SessionServer>();
+
+        /// <summary>
+        /// Обработать в событии все активные сессии. Корректно завершить выбранные сессии только через этот механизм
+        /// </summary>
+        /// <param name="act"></param>
+        private void SessionsAction(Action<SessionServer> act)
+        {
+            lock (Sessions)
+            {
+                for(int i = 0; i < Sessions.Count; i++)
+                {
+                    if (Sessions[i].IsActive) act(Sessions[i]);
+                    if (!Sessions[i].IsActive) Sessions.RemoveAt(i--);
+                }
+            }
+        }
+
         private void DoClient(ConnectClient client)
         {
             SessionServer session = null;
@@ -423,7 +438,15 @@ namespace ServerOnlineCity
                 {
                     Loger.Log($"New connect {addrIP} (connects: {ActiveClientCount})");
                     session = new SessionServer();
-                    session.Do(client);
+                    lock (Sessions)
+                    {
+                        Sessions.Add(session);
+                    }
+                    session.Do(client, SessionsAction);
+                }
+                catch (ObjectDisposedException)
+                {
+                    Loger.Log("Abort connect Relogin " + addrIP);
                 }
                 catch (Transfer.ConnectClient.ConnectSilenceTimeOutException)
                 {

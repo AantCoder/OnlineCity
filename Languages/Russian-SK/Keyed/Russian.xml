@@ -85,7 +85,8 @@
 	<OCity_Dialog_CreateWorld_Err2>Неверно заполнены параметры</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Отмена</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Зерно</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_Difficulty>Сложность. Целое от 0 (очень просто) до 2 (тяжело)</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_Scenario>Сценарий</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Difficulty>Сложность</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Размер карты местности (200 - малая, 400 - огромная)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>Процент генерации поверхности планеты (от 5 до 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
@@ -255,6 +256,11 @@
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>Враги, которые не сумели уйти останутся на карте, но они потеряли связь со своим командиром.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- OCIncidents -->
+	<OC_Incidents_CallIncidents_Err1>Укажите тип инциндента и игрока, для некоторых действий возможны дополнительные параметры</OC_Incidents_CallIncidents_Err1>
+	<OC_Incidents_CallIncidents_TypeErr>Укажите допустимый тип инциндента</OC_Incidents_CallIncidents_TypeErr>
+	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Достигнуто максимальное количество инциндентов для этого игрока за час</OC_Incidents_CallIncidents_MaxIncidentsInHour>
+	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Достигнуто максимальное количество инциндентов для этого игрока</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+
 	<OC_Incidents_Raid_Label>Охотники за головами!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>К вашему поселению подходят наёмники</OC_Incidents_Raid_Text>
 	<OC_Incidents_Acid_Label>Хим атака!</OC_Incidents_Acid_Label>
