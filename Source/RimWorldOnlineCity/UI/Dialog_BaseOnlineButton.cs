@@ -40,6 +40,7 @@ namespace RimWorldOnlineCity.UI
             draggable = true;
 
             SelectTab0MultMax = SessionClientController.Data.GeneralSettings.IncidentMaxMult;
+            StatusNeedUpdate = true;
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -85,11 +86,12 @@ namespace RimWorldOnlineCity.UI
         public void DoTab1Contents(Rect inRect)
         {
             Text.Font = GameFont.Small;
-            Widgets.Label(inRect, "Вы нашли людей, которые могут изменять погодные условия. Пока они готовы сделать только кислотный дождь."
+            var rect = new Rect(inRect.x, inRect.y + 10f, inRect.width, 80f);
+            Widgets.Label(rect, "Вы нашли людей, которые могут изменять погодные условия. Пока они готовы сделать только кислотный дождь."
                 .NeedTranslate());
+            rect.height = 30f;
+            rect.y += 80f;
 
-            var rect = new Rect(inRect.x, inRect.y + 60f, inRect.width, 30f);
-            rect.y += rect.height; //пробел
             Text.Font = GameFont.Medium;
             Widgets.Label(rect, "Что сделать".NeedTranslate());
             Text.Font = GameFont.Small;
@@ -108,11 +110,12 @@ namespace RimWorldOnlineCity.UI
         public void DoTab0Contents(Rect inRect)
         {
             Text.Font = GameFont.Small;
-            Widgets.Label(inRect, "Пираты с радостью согласятся поработать за награду. Возможно даже связаться c умельцами, которые могут с помощью особых радиосигналов привлечь рой жуков или механоидов. Чем богаче атакуемое поселение, тем больше денег потребуют наёмники."
+            var rect = new Rect(inRect.x, inRect.y + 10f, inRect.width, 80f);
+            Widgets.Label(rect, "Пираты с радостью согласятся поработать за награду. Возможно даже связаться c умельцами, которые могут с помощью особых радиосигналов привлечь рой жуков или механоидов. Чем богаче атакуемое поселение, тем больше денег потребуют наёмники."
                 .NeedTranslate());
+            rect.height = 30f;
+            rect.y += 80f;
 
-            var rect = new Rect(inRect.x, inRect.y + 60f, inRect.width, 30f);
-            rect.y += rect.height; //пробел
             Text.Font = GameFont.Medium;
             Widgets.Label(rect, "Что сделать".NeedTranslate());
             Text.Font = GameFont.Small;
