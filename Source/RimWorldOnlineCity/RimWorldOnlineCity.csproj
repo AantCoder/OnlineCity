@@ -62,10 +62,8 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Lib.Harmony.2.0.2\lib\net472\0Harmony.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+    <Reference Include="0Harmony, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Lib.Harmony.2.0.4\lib\net472\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -110,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatController.cs" />
+    <Compile Include="ClientHashCheck\ClientFileCheckerFactory.cs" />
+    <Compile Include="ClientHashCheck\IClientFileChecker.cs" />
     <Compile Include="GameClasses\Harmony\GameSaveLoadInMem.cs" />
     <Compile Include="GameClasses\Incident\IncidentAcid.cs" />
     <Compile Include="GameClasses\Incident\IncidentBombing.cs" />
@@ -130,7 +130,6 @@
     <Compile Include="GameClasses\Harmony\GameFix.cs" />
     <Compile Include="GameClasses\Harmony\GamePatch.cs" />
     <Compile Include="MailController.cs" />
-    <Compile Include="Services\GetApproveFolders.cs" />
     <Compile Include="Services\ClientHashChecker.cs" />
     <Compile Include="Services\IOnlineCityClientService.cs" />
     <Compile Include="Services\SetPlayerInfo.cs" />
@@ -169,6 +168,7 @@
     <Compile Include="UI\Dialog_TradeOnline.cs" />
     <Compile Include="UI\GridBox.cs" />
     <Compile Include="UI\ListBox.cs" />
+    <Compile Include="UI\UpdateModsWindow.cs" />
     <Compile Include="UpdateWorldController.cs" />
   </ItemGroup>
   <ItemGroup>

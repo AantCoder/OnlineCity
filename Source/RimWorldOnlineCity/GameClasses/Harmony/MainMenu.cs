@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using System.Threading.Tasks;
 using Transfer;
 using UnityEngine;
 using Verse;
@@ -19,6 +20,9 @@ namespace RimWorldOnlineCity
     {
         public static void OnMainMenuNetClick()
         {
+            if (SessionClientController.ClientFileCheckers == null || SessionClientController.ClientFileCheckers.Any(x => x == null))
+            { return; }
+
             Find.WindowStack.Add(new Dialog_LoginForm());
         }
 
@@ -42,7 +46,7 @@ namespace RimWorldOnlineCity
     //Пункт в главном меню
     [HarmonyPatch(typeof(OptionListingUtility))]
     [HarmonyPatch("DrawOptionListing")]
-    [HarmonyPatch(new[] { typeof(Rect), typeof(List<ListableOption>)})]
+    [HarmonyPatch(new[] { typeof(Rect), typeof(List<ListableOption>) })]
     internal class MainMenuDrawer_DoMainMenuControls_Patch
     {
         public static bool Inited = false;
@@ -51,8 +55,6 @@ namespace RimWorldOnlineCity
         [HarmonyPrefix]
         public static void Prefix(Rect rect, List<ListableOption> optList)
         {
-
-            //File.WriteAllText(Loger.PathLog + @"optList.txt", DevelopTest.TextObj(optList), Encoding.UTF8);
             if (optList.Count > 0 && optList[0].GetType() == typeof(ListableOption))
             {
                 if (Current.ProgramState == ProgramState.Entry)
@@ -131,11 +133,11 @@ namespace RimWorldOnlineCity
                     }
                 }
             }
-
+            
             if (Inited) return;
+            Task.Factory.StartNew(() => SessionClientController.CalculateHash());
             Inited = true;
             SessionClientController.Init();
         }
     }
-
 }
