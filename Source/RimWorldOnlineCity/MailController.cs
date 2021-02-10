@@ -35,6 +35,11 @@ namespace RimWorldOnlineCity
                 Action<ModelMail> action;
                 if (TypeMailProcessing.TryGetValue(mail.GetType(), out action))
                 {
+                    Loger.Log($"Mail {mail.GetType().Name} "
+                        + (mail.From == null ? "-" : mail.From.Login) + "->"
+                        + (mail.To == null ? "-" : mail.To.Login) + ":"
+                        + mail.ContentString()
+                        + "  hash=" + mail.GetHash());
                     action(mail);
                 }
                 else
@@ -59,10 +64,6 @@ namespace RimWorldOnlineCity
             //находим наш объект, кому пришла передача
             var placeId = UpdateWorldController.GetLocalIdByServerId(mail.PlaceServerId);
 
-            Loger.Log($"Mail {mail.GetType().Name} {placeId} "
-                + (mail.From == null ? "-" : mail.From.Login) + "->"
-                + (mail.To == null ? "-" : mail.To.Login) + ":"
-                + mail.ContentString());
             WorldObject place = null;
             if (placeId == 0)
             {

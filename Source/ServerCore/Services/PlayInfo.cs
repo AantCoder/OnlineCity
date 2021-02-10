@@ -49,7 +49,7 @@ namespace ServerOnlineCity.Services
                     Repository.GetSaveData.SavePlayerData(context.Player.Public.Login, packet.SaveFileData, packet.SingleSave);
                     context.Player.Public.LastSaveTime = timeNow;
 
-                    //Действия при сохранении, оно происодит тольео здесь!
+                    //Действия при сохранении, оно происодит только здесь!
                     context.Player.MailsConfirmationSave = new List<ModelMail>();
 
                     Repository.Get.ChangeData = true;
