@@ -113,11 +113,14 @@
     <Compile Include="GameClasses\Harmony\GameSaveLoadInMem.cs" />
     <Compile Include="GameClasses\Incident\IncidentAcid.cs" />
     <Compile Include="GameClasses\Incident\IncidentBombing.cs" />
+    <Compile Include="GameClasses\Incident\IncidentEclipse.cs" />
     <Compile Include="GameClasses\Incident\IncidentInfistation.cs" />
     <Compile Include="GameClasses\Incident\IncidentCaravan.cs" />
     <Compile Include="GameClasses\Incident\IncidentChunkDrop.cs" />
+    <Compile Include="GameClasses\Incident\IncidentPack.cs" />
     <Compile Include="GameClasses\Incident\IncidentQuest.cs" />
     <Compile Include="GameClasses\Incident\IncidentRaid.cs" />
+    <Compile Include="GameClasses\Incident\IncidentsEMP.cs" />
     <Compile Include="GameClasses\Incident\OCIncident.cs" />
     <Compile Include="GameClasses\MainTabTestButton.cs" />
     <Compile Include="GameClasses\Incident\Incidents.cs" />
