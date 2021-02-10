@@ -33,7 +33,6 @@ namespace OCUnion.Transfer
 
         public static void ReCreateeTree(string rootFolder, FoldersTree folderTree)
         {
-
             foreach (var subFolder in folderTree.SubDirs)
             {
                 // создаем под директорию 
