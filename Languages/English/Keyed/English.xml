@@ -264,6 +264,13 @@ Pawn wealth: {3}</OCity_Caravan_Other>
 	<OC_Incidents_CallIncidents_TypeErr>Enter allowed incident type</OC_Incidents_CallIncidents_TypeErr>
 	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Reached max number of incidents in hour</OC_Incidents_CallIncidents_MaxIncidentsInHour>
 	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Reached max number of incodents for this player</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+	<OC_Incidents_CallIncidents_NotShooted>Your previous incident for this player has not started yet</OC_Incidents_CallIncidents_NotShooted>
+	<OC_Incidents_IncidentsTurnedOFF>Incidents are disabled on this server</OC_Incidents_IncidentsTurnedOFF>
+	<OC_Incidents_CallIncidebts_selfErr>You cannot choose yourself</OC_Incidents_CallIncidebts_selfErr>
+	<OC_Incidents_CallIncidebts_YearErr1>You can attack after 2 years of your game</OC_Incidents_CallIncidebts_YearErr1>
+	<OC_Incidents_CallIncidebts_YearErr2>You can attack after 2 years of game of the attack target</OC_Incidents_CallIncidebts_YearErr2>
+	<OC_Incidents_CallIncidebts_CostErr1>Your settlement cost is too low</OC_Incidents_CallIncidebts_CostErr1>
+	<OC_Incidents_CallIncidebts_CostErr2>Attack target has too low settlement cost</OC_Incidents_CallIncidebts_CostErr2>
 	
 	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
@@ -271,6 +278,12 @@ Pawn wealth: {3}</OCity_Caravan_Other>
 	<OC_Incidents_Acid_Text>Toxic gas has been sprayed over your settlement</OC_Incidents_Acid_Text>
 	<OC_Incidents_Inf_Label>Man-made Infestation!</OC_Incidents_Inf_Label>
 	<OC_Incidents_Inf_Text>Someone lured the swarm to the surface with high frequency vibrations</OC_Incidents_Inf_Text>
+	<OC_Incidents_EMP_Label>E.M.P.</OC_Incidents_EMP_Label>
+	<OC_Incidents_EMP_Text>Your settlement was irradiated with an electro-magnetic pulse that turned off all electronics</OC_Incidents_EMP_Text>
+	<OC_Incidents_Eclipse_Label>Solar rays absorber!</OC_Incidents_Eclipse_Label>
+	<OC_Incidents_Eclipse_Text>A special satellite was launched over your settlement, which absorbing sunlight</OC_Incidents_Eclipse_Text>
+	<OC_Incidents_Pack_Label>Battle beasts!</OC_Incidents_Pack_Label>
+	<OC_Incidents_Pack_Text>A pack of animals driven to madness has been sent to your settlement</OC_Incidents_Pack_Text>
 
 	<!-- OCIncidents UI-->
 	<OC_Incidents_Hire_label>Hire raid</OC_Incidents_Hire_label>
@@ -292,7 +305,7 @@ Pawn wealth: {3}</OCity_Caravan_Other>
 	<OC_Raid_Power>Raid power: x{0}</OC_Raid_Power>
 	<OC_Choose_what_to_do>Choose what to do</OC_Choose_what_to_do>
 	<OC_Choose_who_hire>Choose who to hire</OC_Choose_who_hire>
-	<OC_Choose_arrive>Choose arrivel mode</OC_Choose_arrive>
+	<OC_Choose_arrive>Choose arrival mode</OC_Choose_arrive>
 	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>

@@ -20,19 +20,19 @@ namespace ServerOnlineCity.Mechanics
         {
             Loger.Log("IncidentLod CallIncident.CreateIncident 1");
 
-            if (!ServerManager.ServerSettings.GeneralSettings.IncidentEnable) return "Инцинденты отключены на этом сервере".NeedTranslate();
+            if (!ServerManager.ServerSettings.GeneralSettings.IncidentEnable) return "OC_incidents_IncidentsTurnedOFF";
 
             if (type == null) return "OC_Incidents_CallIncidents_TypeErr";
 
-            if (targetPlayer == player) return "Нельзя указывать самого себя".NeedTranslate();
+            if (targetPlayer == player) return "OC_Incidents_CallIncidebts_selfErr";
 
-            if (player.Public.LastTick / 3600000 < 2) return "Нападать можно после 2х лет своего развития".NeedTranslate();
+            if (player.Public.LastTick / 3600000 < 2) return "OC_Incidents_CallIncidebts_YearErr1";
 
-            if (targetPlayer.Public.LastTick / 3600000 < 2) return "Нападать можно после 2х лет развития цели нападения".NeedTranslate();
+            if (targetPlayer.Public.LastTick / 3600000 < 2) return "OC_Incidents_CallIncidebts_YearErr2";
 
-            if (player.AllCostWorldObjects() < 100000f) return "У вас слишком маленькая стоимость поселения".NeedTranslate();
+            if (player.AllCostWorldObjects() < 100000f) return "OC_Incidents_CallIncidebts_CostErr1";
 
-            if (targetPlayer.AllCostWorldObjects() < 100000f) return "У цели нападения слишком маленькая стоимость поселения".NeedTranslate();
+            if (targetPlayer.AllCostWorldObjects() < 100000f) return "OC_Incidents_CallIncidebts_CostErr2";
 
             Loger.Log("IncidentLod CallIncident.CreateIncident 2");
 
@@ -66,10 +66,10 @@ namespace ServerOnlineCity.Mechanics
                     .Where(m => m.NumberOrder == fPacket.NumberOrder);
 
                 if (list.Count() > ServerManager.ServerSettings.GeneralSettings.IncidentCountInOffline)
-                    return "OC_Incidents_CallIncidents_MaxIncidentsCnt".NeedTranslate();
+                    return "OC_Incidents_CallIncidents_MaxIncidentsCnt";
 
                 if (list.Count(m => m.Mail.From.Login == ownLogin) > 1)
-                    return "Ваш прошлый инциндент для этого игрока ещё не сработал".NeedTranslate();
+                    return "OC_Incidents_CallIncidents_NotShooted";
 
                 //targetPlayer.Mails.Add(packet);
                 //Вместо немедленной отправки, делаем это через обработчик отложенной отправки, для паузы между рейдами
