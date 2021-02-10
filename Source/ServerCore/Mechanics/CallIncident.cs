@@ -65,10 +65,10 @@ namespace ServerOnlineCity.Mechanics
                     .Cast<FMailIncident>()
                     .Where(m => m.NumberOrder == fPacket.NumberOrder);
 
-                if (list.Count() > ServerManager.ServerSettings.GeneralSettings.IncidentCountInOffline)
+                if (list.Count() >= ServerManager.ServerSettings.GeneralSettings.IncidentCountInOffline)
                     return "OC_Incidents_CallIncidents_MaxIncidentsCnt";
 
-                if (list.Count(m => m.Mail.From.Login == ownLogin) > 1)
+                if (list.Count(m => m.Mail.From.Login == ownLogin) >= 1)
                     return "OC_Incidents_CallIncidents_NotShooted";
 
                 //targetPlayer.Mails.Add(packet);
