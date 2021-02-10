@@ -260,6 +260,13 @@
 	<OC_Incidents_CallIncidents_TypeErr>Укажите допустимый тип инциндента</OC_Incidents_CallIncidents_TypeErr>
 	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Достигнуто максимальное количество инциндентов для этого игрока за час</OC_Incidents_CallIncidents_MaxIncidentsInHour>
 	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Достигнуто максимальное количество инциндентов для этого игрока</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+	<OC_Incidents_CallIncidents_NotShooted>Ваш прошлый инциндент для этого игрока ещё не сработал</OC_Incidents_CallIncidents_NotShooted>
+	<OC_Incidents_IncidentsTurnedOFF>Инцинденты отключены на этом сервере</OC_Incidents_IncidentsTurnedOFF>
+	<OC_Incidents_CallIncidebts_selfErr>Нельзя указывать самого себя</OC_Incidents_CallIncidebts_selfErr>
+	<OC_Incidents_CallIncidebts_YearErr1>Нападать можно после 2х лет своего развития</OC_Incidents_CallIncidebts_YearErr1>
+	<OC_Incidents_CallIncidebts_YearErr2>Нападать можно после 2х лет развития цели нападения</OC_Incidents_CallIncidebts_YearErr2>
+	<OC_Incidents_CallIncidebts_CostErr1>У вас слишком маленькая стоимость поселения</OC_Incidents_CallIncidebts_CostErr1>
+	<OC_Incidents_CallIncidebts_CostErr2>У цели нападения слишком маленькая стоимость поселения</OC_Incidents_CallIncidebts_CostErr2>
 	
 	<OC_Incidents_Raid_Label>Охотники за головами!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>К вашему поселению подходят наёмники</OC_Incidents_Raid_Text>
