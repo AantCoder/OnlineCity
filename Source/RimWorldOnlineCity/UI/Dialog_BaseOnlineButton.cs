@@ -59,8 +59,8 @@ namespace RimWorldOnlineCity.UI
                 ///Внимание! Вкладки разбивают событие на очереди ожидания (т.е. одномерменно можно вызвать по одному со всех вкладок)
                 ///Реализацию NumberOrder смотри в FMailIncident
                 List<TabRecord> list = new List<TabRecord>();
-                list.Add(new TabRecord("Найм рейда".NeedTranslate(), () => { TabIndex = 0; StatusNeedUpdate = true; }, TabIndex == 0));
-                list.Add(new TabRecord("Воздействие на область".NeedTranslate(), () => { TabIndex = 1; StatusNeedUpdate = true; }, TabIndex == 1));
+                list.Add(new TabRecord("OC_Incidents_Hire_label".Translate(), () => { TabIndex = 0; StatusNeedUpdate = true; }, TabIndex == 0));
+                list.Add(new TabRecord("OC_Incidents_Impact_label".Translate(), () => { TabIndex = 1; StatusNeedUpdate = true; }, TabIndex == 1));
                 TabDrawer.DrawTabs(screenRect, list);
                 if (TabIndex == 0) DoTab0Contents(tabRect);
                 else if (TabIndex == 1) DoTab1Contents(tabRect);
@@ -87,17 +87,16 @@ namespace RimWorldOnlineCity.UI
         {
             Text.Font = GameFont.Small;
             var rect = new Rect(inRect.x, inRect.y + 10f, inRect.width, 80f);
-            Widgets.Label(rect, "Вы нашли людей, которые могут изменять погодные условия. Пока они готовы сделать только кислотный дождь."
-                .NeedTranslate());
+            Widgets.Label(rect, "OC_Incidents_Impact_text".Translate());
             rect.height = 30f;
             rect.y += 80f;
 
             Text.Font = GameFont.Medium;
-            Widgets.Label(rect, "Что сделать".NeedTranslate());
+            Widgets.Label(rect, "OC_What_To_DO".Translate());
             Text.Font = GameFont.Small;
             rect.y += rect.height;
 
-            if (Widgets.RadioButtonLabeled(rect, "Кислотный дождь".NeedTranslate(), SelectTab1Type == "acid"))
+            if (Widgets.RadioButtonLabeled(rect, "OC_Acid_Rain".Translate(), SelectTab1Type == "acid"))
             {
                 StatusNeedUpdate = true;
                 SelectTab1Type = "acid";
@@ -111,24 +110,23 @@ namespace RimWorldOnlineCity.UI
         {
             Text.Font = GameFont.Small;
             var rect = new Rect(inRect.x, inRect.y + 10f, inRect.width, 80f);
-            Widgets.Label(rect, "Пираты с радостью согласятся поработать за награду. Возможно даже связаться c умельцами, которые могут с помощью особых радиосигналов привлечь рой жуков или механоидов. Чем богаче атакуемое поселение, тем больше денег потребуют наёмники."
-                .NeedTranslate());
+            Widgets.Label(rect, "OC_Incidents_Hire_text".Translate());
             rect.height = 30f;
             rect.y += 80f;
 
             Text.Font = GameFont.Medium;
-            Widgets.Label(rect, "Что сделать".NeedTranslate());
+            Widgets.Label(rect, "OC_What_To_DO".Translate());
             Text.Font = GameFont.Small;
             rect.y += rect.height;
 
-            if (Widgets.RadioButtonLabeled(rect, "Рейд".NeedTranslate(), SelectTab0Type == "raid"))
+            if (Widgets.RadioButtonLabeled(rect, "OC_Raid".Translate(), SelectTab0Type == "raid"))
             {
                 StatusNeedUpdate = true;
                 SelectTab0Type = "raid";
             }
             rect.y += rect.height;
 
-            if (Widgets.RadioButtonLabeled(rect, "Горные жуки".NeedTranslate(), SelectTab0Type == "inf"))
+            if (Widgets.RadioButtonLabeled(rect, "OC_Bugs".Translate(), SelectTab0Type == "inf"))
             {
                 StatusNeedUpdate = true;
                 SelectTab0Type = "inf";
@@ -139,25 +137,25 @@ namespace RimWorldOnlineCity.UI
             {
                 rect.y += rect.height; //пробел
                 Text.Font = GameFont.Medium;
-                Widgets.Label(rect, "Кого нанять".NeedTranslate());
+                Widgets.Label(rect, "OC_Who_Hire".Translate());
                 Text.Font = GameFont.Small;
                 rect.y += rect.height;
 
-                if (Widgets.RadioButtonLabeled(rect, "Племя".NeedTranslate(), SelectTab0Faction == "tribe"))
+                if (Widgets.RadioButtonLabeled(rect, "OC_Tribe".Translate(), SelectTab0Faction == "tribe"))
                 {
                     StatusNeedUpdate = true;
                     SelectTab0Faction = "tribe";
                 }
                 rect.y += rect.height;
 
-                if (Widgets.RadioButtonLabeled(rect, "Индустриальные".NeedTranslate(), SelectTab0Faction == "pirate"))
+                if (Widgets.RadioButtonLabeled(rect, "OC_Pirate".Translate(), SelectTab0Faction == "pirate"))
                 {
                     StatusNeedUpdate = true;
                     SelectTab0Faction = "pirate";
                 }
                 rect.y += rect.height;
 
-                if (Widgets.RadioButtonLabeled(rect, "Механоиды".NeedTranslate(), SelectTab0Faction == "mech"))
+                if (Widgets.RadioButtonLabeled(rect, "OC_Mech".Translate(), SelectTab0Faction == "mech"))
                 {
                     StatusNeedUpdate = true;
                     SelectTab0Faction = "mech";
@@ -169,25 +167,25 @@ namespace RimWorldOnlineCity.UI
             {
                 rect.y += rect.height; //пробел
                 Text.Font = GameFont.Medium;
-                Widgets.Label(rect, "Как прибыть".NeedTranslate());
+                Widgets.Label(rect, "OC_Arrive".Translate());
                 Text.Font = GameFont.Small;
                 rect.y += rect.height;
 
-                if (Widgets.RadioButtonLabeled(rect, "Как обычно".NeedTranslate(), SelectTab0ArrivalModes == "walk"))
+                if (Widgets.RadioButtonLabeled(rect, "OC_Arrive_EdgeWalk".Translate(), SelectTab0ArrivalModes == "walk"))
                 {
                     StatusNeedUpdate = true;
                     SelectTab0ArrivalModes = "walk";
                 }
                 rect.y += rect.height;
 
-                if (Widgets.RadioButtonLabeled(rect, "Десант в центр".NeedTranslate(), SelectTab0ArrivalModes == "air"))
+                if (Widgets.RadioButtonLabeled(rect, "OC_Arrive_DropCenter".Translate(), SelectTab0ArrivalModes == "air"))
                 {
                     StatusNeedUpdate = true;
                     SelectTab0ArrivalModes = "air";
                 }
                 rect.y += rect.height;
 
-                if (Widgets.RadioButtonLabeled(rect, "Равномерно".NeedTranslate(), SelectTab0ArrivalModes == "random"))
+                if (Widgets.RadioButtonLabeled(rect, "OC_Arrive_RandomDrop".Translate(), SelectTab0ArrivalModes == "random"))
                 {
                     StatusNeedUpdate = true;
                     SelectTab0ArrivalModes = "random";
@@ -197,7 +195,7 @@ namespace RimWorldOnlineCity.UI
 
             rect.y += rect.height; //пробел
             Text.Font = GameFont.Medium;
-            Widgets.Label(rect, "Насколько сильное нападение должно быть: x{0}".NeedTranslate((int)SelectTab0Mult));
+            Widgets.Label(rect, "OC_Raid_Power".Translate((int)SelectTab0Mult));
             Text.Font = GameFont.Small;
             rect.y += rect.height;
 
@@ -228,17 +226,17 @@ namespace RimWorldOnlineCity.UI
                     if (string.IsNullOrEmpty(SelectTab0Type))
                     {
                         StatusCheck = false;
-                        StatusText = "Выбирите что сделать".NeedTranslate();
+                        StatusText = "OC_Choose_what_to_do".Translate();
                     }
                     else if (SelectTab0Type == "raid" && string.IsNullOrEmpty(SelectTab0Faction))
                     {
                         StatusCheck = false;
-                        StatusText = "Выбирите кого нанять".NeedTranslate();
+                        StatusText = "OC_Choose_who_hire".Translate();
                     }
                     else if (SelectTab0Type == "raid" && string.IsNullOrEmpty(SelectTab0ArrivalModes))
                     {
                         StatusCheck = false;
-                        StatusText = "Выбирите как прибыть".NeedTranslate();
+                        StatusText = "OC_Choose_arrive".Translate();
                     }
                     else
                     {
@@ -251,7 +249,7 @@ namespace RimWorldOnlineCity.UI
                     if (string.IsNullOrEmpty(SelectTab1Type))
                     {
                         StatusCheck = false;
-                        StatusText = "Выбирите что сделать".NeedTranslate();
+                        StatusText = "OC_Choose_what_to_do".Translate();
                     }
                     else
                     {

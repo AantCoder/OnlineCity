@@ -267,6 +267,28 @@
 	<OC_Incidents_Acid_Text>Над вашим поселением распылили токсичный газ</OC_Incidents_Acid_Text>
 	<OC_Incidents_Inf_Label>Жуки!</OC_Incidents_Inf_Label>
 	<OC_Incidents_Inf_Text>Кто-то приманил жуков на поверхность с помощью высокочастотных вибраций</OC_Incidents_Inf_Text>
+
+	<!-- OCIncidents UI-->
+	<OC_Incidents_Hire_label>Нанять рейд</OC_Incidents_Hire_label>
+	<OC_Incidents_Impact_label>Воздействие на область</OC_Incidents_Impact_label>
+	<OC_Incidents_Impact_text>Вы нашли учёных, которые могут изменять погодные условия. Пока они готовы сделать только кислотный дождь. За разумную плату</OC_Incidents_Impact_text>
+	<OC_Incidents_Hire_text>Пираты и воинственные аборигены с радостью согласятся поработать за награду. Возможно даже связаться c умельцами из продвинутых поселений, которые могут с помощью особых радиосигналов привлечь рой жуков или механоидов. Чем богаче атакуемое поселение, тем больше денег потребуют наёмники.</OC_Incidents_Hire_text>
+	<OC_Acid_Rain>Кислотный дождь</OC_Acid_Rain>
+	<OC_What_To_DO>Что делать</OC_What_To_DO>
+	<OC_Raid>Рейд</OC_Raid>
+	<OC_Bugs>Гигантские жуки</OC_Bugs>
+	<OC_Who_Hire>Кого нанять</OC_Who_Hire>
+	<OC_Tribe>Племя</OC_Tribe>
+	<OC_Pirate>Пираты</OC_Pirate>
+	<OC_Mech>Механоиды</OC_Mech>
+	<OC_Arrive>Способ прибытия</OC_Arrive>
+	<OC_Arrive_EdgeWalk>Пешком</OC_Arrive_EdgeWalk>
+	<OC_Arrive_DropCenter>Десант в центр</OC_Arrive_DropCenter>
+	<OC_Arrive_RandomDrop>Равномерный десант</OC_Arrive_RandomDrop>
+	<OC_Raid_Power>Мощность нападения: x{0}</OC_Raid_Power>
+	<OC_Choose_what_to_do>Выберите что сделать</OC_Choose_what_to_do>
+	<OC_Choose_who_hire>Выберите кого нанять</OC_Choose_who_hire>
+	<OC_Choose_arrive>Выберите способ прибытия</OC_Choose_arrive>
 	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Ошибка соединения.</OCity_SCC_Disconnected>
