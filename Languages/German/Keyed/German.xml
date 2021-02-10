@@ -272,6 +272,28 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OC_Incidents_Inf_Label>Man-made Infestation!</OC_Incidents_Inf_Label>
 	<OC_Incidents_Inf_Text>Someone lured the swarm to the surface with high frequency vibrations</OC_Incidents_Inf_Text>
 
+	<!-- OCIncidents UI-->
+	<OC_Incidents_Hire_label>Hire raid</OC_Incidents_Hire_label>
+	<OC_Incidents_Impact_label>Affect the area</OC_Incidents_Impact_label>
+	<OC_Incidents_Impact_text>Some rogue scientists can change weather conditions.For now, they are only ready to make acid rain. Not for free</OC_Incidents_Impact_text>
+	<OC_Incidents_Hire_text>Pirates and warlike tribes will gladly agree to do dirty work for a reward. It is even possible to contact scientists from high tech settlements who can lure a the swarm of beetles or mechanoids using special radio signals.</OC_Incidents_Hire_text>
+	<OC_Acid_Rain>Acid rain</OC_Acid_Rain>
+	<OC_What_To_DO>What to do</OC_What_To_DO>
+	<OC_Raid>Raid</OC_Raid>
+	<OC_Bugs>Giant bugs</OC_Bugs>
+	<OC_Who_Hire>Who to hire</OC_Who_Hire>
+	<OC_Tribe>Tribe</OC_Tribe>
+	<OC_Pirate>Pirates</OC_Pirate>
+	<OC_Mech>Mechanoids</OC_Mech>
+	<OC_Arrive>Arrival mode</OC_Arrive>
+	<OC_Arrive_EdgeWalk>Edge walk</OC_Arrive_EdgeWalk>
+	<OC_Arrive_DropCenter>Drop to the center</OC_Arrive_DropCenter>
+	<OC_Arrive_RandomDrop>Random drop</OC_Arrive_RandomDrop>
+	<OC_Raid_Power>Raid power: x{0}</OC_Raid_Power>
+	<OC_Choose_what_to_do>Choose what to do</OC_Choose_what_to_do>
+	<OC_Choose_who_hire>Choose who to hire</OC_Choose_who_hire>
+	<OC_Choose_arrive>Choose arrivel mode</OC_Choose_arrive>
+	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Verbindungsfehler</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Verbindung abgebrochen</OCity_SCC_DisconnectedShow> -->
