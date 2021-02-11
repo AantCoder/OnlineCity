@@ -76,11 +76,11 @@ namespace RimWorldOnlineCity
             {
                 if (InputPassword2 != InputPassword)
                 {
-                    Find.WindowStack.Add(new Dialog_MessageBox("Пароль и подтверждение отличаются".NeedTranslate()));
+                    Find.WindowStack.Add(new Dialog_MessageBox("OCity_LoginForm_Err1".Translate()));
                 }
                 else if (InputAddr.Length <= 2 || InputLogin.Length <= 2 || InputPassword.Length <= 2)
                 {
-                    Find.WindowStack.Add(new Dialog_MessageBox("Адрес, логин и пароль должны быть не менее двух смволов длинной".NeedTranslate()));
+                    Find.WindowStack.Add(new Dialog_MessageBox("OCity_LoginForm_Err2".Translate()));
                 }
                 else
                 {
@@ -136,7 +136,7 @@ namespace RimWorldOnlineCity
                     InputPassword2 = GUI.PasswordField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputPassword2, "*"[0], 100);
                 });
 
-            TextInput(mainListing, "Почта (не обязательно)".NeedTranslate(),
+            TextInput(mainListing, "OCity_LoginForm_Mail".Translate(),
                 (sub, rect) =>
                 {
                     InputEmail = GUI.TextField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputEmail, 100);

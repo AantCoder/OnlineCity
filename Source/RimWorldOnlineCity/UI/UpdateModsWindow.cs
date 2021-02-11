@@ -55,7 +55,7 @@ namespace RimWorldOnlineCity.UI
             var buttonYStart = inRect.height - btnSize.y;
 
             var ev = Event.current;
-            if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x, buttonYStart, btnSize.x, btnSize.y), "OK".NeedTranslate()))
+            if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x, buttonYStart, btnSize.x, btnSize.y), "OC_OK".Translate()))
             {
                 Close();
             }

@@ -88,7 +88,7 @@ namespace RimWorldOnlineCity
 
             if (args.Count < 3)
             {
-                error = "Неверно заданы аргументы".NeedTranslate().ToString();
+                error = "OC_Incidents_OCIncident_WrongArg".Translate().ToString();
                 Loger.Log("IncidentLod OCIncident.GetCostOnGameByCommand error:" + error);
                 return null;
             }
@@ -111,8 +111,8 @@ namespace RimWorldOnlineCity
             if (cost < 0 || gold < 0 || gold < cost)
             {
                 error = cost < 0 || gold < 0
-                    ? "Ошибка определения стоимости".NeedTranslate().ToString() + $" cost={cost} gold={gold}"
-                    : "Недостаточно золота {0} из {1}, нехватает {2}".NeedTranslate(gold, cost, cost - gold).ToString();
+                    ? "OC_Incidents_OCIncident_WealthErr".Translate().ToString() + $" cost={cost} gold={gold}"
+                    : "OC_Incidents_OCIncident_GoldErr".Translate(gold, cost, cost - gold).ToString();
                 Loger.Log("IncidentLod OCIncident.GetCostOnGameByCommand error:" + error);
                 return null;
             }
@@ -120,7 +120,7 @@ namespace RimWorldOnlineCity
             if (onliCheck)
             {
                 error = null;
-                return "Необходимого золота {0} достаточно".NeedTranslate(cost);
+                return "OC_Incidents_OCIncident_NotEnoughGold".Translate(cost);
             }
 
             Loger.Log("IncidentLod OCIncident.GetCostOnGameByCommand 2");
@@ -135,7 +135,7 @@ namespace RimWorldOnlineCity
             Loger.Log("IncidentLod ChatController.AfterStartIncident 4");
 
             error = null;
-            return "Необходимое золото {0} заплатили наёмникам".NeedTranslate(cost);
+            return "OC_Incidents_OCIncident_GoldPay".Translate(cost);
         }
         
         public float CalculatePoints()

@@ -275,7 +275,7 @@ namespace RimWorldOnlineCity.UI
             if (StatusCheck
                 && Widgets.ButtonText(new Rect(rect.x, rect.y, 140f, 40f)
                 , TabIndex == 0 && SelectTab0Mult == SelectTab0MultMax && (SelectTab0Faction != "tribe" || SelectTab0Type != "raid") 
-                    ? "EXTERMINATUS" : "Сделать!".NeedTranslate()))
+                    ? "EXTERMINATUS" : "OC_Incidents_Execute".Translate().ToString()))
             {
                 var command = GetCommand();
                 var mainCannal = SessionClientController.Data.Chats[0];
@@ -286,7 +286,7 @@ namespace RimWorldOnlineCity.UI
                     /*
                     if (res != null && res.Status == 0)
                     {
-                        Find.WindowStack.Add(new Dialog_MessageBox("Команда успешно отправлена!".NeedTranslate()));
+                        Find.WindowStack.Add(new Dialog_MessageBox("Команда успешно отправлена!"));
                     }
                     */
                 });
