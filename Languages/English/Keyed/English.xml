@@ -25,6 +25,7 @@ Pawn wealth: {3}</OCity_Caravan_Other>
 	<OCity_Caravan_PlayerAttackCost>Maximum wealth of raids: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>Remaining load capacity: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Trade with {0}</OCity_Caravan_Trade>
+	<OCity_Caravan_Abort>You are under a year old or the wealth is less than</OCity_Caravan_Abort>
 	<!-- Kor -->
 	<OCity_Caravan_Attack>Attack {0}</OCity_Caravan_Attack>
 
@@ -99,6 +100,9 @@ Pawn wealth: {3}</OCity_Caravan_Other>
 	<OCity_LoginForm_Server>Server:</OCity_LoginForm_Server>
 	<OCity_LoginForm_Login>Login:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>Password:</OCity_LoginForm_Pass>
+	<OCity_LoginForm_Err1>Password and confirmation are different</OCity_LoginForm_Err1>
+	<OCity_LoginForm_Err2>Address, login and password must be longer than two characters</OCity_LoginForm_Err2>
+	<OCity_LoginForm_Mail>EMail (optional)</OCity_LoginForm_Mail>
 
 	<!-- SessionClientController.cs -->
 	<OCity_SessionCC_ConnectionFailTitle>Connection failure</OCity_SessionCC_ConnectionFailTitle>
@@ -271,6 +275,11 @@ Pawn wealth: {3}</OCity_Caravan_Other>
 	<OC_Incidents_CallIncidebts_YearErr2>You can attack after 2 years of game of the attack target</OC_Incidents_CallIncidebts_YearErr2>
 	<OC_Incidents_CallIncidebts_CostErr1>Your settlement cost is too low</OC_Incidents_CallIncidebts_CostErr1>
 	<OC_Incidents_CallIncidebts_CostErr2>Attack target has too low settlement cost</OC_Incidents_CallIncidebts_CostErr2>
+	<OC_Incidents_OCIncident_WrongArg>Arguments set incorrectly</OC_Incidents_OCIncident_WrongArg>
+	<OC_Incidents_OCIncident_WealthErr>Wealth determination error</OC_Incidents_OCIncident_WealthErr>
+	<OC_Incidents_OCIncident_GoldErr>Not enough gold {0} from {1}, not enough {2}</OC_Incidents_OCIncident_GoldErr>
+	<OC_Incidents_OCIncident_NotEnoughGold>Required gold {0} is enough</OC_Incidents_OCIncident_NotEnoughGold>
+	<OC_Incidents_OCIncident_GoldPay>The required gold {0} has been paid to the mercenaries</OC_Incidents_OCIncident_GoldPay>
 	
 	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
@@ -290,6 +299,7 @@ Pawn wealth: {3}</OCity_Caravan_Other>
 	<OC_Incidents_Impact_label>Affect the area</OC_Incidents_Impact_label>
 	<OC_Incidents_Impact_text>Some rogue scientists can change weather conditions.For now, they are only ready to make acid rain. Not for free</OC_Incidents_Impact_text>
 	<OC_Incidents_Hire_text>Pirates and warlike tribes will gladly agree to do dirty work for a reward. It is even possible to contact scientists from high tech settlements who can lure a the swarm of beetles or mechanoids using special radio signals.</OC_Incidents_Hire_text>
+	<OC_Incidents_Execute>Execute!</OC_Incidents_Execute>
 	<OC_Acid_Rain>Acid rain</OC_Acid_Rain>
 	<OC_What_To_DO>What to do</OC_What_To_DO>
 	<OC_Raid>Raid</OC_Raid>
@@ -306,6 +316,10 @@ Pawn wealth: {3}</OCity_Caravan_Other>
 	<OC_Choose_what_to_do>Choose what to do</OC_Choose_what_to_do>
 	<OC_Choose_who_hire>Choose who to hire</OC_Choose_who_hire>
 	<OC_Choose_arrive>Choose arrival mode</OC_Choose_arrive>
+
+	<!-- OC_World_Map-->
+	<OC_Base_Interact>Interact with {0}</OC_Base_Interact>
+	<OC_Base_InteractWith>Interaction with settlement {0} player {1}</OC_Base_InteractWith>
 	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>

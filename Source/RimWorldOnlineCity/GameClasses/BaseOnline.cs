@@ -143,8 +143,8 @@ namespace RimWorldOnlineCity
             }
 
             Command_Action command_Action = new Command_Action();
-            command_Action.defaultLabel = "Взаимодействие с {0}".NeedTranslate(OnlinePlayerLogin);
-            command_Action.defaultDesc = "Взаимодействие с поселением {0} игрока {1}".NeedTranslate(OnlineName, OnlinePlayerLogin);
+            command_Action.defaultLabel = "OC_Base_Interact".Translate(OnlinePlayerLogin);
+            command_Action.defaultDesc = "OC_Base_InteractWith".Translate(OnlineName, OnlinePlayerLogin);
             command_Action.icon = BaseOnlineButtonIcon;
             command_Action.action = delegate
             {

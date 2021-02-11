@@ -240,8 +240,12 @@ namespace RimWorldOnlineCity.UI
                     }
                     else
                     {
-                        StatusCheck = true;
-                        StatusText = null; //todo сюда расчет стоимости
+                        var command = GetCommand();
+                        //расчет стоимости
+                        string error;
+                        var result = OCIncident.GetCostOnGameByCommand(command, true, out error);
+                        StatusText = error ?? result;
+                        StatusCheck = error == null;
                     }
                 }
                 else if (TabIndex == 1)
@@ -253,25 +257,55 @@ namespace RimWorldOnlineCity.UI
                     }
                     else
                     {
-                        StatusCheck = true;
-                        StatusText = null; //todo сюда расчет стоимости
+                        var command = GetCommand();
+                        //расчет стоимости
+                        string error;
+                        var result = OCIncident.GetCostOnGameByCommand(command, true, out error);
+                        StatusText = error ?? result;
+                        StatusCheck = error == null;
                     }
                 }
             }
 
             Color colorOrig = GUI.color;
-            GUI.color = StatusCheck ? new Color(20, 240, 20) : new Color(217, 20, 51);
+            GUI.color = StatusCheck ? Color.green : ColoredText.RedReadable;
             Widgets.Label(new Rect(rect.x + 150f, rect.y + 10f, rect.width - 150f, 40f), StatusText);
             GUI.color = colorOrig;
 
             if (StatusCheck
                 && Widgets.ButtonText(new Rect(rect.x, rect.y, 140f, 40f)
-                , TabIndex == 0 && SelectTab0Mult == SelectTab0MultMax ? "EXTERMINATUS" : "Сделать!".NeedTranslate()))
+                , TabIndex == 0 && SelectTab0Mult == SelectTab0MultMax && (SelectTab0Faction != "tribe" || SelectTab0Type != "raid") 
+                    ? "EXTERMINATUS" : "OC_Incidents_Execute".Translate().ToString()))
             {
-                //todo 
-                Find.WindowStack.Add(new Dialog_MessageBox("BABAX!!!"));
+                var command = GetCommand();
+                var mainCannal = SessionClientController.Data.Chats[0];
+                SessionClientController.Command((connect) =>
+                {
+                    var res = connect.PostingChat(mainCannal.Id, command);
+                    StatusNeedUpdate = true;
+                    /*
+                    if (res != null && res.Status == 0)
+                    {
+                        Find.WindowStack.Add(new Dialog_MessageBox("Команда успешно отправлена!"));
+                    }
+                    */
+                });
             }
 
+        }
+
+        private string GetCommand()
+        {
+            //return "/call raid 111 1 5 random pirate";
+            return "/call "
+                + (TabIndex == 0 ? SelectTab0Type : SelectTab1Type)
+                + $" '{Base.OnlineWObject.LoginOwner}'"
+                + $" {Base.OnlineWObject.ServerId}"
+                + (TabIndex != 0 ? ""
+                    : $" {SelectTab0Mult}"
+                        + (SelectTab0Type != "raid" ? ""
+                            : $" {SelectTab0ArrivalModes} {SelectTab0Faction}")
+                    );
         }
 
 

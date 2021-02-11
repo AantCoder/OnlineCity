@@ -25,6 +25,7 @@
 	<OCity_Caravan_PlayerAttackCost>Максимальная ценность атакующих: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>Оставшаяся грузоподъемность: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Обмен товарами c {0}</OCity_Caravan_Trade>
+	<OCity_Caravan_Abort>Вам нет года или стоимость меньше</OCity_Caravan_Abort>
 	<!-- Kor -->
 	<OCity_Caravan_Attack>Атаковать {0}</OCity_Caravan_Attack>
 
@@ -98,6 +99,9 @@
 	<OCity_LoginForm_Server>Сервер:</OCity_LoginForm_Server>
 	<OCity_LoginForm_Login>Логин:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>Пароль:</OCity_LoginForm_Pass>
+	<OCity_LoginForm_Err1>Пароль и подтверждение отличаются</OCity_LoginForm_Err1>
+	<OCity_LoginForm_Err2>Адрес, логин и пароль должны быть длинной не менее двух символов</OCity_LoginForm_Err2>
+	<OCity_LoginForm_Mail>Почта (не обязательно)</OCity_LoginForm_Mail>
 
 	<!-- SessionClientController.cs -->
 	<OCity_SessionCC_ConnectionFailTitle>Соединение не установлено</OCity_SessionCC_ConnectionFailTitle>
@@ -260,6 +264,18 @@
 	<OC_Incidents_CallIncidents_TypeErr>Укажите допустимый тип инциндента</OC_Incidents_CallIncidents_TypeErr>
 	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Достигнуто максимальное количество инциндентов для этого игрока за час</OC_Incidents_CallIncidents_MaxIncidentsInHour>
 	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Достигнуто максимальное количество инциндентов для этого игрока</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+	<OC_Incidents_CallIncidents_NotShooted>Ваш прошлый инциндент для этого игрока ещё не сработал</OC_Incidents_CallIncidents_NotShooted>
+	<OC_Incidents_IncidentsTurnedOFF>Инцинденты отключены на этом сервере</OC_Incidents_IncidentsTurnedOFF>
+	<OC_Incidents_CallIncidebts_selfErr>Нельзя указывать самого себя</OC_Incidents_CallIncidebts_selfErr>
+	<OC_Incidents_CallIncidebts_YearErr1>Нападать можно после 2х лет своего развития</OC_Incidents_CallIncidebts_YearErr1>
+	<OC_Incidents_CallIncidebts_YearErr2>Нападать можно после 2х лет развития цели нападения</OC_Incidents_CallIncidebts_YearErr2>
+	<OC_Incidents_CallIncidebts_CostErr1>У вас слишком маленькая стоимость поселения</OC_Incidents_CallIncidebts_CostErr1>
+	<OC_Incidents_CallIncidebts_CostErr2>У цели нападения слишком маленькая стоимость поселения</OC_Incidents_CallIncidebts_CostErr2>
+	<OC_Incidents_OCIncident_WrongArg>Неверно заданы аргументы</OC_Incidents_OCIncident_WrongArg>
+	<OC_Incidents_OCIncident_WealthErr>Ошибка определения стоимости</OC_Incidents_OCIncident_WealthErr>
+	<OC_Incidents_OCIncident_GoldErr>Недостаточно золота {0} из {1}, нехватает {2}</OC_Incidents_OCIncident_GoldErr>
+	<OC_Incidents_OCIncident_NotEnoughGold>Необходимого золота {0} достаточно</OC_Incidents_OCIncident_NotEnoughGold>
+	<OC_Incidents_OCIncident_GoldPay>Необходимое золото {0} заплатили наёмникам</OC_Incidents_OCIncident_GoldPay>
 
 	<OC_Incidents_Raid_Label>Охотники за головами!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>К вашему поселению подходят наёмники</OC_Incidents_Raid_Text>
@@ -267,12 +283,19 @@
 	<OC_Incidents_Acid_Text>Над вашим поселением распылили токсичный газ</OC_Incidents_Acid_Text>
 	<OC_Incidents_Inf_Label>Жуки!</OC_Incidents_Inf_Label>
 	<OC_Incidents_Inf_Text>Кто-то приманил жуков на поверхность с помощью высокочастотных вибраций</OC_Incidents_Inf_Text>
+	<OC_Incidents_EMP_Label>Э.М.И.</OC_Incidents_EMP_Label>
+	<OC_Incidents_EMP_Text>Ваше поселение облучили электро-магнитным импульсом, отключившим всю электронику</OC_Incidents_EMP_Text>
+	<OC_Incidents_Eclipse_Label>Солнечный поглотитель!</OC_Incidents_Eclipse_Label>
+	<OC_Incidents_Eclipse_Text>Над вашим поселением вывели специальный спутник, поглощающий солнечный свет</OC_Incidents_Eclipse_Text>
+	<OC_Incidents_Pack_Label>Боевые звери!</OC_Incidents_Pack_Label>
+	<OC_Incidents_Pack_Text>На ваше поселение спустили стаю животных, доведённых до безумия</OC_Incidents_Pack_Text>
 
 	<!-- OCIncidents UI-->
 	<OC_Incidents_Hire_label>Нанять рейд</OC_Incidents_Hire_label>
 	<OC_Incidents_Impact_label>Воздействие на область</OC_Incidents_Impact_label>
 	<OC_Incidents_Impact_text>Вы нашли учёных, которые могут изменять погодные условия. Пока они готовы сделать только кислотный дождь. За разумную плату</OC_Incidents_Impact_text>
 	<OC_Incidents_Hire_text>Пираты и воинственные аборигены с радостью согласятся поработать за награду. Возможно даже связаться c умельцами из продвинутых поселений, которые могут с помощью особых радиосигналов привлечь рой жуков или механоидов. Чем богаче атакуемое поселение, тем больше денег потребуют наёмники.</OC_Incidents_Hire_text>
+	<OC_Incidents_Execute>Сделать!</OC_Incidents_Execute>
 	<OC_Acid_Rain>Кислотный дождь</OC_Acid_Rain>
 	<OC_What_To_DO>Что делать</OC_What_To_DO>
 	<OC_Raid>Рейд</OC_Raid>
@@ -289,6 +312,10 @@
 	<OC_Choose_what_to_do>Выберите что сделать</OC_Choose_what_to_do>
 	<OC_Choose_who_hire>Выберите кого нанять</OC_Choose_who_hire>
 	<OC_Choose_arrive>Выберите способ прибытия</OC_Choose_arrive>
+
+	<!-- OC_World_Map-->
+	<OC_Base_Interact>Взаимодействие с {0}</OC_Base_Interact>
+	<OC_Base_InteractWith>Взаимодействие с поселением {0} игрока {1}</OC_Base_InteractWith>
 	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Ошибка соединения.</OCity_SCC_Disconnected>

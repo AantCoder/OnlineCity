@@ -158,7 +158,7 @@ namespace RimWorldOnlineCity
             const float radioLabelInset = 40f;
             const float mainListingSpacing = 6f;
             const float subListingSpacing = 0;// 6f;
-            const float subListingLabelWidth = 130;// 100f;
+            const float subListingLabelWidth = 140f;// 100f;
             const float subListingRowHeight = 25;// 30f;
             const float checkboxListingWidth = 280f;
             const float listingColumnSpacing = 17f;

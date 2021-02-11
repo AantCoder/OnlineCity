@@ -1,4 +1,5 @@
 ﻿using OCUnion;
+using ServerOnlineCity.Mechanics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,9 +42,9 @@ namespace ServerOnlineCity.Model
         /// </summary>
         private long EndTick { get; set; }
 
-        private float CostBefore { get; set; }
+        private float WorthBefore { get; set; }
 
-        private float CostAfter { get; set; }
+        private float WorthAfter { get; set; }
 
         public FMailIncident(ModelMailStartIncident mail)
         {
@@ -74,9 +75,16 @@ namespace ServerOnlineCity.Model
             ///Определяем прошел ли срок с момента запуска последнего события
             if (!AlreadyStart)
             {
+                /*
                 var currentIncident = context.Player.FunctionMails
                     .Any(m => (m as FMailIncident)?.AlreadyStart ?? false 
                         && (m as FMailIncident)?.NumberOrder == NumberOrder);
+                */
+                var currentIncident = context.Player.FunctionMails
+                    .Where(m => m is FMailIncident)
+                    .Cast<FMailIncident>()
+                    .Where(m => m.AlreadyStart && m.NumberOrder == NumberOrder)
+                    .Any();
                 if (currentIncident) return false;
 
                 ///Перед нами в очереди никого. Начинает операцию!
@@ -85,7 +93,7 @@ namespace ServerOnlineCity.Model
                 SendTick = context.Player.Public.LastTick + delay;
                 if (delay > 0)
                 {
-                    Loger.Log($"IncidentLod FMailIncident.Run 1 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
+                    Loger.Log($"IncidentLod FMailIncident.Run 1 NO={NumberOrder} SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
                     context.Player.Mails.Add(GetWarningMail(context));
                     return false;
                 }
@@ -96,23 +104,33 @@ namespace ServerOnlineCity.Model
 
             if (!MailSended)
             {
-                Loger.Log($"IncidentLod FMailIncident.Run 2 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
+                Loger.Log($"IncidentLod FMailIncident.Run 2 NO={NumberOrder} SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
+                
+                var countInOrder_ = context.Player.FunctionMails.Count(m => m != this && (m as FMailIncident)?.NumberOrder == NumberOrder).ToString();
+
                 context.Player.Mails.Add(Mail);
                 SendTick = context.Player.Public.LastTick;
                 MailSended = true;
-                CostBefore = GetCostTarget(context.Player);
+                WorthBefore = GetWorthTarget(context.Player);
+
+                CallIncident.IncidentLogAppend("SendMail", Mail, $"{(int)WorthBefore};;{NumberOrder};{countInOrder_}");
                 return false;
             }
 
             ///Уже отправили письмо. Проверяем прошла ли минимальная задержка.
             if (context.Player.Public.LastTick - SendTick < ServerManager.ServerSettings.GeneralSettings.IncidentTickDelayBetween) return false;
+            
 
             ///После суток оцениваем задержку и устанавливаем поле EndTick.
             if (EndTick == 0)
             {
-                Loger.Log($"IncidentLod FMailIncident.Run 3 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
-                CostAfter = GetCostTarget(context.Player);
-                EndTick = SendTick + CalcDelayEnd();
+                Loger.Log($"IncidentLod FMailIncident.Run 3 NO={NumberOrder} SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
+
+                var countInOrder_ = context.Player.FunctionMails.Count(m => m != this && (m as FMailIncident)?.NumberOrder == NumberOrder).ToString();
+
+                WorthAfter = GetWorthTarget(context.Player);
+                var delayAfterMail = CalcDelayEnd();
+                EndTick = SendTick + delayAfterMail;
                 if (MainHelper.DebugMode)
                 {
                     context.Player.Mails.Add(new ModelMailMessadge()
@@ -124,18 +142,24 @@ namespace ServerOnlineCity.Model
                         text = "Прошли сутки после инциндента. Начато ожидание на восстановление перед разблокированием очереди №"
                             + NumberOrder.ToString()
                             + " дней: "
-                            + (CalcDelayEnd() / 60000f).ToString("N2")
+                            + (delayAfterMail / 60000f).ToString("N2")
                             + ". Всего ещё в этой очереди: "
-                            + context.Player.FunctionMails
-                                .Count(m => m != this && (m as FMailIncident)?.NumberOrder == NumberOrder).ToString()
+                            + countInOrder_
                     });
                 }
+
+                CallIncident.IncidentLogAppend("DayAfterMail", Mail, 
+                    $"{(int)WorthBefore}->{(int)WorthAfter}({(int)(WorthAfter - WorthBefore)});" +
+                    $"{(delayAfterMail / 60000f).ToString("N2")};{NumberOrder};{countInOrder_}");
             }
 
             ///Просто ждем окончания EndTick и убираем себя, чтобы очистить очередь ожидания.
             if (context.Player.Public.LastTick < EndTick) return false;
 
-            Loger.Log($"IncidentLod FMailIncident.Run 4 SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
+            Loger.Log($"IncidentLod FMailIncident.Run 4 NO={NumberOrder} SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
+
+            var countInOrder = context.Player.FunctionMails.Count(m => m != this && (m as FMailIncident)?.NumberOrder == NumberOrder).ToString();
+
             if (MainHelper.DebugMode)
             {
                 context.Player.Mails.Add(new ModelMailMessadge()
@@ -146,13 +170,14 @@ namespace ServerOnlineCity.Model
                     label = "Dev: Инциндент разблокировал очередь",
                     text = "Инциндент разблокировал очередь №"
                         + NumberOrder.ToString()
-                        + " дней: "
-                        + (CalcDelayEnd() / 60000f).ToString("N2")
                         + ". Всего ещё в этой очереди: "
-                        + context.Player.FunctionMails
-                            .Count(m => m != this && (m as FMailIncident)?.NumberOrder == NumberOrder).ToString()
+                        + countInOrder
                 });
             }
+
+            var worth = GetWorthTarget(context.Player);
+            CallIncident.IncidentLogAppend("End", Mail, $"{(int)WorthBefore}->{(int)WorthAfter}->{(int)worth}({(int)(worth - WorthBefore)});;{NumberOrder};{countInOrder}");
+
             return true;
         }
 
@@ -182,7 +207,7 @@ namespace ServerOnlineCity.Model
         }
 
 
-        private float GetCostTarget(PlayerServer player)
+        private float GetWorthTarget(PlayerServer player)
         {
             var attCosts = player.CostWorldObjects(Mail.PlaceServerId);
             var attCost = attCosts.MarketValue + attCosts.MarketValuePawn;
@@ -207,7 +232,7 @@ namespace ServerOnlineCity.Model
             */
 
             return (long)(ServerManager.ServerSettings.GeneralSettings.IncidentTickDelayBetween
-                * ((1f + Mail.IncidentMult * 0.16666f) + 0.03333f * (CostBefore / 100000f)));
+                * ((1f + Mail.IncidentMult * 0.16666f) + 0.03333f * (WorthBefore / 100000f)));
         }
 
     }
