@@ -168,6 +168,7 @@ namespace RimWorldOnlineCity
                 * (float)Math.Pow((float)mult, 3f / 2f) //* (float)mult
                 * (float)SessionClientController.Data.GeneralSettings.IncidentCostPrecent / 100f
                 * (type == "inf" ? 3f 
+                    : type == "acid" ? 2f
                     : type == "raid" 
                     ?   (arrivalModes == "random" ? 1.5f : arrivalModes == "air" ? 1.4f : 1f)
                       * (faction == "mech" ? 5f : faction == "pirate" ? 2f : 1f)

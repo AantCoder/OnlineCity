@@ -71,7 +71,7 @@ namespace RimWorldOnlineCity
                         , OnlineWObject.MarketValue.ToStringMoney()
                         , OnlineWObject.MarketValuePawn.ToStringMoney()
                         )
-                    + ((this is BaseOnline)
+                    + ((this is BaseOnline) && SessionClientController.My.EnablePVP
                         ? Environment.NewLine + "OCity_Caravan_PlayerAttackCost".Translate(
                             AttackUtils.MaxCostAttackerCaravan(OnlineWObject.MarketValue + OnlineWObject.MarketValuePawn, this is BaseOnline).ToStringMoney()).ToString()
                         : "")
