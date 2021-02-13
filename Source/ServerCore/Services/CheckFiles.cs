@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OCUnion;
 using OCUnion.Transfer;
 using OCUnion.Transfer.Model;
 using OCUnion.Transfer.Types;
@@ -62,6 +63,7 @@ namespace ServerOnlineCity.Services
                             result.Add(addFile);
                             packetSize += addFile.Size;
                             totalSize += addFile.Size;
+                            //Loger.Log($"packetSize={packetSize} totalSize={totalSize}");
                         }
                         else
                         {
@@ -87,7 +89,19 @@ namespace ServerOnlineCity.Services
                     context.Player.ApproveLoadWorldReason = context.Player.ApproveLoadWorldReason | ApproveLoadWorldReason.NotAllFilesOnClient;
                     foreach (var fileName in allServerFiles)
                     {
-                        result.Add(GetFile(filesDir, workDict[fileName].FileName)); //workDict[fileName].FileName вместо fileName для восстановления заглавных
+                        if (packetSize < MaxPacketSize)
+                        {
+                            var addFile = GetFile(filesDir, workDict[fileName].FileName); //workDict[fileName].FileName вместо fileName для восстановления заглавных
+                            result.Add(addFile); 
+                            packetSize += addFile.Size;
+                            totalSize += addFile.Size;
+                            //Loger.Log($"packetSize={packetSize} totalSize={totalSize}");
+                        }
+                        else
+                        {
+                            var size = GetFileSize(filesDir, workDict[fileName].FileName);
+                            totalSize += size;
+                        }
                     }
                 }
 

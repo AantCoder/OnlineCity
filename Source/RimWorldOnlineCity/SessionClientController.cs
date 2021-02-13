@@ -90,15 +90,15 @@ namespace RimWorldOnlineCity
             var filesCount = 0;
             foreach (FolderType folderType in folderTypeValues)
             {
-                UpdateModsWindow.Title = "Calculate hash for: " + folderType.ToString();
+                UpdateModsWindow.Title = "Calculate hash for: ".NeedTranslate() + folderType.ToString();
                 ClientFileCheckers[(int)folderType] = factory.GetFileChecker(folderType);
                 ClientFileCheckers[(int)folderType].CalculateHash();
                 filesCount += ClientFileCheckers[(int)folderType].FilesHash.Count;
             }
 
 
-            UpdateModsWindow.Title = "Calculate hash completed";
-            UpdateModsWindow.HashStatus = "Mods Config files: " + ClientFileCheckers[(int)FolderType.ModsConfigPath].FilesHash.Count.ToString() + "\n" +
+            UpdateModsWindow.Title = "Calculate hash completed".NeedTranslate();
+            UpdateModsWindow.HashStatus = "Mods Config files: ".NeedTranslate() + ClientFileCheckers[(int)FolderType.ModsConfigPath].FilesHash.Count.ToString() + "\n" +
             "Mods files: " + ClientFileCheckers[(int)FolderType.ModsFolder].FilesHash.Count.ToString();
             //Task.Run(() => ClientHashChecker.StartGenerateHashFiles());
         }
@@ -919,8 +919,6 @@ namespace RimWorldOnlineCity
 
             Task.Factory.StartNew(() =>
             {
-                UpdateModsWindow.Title = "Скачивание обновлений".NeedTranslate();
-
                 var fc = new ClientHashChecker(SessionClient.Get);
                 var approveModList = true;
                 foreach (var clientFileChecker in ClientFileCheckers)
@@ -929,9 +927,7 @@ namespace RimWorldOnlineCity
                     approveModList = approveModList && ((int)res == 0);
                 }
 
-                UpdateModsWindow.Title = $"Check files from Server is Completed. Close Window . . .";
                 UpdateModsWindow.CompletedAndClose = true;
-
                 form.OnCloseed = () =>
                 { 
                     done(approveModList);

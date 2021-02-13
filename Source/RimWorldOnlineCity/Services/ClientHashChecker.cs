@@ -5,6 +5,7 @@ using OCUnion.Transfer.Types;
 using RimWorldOnlineCity.ClientHashCheck;
 using RimWorldOnlineCity.UI;
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -35,6 +36,8 @@ namespace RimWorldOnlineCity.Services
 
             ApproveLoadWorldReason result = ApproveLoadWorldReason.LoginOk;
             bool downloading = true;
+            long totalSize = 0;
+            long downloadSize = 0;
             while (downloading)
             {
                 var clientFileChecker = (ClientFileChecker)context;
@@ -44,15 +47,21 @@ namespace RimWorldOnlineCity.Services
                     FolderType = clientFileChecker.FolderType,
                 };
 
-                UpdateModsWindow.Title = $"Send files {clientFileChecker.FolderType.ToString()} to server";
+                UpdateModsWindow.Title = "Скачивание обновлений модов...".NeedTranslate();
+                UpdateModsWindow.HashStatus = "";
+                UpdateModsWindow.SummaryList = null;
                 Loger.Log($"Send hash {clientFileChecker.Folder}");
 
                 var res = _sessionClient.TransObject2<ModelModsFiles>(model, RequestTypePackage, ResponseTypePackage);
 
                 if (res.Files.Count > 0)
                 {
+                    if (totalSize == 0) totalSize = res.TotalSize;
+                    downloadSize += res.Files.Sum(f => f.Size);
                     Loger.Log($"Files that need for a change:");
-                    UpdateModsWindow.HashStatus = string.Join("\n", res.Files);
+                    UpdateModsWindow.HashStatus = "Загружено ".NeedTranslate()
+                        + (downloadSize * 100 / totalSize).ToString() + "%";
+
                     result = result | ApproveLoadWorldReason.ModsFilesFail;
                     FileChecker.FileSynchronization(clientFileChecker.Folder, res);
                     clientFileChecker.RecalculateHash(res.Files.Select(f => f.FileName).ToList());
@@ -65,6 +74,7 @@ namespace RimWorldOnlineCity.Services
                         .Select(f => new { orig = f, comp = f.ToLower() })
                         .GroupBy(p => p.comp)
                         .Select(g => g.Max(p => p.orig))
+                        .Where(f => UpdateModsWindow.SummaryList == null || !UpdateModsWindow.SummaryList.Any(sl => sl == f))
                         .ToList();
                     if (UpdateModsWindow.SummaryList == null)
                         UpdateModsWindow.SummaryList = addList;
