@@ -22,6 +22,9 @@ namespace RimWorldOnlineCity.UI
         public static List<string> SummaryList { get; set; }
         public static bool CompletedAndClose { get; set; }
 
+        public bool HideOK { get; set; }
+        public Action OnCloseed { get; set; }
+
         public override Vector2 InitialSize
         {           
             get { return new Vector2(400f, 350f); } //новое поле ввода с описанием +50
@@ -51,6 +54,7 @@ namespace RimWorldOnlineCity.UI
         {
             base.PostClose();
             if (!ResultOK) InputText = null;
+            if (OnCloseed != null) OnCloseed();
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -68,7 +72,7 @@ namespace RimWorldOnlineCity.UI
             var buttonYStart = inRect.height - btnSize.y;
 
             var ev = Event.current;
-            if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x, buttonYStart, btnSize.x, btnSize.y), "OC_OK".Translate()))
+            if (!HideOK && Widgets.ButtonText(new Rect(inRect.width - btnSize.x, buttonYStart, btnSize.x, btnSize.y), "OC_OK".Translate()))
             {
                 Close();
             }
