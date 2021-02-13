@@ -15,6 +15,7 @@ namespace RimWorldOnlineCity
 {
     public abstract class OCIncident
     {
+        public string attacker;
         public int mult = 1;
         public IncidentStrategys strategy = IncidentStrategys.ImmediateAttack;
         public IncidentArrivalModes arrivalMode = IncidentArrivalModes.EdgeWalkIn;

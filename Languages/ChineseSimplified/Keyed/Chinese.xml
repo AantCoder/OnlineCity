@@ -277,6 +277,7 @@
 	<OC_Incidents_OCIncident_GoldErr>Not enough gold {0} from {1}, not enough {2}</OC_Incidents_OCIncident_GoldErr>
 	<OC_Incidents_OCIncident_NotEnoughGold>Required gold {0} is enough</OC_Incidents_OCIncident_NotEnoughGold>
 	<OC_Incidents_OCIncident_GoldPay>The required gold {0} has been paid to the mercenaries</OC_Incidents_OCIncident_GoldPay>
+	<OC_Incident_Atacker>The customer:</OC_Incident_Atacker>
 
 	<OC_Incidents_Raid_Warning_label>Serious threat!</OC_Incidents_Raid_Warning_label>
 	<OC_Incidents_Raid_Warning_Text_human>Your colonists are thrilled! A huge number of armed men are seen approaching from another player! They will arrive in 10-14 hours. Perhaps you should ask your allies for help</OC_Incidents_Raid_Warning_Text_human>
