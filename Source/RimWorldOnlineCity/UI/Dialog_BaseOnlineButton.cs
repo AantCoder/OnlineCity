@@ -301,10 +301,7 @@ namespace RimWorldOnlineCity.UI
                 + (TabIndex == 0 ? SelectTab0Type : SelectTab1Type)
                 + $" '{Base.OnlineWObject.LoginOwner}'"
                 + $" {Base.OnlineWObject.ServerId}"
-                + (TabIndex != 0 ? ""
-                    : $" {SelectTab0Mult}"
-                        + (SelectTab0Type != "raid" ? ""
-                            : $" {SelectTab0ArrivalModes} {SelectTab0Faction}")
+                + (TabIndex != 0 ? "" : $" {SelectTab0Mult}" + (SelectTab0Type != "raid" ? "": $" {SelectTab0ArrivalModes} {SelectTab0Faction}")
                     );
         }
 

@@ -89,12 +89,12 @@ namespace ServerOnlineCity.Model
 
                 ///Перед нами в очереди никого. Начинает операцию!
                 ///Проверяем нужно ли перед наподением предупредить
-                var delay = CalcDelayStart();
+                var delay = Mail.IncidentMult >= 5 ? CalcDelayStart() : 0;
                 SendTick = context.Player.Public.LastTick + delay;
                 if (delay > 0)
                 {
                     Loger.Log($"IncidentLod FMailIncident.Run 1 NO={NumberOrder} SendTick={SendTick} MailSended={MailSended} EndTick={EndTick}");
-                    context.Player.Mails.Add(GetWarningMail(context));
+                    context.Player.Mails.Add(GetWarningMail(context)); 
                     return false;
                 }
             }
@@ -197,12 +197,9 @@ namespace ServerOnlineCity.Model
                 type = NumberOrder == 1
                     ? ModelMailMessadge.MessadgeTypes.Positive
                     : ModelMailMessadge.MessadgeTypes.ThreatBig,
-                label = "Приближается!".NeedTranslate(),
-                text = Mail.IncidentType == IncidentTypes.Caravan
-                    ? "Ваши колонисты видят, что что-то приближается. Кажется какой-то игрок захотел вам помочь".NeedTranslate()
-                    : Mail.IncidentType == IncidentTypes.Raid
-                    ? "Ваши колонисты взволнованы! Они видят приближение большого количества вооруженных людей от другого игрока! Это будет здесь уже через пол дня".NeedTranslate()
-                    : "Ваши колонисты взволнованы! Они видят приближение чего-то ужасного от другого игрока! Это будет здесь уже через пол дня".NeedTranslate()
+                label = "OC_Incidents_Raid_Warning_label",
+                text = Mail.IncidentType == IncidentTypes.Raid ? Mail.IncidentFaction.ToLower().Trim() == "mech" ? "OC_Incidents_Raid_Warning_Text_mech"
+                    : "OC_Incidents_Raid_Warning_Text_human" : " ",
             };
         }
 
