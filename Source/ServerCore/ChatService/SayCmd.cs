@@ -33,7 +33,7 @@ namespace ServerOnlineCity.ChatService
             if (argsM.Count < 3)
             {
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                   "At least 3 arguments are required: player name, title, text".NeedTranslate()); // Необходимо минимум 3 аргумента: имя игрока, заголовок, текст
+                   "OC_IncdidentMessadge_ArgErr"); // Необходимо минимум 3 аргумента: имя игрока, заголовок, текст
             }
             int argNum = 0;
 
@@ -45,7 +45,7 @@ namespace ServerOnlineCity.ChatService
             if (targetPlayer == player)
             {
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                "You can not indicate yourself".NeedTranslate());// Нельзя указывать самого себя
+                "OC_IncdidentMessadge_targetErr");// Нельзя указывать самого себя
             }
 
             ModelMailMessadge.MessadgeTypes type = ModelMailMessadge.MessadgeTypes.Neutral;
@@ -80,7 +80,7 @@ namespace ServerOnlineCity.ChatService
                         break;
                     default:
                         return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                        "Invalid message type".NeedTranslate());  // Неверный тип сообщения
+                        "OC_IncdidentMessadge_typeErr");  // Неверный тип сообщения
                 }
                 argNum++;
             }

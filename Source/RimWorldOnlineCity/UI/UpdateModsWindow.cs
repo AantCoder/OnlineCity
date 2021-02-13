@@ -42,7 +42,7 @@ namespace RimWorldOnlineCity.UI
             layer = WindowLayer.SubSuper;
             CompletedAndClose = false;
 
-            if (WindowsTitle == null) WindowsTitle = "Wait before playing online...".NeedTranslate(); // Подождите перед сетевой игрой
+            if (WindowsTitle == null) WindowsTitle = "OC_Mods_Wait".Translate(); // Подождите перед сетевой игрой
         }
 
         public override void PreOpen()
@@ -96,7 +96,7 @@ namespace RimWorldOnlineCity.UI
             mainListing.Gap();
 
             if (SummaryList != null)
-                mainListing.Label("Complete:".NeedTranslate() + Environment.NewLine + string.Join(Environment.NewLine, SummaryList));
+                mainListing.Label("OC_Mods_Complete".Translate() + Environment.NewLine + string.Join(Environment.NewLine, SummaryList));
 
             if (NeedFocus)
             {

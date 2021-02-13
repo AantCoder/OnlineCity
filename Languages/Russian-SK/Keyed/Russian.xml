@@ -44,6 +44,17 @@
 	<!-- OnlineCity_ClientData.cs -->
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
 	<OCity_ClientData_Chat>Чат </OCity_ClientData_Chat>
+	
+	<!-- OnlineCity_Hash_Checker -->
+	<OC_Hash_CalculateLocalFiles>Вычисление хэша локальных данных</OC_Hash_CalculateLocalFiles>
+	<OC_Hash_CalculateFor>Вычисление хэша для: </OC_Hash_CalculateFor>
+	<OC_Hash_CalculateComplete>Вычисление хэша завершено</OC_Hash_CalculateComplete>
+	<OC_Hash_CalculateConfFile>Mods Config files: </OC_Hash_CalculateConfFile>
+	<OC_Hash_Complete>Завершено:</OC_Hash_Complete>
+	<OC_Hash_Downloading>Скачивание обновлений модов...</OC_Hash_Downloading>
+	<OC_Hash_Downloading_Finish>Загружено </OC_Hash_Downloading_Finish>
+	<OC_Mods_Wait>Подождите перед запуском онлайна...</OC_Mods_Wait>
+	<OC_Mods_Complete>Завершено:</OC_Mods_Complete>
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
@@ -259,6 +270,11 @@
 	<OCity_GameAttack_Host_Atack_Repulsed>Вы отбили эту атаку! :) </OCity_GameAttack_Host_Atack_Repulsed>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>Враги, которые не сумели уйти останутся на карте, но они потеряли связь со своим командиром.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
+	<!-- OCMessadge -->
+	<OC_IncdidentMessadge_ArgErr>Необходимы 3 аргументы: имя, заголовок, текст</OC_IncdidentMessadge_ArgErr>
+	<OC_IncdidentMessadge_targetErr>Вы не можете указать себя</OC_IncdidentMessadge_targetErr>
+	<OC_IncdidentMessadge_typeErr>Ошибка типа сообщения</OC_IncdidentMessadge_typeErr>
+
 	<!-- OCIncidents -->
 	<OC_Incidents_CallIncidents_Err1>Укажите тип инциндента и игрока, для некоторых действий возможны дополнительные параметры</OC_Incidents_CallIncidents_Err1>
 	<OC_Incidents_CallIncidents_TypeErr>Укажите допустимый тип инциндента</OC_Incidents_CallIncidents_TypeErr>
@@ -279,8 +295,8 @@
 	<OC_Incident_Atacker>За этим стоит:</OC_Incident_Atacker>
 
 	<OC_Incidents_Raid_Warning_label>Серьёзная угроза!</OC_Incidents_Raid_Warning_label>
-	<OC_Incidents_Raid_Warning_Text_human>Ваши колонисты взволнованы! Замечено приближение огромного количества вооруженных людей от другого игрока! Они прибудут через 10-14 часов. Возможно следует обратиться к союзникам за помощью</OC_Incidents_Raid_Warning_Text_human>
-	<OC_Incidents_Raid_Warning_Text_mech>Ваши колонисты в ужасе! Замечено приближение большой группы мехов от другого игрока! Они прибудут через 10-14 часов. Шансы на выживание крайне низкие, необходима поддержка союзников</OC_Incidents_Raid_Warning_Text_mech>
+	<OC_Incidents_Raid_Warning_Text_human>Ваши колонисты взволнованы! Замечено приближение огромного количества вооруженных людей от другого игрока! Они прибудут через 10-14 часов. Возможно следует обратиться к союзникам за помощью или готовиться к эвакуации</OC_Incidents_Raid_Warning_Text_human>
+	<OC_Incidents_Raid_Warning_Text_mech>Ваши колонисты в ужасе! Замечено приближение большой группы мехов от другого игрока! Они прибудут через 10-14 часов. Шансы на выживание крайне низкие, необходима поддержка союзников. Эвакуация поселения тоже выход</OC_Incidents_Raid_Warning_Text_mech>
 	<OC_Incidents_Raid_Label>Охотники за головами!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>К вашему поселению подходят наёмники</OC_Incidents_Raid_Text>
 	<OC_Incidents_Acid_Label>Хим атака!</OC_Incidents_Acid_Label>
