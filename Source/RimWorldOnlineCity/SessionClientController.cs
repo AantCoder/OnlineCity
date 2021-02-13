@@ -81,7 +81,7 @@ namespace RimWorldOnlineCity
 
         public static void CalculateHash()
         {
-            UpdateModsWindow.Title = "Calculate hash for local files".NeedTranslate();
+            UpdateModsWindow.Title = "OC_Hash_CalculateLocalFiles".Translate();
             //Find.WindowStack.Add(new UpdateModsWindow());
             var factory = new ClientFileCheckerFactory();
 
@@ -90,15 +90,15 @@ namespace RimWorldOnlineCity
             var filesCount = 0;
             foreach (FolderType folderType in folderTypeValues)
             {
-                UpdateModsWindow.Title = "Calculate hash for: ".NeedTranslate() + folderType.ToString();
+                UpdateModsWindow.Title = "OC_Hash_CalculateFor".Translate() + folderType.ToString();
                 ClientFileCheckers[(int)folderType] = factory.GetFileChecker(folderType);
                 ClientFileCheckers[(int)folderType].CalculateHash();
                 filesCount += ClientFileCheckers[(int)folderType].FilesHash.Count;
             }
 
 
-            UpdateModsWindow.Title = "Calculate hash completed".NeedTranslate();
-            UpdateModsWindow.HashStatus = "Mods Config files: ".NeedTranslate() + ClientFileCheckers[(int)FolderType.ModsConfigPath].FilesHash.Count.ToString() + "\n" +
+            UpdateModsWindow.Title = "OC_Hash_CalculateComplete".Translate();
+            UpdateModsWindow.HashStatus = "OC_Hash_CalculateConfFile".Translate() + ClientFileCheckers[(int)FolderType.ModsConfigPath].FilesHash.Count.ToString() + "\n" +
             "Mods files: " + ClientFileCheckers[(int)FolderType.ModsFolder].FilesHash.Count.ToString();
             //Task.Run(() => ClientHashChecker.StartGenerateHashFiles());
         }
@@ -726,7 +726,7 @@ namespace RimWorldOnlineCity
                     var msg = "OCity_SessionCC_FilesUpdated".Translate() + Environment.NewLine
                          + (UpdateModsWindow.SummaryList == null ? ""
                             : Environment.NewLine
-                                + "Complete:".NeedTranslate() + Environment.NewLine
+                                + "OC_Hash_Complete".Translate().ToString() + Environment.NewLine
                                 + string.Join(Environment.NewLine, UpdateModsWindow.SummaryList));
                     //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
                     Disconnected(msg, () => ModsConfig.RestartFromChangedMods());

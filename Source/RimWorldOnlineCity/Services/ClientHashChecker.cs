@@ -47,7 +47,7 @@ namespace RimWorldOnlineCity.Services
                     FolderType = clientFileChecker.FolderType,
                 };
 
-                UpdateModsWindow.Title = "Скачивание обновлений модов...".NeedTranslate();
+                UpdateModsWindow.Title = "OC_Hash_Downloading";
                 UpdateModsWindow.HashStatus = "";
                 UpdateModsWindow.SummaryList = null;
                 Loger.Log($"Send hash {clientFileChecker.Folder}");
@@ -59,7 +59,7 @@ namespace RimWorldOnlineCity.Services
                     if (totalSize == 0) totalSize = res.TotalSize;
                     downloadSize += res.Files.Sum(f => f.Size);
                     Loger.Log($"Files that need for a change:");
-                    UpdateModsWindow.HashStatus = "Загружено ".NeedTranslate()
+                    UpdateModsWindow.HashStatus = "OC_Hash_Downloading_Finish"
                         + (downloadSize * 100 / totalSize).ToString() + "%";
 
                     result = result | ApproveLoadWorldReason.ModsFilesFail;

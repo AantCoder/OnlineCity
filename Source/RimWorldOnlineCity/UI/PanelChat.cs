@@ -206,7 +206,7 @@ namespace RimWorldOnlineCity.UI
                             }
 
                             // в чате оффлайн
-                            //addTit("оффлайн".NeedTranslate());
+                            //addTit("оффлайн".Translate());
                             for (int i = 0; i < offlinePartyLogin.Count; i++)
                             {
                                 var lo = offlinePartyLogin[i];
@@ -239,7 +239,7 @@ namespace RimWorldOnlineCity.UI
                             }
 
                             // игроки оффлайн
-                            //addTit("оффлайн".NeedTranslate());
+                            //addTit("оффлайн".Translate());
                             for (int i = 0; i < offlinePartyLogin.Count; i++)
                             {
                                 var lo = offlinePartyLogin[i];

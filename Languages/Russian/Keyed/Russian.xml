@@ -46,6 +46,17 @@
 	<OCity_ClientData_Chat>Чат </OCity_ClientData_Chat>
 	<OC_OK>Ок</OC_OK>
 
+	<!-- OnlineCity_Hash_Checker -->
+	<OC_Hash_CalculateLocalFiles>Вычисление хэша локальных данных</OC_Hash_CalculateLocalFiles>
+	<OC_Hash_CalculateFor>Вычисление хэша для: </OC_Hash_CalculateFor>
+	<OC_Hash_CalculateComplete>Вычисление хэша завершено</OC_Hash_CalculateComplete>
+	<OC_Hash_CalculateConfFile>Mods Config files: </OC_Hash_CalculateConfFile>
+	<OC_Hash_Complete>Завершено:</OC_Hash_Complete>
+	<OC_Hash_Downloading>Скачивание обновлений модов...</OC_Hash_Downloading>
+	<OC_Hash_Downloading_Finish>Загружено </OC_Hash_Downloading_Finish>
+	<OC_Mods_Wait>Подождите перед запуском онлайна...</OC_Mods_Wait>
+	<OC_Mods_Complete>Завершено:</OC_Mods_Complete>
+
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
 	<OCity_Dialog_ListChat>Чат</OCity_Dialog_ListChat>
@@ -260,6 +271,11 @@
 	<OCity_GameAttack_Host_Atack_Repulsed>Вы отбили эту атаку! :) </OCity_GameAttack_Host_Atack_Repulsed>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>Враги, которые не сумели уйти останутся на карте, но они потеряли связь со своим командиром.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
+	<!-- OCMessadge -->
+	<OC_IncdidentMessadge_ArgErr>Необходимы 3 аргументы: имя, заголовок, текст</OC_IncdidentMessadge_ArgErr>
+	<OC_IncdidentMessadge_targetErr>Вы не можете указать себя</OC_IncdidentMessadge_targetErr>
+	<OC_IncdidentMessadge_typeErr>Ошибка типа сообщения</OC_IncdidentMessadge_typeErr>
+	
 	<!-- OCIncidents -->
 	<OC_Incidents_CallIncidents_Err1>Укажите тип инциндента и игрока, для некоторых действий возможны дополнительные параметры</OC_Incidents_CallIncidents_Err1>
 	<OC_Incidents_CallIncidents_TypeErr>Укажите допустимый тип инциндента</OC_Incidents_CallIncidents_TypeErr>
