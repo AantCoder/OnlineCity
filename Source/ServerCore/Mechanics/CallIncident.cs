@@ -32,17 +32,12 @@ namespace ServerOnlineCity.Mechanics
 
             if (targetPlayer.Public.LastTick / 3600000 < 2) return "OC_Incidents_CallIncidebts_YearErr2";
 
-<<<<<<< HEAD
-            if (player.AllCostWorldObjects() < 100000f) return "OC_Incidents_CallIncidebts_CostErr1";
 
-            if (targetPlayer.AllCostWorldObjects() < 100000f) return "OC_Incidents_CallIncidebts_CostErr2";
-=======
             var costAllPlayer = player.AllCostWorldObjects();
             if (costAllPlayer < 100000f) return "OC_Incidents_CallIncidebts_CostErr1";
 
             var costAllTargetPlayer = targetPlayer.AllCostWorldObjects();
             if (costAllTargetPlayer < 100000f) return "OC_Incidents_CallIncidebts_CostErr2";
->>>>>>> 4b033f00113d831bab5e69ac4ba28d37c872a6c9
 
             Loger.Log("IncidentLod CallIncident.CreateIncident 2");
 
@@ -74,18 +69,11 @@ namespace ServerOnlineCity.Mechanics
                     .Where(m => m is FMailIncident)
                     .Cast<FMailIncident>()
                     .Where(m => m.NumberOrder == fPacket.NumberOrder);
-
-<<<<<<< HEAD
+                
                 if (list.Count() > ServerManager.ServerSettings.GeneralSettings.IncidentCountInOffline)
                     return "OC_Incidents_CallIncidents_MaxIncidentsCnt";
 
                 if (list.Count(m => m.Mail.From.Login == ownLogin) > 1)
-=======
-                if (list.Count() >= ServerManager.ServerSettings.GeneralSettings.IncidentCountInOffline)
-                    return "OC_Incidents_CallIncidents_MaxIncidentsCnt";
-
-                if (list.Count(m => m.Mail.From.Login == ownLogin) >= 1)
->>>>>>> 4b033f00113d831bab5e69ac4ba28d37c872a6c9
                     return "OC_Incidents_CallIncidents_NotShooted";
 
                 //targetPlayer.Mails.Add(packet);

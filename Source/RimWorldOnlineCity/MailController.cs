@@ -131,7 +131,10 @@ namespace RimWorldOnlineCity
                     def = LetterDefOf.NeutralEvent;
                     break;
             }
-            Find.LetterStack.ReceiveLetter(msg.label, msg.text, def);
+            
+            Find.LetterStack.ReceiveLetter(ChatController.ServerCharTranslate(msg.label)
+                , ChatController.ServerCharTranslate(msg.text)
+                , def);
         }
         #endregion
 

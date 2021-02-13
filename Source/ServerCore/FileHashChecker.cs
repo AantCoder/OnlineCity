@@ -10,21 +10,19 @@ using OCUnion.Transfer.Types;
 using OCUnion;
 
 namespace ServerOnlineCity
-
 {
+
     public class FileHashChecker
     {
-        //TO DO: refatoring : Tuple содержит очень много элементов, сложно читать, разбить на класс с полями
+        public class CheckedDirAndFile
+        {
+            public string ServerDirectory { get; set; }
+            public FoldersTree FolderTree { get; set; }
+            public IReadOnlyDictionary<string, ModelFileInfo> HashFiles { get; set; }
+            public string[] IgrnoredFiles { get; set; }
+        }
 
-        /// <summary>
-        /// Item1 Server Directory 
-        /// Item2 Folder Tree
-        /// Item3 hash Files in this dir
-        /// Item4 string [] IgrnoredFiles
-        /// </summary>
-        public IReadOnlyDictionary<FolderType,
-            Tuple<string, FoldersTree, IReadOnlyDictionary<string, ModelFileInfo>, string[]>> CheckedDirAndFiles
-        { get; private set; }
+        public IReadOnlyDictionary<FolderType, CheckedDirAndFile> CheckedDirAndFiles { get; private set; }
 
         public IReadOnlyDictionary<FolderType, ApproveLoadWorldReason> ApproveWorldType { get; private set; }
 
@@ -37,13 +35,25 @@ namespace ServerOnlineCity
 
             setupApproveWorldType(serverSettings);
 
-            var result = new Dictionary<FolderType, Tuple<string, FoldersTree, IReadOnlyDictionary<string, ModelFileInfo>, string[]>>();
+            var result = new Dictionary<FolderType, CheckedDirAndFile>();
 
             var folderTree = FoldersTree.GenerateTree(serverSettings.ModsDirectory);
-            result.Add(FolderType.ModsFolder, Tuple.Create(serverSettings.ModsDirectory, folderTree, getModFiles(serverSettings), serverSettings.IgnoredLocalModFiles));
+            result.Add(FolderType.ModsFolder, new CheckedDirAndFile()
+            {
+                ServerDirectory = serverSettings.ModsDirectory,
+                FolderTree = folderTree,
+                HashFiles = getFiles(serverSettings.ModsDirectory, serverSettings.IgnoredLocalModFiles),
+                IgrnoredFiles = serverSettings.IgnoredLocalModFiles,
+            });
 
             folderTree = new FoldersTree();
-            result.Add(FolderType.ModsConfigPath, Tuple.Create(serverSettings.ModsConfigsDirectoryPath, folderTree, getModsConfigFiles(serverSettings), serverSettings.IgnoredLocalConfigFiles));
+            result.Add(FolderType.ModsConfigPath, new CheckedDirAndFile()
+            {
+                ServerDirectory = serverSettings.ModsConfigsDirectoryPath, 
+                FolderTree = folderTree,
+                HashFiles = getFiles(serverSettings.ModsConfigsDirectoryPath, serverSettings.IgnoredLocalConfigFiles),
+                IgrnoredFiles = serverSettings.IgnoredLocalConfigFiles,
+            });
 
             CheckedDirAndFiles = result;
         }
@@ -53,18 +63,14 @@ namespace ServerOnlineCity
             Loger.Log($"Check {folderName}");
         }
 
-        private IReadOnlyDictionary<string, ModelFileInfo> getModsConfigFiles(ServerSettings serverSettings)
+        private IReadOnlyDictionary<string, ModelFileInfo> getFiles(string directory, string[] ignores)
         {
-            var checkedFiles = FileChecker.GenerateHashFiles(serverSettings.ModsConfigsDirectoryPath, writeFolderNameToServerLog);
-
-            // TO DO : refactoring not caclulate hash for ignored files ( for faster start )
-            // TO DO : refactoring: Объеденить методы getModsConfigFiles   getModFiles в один с передачей параметров
+            var checkedFiles = FileChecker.GenerateHashFiles(directory, writeFolderNameToServerLog);
             var files = checkedFiles
-                .Where(x => !FileNameContainsIgnored(new FileInfo(x.FileName).Name, serverSettings.IgnoredLocalConfigFiles));
+                .Where(x => !FileNameContainsIgnored(new FileInfo(x.FileName).Name, ignores));
 
-            var res = files.ToDictionary(f => f.FileName);
-            Loger.Log($"Hashed {res.Count} files from ModsConfigsDirectoryPath={serverSettings.ModsConfigsDirectoryPath}");
-
+            var res = files.ToDictionary(f => f.FileName.ToLower());
+            Loger.Log($"Hashed {res.Count} files from ModsDirectory={directory}");
             return res;
         }
 
@@ -72,24 +78,13 @@ namespace ServerOnlineCity
         {
             foreach (var ignoredFName in ignored)
             {
-                if (fileName.EndsWith(ignoredFName))
+                if (fileName.ToLower().EndsWith(ignoredFName.ToLower()))
                 {
                     return true;
                 }
             }
 
             return false;
-        }
-
-        private IReadOnlyDictionary<string, ModelFileInfo> getModFiles(ServerSettings serverSettings)
-        {
-            var checkedFiles = FileChecker.GenerateHashFiles(serverSettings.ModsDirectory, writeFolderNameToServerLog);
-            var files = checkedFiles
-                .Where(x => !FileNameContainsIgnored(new FileInfo(x.FileName).Name, serverSettings.IgnoredLocalModFiles));
-
-            var res = files.ToDictionary(f => f.FileName);
-            Loger.Log($"Hashed {res.Count} files from ModsDirectory={serverSettings.ModsDirectory}");
-            return res;
         }
 
         private void setupApproveWorldType(ServerSettings serverSettings)

@@ -16,12 +16,10 @@ namespace RimWorldOnlineCity.ClientHashCheck
 
     public class ClientFileChecker : IClientFileChecker
     {
-        private readonly string mFolderName;
 
         public ClientFileChecker(FolderType folderType, string folderName)
         {
             FolderType = folderType;
-            mFolderName = folderName;
             Folder = folderName;
         }
 
@@ -34,8 +32,13 @@ namespace RimWorldOnlineCity.ClientHashCheck
 
         public void CalculateHash()
         {
-            Loger.Log($"{FolderType.ToString()} {mFolderName}");
-            FilesHash = FileChecker.GenerateHashFiles(mFolderName, OnChangeFolderAction);
+            Loger.Log($"{FolderType.ToString()} {Folder}");
+            FilesHash = FileChecker.GenerateHashFiles(Folder, OnChangeFolderAction);
+        }
+
+        public void RecalculateHash(List<string> lists)
+        {
+            FileChecker.ReHashFiles(FilesHash, Folder, lists);
         }
     }
 }

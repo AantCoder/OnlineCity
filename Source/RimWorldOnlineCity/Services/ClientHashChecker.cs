@@ -4,6 +4,9 @@ using OCUnion.Transfer.Model;
 using OCUnion.Transfer.Types;
 using RimWorldOnlineCity.ClientHashCheck;
 using RimWorldOnlineCity.UI;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace RimWorldOnlineCity.Services
 {
@@ -30,27 +33,46 @@ namespace RimWorldOnlineCity.Services
             // каждый запрос-отклик к серверу ~100-200 мс, получаем за один запрос все файлы
             // ~40 000 files *512 SHA key ~ size of package ~ 2,5 Mb 
 
-            var clientFileChecker = (ClientFileChecker)context;
-            var model = new ModelModsFiles()
-            {
-                Files = clientFileChecker.FilesHash,
-                FolderType = clientFileChecker.FolderType,
-            };
-
-            UpdateModsWindow.WindowTitle = $"Send files {clientFileChecker.FolderType.ToString()} to server";
-            Loger.Log($"Send hash {clientFileChecker.Folder}");
-
-            var res = _sessionClient.TransObject2<ModelModsFiles>(model, RequestTypePackage, ResponseTypePackage);
-
             ApproveLoadWorldReason result = ApproveLoadWorldReason.LoginOk;
-            if (res.Files.Count > 0)
+            bool downloading = true;
+            while (downloading)
             {
-                Loger.Log($"Files that need for a change:");
-                UpdateModsWindow.HashStatus = string.Join("\n", res.Files);
-                    result = result | ApproveLoadWorldReason.ModsFilesFail;
-                FileChecker.FileSynchronization(clientFileChecker.Folder, res);
-            }
+                var clientFileChecker = (ClientFileChecker)context;
+                var model = new ModelModsFiles()
+                {
+                    Files = clientFileChecker.FilesHash,
+                    FolderType = clientFileChecker.FolderType,
+                };
 
+                UpdateModsWindow.Title = $"Send files {clientFileChecker.FolderType.ToString()} to server";
+                Loger.Log($"Send hash {clientFileChecker.Folder}");
+
+                var res = _sessionClient.TransObject2<ModelModsFiles>(model, RequestTypePackage, ResponseTypePackage);
+
+                if (res.Files.Count > 0)
+                {
+                    Loger.Log($"Files that need for a change:");
+                    UpdateModsWindow.HashStatus = string.Join("\n", res.Files);
+                    result = result | ApproveLoadWorldReason.ModsFilesFail;
+                    FileChecker.FileSynchronization(clientFileChecker.Folder, res);
+                    clientFileChecker.RecalculateHash(res.Files.Select(f => f.FileName).ToList());
+
+                    var addList = res.Files
+                        .Select(f => f.FileName)
+                        .Where(f => f.Contains("\\"))
+                        .Select(f => f.Substring(0, f.IndexOf("\\")))
+                        //.Distinct() //вместо дистинкта группируем без разницы заглавных букв, но сохраняем оригинальное название
+                        .Select(f => new { orig = f, comp = f.ToLower() })
+                        .GroupBy(p => p.comp)
+                        .Select(g => g.Max(p => p.orig))
+                        .ToList();
+                    if (UpdateModsWindow.SummaryList == null)
+                        UpdateModsWindow.SummaryList = addList;
+                    else
+                        UpdateModsWindow.SummaryList.AddRange(addList);
+                }
+                downloading = res.TotalSize != 0;
+            }
             return result;
         }
     }

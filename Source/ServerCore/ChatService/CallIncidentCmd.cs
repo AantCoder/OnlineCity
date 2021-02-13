@@ -36,7 +36,7 @@ namespace ServerOnlineCity.ChatService
             //базовая проверка аргументов
             if (argsM.Count < 2)
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                    "OC_Incidents_CallIncidents_Err1".NeedTranslate());
+                    "OC_Incidents_CallIncidents_Err1");
 
             //собираем данные
             var type = CallIncident.ParseIncidentTypes(argsM[0]); 

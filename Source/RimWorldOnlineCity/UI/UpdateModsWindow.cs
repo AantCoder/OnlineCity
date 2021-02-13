@@ -16,8 +16,11 @@ namespace RimWorldOnlineCity.UI
         public string InputText = "";
         public bool ResultOK = false;
 
-        public static string WindowTitle { get; set; }
+        public static string WindowsTitle { get; set; }
+        public static string Title { get; set; }
         public static string HashStatus { get; set; }
+        public static List<string> SummaryList { get; set; }
+        public static bool CompletedAndClose { get; set; }
 
         public override Vector2 InitialSize
         {           
@@ -34,6 +37,9 @@ namespace RimWorldOnlineCity.UI
             forcePause = true;
             absorbInputAroundWindow = true;
             layer = WindowLayer.SubSuper;
+            CompletedAndClose = false;
+
+            if (WindowsTitle == null) WindowsTitle = "Wait before playing online...".NeedTranslate(); // Подождите перед сетевой игрой
         }
 
         public override void PreOpen()
@@ -49,6 +55,13 @@ namespace RimWorldOnlineCity.UI
 
         public override void DoWindowContents(Rect inRect)
         {
+            if (CompletedAndClose)
+            {
+                CompletedAndClose = false;
+                Close();
+                return;
+            }
+
             const float mainListingSpacing = 6f;
 
             var btnSize = new Vector2(140f, 40f);
@@ -64,15 +77,23 @@ namespace RimWorldOnlineCity.UI
             mainListing.verticalSpacing = mainListingSpacing;
             mainListing.Begin(inRect);
             Text.Font = GameFont.Medium;
-            mainListing.Label(WindowTitle);
+            mainListing.Label(WindowsTitle);
 
             Text.Font = GameFont.Small;
             mainListing.GapLine();
             mainListing.Gap();
 
+            mainListing.Label(Title);
+            mainListing.Gap();
+
             var textEditSize = new Vector2(150f, 25f);
             var rect = new Rect(0, 70f, inRect.width, textEditSize.y);
             mainListing.Label(HashStatus, -1f, null);
+            mainListing.Gap();
+
+            if (SummaryList != null)
+                mainListing.Label("Complete:".NeedTranslate() + Environment.NewLine + string.Join(Environment.NewLine, SummaryList));
+
             if (NeedFocus)
             {
                 NeedFocus = false;
