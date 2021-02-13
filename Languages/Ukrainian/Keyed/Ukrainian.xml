@@ -281,6 +281,9 @@
 	<OC_Incidents_OCIncident_NotEnoughGold>Необходимого золота {0} достаточно</OC_Incidents_OCIncident_NotEnoughGold>
 	<OC_Incidents_OCIncident_GoldPay>Необходимое золото {0} заплатили наёмникам</OC_Incidents_OCIncident_GoldPay>
 
+	<OC_Incidents_Raid_Warning_label>Серьёзная угроза!</OC_Incidents_Raid_Warning_label>
+	<OC_Incidents_Raid_Warning_Text_human>Ваши колонисты взволнованы! Замечено приближение огромного количества вооруженных людей от другого игрока! Они прибудут через 10-14 часов. Возможно следует обратиться к союзникам за помощью</OC_Incidents_Raid_Warning_Text_human>
+	<OC_Incidents_Raid_Warning_Text_mech>Ваши колонисты в ужасе! Замечено приближение большой группы мехов от другого игрока! Они прибудут через 10-14 часов. Шансы на выживание крайне низкие, необходима поддержка союзников</OC_Incidents_Raid_Warning_Text_mech>
 	<OC_Incidents_Raid_Label>Охотники за головами!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>К вашему поселению подходят наёмники</OC_Incidents_Raid_Text>
 	<OC_Incidents_Acid_Label>Хим атака!</OC_Incidents_Acid_Label>
