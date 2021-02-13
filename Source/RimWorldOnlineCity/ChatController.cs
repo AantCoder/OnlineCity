@@ -27,6 +27,28 @@ namespace RimWorldOnlineCity
             connect.OnPostingChatBefore = Before;
         }
 
+        public static string ServerCharTranslate(string textChat)
+        {
+            int pos = 0;
+            var clonSpace = textChat.Replace('\r', ' ').Replace('\n', ' ').Replace('\t', ' ').Replace(',', ' ').Replace('.', ' ') + " ";
+            while ((pos = textChat.IndexOf("OC_", pos)) >= 0)
+            {
+                var ep = clonSpace.IndexOf(" ", pos);
+                var sub = textChat.Substring(pos, ep - pos);
+                var tr = sub.Translate().ToString();
+                if (!tr.StartsWith("OC_"))
+                {
+                    clonSpace = clonSpace.Replace(sub, tr);
+                    textChat = textChat.Replace(sub, tr);
+                    pos += tr.Length;
+                }
+                else
+                    pos++;
+            }
+
+            return textChat;
+        }
+
         /// <summary>
         /// Перед отправкой сообщения в игровой чат
         /// </summary>

@@ -2,6 +2,7 @@
 using OCUnion;
 using RimWorld;
 using RimWorld.Planet;
+using RimWorldOnlineCity.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +22,10 @@ namespace RimWorldOnlineCity
         public static void OnMainMenuNetClick()
         {
             if (SessionClientController.ClientFileCheckers == null || SessionClientController.ClientFileCheckers.Any(x => x == null))
-            { return; }
+            {
+                Find.WindowStack.Add(new UpdateModsWindow());
+                return; 
+            }
 
             Find.WindowStack.Add(new Dialog_LoginForm());
         }
@@ -135,7 +139,6 @@ namespace RimWorldOnlineCity
             }
             
             if (Inited) return;
-            Task.Factory.StartNew(() => SessionClientController.CalculateHash());
             Inited = true;
             SessionClientController.Init();
         }

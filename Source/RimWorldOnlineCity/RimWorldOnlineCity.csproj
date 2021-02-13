@@ -109,7 +109,7 @@
   <ItemGroup>
     <Compile Include="ChatController.cs" />
     <Compile Include="ClientHashCheck\ClientFileCheckerFactory.cs" />
-    <Compile Include="ClientHashCheck\IClientFileChecker.cs" />
+    <Compile Include="ClientHashCheck\ClientFileChecker.cs" />
     <Compile Include="GameClasses\Harmony\GameSaveLoadInMem.cs" />
     <Compile Include="GameClasses\Incident\IncidentAcid.cs" />
     <Compile Include="GameClasses\Incident\IncidentBombing.cs" />
