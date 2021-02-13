@@ -688,7 +688,7 @@ namespace RimWorldOnlineCity
                 TimerReconnect = new WorkTimer();
 
                 var connect = SessionClient.Get;
-                var serverInfo = connect.GetInfo(ServerInfoType.Full);
+                ModelInfo serverInfo = connect.GetInfo(ServerInfoType.Full);
                 ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
                 SetFullInfo(serverInfo);
 
@@ -702,12 +702,31 @@ namespace RimWorldOnlineCity
                     + " DisableDevMode=" + Data.DisableDevMode);
                 Loger.Log("Client Grants=" + serverInfo.My.Grants.ToString());
 
-                if (serverInfo.IsModsWhitelisted && !CheckFiles())
+                if (!serverInfo.IsModsWhitelisted)
+                {
+                    InitConnectedPart2(serverInfo, true);
+                    return;
+                }
+
+                CheckFiles((checkFiles) => InitConnectedPart2(serverInfo, checkFiles));
+
+            }
+            catch (Exception ext)
+            {
+                Loger.Log("Exception InitConnected: " + ext.ToString());
+            }
+        }
+
+        private static void InitConnectedPart2(ModelInfo serverInfo, bool checkFiles)
+        {
+            try
+            {
+                if (!checkFiles)
                 {
                     var msg = "OCity_SessionCC_FilesUpdated".Translate() + Environment.NewLine
-                         + (UpdateModsWindow.SummaryList == null ? "" 
-                            : Environment.NewLine 
-                                + "Complete:".NeedTranslate() + Environment.NewLine 
+                         + (UpdateModsWindow.SummaryList == null ? ""
+                            : Environment.NewLine
+                                + "Complete:".NeedTranslate() + Environment.NewLine
                                 + string.Join(Environment.NewLine, UpdateModsWindow.SummaryList));
                     //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
                     Disconnected(msg, () => ModsConfig.RestartFromChangedMods());
@@ -759,7 +778,7 @@ namespace RimWorldOnlineCity
             }
             catch (Exception ext)
             {
-                Loger.Log("Exception InitConnected: " + ext.ToString());
+                Loger.Log("Exception InitConnectedPart2: " + ext.ToString());
             }
         }
 
@@ -883,27 +902,42 @@ namespace RimWorldOnlineCity
             return worldObject;
         }
 
-        public static bool CheckFiles()
+        public static void CheckFiles(Action<bool> done)
         {
             if (ClientFileCheckers == null || ClientFileCheckers.Any(x => x == null))
             {
-                return false;
+                done(false);
+                return;
             }
 
-            Find.WindowStack.Add(new UpdateModsWindow());
-
-            var fc = new ClientHashChecker(SessionClient.Get);
-            var approveModList = true;
-            foreach (var clientFileChecker in ClientFileCheckers)
+            var form = new UpdateModsWindow()
             {
-                var res = (int)fc.GenerateRequestAndDoJob(clientFileChecker);
-                approveModList = approveModList && ((int)res == 0);
-            }
+                doCloseX = false
+            };
+            Find.WindowStack.Add(form);
+            form.HideOK = true;
 
-            UpdateModsWindow.Title = $"Check files from Server is Completed. Close Window . . .";
-            UpdateModsWindow.CompletedAndClose = true;
+            Task.Factory.StartNew(() =>
+            {
+                UpdateModsWindow.Title = "Скачивание обновлений".NeedTranslate();
 
-            return approveModList;
+                var fc = new ClientHashChecker(SessionClient.Get);
+                var approveModList = true;
+                foreach (var clientFileChecker in ClientFileCheckers)
+                {
+                    var res = (int)fc.GenerateRequestAndDoJob(clientFileChecker);
+                    approveModList = approveModList && ((int)res == 0);
+                }
+
+                UpdateModsWindow.Title = $"Check files from Server is Completed. Close Window . . .";
+                UpdateModsWindow.CompletedAndClose = true;
+
+                form.OnCloseed = () =>
+                { 
+                    done(approveModList);
+                };
+            });
+
         }
 
         public static Page GetFirstConfigPage()
