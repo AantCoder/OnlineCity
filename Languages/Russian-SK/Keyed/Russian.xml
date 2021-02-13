@@ -276,6 +276,7 @@
 	<OC_Incidents_OCIncident_GoldErr>Недостаточно золота {0} из {1}, нехватает {2}</OC_Incidents_OCIncident_GoldErr>
 	<OC_Incidents_OCIncident_NotEnoughGold>Необходимого золота {0} достаточно</OC_Incidents_OCIncident_NotEnoughGold>
 	<OC_Incidents_OCIncident_GoldPay>Необходимое золото {0} заплатили наёмникам</OC_Incidents_OCIncident_GoldPay>
+	<OC_Incident_Atacker>За этим стоит:</OC_Incident_Atacker>
 
 	<OC_Incidents_Raid_Warning_label>Серьёзная угроза!</OC_Incidents_Raid_Warning_label>
 	<OC_Incidents_Raid_Warning_Text_human>Ваши колонисты взволнованы! Замечено приближение огромного количества вооруженных людей от другого игрока! Они прибудут через 10-14 часов. Возможно следует обратиться к союзникам за помощью</OC_Incidents_Raid_Warning_Text_human>

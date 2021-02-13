@@ -151,6 +151,7 @@ namespace RimWorldOnlineCity
             incident.arrivalMode = mail.IncidentArrivalMode;
             incident.strategy = mail.IncidentStrategy;
             incident.faction = mail.IncidentFaction;
+            incident.attacker = mail.From.Login;
             incident.place = GetPlace(mail);
             incident.TryExecuteEvent();
 

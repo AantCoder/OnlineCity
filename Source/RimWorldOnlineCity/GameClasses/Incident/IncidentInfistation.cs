@@ -28,7 +28,7 @@ namespace RimWorldOnlineCity
 
             parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, target);
             parms.customLetterLabel = "OC_Incidents_Inf_Label".Translate();
-            parms.customLetterText = "OC_Incidents_Inf_Text".Translate();
+            parms.customLetterText = "OC_Incidents_Inf_Text".Translate() + ". " + "OC_Incident_Atacker".Translate() + " " + attacker;
             parms.forced = true;  //игнорировать все условия для события
             parms.faction = Find.FactionManager.OfInsects;
             parms.target = target;
