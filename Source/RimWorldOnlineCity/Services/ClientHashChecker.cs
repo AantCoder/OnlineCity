@@ -59,14 +59,17 @@ namespace RimWorldOnlineCity.Services
                 {
                     if (totalSize == 0) totalSize = res.TotalSize;
                     downloadSize += res.Files.Sum(f => f.Size);
-                    Loger.Log($"Files that need for a change:");
-                    var pr = downloadSize * 100 / totalSize; if (pr > 100) pr = 100;
+                    Loger.Log($"Files that need for a change: {downloadSize}/{totalSize} count={res.Files}");
+                    var pr = downloadSize > totalSize || totalSize == 0 ? 100 : downloadSize * 100 / totalSize;
                     UpdateModsWindow.HashStatus = "OC_Hash_Downloading_Finish".Translate()
                         + pr.ToString() + "%";
 
                     result = result | ApproveLoadWorldReason.ModsFilesFail;
+                    //Loger.Log("TTTTT 0");
                     FileChecker.FileSynchronization(clientFileChecker.Folder, res);
+                    //Loger.Log("TTTTT 1");
                     clientFileChecker.RecalculateHash(res.Files.Select(f => f.FileName).ToList());
+                    //Loger.Log("TTTTT 2");
 
                     var addList = res.Files
                         .Select(f => f.FileName)

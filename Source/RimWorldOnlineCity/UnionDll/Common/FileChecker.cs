@@ -39,29 +39,53 @@ namespace OCUnion.Common
             }
         }
 
-        private static void getCheckSum(ModelFileInfo mfi, string fileName, FastComputeHash computeHash)
+        private static void GetCheckSum(ModelFileInfo mfi, string fileName, FastComputeHash computeHash)
         {
-            if (computeHash.ReadFile != null) computeHash.ReadFile.Wait();
+            try
+            {
+                if (computeHash.ReadFile != null) computeHash.ReadFile.Wait();
 
-            computeHash.ReadFile = Task.Run(() =>
-            {
-                var fileData = File.ReadAllBytes(fileName);
-                mfi.Size = fileData.Length;
-                return fileData;
-            });
-            computeHash.GetHash = computeHash.ReadFile.ContinueWith((task) =>
-            {
+                computeHash.ReadFile = Task.Run(() =>
+                {
+                    try
+                    {
+                        if (!File.Exists(fileName)) return null;
+                        var fileData = File.ReadAllBytes(fileName);
+                        mfi.Size = fileData.Length;
+                        return fileData;
+                    }
+                    catch (Exception exp)
+                    {
+                        ExceptionUtil.ExceptionLog(exp, "GetCheckSum 2 " + fileName);
+                    }
+                    return null;
+                });
+                computeHash.GetHash = computeHash.ReadFile.ContinueWith((task) =>
+                {
+                    try
+                    {
+                        if (task.Result == null) mfi.Hash = null;
+                        var sha = SHA512.Create();
+                        mfi.Hash = sha.ComputeHash(task.Result);
+                    }
+                    catch(Exception exp)
+                    {
+                        ExceptionUtil.ExceptionLog(exp, "GetCheckSum 3 " + fileName);
+                    }
+                });
+
+                /*
                 var sha = SHA512.Create();
-                mfi.Hash = sha.ComputeHash(task.Result);
-            });
-
-            /*
-            var sha = SHA512.Create();
-            using (var fs = new FileStream(fileName, FileMode.Open))
-            {
-                return sha.ComputeHash(fileData);
+                using (var fs = new FileStream(fileName, FileMode.Open))
+                {
+                    return sha.ComputeHash(fileData);
+                }
+                */
             }
-            */
+            catch(Exception exp)
+            {
+                ExceptionUtil.ExceptionLog(exp, "GetCheckSum 1 " + fileName);
+            }
         }
 
         public static void FileSynchronization(string modsDir, ModelModsFiles serverFiles)
@@ -189,7 +213,7 @@ namespace OCUnion.Common
                 {
                     FileName = file.Substring(fileNamePos)
                 };
-                getCheckSum(mfi, file, computeHash);
+                GetCheckSum(mfi, file, computeHash);
 #if DEBUG
                 /*
                 if (mfi.FileName.Contains("armony"))
@@ -220,13 +244,23 @@ namespace OCUnion.Common
                 var file = Path.Combine(folder, fileName);
                 var oldHash = mfi.Hash;
 
-                //if (MainHelper.DebugMode) Loger.Log($"ReHashFile b {file} {(oldHash == null ? "" : Convert.ToBase64String(oldHash))}" + $"->{(mfi.Hash == null ? "" : Convert.ToBase64String(mfi.Hash))}");
+                //if (MainHelper.DebugMode)  
+                Loger.Log($"ReHashFile b {file} {(oldHash == null ? "" : Convert.ToBase64String(oldHash))}" + $"->{(mfi.Hash == null ? "" : Convert.ToBase64String(mfi.Hash))}");
 
-                getCheckSum(mfi, file, computeHash);
+                GetCheckSum(mfi, file, computeHash);
 
-                //if (MainHelper.DebugMode) Loger.Log($"ReHashFile e {file} {(oldHash == null ? "" : Convert.ToBase64String(oldHash))}" + $"->{(mfi.Hash == null ? "" : Convert.ToBase64String(mfi.Hash))}");
+                //if (MainHelper.DebugMode)  
+                Loger.Log($"ReHashFile e {file} {(oldHash == null ? "" : Convert.ToBase64String(oldHash))}" + $"->{(mfi.Hash == null ? "" : Convert.ToBase64String(mfi.Hash))}");
             }
             computeHash.Wait();
+
+            for (int i = 0; i < rep.Count; i++)
+            {
+                if (rep[i].Hash == null)
+                {
+                    rep.RemoveAt(i--);
+                }
+            }
         }
 
         private static bool ApproveExt(string fileName)
