@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OCUnion</RootNamespace>
     <AssemblyName>OCUnion</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -65,7 +65,7 @@
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="AttackUtils.cs" />
     <Compile Include="ClientData.cs" />
+    <Compile Include="Common\ChatUtils.cs" />
     <Compile Include="Common\FileChecker.cs" />
     <Compile Include="Common\Grants.cs" />
     <Compile Include="ExceptionUtil.cs" />
@@ -85,10 +86,19 @@
     <Compile Include="Loger.cs" />
     <Compile Include="Transfer\ConnectSaver.cs" />
     <Compile Include="Transfer\FolderTree.cs" />
+    <Compile Include="Transfer\ModelGameServerInfo.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMail.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailAttackCancel.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailAttackTechnicalVictory.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailDeleteWO.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailMessadge.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailStartIncident.cs" />
     <Compile Include="Transfer\Model\AttackCorpse.cs" />
     <Compile Include="Transfer\Model\IPlayerEx.cs" />
     <Compile Include="Transfer\Model\ModelFileInfo.cs" />
     <Compile Include="Transfer\Model\ModelPlayerInfo.cs" />
+    <Compile Include="Transfer\Model\WorldObjectOnline.cs" />
+    <Compile Include="Transfer\ServerGeneralSettings.cs" />
     <Compile Include="Transfer\Types\ApproveLoadWorldReason.cs" />
     <Compile Include="Transfer\Types\DisconnectReason.cs" />
     <Compile Include="Transfer\ModelGuid.cs" />
@@ -123,7 +133,7 @@
     <Compile Include="Transfer\ModelInfo.cs" />
     <Compile Include="Transfer\ModelInt.cs" />
     <Compile Include="Transfer\ModelLogin.cs" />
-    <Compile Include="Transfer\ModelMailTrade.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailTrade.cs" />
     <Compile Include="Transfer\ModelPlayToServer.cs" />
     <Compile Include="Transfer\ModelPlayToClient.cs" />
     <Compile Include="Transfer\ModelPostingChat.cs" />
@@ -138,6 +148,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

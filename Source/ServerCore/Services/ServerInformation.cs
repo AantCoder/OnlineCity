@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using OCUnion;
 using OCUnion.Transfer;
+using OCUnion.Transfer.Model;
 using ServerCore.Model;
 using ServerOnlineCity.Model;
 using Transfer;
@@ -14,9 +15,9 @@ namespace ServerOnlineCity.Services
 {
     internal sealed class ServerInformation : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 5;
+        public int RequestTypePackage => (int)PackageType.Request5UserInfo;
 
-        public int ResponseTypePackage => 6;
+        public int ResponseTypePackage => (int)PackageType.Response6UserInfo;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
@@ -32,13 +33,13 @@ namespace ServerOnlineCity.Services
             {
                 switch (packet.Value)
                 {
-                    case 1:
+                    case (long)ServerInfoType.Full:
                         {
                             var result = GetModelInfo(context.Player);
                             return result;
                         }
 
-                    case 3:
+                    case (long)ServerInfoType.SendSave:
                         {
                             var result = new ModelInfo();
                             //передача файла игры, для загрузки WorldLoad();
@@ -56,12 +57,38 @@ namespace ServerOnlineCity.Services
                                 }
                             }
 
-                            Loger.Log($"Load World for {context.Player.Public.Login}");
                             result.SaveFileData = Repository.GetSaveData.LoadPlayerData(context.Player.Public.Login, 1);
+
+                            if (result.SaveFileData != null)
+                            {
+                                if (context.Player.MailsConfirmationSave.Count > 0)
+                                {
+                                    for (int i = 0; i < context.Player.MailsConfirmationSave.Count; i++) 
+                                        context.Player.MailsConfirmationSave[i].NeedSaveGame = false;
+
+                                    Loger.Log($"MailsConfirmationSave add {context.Player.MailsConfirmationSave.Count} (mails={context.Player.Mails.Count})");
+                                    //Ого! Игрок не сохранился после приема письма, с обязательным сохранением после получения
+                                    //Отправляем письма ещё раз
+                                    if (context.Player.Mails.Count == 0)
+                                    {
+                                        context.Player.Mails = context.Player.MailsConfirmationSave.ToList();
+                                    }
+                                    else
+                                    {
+                                        var ms = context.Player.MailsConfirmationSave
+                                            .Where(mcs => context.Player.Mails.Any(m => m.GetHashBase() != mcs.GetHashBase()))
+                                            .ToList();
+                                        context.Player.Mails.AddRange(ms);
+                                    }
+                                    Loger.Log($"MailsConfirmationSave (mails={context.Player.Mails.Count})");
+                                }
+                            }
+                            Loger.Log($"Load World for {context.Player.Public.Login}. (mails={context.Player.Mails.Count}, fMails={context.Player.FunctionMails.Count})");
+
                             return result;
                         }
 
-                    case 4:
+                    case (long)ServerInfoType.FullWithDescription:
                         {
                             var result = GetModelInfo(context.Player);
                             //result.Description = "";
@@ -92,6 +119,7 @@ namespace ServerOnlineCity.Services
                             //result.Description = sb.ToString();
                             return result;
                         }
+                    case (long)ServerInfoType.Short:
                     default:
                         {
                             // краткая (зарезервированно, пока не используется) fullInfo = false
@@ -113,6 +141,7 @@ namespace ServerOnlineCity.Services
                 VersionInfo = MainHelper.VersionInfo,
                 VersionNum = MainHelper.VersionNum,
                 Seed = data.WorldSeed ?? "",
+                ScenarioName = data.WorldScenarioName,
                 MapSize = data.WorldMapSize,
                 PlanetCoverage = data.WorldPlanetCoverage,
                 Difficulty = data.WorldDifficulty,
@@ -125,6 +154,8 @@ namespace ServerOnlineCity.Services
                 MinutesIntervalBetweenPVP = ServerManager.ServerSettings.MinutesIntervalBetweenPVP,
                 EnableFileLog = player.SettingEnableFileLog,
                 TimeChangeEnablePVP = player.TimeChangeEnablePVP,
+                GeneralSettings = ServerManager.ServerSettings.GeneralSettings,
+                ProtectingNovice = ServerManager.ServerSettings.ProtectingNovice,
             };
 
             return result;

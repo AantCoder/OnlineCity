@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
 	<!-- MainMenu.cs -->
@@ -25,6 +25,7 @@
 	<OCity_Caravan_PlayerAttackCost>The maximum price of attackers: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>Решта вантажопідйомності: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Обмін товарами з {0}</OCity_Caravan_Trade>
+	<OCity_Caravan_Abort>Вам нет года или стоимость меньше</OCity_Caravan_Abort>
 	<!-- Kor -->
 	<OCity_Caravan_Attack>Attack {0}</OCity_Caravan_Attack>
 
@@ -43,6 +44,17 @@
 	<!-- OnlineCity_ClientData.cs -->
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
 	<OCity_ClientData_Chat>Чат </OCity_ClientData_Chat>
+	
+	<!-- OnlineCity_Hash_Checker -->
+	<OC_Hash_CalculateLocalFiles>Вычисление хэша локальных данных</OC_Hash_CalculateLocalFiles>
+	<OC_Hash_CalculateFor>Вычисление хэша для: </OC_Hash_CalculateFor>
+	<OC_Hash_CalculateComplete>Вычисление хэша завершено</OC_Hash_CalculateComplete>
+	<OC_Hash_CalculateConfFile>Mods Config files: </OC_Hash_CalculateConfFile>
+	<OC_Hash_Complete>Завершено:</OC_Hash_Complete>
+	<OC_Hash_Downloading>Скачивание обновлений модов...</OC_Hash_Downloading>
+	<OC_Hash_Downloading_Finish>Загружено </OC_Hash_Downloading_Finish>
+	<OC_Mods_Wait>Подождите перед запуском онлайна...</OC_Mods_Wait>
+	<OC_Mods_Complete>Завершено:</OC_Mods_Complete>
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
@@ -85,9 +97,11 @@
 	<OCity_Dialog_CreateWorld_Err2>Невірно заповнені параметри</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Відміна</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Зерно</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_Difficulty>Складність. Ціле вид 0 (дуже просто) до 2 (складно)</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_ScenarioErr>Please select a Scenario</OCity_Dialog_CreateWorld_ScenarioErr>
+	<OCity_Dialog_CreateWorld_Scenario>Select Scenario</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Difficulty>Select Difficulty</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Розмір карти місцевості (200 - мала, 400 - величезна)</OCity_Dialog_CreateWorld_MapSize>
-	<OCity_Dialog_CreateWorld_PercentWorld>Відсоток генерації поверхні планети (від 5 до 100)</OCity_Dialog_CreateWorld_PercentWorld>
+	<OCity_Dialog_CreateWorld_PercentWorld>Відсоток генерації поверхні планети (від 5 до 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>Вхід</OCity_LoginForm_BtnEnter>
@@ -97,6 +111,9 @@
 	<OCity_LoginForm_Server>Сервер:</OCity_LoginForm_Server>
 	<OCity_LoginForm_Login>Логін:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>Пароль:</OCity_LoginForm_Pass>
+	<OCity_LoginForm_Err1>Пароль и подтверждение отличаются</OCity_LoginForm_Err1>
+	<OCity_LoginForm_Err2>Адрес, логин и пароль должны быть длинной не менее двух символов</OCity_LoginForm_Err2>
+	<OCity_LoginForm_Mail>Почта (не обязательно)</OCity_LoginForm_Mail>
 
 	<!-- SessionClientController.cs -->
 	<OCity_SessionCC_ConnectionFailTitle>З'еднання не встановлено</OCity_SessionCC_ConnectionFailTitle>
@@ -257,6 +274,73 @@
 	<OCity_GameAttack_Host_Atack_Repulsed>You repulsed that attack! :)</OCity_GameAttack_Host_Atack_Repulsed>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>The enemies who couldn't get away will stay on the map, but they've lost touch with their commander.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
+	<!-- OCMessadge -->
+	<OC_IncdidentMessadge_ArgErr>Необходимы 3 аргументы: имя, заголовок, текст</OC_IncdidentMessadge_ArgErr>
+	<OC_IncdidentMessadge_targetErr>Вы не можете указать себя</OC_IncdidentMessadge_targetErr>
+	<OC_IncdidentMessadge_typeErr>Ошибка типа сообщения</OC_IncdidentMessadge_typeErr>
+
+	<!-- OCIncidents -->
+	<OC_Incidents_CallIncidents_Err1>Укажите тип инциндента и игрока, для некоторых действий возможны дополнительные параметры</OC_Incidents_CallIncidents_Err1>
+	<OC_Incidents_CallIncidents_TypeErr>Укажите допустимый тип инциндента</OC_Incidents_CallIncidents_TypeErr>
+	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Достигнуто максимальное количество инциндентов для этого игрока за час</OC_Incidents_CallIncidents_MaxIncidentsInHour>
+	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Достигнуто максимальное количество инциндентов для этого игрока</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+	<OC_Incidents_CallIncidents_NotShooted>Ваш прошлый инциндент для этого игрока ещё не сработал</OC_Incidents_CallIncidents_NotShooted>
+	<OC_Incidents_IncidentsTurnedOFF>Инцинденты отключены на этом сервере</OC_Incidents_IncidentsTurnedOFF>
+	<OC_Incidents_CallIncidebts_selfErr>Нельзя указывать самого себя</OC_Incidents_CallIncidebts_selfErr>
+	<OC_Incidents_CallIncidebts_YearErr1>Нападать можно после 2х лет своего развития</OC_Incidents_CallIncidebts_YearErr1>
+	<OC_Incidents_CallIncidebts_YearErr2>Нападать можно после 2х лет развития цели нападения</OC_Incidents_CallIncidebts_YearErr2>
+	<OC_Incidents_CallIncidebts_CostErr1>У вас слишком маленькая стоимость поселения</OC_Incidents_CallIncidebts_CostErr1>
+	<OC_Incidents_CallIncidebts_CostErr2>У цели нападения слишком маленькая стоимость поселения</OC_Incidents_CallIncidebts_CostErr2>
+	<OC_Incidents_OCIncident_WrongArg>Неверно заданы аргументы</OC_Incidents_OCIncident_WrongArg>
+	<OC_Incidents_OCIncident_WealthErr>Ошибка определения стоимости</OC_Incidents_OCIncident_WealthErr>
+	<OC_Incidents_OCIncident_GoldErr>Недостаточно золота {0} из {1}, нехватает {2}</OC_Incidents_OCIncident_GoldErr>
+	<OC_Incidents_OCIncident_NotEnoughGold>Необходимого золота {0} достаточно</OC_Incidents_OCIncident_NotEnoughGold>
+	<OC_Incidents_OCIncident_GoldPay>Необходимое золото {0} заплатили наёмникам</OC_Incidents_OCIncident_GoldPay>
+	<OC_Incident_Atacker>За этим стоит:</OC_Incident_Atacker>
+
+	<OC_Incidents_Raid_Warning_label>Серьёзная угроза!</OC_Incidents_Raid_Warning_label>
+	<OC_Incidents_Raid_Warning_Text_human>Ваши колонисты взволнованы! Замечено приближение огромного количества вооруженных людей от другого игрока! Они прибудут через 10-14 часов. Возможно следует обратиться к союзникам за помощью или готовиться к эвакуации</OC_Incidents_Raid_Warning_Text_human>
+	<OC_Incidents_Raid_Warning_Text_mech>Ваши колонисты в ужасе! Замечено приближение большой группы мехов от другого игрока! Они прибудут через 10-14 часов. Шансы на выживание крайне низкие, необходима поддержка союзников. Эвакуация поселения тоже выход</OC_Incidents_Raid_Warning_Text_mech>
+	<OC_Incidents_Raid_Label>Охотники за головами!</OC_Incidents_Raid_Label>
+	<OC_Incidents_Raid_Text>К вашему поселению подходят наёмники</OC_Incidents_Raid_Text>
+	<OC_Incidents_Acid_Label>Хим атака!</OC_Incidents_Acid_Label>
+	<OC_Incidents_Acid_Text>Над вашим поселением распылили токсичный газ</OC_Incidents_Acid_Text>
+	<OC_Incidents_Inf_Label>Жуки!</OC_Incidents_Inf_Label>
+	<OC_Incidents_Inf_Text>Кто-то приманил жуков на поверхность с помощью высокочастотных вибраций</OC_Incidents_Inf_Text>
+	<OC_Incidents_EMP_Label>Э.М.И.</OC_Incidents_EMP_Label>
+	<OC_Incidents_EMP_Text>Ваше поселение облучили электро-магнитным импульсом, отключившим всю электронику</OC_Incidents_EMP_Text>
+	<OC_Incidents_Eclipse_Label>Солнечный поглотитель!</OC_Incidents_Eclipse_Label>
+	<OC_Incidents_Eclipse_Text>Над вашим поселением вывели специальный спутник, поглощающий солнечный свет</OC_Incidents_Eclipse_Text>
+	<OC_Incidents_Pack_Label>Боевые звери!</OC_Incidents_Pack_Label>
+	<OC_Incidents_Pack_Text>На ваше поселение спустили стаю животных, доведённых до безумия</OC_Incidents_Pack_Text>
+
+	<!-- OCIncidents UI-->
+	<OC_Incidents_Hire_label>Нанять рейд</OC_Incidents_Hire_label>
+	<OC_Incidents_Impact_label>Воздействие на область</OC_Incidents_Impact_label>
+	<OC_Incidents_Impact_text>Вы нашли учёных, которые могут изменять погодные условия. Пока они готовы сделать только кислотный дождь. За разумную плату</OC_Incidents_Impact_text>
+	<OC_Incidents_Hire_text>Пираты и воинственные аборигены с радостью согласятся поработать за награду. Возможно даже связаться c умельцами из продвинутых поселений, которые могут с помощью особых радиосигналов привлечь рой жуков или механоидов. Чем богаче атакуемое поселение, тем больше денег потребуют наёмники.</OC_Incidents_Hire_text>
+	<OC_Incidents_Execute>Сделать!</OC_Incidents_Execute>
+	<OC_Acid_Rain>Кислотный дождь</OC_Acid_Rain>
+	<OC_What_To_DO>Что делать</OC_What_To_DO>
+	<OC_Raid>Рейд</OC_Raid>
+	<OC_Bugs>Гигантские жуки</OC_Bugs>
+	<OC_Who_Hire>Кого нанять</OC_Who_Hire>
+	<OC_Tribe>Племя</OC_Tribe>
+	<OC_Pirate>Пираты</OC_Pirate>
+	<OC_Mech>Механоиды</OC_Mech>
+	<OC_Arrive>Способ прибытия</OC_Arrive>
+	<OC_Arrive_EdgeWalk>Пешком</OC_Arrive_EdgeWalk>
+	<OC_Arrive_DropCenter>Десант в центр</OC_Arrive_DropCenter>
+	<OC_Arrive_RandomDrop>Равномерный десант</OC_Arrive_RandomDrop>
+	<OC_Raid_Power>Мощность нападения: x{0}</OC_Raid_Power>
+	<OC_Choose_what_to_do>Выберите что сделать</OC_Choose_what_to_do>
+	<OC_Choose_who_hire>Выберите кого нанять</OC_Choose_who_hire>
+	<OC_Choose_arrive>Выберите способ прибытия</OC_Choose_arrive>
+
+	<!-- OC_World_Map-->
+	<OC_Base_Interact>Взаимодействие с {0}</OC_Base_Interact>
+	<OC_Base_InteractWith>Взаимодействие с поселением {0} игрока {1}</OC_Base_InteractWith>
+	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Помилка з'еднання.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>З'еднання перервано</OCity_SCC_DisconnectedShow> -->
@@ -269,161 +353,186 @@
 
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> Автор Василь Іванов aka Aant.</OCity_AboutTabText>
-	<OCity_AboutGeneralText>Greetings, colonizer!
+	<OCity_AboutGeneralText>
+		Greetings, colonizer!
 
-OnlineCity - is a network game module for the RimWorld survival simulator. It allows multiple players to play on the same planet online.
+OnlineCity - представляет из себя модуль сетевой игры для симулятора выживания RimWorld. Он позволяет нескольким игрокам играть на одной планете в режиме онлайн.
 
-After registration, you can create your own settlement and begin to develop alongside other participants. You are given the opportunity to monitor the progress of your neighbors, their settlements and caravans, but most importantly, you can provide each other with quite material assistance by transferring food, medicine, weapons or any other things, including settlers. For example, you can send your doctor to help in difficult times, and arrange for the doctor to be returned back after treatment. To transfer it is necessary only by all the rules of the game to collect a caravan and get to the goal! Also now you can beat off attacks on your settlement and capture the settlements of other players, giving commands to your colonists!
+После регистрации, вы сможете создать свое поселение и начать развиваться бок о бок с другими участниками. Вам дается возможность наблюдать за прогрессом соседей, их поселениями и караванами, но самое главное вы сможете оказывать друг другу вполне материальную помощь, передавая еду, медикаменты, оружие или любые другие вещи, включая поселенцев. Например, можно прислать своего врача, чтобы помочь в трудную минуту, и договориться, чтобы после лечения всех, врача вернули назад. Для передачи необходимо лишь по всем правилам игры собрать караван и добраться до цели! Также теперь вы можете отбивать атаки на своё поселение и захватывать поселения других игроков, отдавая команды своим колонистам!
 
-1. General description
-2. Exchange between players
-3. Attack on player settlements (PVP)
-4. Installing the mod and how to start playing
-5. Additional modifications
-6. Server
-7. Functions of the mod in the game
-8. Possible problems
-9. Other frequently asked questions
+1. Общее описание
+2. Обмен между игроками
+3. Другое взаимодействие
+4. Нападение на поселения игроков (PVP)
+5. Установка мода и как начать играть
+6. Дополнительные модификации
+7. Сервер
+8. Функции мода в игре
+9. Возможные проблемы
+10. Другие часто задаваемые вопросы
 
-1. General description
+1. Общее описание
 
-This mod almost does not change the gameplay. All events, settlements of the NPC and game mechanics for each player are different and are not connected with each other. Thanks to this, the balance of the game, which was conceived by the developers, is not upset. What exactly is changing?
+Данный мод почти не меняет гемплей. Все события, поселения НПЦ и игровые механики у каждого игрока свои и не связаны друг с другом. Благодаря этому не нарушается баланс игры, который был задуман разработчиками. Что именно меняется? 
 
-Your game is saved exclusively to the server and you can get into the network game only by clicking on the Network game button and entering the login and password. Autosaves occur every 15 minutes (can be changed in the settings) and when you exit the game. Important! Do not close the game using Alt-F4 or the operating system, in this case saving upon exit will not work and progress will be rolled back to the moment of the last successful saving. Use the menu to exit. If for one reason or another you want to play this game offline, you can do this by downloading the onlineCityTempLoad file, but your progress cannot be transferred to the server, you can only play offline. If you start the game in any way except by the Network game button, then the mod is completely turned off and does not work.
+Сохранение вашей игры происходит исключительно на сервер и попасть в сетевую игру можно только нажав на кнопку Сетевая игра и введя логин и пароль. Автосохранения происходят каждые 15 минут (можно поменять в настройках) и при выходе из игры. Важно! Не закрывайте игру по Alt-F4 или средствами операционной системы, в этом случае сохранение при выходе не сработает и прогресс откатится на момент последнего успешного сохранения. Для выхода пользуйтесь меню. Если по тем или иным причинам вы захотите поиграть в эту партию офлайн, то это можно сделать загрузив файл onlineCityTempLoad, но ваш прогресс нельзя будет перенести на сервер, можно лишь доиграть в офлайн. Если вы начинаете игру любым способом кроме как по кнопке Сетевая игра, то мод полностью отключается и не работает.
 
-When playing online on the planet, settlements of other players appear. The appearance of the icons approximately shows the wealth of the settlement, and if they are online, the light will be on in the house. By clicking on them you can see what kind of player it is, whether it is online, what is the total cost of people and things in the settlement. Caravans of other players are also displayed.
+При игре онлайн на планете появляются поселения других игроков. Вид иконок примерно показывает богатство поселения, и, если они в сети, в домике будет гореть свет. Нажав на них можно увидеть, что это за игрок, в сети ли он, какая общая стоимость людей и вещей в поселении. Также отображаются и караваны других игроков.
 
-Having equipped your caravan and reaching the settlement or player’s caravan, you can transfer any goods and pawns. In addition, caravans display the weight that they can still take. Transfer is carried out in one direction. That is, if you need to exchange goods, you must first agree on this in the chat and first one player must pass on what is needed, then the other player will give back. If the player is not online, then the goods will be transferred to him when he enters the game.
+Снарядив свой караван и дойдя до поселения или каравана игрока можно передать любые товары и пешки. К тому же у караванов отображается вес, который они ещё могут взять. Передача осуществляется в одну сторону. То есть, если нужно обменяться товарами нужно сначала договориться об этом в чате и сначала должен один игрок передать, то что нужно, потом другой игрок передаст в ответ. Если игрока нет в сети, то товар будет передан ему тогда, когда он войдет в игру.
 
-In the game, by clicking the Online button, you can open chat, settings, and more. On the first tab in the chat you can see a list of all players and those who are online. You can create new channels in the chat and add any players there. By right-clicking on any player, you can select the Information item, and see that the player wrote about himself how much he has been playing, when was the last time, a list of all his colonies and caravans, their value and total wealth.
+В игре по кнопке Онлайн можно открыть чат, настройки и прочее. На первой вкладке в чате можно увидеть список всех игроков и тех, кто в сети. В чате можно создавать новые каналы и добавлять туда любых игроков. Нажав правкой кнопкой по любому игроку можно выбрать пункт Информация, и увидеть, что игрок написал о себе, сколько он уже играет, когда был в последний раз, список всех его колоний и караванов, их стоимость и общее богатство.
 
-For those who want more, you can set the Participate in PVP item on the Settings tab. After that, it will be possible to attack the settlements of players who also have this option turned on, and, of course, if they are also online.
+Для тех кто хочет большего можно на вкладке Настройки установить пункт Участвую в PVP. После этого можно будет нападать на поселения игроков, у которых также включена эта опция, и, конечно, если они также в сети.
 
 
-2. Exchange between players
+2. Обмен между игроками
 
-Transfer between players is possible only from the caravan. To transfer anything you need to select your usual caravan, right-click on the settlement or caravan of another player and select the item Exchange of goods. An intuitive window for selecting the item to transfer opens. You can transfer the player any amount of goods, animals and settlers. You can transfer as many times as you like, even if the player is offline.
+Передача между игроками возможна только с каравана. Для передачи чего-либо вам нужно выделить свой обычный караван, нажать правой кнопкой мыши на поселении или караване другого игрока и выбрать пункт Обмен товарами. Откроется интуитивно понятное окно выбора товара для передачи. Передать можно игроку любое количество товара, животных и поселенцев. Передавать можно сколько угодно раз, даже если игрок не в сети. 
 
-Upon receipt of the transfer, a message will be issued, which will briefly list what is being transmitted and the opportunity to refuse it (in this case things will be destroyed). If the player agrees, then the transferred items will appear in the largest warehouse, in the name of which there are symbols "trad", if there is none, then in the largest warehouse with any name.
+При приёме передачи будет выдано сообщение, где будет кратко перечислено то, что передается и возможность отказаться от этого (в этом случае вещи будут уничтожены). Если игрок согласится, то переданные вещи появятся на самом большом складе, в названии которого есть символы "торг" или "trad", если такого нет, то на самом большом складе с любым названием.
 
-When transferring prisoners there is a nuance. They do not appear immediately in the prison, but in the warehouse in the form of a passive hostile pawn, without weapons that need to be captured and placed in the right prison on their own.
+При передаче заключенных есть нюанс. Они появляются не сразу в тюрьме, а на складе в виде пассивной враждебной пешки, без оружия, которую нужно захватить и поместить в нужную тюрьму самостоятельно.
 
-When the last pawn is transferred, the caravan will be disbanded, and the remaining items will be automatically added to the transfer. But you can leave some kind of animal, so that later an ally could return your colonists to this caravan from one animal.
+При передаче последней пешки караван будет расформирован, а оставшиеся вещи автоматически добавлены к передаче. Но можно оставить какое-нибудь животное, чтобы потом в этот караван из одного животного союзник мог вернуть ваших колонистов.
 
-When a settler is transferred, all his connections with other settlers are lost. So, do not be surprised at easy amnesia when your militants return after helping a neighbor :)
+При передаче поселенца все его связи с другими поселенцами теряются. Так, что не удивляйтесь лёгкой амнезии, когда ваши боевики вернутся после помощи соседу :)
 
-There is an unresolved issue of transferring pawns when using HardcoreSK. Maybe a similar problem will be with some other mods, is not yet known.
+Есть не решенная проблема передачи пешек при использовании HardcoreSK. Может быть, подобная проблема будет с ещё какими-нибудь модами, пока не известно.
 
 
-3. Attack on player settlements (PVP)
+3. Другое взаимодействие
 
-Now, if you want, you can attack a foreign colony with your caravan. You will appear at the edge of the map in a random place. Then you can look at the enemy’s base, be horrified and retreat (all pawns near the edge of the map in this case will go to the caravan). Rob, if something can be carried away with you. Or capture the settlement, killing or knocking down all the enemy pawns.
+Пираты и воинственные аборигены с радостью согласятся поработать за награду. Помимо этого, заплатив нужное количество золота можно вызвать кислотные осадки, натравить жуков, механоидов и прочее. Чтобы вызвать разные события найдите поселение другого игрока на палнете, выделите его, и нажмите на кнопку Взаимодействие.
 
-Your colonists will attack the enemy colony in the form in which it is playing at the moment (of course, it must be online). True, the interiors of the premises will be closed until the doors or walls are broken. The attacking pawns are always in combat mode and accept commands to go to the position, shoot at the target and attack the target closely. They can also throw and pick up weapons, clothes and take or throw something from the inventory, they can also eat or drink something. Actually, the control possibilities end there: it turns out that only the main teams for fighting are available. For example, items such as Activate Artifacts do not work. Pawn behavior settings also do not work, for example, auto-attack is always on. Peaceful skills are not available in battle, that is, if you need to disassemble the wall and you have a wonderful miner, you still have to blow it up with a grenade or shoot from what is. All this, including the capture of pawns, can be done after the settlement is captured.
+Некоторые события могут иметь силу воздействия, например такие как рейды и жуки. Можно удвоить, утроить и т.д. их количество, относительно того, что игра сама генерирует для поселения. Как правило *10 очень сложно пережить даже игрокам со стажем. Цена вызова с увеличением уровня растет нелинейно. Вот общая формула цены за вызов:
 
-We should also say that the attacker manages the situation remotely. Because of what, his orders are executed, but he does not see the process of aiming and shooting. Movements also occur in jerks. It is sad that it did not work out to do everything smoothly. At the moment, I do not see the technical ability to make this mechanism better. In order to slightly compensate for the loss of control, the speed of movement of the pawns of the attacked is halved (the reduction takes effect a minute after the start of the battle in order to have time to take a position).
+(ценность_атакуемого_поселения/100 000)^(2/3) * 100 * сила_воздействия ^(3/2)
 
-To attack, both you and the enemy in the Settings tab should have a checkmark "Participate in PVP". You can change it once a day. Also, for an attack, the value of people, animals and things of your caravan should not exceed a certain cost, which depends on the price of the settlement. If you encounter such a problem, you can split the caravan by removing animals from it or reducing the number of attackers. You can find out the exact cost of your caravan by clicking on your nickname in the chat and selecting the Information item, general information and information will be opened for each settlement and caravan separately. The server has a setting how many minutes a player cannot be attacked after the last attack. For example, on the official server it is 20 minutes.
+Дополнительно множитель *3, если это вызов жуков. Множитель *2 за вызов пиратов индустриального уровня. Множитель *5 за вызов механоидов.
 
-If either side during the battle leaves the game, this will be tantamount to defeat and the player will lose the colony or the caravan that is attacking. For the other side, only the fact that hostile pawns will passively shoot back under the control of the AI game will change. If the attacker wants to retreat, then he can select the Retreat option in the menu, then those who are closer than 10 cells to any edge of the map will move to the caravan.
+Такде рейд можно вызвать не только пешком с краю карты, но и десантом в центр (цена *1.4), или рассеяным десантом (цена *1.5), при этом стоимость капсул игра также вычтет из общей стоимости рейда.
 
-While PVP is in progress, half of the first speed is forcibly set. You can neither pause nor accelerate.
+Данные расчеты могут со временем поменяться, в ходе настройки баланса. Помимо этого на сервере можно задавать общий коэффициент цены и конечной стоимости атакующего рейда. Также можно изменить максимальный коэффициент силы воздействия (по умолчанию *10).
 
-Time of day and climatic conditions are not synchronized. The current ones on the host act (the one being attacked).
+Вызванный рейд придет к цели тогда, когда игрок войдет в игру. Если рейд очень большой (сила больше 50% из возможного выбора), то поселенцы заметят его приближение за полдня. После атаки следующая придет не раньше чем через игровые сутки, а через сколько именно будет рассчитано по следующей формуле:
 
-Tamed animals from the caravan do not participate in the attack: they will appear at the edge of the map and will wait for you to stay or retreat with you.
+1 + сила_воздействия * 0.16666 + 0.03333 * (ценность_атакуемого_поселения/100 000) = дней задержки перед следующем событием
 
+Существует защита новичка: и атакующий игрок и его цель должны иметь игровое время больше двух лет и стоимость поселения больше 100 000.
 
-If interested, here is the exact formula for the maximum price of an attacking caravan:
-4 / (25/1000000 + 10 / colony wealth)
-It turns out, for example, like this: the cost of a colony -> maximum for a caravan
-100,000 -> 32,000
-400,000 -> 80,000
-1,000,000 -> 114,400
-2,000,000 -> 133,332
+События с разных вкладок можно вызывать одновременно. Каждый игрок может вызвать только по 1 событию с каждой вкладке на одного игрока. Но другой игрок также может добавить своё событие на эту же цель: в этом случае они будут вызваны по очереди сохраняя задержки. Общее количество событий в очереди не может превышать 2.
 
 
-There are a couple more issues that an attacker needs to consider.
+4. Нападение на поселения игроков (PVP)
 
-There is always an auto attack, therefore, when a pawn stands, it begins to attack the target chosen by the AI, if the attack command was not given explicitly. Therefore, with a single-shot weapon, you need to be careful.
+Теперь, если вы хотите, то можете напасть на чужую колонию своим караваном. Вы появитесь с краю карты в случайном месте. Далее вы можете посмотреть на базу противника, ужаснуться и отступить (все пешки рядом с краем карты в этом случае перейдут в караван). Пограбить, если что-то можно унести с собой. Или же захватить поселение, убив или повалив все пешки противника.
 
-Occasionally, the command to go may be canceled or even a pawn may be afraid to start "running away" to the edge of the map. Check if pawns continue to execute commands.
+Ваши колонисты нападут на колонию противника в таком виде, в котором он играет на данный момент (конечно, он должен быть онлайн). Правда, внутренности помещений будут закрыты, пока не разбиты двери или стены. Атакующие пешки находятся всегда в боевом режиме и принимают команды идти на позицию, стрелять в цель и атаковать цель вплотную. Также они могут бросить и подобрать оружие, одежду и взять или выбросить что-то из инвентаря, ещё могут что-то съесть или выпить. Собственно на этом возможности управления заканчиваются: получается, доступны только основные команды для ведения боя. Например, такие пункты как Активировать артефакты не работают. Также не работают настройки поведения пешки, например, автоатака всегда включена. Мирные навыки не доступны в бою, то есть, если вам нужно разобрать стену и у вас есть замечательный шахтёр, то всё равно придется её подрывать гранатой или стрелять из того что есть. Всё это, включая захват пешек можно делать после того, как поселение будет захвачено.
 
-Detailed pawn parameters such as inventory, health, needs, etc. are updated less frequently. When changing inventory or changing in health. In this case, the pawn is updated as a whole and the selection drops from it, if it has been allocated.
+Отдельно стоит сказать про то, что атакующий управляет ситуацией удаленно. Из-за чего его приказы выполняются, но он не видит процесс прицеливания и стрельбы. Передвижения также происходят рывками. Печально, что не получилось сделать всё гладко. На данный момент я не вижу технической возможности сделать этот механизм лучше. Чтобы немного скомпенсировать потерю управления, скорость передвижения пешек атакуемого уменьшается в два раза (уменьшение начинает действовать через минуту после начала сражения, чтобы успеть занять позицию).
 
-A target that is slain will not be selected by an auto attack and cannot be beaten closely, if you absolutely want to finish it, then shoot it.
+Для нападения у вас и у противника во вкладке Настройки должна стоять галочка "Участвую в PVP". Сменить её можно раз в сутки. Также для нападения ценность людей, животных и вещей вашего каравана не должна превышать определенной стоимости, которая зависит от цены поселения. Если вы столкнулись с такой проблемой, можете разделить караван, убрав из него животных или уменьшив количество атакующих. Точно узнать стоимость своего каравана можно, нажав в чате на свой ник и выбрав пункт Информация, откроется общая информация и информация по каждому поселению и каравану отдельно. На сервере есть настройка, сколько минут на игрока нельзя нападать после последней атаки. Например, на официальном сервере это 20 минут.
 
-The extreme position on the border of the map is not available due to the patch. The fact is that the AI of the game, seeing that the attacking pawn wants to leave and is already on the edge, immediately removes it. It turns out that things that have fallen to the very edge will be available only after the capture of the colony. There is also a problem associated with this: sometimes, when a pawn is located across the cell from the edge of the map, it gets stuck there and does not respond to commands. It has not yet been possible to fix this, but if this happened, then try to select a pawn and quickly click
+Если какая-либо сторона в процессе сражения выйдет из игры это будет равносильно поражению и игрок потеряет колонию, или караван которым атакует. Для другой стороны изменится только то, что враждебные пешки будут пассивно отстреливаться под управлением ИИ игры. Если атакующий хочет отступить, то он может в меню выбрать пункт Отступить, тогда те, кто находиться ближе 10 клеток к любому краю карты переместятся в караван. 
 
+Пока идет PVP принудительно устанавливается половина первой скорости. Нельзя ни поставить паузу, ни ускорить.
 
-4. Installing the mod and how to start playing
+Время суток и климатические условия не синхронизируются. Действуют текущие на хосте (тот, кого атакуют).
 
-1) Have any RimWorld not lower than 1.1
+Прирученные животные из каравана не участвуют в атаке: они появятся у края карты и будут вас ждать, чтобы остаться или отступить с вами.
 
-2) Download the HugsLib and Harmony mod https://bit.ly/2PQjc6d Or from Workshop https://bit.ly/2KvHtbP
 
-3) Download the OnlineCity mod itself. The latest version is in the discord https://discord.gg/5DzWrnR on the channel #news, or from Workshop https://steamcommunity.com/sharedfiles/filedetails/?id=1908437382
+Если интересно вот точная формула максимальной цены атакующего каравана:
+4 / (25/1000000 + 10/богатство колонии)
+Выходит, например, так: стоимость колонии -> максимум для каравана
+100 000 -> 32 000
+400 000 -> 80 000
+1 000 000 -> 114 400
+2 000 000 -> 133 332
 
-4) Open RimWorld, in “Mods” put a checkmark on Harmony, then Core, HugsLib, and only then other mods and OnlineCity (OnlineCity is best to be the last one). Click the close button. The game must restart.
 
-5) In the main menu, click on the "Network Game" button. If it is not, then either the RimWorld version is not supported or the mod was not enabled correctly.
+Есть ещё пара проблем, которые нужно учитывать атакующему. 
 
-6) Create an account and enter it. Before doing this, make sure that there are no important data in the Mods folder, make a copy of it. The first login or registration on the server may take several minutes, depending on the server settings and Internet speed.
+Всегда действует автоатака, поэтому, когда пешка стоит, она начинает атаковать цель, выбранную ИИ, если не была явно отдана команда атаки. Поэтому с однозарядным оружием нужно быть аккуратным.
 
-7) Select the desired landing site.
+Изредка команда идти может быть отменена или даже пешка может испугаться начать "убегать" к краю карты. Проверяйте, продолжают ли пешки выполнять команды. 
 
-8) Pick / Create your own colonists. If possible, just in case you create in Prepare Carefully, save them.
+Детальные параметры пешки, такие как инвентарь, здоровье, нужды и прочее обновляются реже. При изменении инвентаря или изменении в здоровье. При этом пешка обновляется целиком и с неё падает выделение, если она была выделена.
 
-9) Everything is ready! Welcome to Online City!
+Цель, которая сражена, не будет выбираться автоатакой и её нельзя бить вплотную, если вы непременно хотите добить, то застрелите её.
 
-Additionally, it may be interesting:
+Крайняя позиция на границе карты не доступна, из-за сделанной заплатки. Дело в том, что ИИ игры видя, что атакующая пешка хочет уйти и уже находится на краю, немедленно удаляет её. Получается, что вещи, которые упали на самый край, будут доступны, только после захвата колонии. Также есть связанная с этим проблема: иногда, когда пешка находиться через клетку от края карты, она застревает там и не реагирует на команды. Исправить это пока не получилось, но если это произошло, то попробуйте выделить пешку и быстро нажимать правой кнопкой в стороне от края карты по разным точкам, пока она не начнёт туда двигаться.
 
-In the ModsConfig.xml file, the list of mods should start with
-    <li> brrainz.harmony </li>
-    <li> ludeon.rimworld </li>
-    <li> unlimitedhugs.hugslib </li>
-And end (preferably at the very end):
-    <li> aant.onlinecity </li>
 
-Common problems:
+5. Установка мода и как начать играть
 
-* If your computer can barely handle RimWorld, then keep in mind that with this mod the memory requirement is slightly increased. It is recommended to play on a 64-bit operating system.
+1) Иметь любой RimWorld не ниже 1.1
 
-* The game is poorly stable with poor communication, if it is often torn, problems may occur.
+2) Скачать мод HugsLib и Harmony https://bit.ly/2PQjc6d Или из Workshop https://bit.ly/2KvHtbP
 
-* Check the mod version. This can be done by clicking Network game, and then What’s what, there will be a version in the first line.
+3) Скачать сам мод OnlineCity. Последняя версия лежит в дискорде https://discord.gg/5DzWrnR на канале #новости, или из Workshop https://steamcommunity.com/sharedfiles/filedetails/?id=1908437382
 
-* If it turns out to connect / register, and then the black screen or the game freezes, then try to wait a few minutes
+4) Открыть RimWorld, в "Моды" поставить галочку на Harmony, затем Core, HugsLib, а только потом другие моды и OnlineCity (OnlineCity лучше ставить последним). Нажать кнопку закрыть. Игра должна перезапуститься.
 
-* If you can’t register and writes that such a login is already taken, then try to use more than 3 characters in the username and password, and the login has more Latin letters. Also try just logging in, if you had a failure, then it may have occurred after you were registered.
+5) В главном меню нажать на кнопку "Сетевая Игра". Если её нет, значит или версия RimWorld не поддерживается или мод не был включён правильно.
 
-* No password reset system. You can only start over. The server administrator also does not have this access, but he can delete your settlement to free up space.
+6) Создать аккаунт и войти в него. Перед этим убедитесь, что в папке Mods нет важных данных, сделайте их копию. Первый вход или регистрация на сервере может занять несколько минут, в зависимости от настроек сервера и скорости интернета.
 
-* If all else fails, then try disabling other mods. If this helped, and the game started, then write to us which mod turned out to be incompatible.
+7) Выбрать желаемое место для высадки.
 
+8) Подобрать/Создать своих колонистов. Если есть возможность, то на всякий случай, если создаете в Prepare Carefully, сохраните их.
 
-5. Additional modifications
+9) Все готово! Добро пожаловать в Online City!
 
-On the server there is an exact match mods setting. If it is enabled, the game’s Mods folder and the ModsConfig.xml file will be deleted and downloaded from the server. Be careful, and before entering the server for the first time, make sure that there is nothing valuable in the Mods folder! The presence of DLC Royality is not controlled and will not be downloaded from the server; you must install it yourself if it is required for the game on the server. Make sure you have one if you need one. If it is not needed for the server where you play, then before entering it is better to disable it. If the server does not need it, but you have it, then it will be correctly disabled. Further in the text, it is assumed that the setting is turned off and no synchronization occurs.
+Дополнительно может быть интересно:
 
-If synchronization is turned off, if the OnlineCity mod is not compatible with the version on the server, an error will be generated and you will need to update it yourself. Also turned off synchronization means that different people can have completely different sets of mods.
+В файле ModsConfig.xml список модов должен начинаться с 
+    <li>brrainz.harmony</li>
+    <li>ludeon.rimworld</li>
+    <li>unlimitedhugs.hugslib</li>	
+И заканчиваться (желательно в самый конец):
+    <li>aant.onlinecity</li>
 
-Watch carefully from which mods items to whom you pass. If both of you use the necessary modification, then there should be no problems. In other cases, the result is not predictable. Maybe a special property will simply be lost, or the item will simply disappear (most often this happens), but in some cases the game may completely break down (in this case, do not try to log in again after you have verified that the game is not working, and inform the server administrator, maybe he will be able to restore your previous save).
+Часто возникающие проблемы:
 
-It is also highly recommended not to use modifications that change the landscape: the outline of the seas and mountains. Thus, your settlement for other players may be in the middle of the ocean or may be inaccessible. In any case, it is unpleasant to play on different planets. An exception is if you maintain contact with all players and agree that such mods and their settings will be the same for everyone.
+* Если ваш компьютер едва справляется с RimWorld, то имейте в виду, что с этим модом требование к памяти несколько увеличено. Рекомендуется играть на 64-битной операционной системе.
 
-If you will use the function of attacking players, then carefully read section 3. Attacking player settlements, it also tells about the dependence of additional modifications.
+* Игра плохо устойчива с плохой связью, если она часто рвется, возможны проблемы.
 
-At the moment, there is only one incompatible mod: Save Our Ship 2
+* Проверьте версию мода. Это можно сделать, нажав Сетевая игра, а затем Что к чему, тут будет версия в первой строке.
 
-Potentially, OnlineCity is compatible with any other mods, but, of course, you need to be careful, especially when using large modpacks. It's funny that the mod is even compatible with Zetrith Multiplayer (except, perhaps, the PVP mode was not tested). After all, OnlineCity synchronizes the planet where everyone has their own settlement, and Zetrith Multiplayer is a cooperative of one settlement.
+* Если получается подключиться/зарегистрироваться, а дальше черный экран или игра зависает, то попробуйте подождать несколько минут
 
+* Если не получается зарегистрироваться и пишет, что такой логин уже занят, то попробуйте использовать больше 3х символов в логине и пароле, и в логине больше латинских букв. Также попробуйте просто войти, если у вас был сбой, то, возможно, он возник после того, как вы были зарегистрированы. 
 
-6. Server
+* Нет системы сброса пароля. Можно только начать заново. Администратор сервера также не имеет такого доступа, но он может удалить ваше поселение, чтобы освободить место.
 
-Unzip the archive with the server to any folder. After that, you need to create a subfolder of World, which will store all the game data.
+* Если ничего не помогает, то попробуйте отключить другие моды. Если это помогло, и игра запустилась, то напишите нам, какой мод оказался не совместим.
 
-Create a Settings.json file in the World folder. Here is an example of its contents:
+
+6. Дополнительные модификации
+
+На сервере есть настройка точного соответствия модов. Если она включена, папка Mods игры и файл ModsConfig.xml будут удалены и скачены с сервера. Будьте осторожны и перед входом на сервер первый раз убедитесь, что в папке Mods нет ничего ценного! Наличие DLC Royality не контролируется и не будет скачено с сервера, вы должны его поставить самостоятельно, если на сервере он требуется для игры. Убедитесь, что он у вас есть, если он нужен. Если он не нужен для сервера где вы играете, то перед входом его лучше отключить. Если на сервере он не нужен, а у вас он есть, то он будет корректно отключен. Дальше по тексту подразумевается, что настройка выключена и никакой синхронизации не происходит.
+
+В случае выключенной синхронизации, если мод OnlineCity у вас не совместим с версией на сервере, то будет выдана ошибка, и вам нужно будет самим обновить его. Также выключенная синхронизация означает, что у разных людей могут быть совершенно разные наборы модов.
+
+Очень внимательно следите за тем, из каких модов предметы кому вы передаете. Если вы оба пользуетесь нужной модификацией, то проблем быть не должно. В других случаях результат не предсказуем. Может быть, будет просто утеряно особое свойство, или предмет просто исчезнет (чаще всего происходит это), но в некоторых случаях игра может полностью сломаться (в этм случае не пробуйте заходить лишний раз, после того как вы убедились, что игра не работает, и сообщите администратору сервера, возможно он сможет восстановить ваше предыдущее сохранение). 
+
+Также крайне не рекомендуется пользоваться модификациями, которые меняют ландшафт: очертание морей и гор. Таким образом, ваше поселение для других игроков может оказаться посреди океана или оказаться недоступным. В любом случае неприятно играть на не одинаковых планетах. Исключение, если вы поддерживаете контакт со всеми игроками и договорились, что такие моды и их настройки будут у всех одинаковы.
+
+Если у вы будете использовать функцию нападения на игроков, то внимательно ознакомитесь с разделом 4. Нападение на поселения игроков, там рассказано и про зависимость дополнительных модификаций.
+
+На данный момент не совместимый мод только один: Save Our Ship 2
+
+Потенциально OnlineCity совместим с любыми другими модами, но, конечно, нужно соблюдать осторожность, особенно используя большие модпаки. Забавно, что мод совместим даже с Zetrith Multiplayer (кроме, возможно, режима PVP - не проверялось). Ведь OnlineCity синхронизирует планету, где у каждого своё поселение, а Zetrith Multiplayer это кооператив одного поселения.
+
+
+7. Сервер
+
+Распакуйте архив с сервером в любую папку. После этого нужно создать подпапку World, в которой будут храниться все данные игры.
+
+Создайте в папке World файл Settings.json (его можно открыть простым блокнотом). Вот пример его содержимого:
 
 {
   "ServerName": "OnlineCity Server with modpack",
@@ -431,154 +540,262 @@ Create a Settings.json file in the World folder. Here is an example of its conte
   "Port": 19019,
   "Description": "Official server OnlineCity with modpack",
   "IsModsWhitelisted": true,
-  "DisableDevMode": false,
+  "DisableDevMode": true,
   "MinutesIntervalBetweenPVP": 20,
-  "ModsDirectory": "c:\\CityOnlineTest19019\\Mods"
+  "GeneralSettings": {
+    "EnablePVP": false,
+    "DisableGameSettings": false,
+    "IncidentEnable": true,
+    "IncidentCountInOffline": 2,
+    "IncidentMaxMult": 10,
+    "IncidentTickDelayBetween": 60000,
+    "IncidentCostPrecent": 100,
+    "IncidentPowerPrecent": 100,
+    "EquableWorldObjects": false,
+    "ExchengeEnable": false,
+    "StartGameYear": -1
+  },
+  "ModsDirectory": "C:\\CityOnlineTest19019\\Mods",
+  "ProtectingNovice": true,
+  "DeleteAbandonedSettlements": false,
+  "ModsConfigsDirectoryPath": "C:\\CityOnlineTest19019\\Config\\",
+  "IgnoredLocalConfigFiles": [
+    "KeyPrefs.xml",
+    "Knowledge.xml",
+    "LastPlayedVersion.txt",
+    "Prefs.xml"
+  ],
+  "IgnoredLocalModFiles": [ ]
 }
-ServerName and Description - the name and description of the server, while not used anywhere, is not necessary.
 
-SaveInterval - the frequency in ms at which the server will save new data, if any, it is better not to change the default value of 10000.
+ServerName и Description - имя и описание сервера, пока нигде не используется, не обязательно заполнять.
 
-Port - the most important parameter, the port on which your server is running, by default 19019.
+SaveInterval - частота в ms с которой сервер будет сохранять новые данные при их наличии, лучше не менять значение по умолчанию 10000.
 
-IsModsWhitelisted - if exact mod matching is used, then set to true, otherwise false.
+Port - самый важный параметр, порт на котором работает ваш сервер, по умолчанию 19019.
 
-ModsDirectory - if IsModsWhitelisted is set to true, then there is a folder that will be copied to each client in its Mods folder, otherwise the value is ignored. More details below.
+IsModsWhitelisted - если используется точное соответствие модов, то установить true, иначе false.
 
-DisableDevMode - whether the developer mode will be disabled when players enter online.
+ModsDirectory - если IsModsWhitelisted установлено в истину, то тут папка которая будет скопирована каждому клиенту в его папку Mods, иначе значение игнорируется. Подробнее ниже.
 
-MinutesIntervalBetweenPVP - after an attack on one player by another, he cannot be attacked for a given number of minutes. You can put, for example, 0 or 20.
+ModsConfigsDirectoryPath - если IsModsWhitelisted установлено в истину, то аналогично ModsDirectory следует указать папку с настройками модов. Подробнее ниже.
+
+DisableDevMode - будет ли отключаться режим разработчика, когда игроки заходят онлайн.
+
+MinutesIntervalBetweenPVP - после нападения на одного игрока другим, на него не могут нападать заданное количество минут. Можно поставить, например, 0 или 20.
+
+ProtectingNovice - Защита начинающих игроков от нападения, а также запрет абуза передачи товаров и пешек от новых поселений.
+
+DeleteAbandonedSettlements - Сервер будет автоматически удалять не развитые поселения за которые давно не играют.
+
+GeneralSettings - Иерархия настроек существующая по техническим нуждам, внутри неё настройки также важны как остальные.
+
+EnablePVP - Включить режим нападения игроков друг на друга онлайн с ограниченным управлением
+
+DisableGameSettings - Запретить менять настройки рассказчика и модификаций в игре
+
+IncidentEnable - Разрешены ли инциденты (действия по кнопке Взаимодействие на чужих поселениях)
+
+IncidentCountInOffline - Сколько разрешено инцидентов в очереди (от одного игрока в любом случае только одно)
+
+IncidentMaxMult - Максимальный коэф. силы инцидентов
+
+IncidentTickDelayBetween - Минимальная пауза между инцидентами в тиках (1 день = 60000)
+
+IncidentCostPrecent - Модификатор стоимости найма в процентах
+
+IncidentPowerPrecent - Модификатор силы рейдов в процентах
+
+StartGameYear - Назначит стартовый год в игре вместо 5500
+
+IgnoredLocalConfigFiles - Имена игнорируемых файлов настроек. Остальные будут синхронизированы с папкой на сервере указанной в ModsConfigsDirectoryPath, если IsModsWhitelisted установлено в истину.
+
+IgnoredLocalModFiles - Окончание игнорируемых имен файлов из папки с модами. Остальные будут синхронизированы с папкой на сервере указанной в ModsDirectory, если IsModsWhitelisted установлено в истину. 
+
+EquableWorldObjects - функционал пока не готов, следует удалить строку или поставить false.
+
+ExchengeEnable - функционал пока не готов, следует удалить строку или поставить false.
 
 
-Run ServerOnlineCity.exe. The console should open, which is the server. The output to it is duplicated to the log files in the World folder.
+Перед запуском проверьте, что у вас установлен .NET Core 3.1: https://dotnet.microsoft.com/download/dotnet-core/current/runtime
 
-In order for people to be able to connect to it, you need to open port 19019 (or the one specified in Port).
+Запустите ServerOnlineCity.exe. Должна открыться консоль, которая и является сервером. Вывод в неё дублируется в лог файлы в папке World.
 
-When the server starts up, the "World" folder will be created in the folder with it. The first person to register on the server through the game will be considered an administrator. Special commands and developer mode are available to him, even if he is turned off by the server settings. At the first login / registration, the administrator will be asked to select the world seed, the percentage of the world filled in and the complexity of the game (simple / normal / difficult). The script and the narrator are always the same at startup. After that, the game will take several minutes, after which you will be returned to the main menu. Everything is ready! You can go again and as a regular player to create a settlement.
+Для того, что бы люди могли подключится к нему, нужно открыть порт 19019 (или тот который указан в Port).
 
-In *nix systems, the launch should also occur without problems, because The server is written in .NET Core 3.1.
+Когда сервер запустится, в папке с ним будет создана папка "World". Первый человек, который зарегистрируется на сервере через игру, будет считаться администратором. Ему доступны специальные команды и режим разработчика, даже если он выключен настройками сервера. При первом входе/регистрации администратору будет предложено выбирать сиид мира, заполненость мира в процентах и сложность игры (просто/нормально/сложно). Сценарий и рассказчик всегда одинаковы при старте. После этого, игре понадобиться несколько минут, после чего вас вернёт в главное меню. Всё готово! Можно заходить снова и как обычный игрок создавать поселение.
 
-There is also a Discord bot. You can read about its configuration separately here: https://github.com/AantCoder/OnlineCity/tree/dev/Source/DiscordChatBotServer
+В *nix системах запуск должен происходить также без проблем, т.к. сервер написан на .NET Core 3.1.
+
+Также есть Discord бот. По его настройке можно прочесть отдельно здесь: https://github.com/AantCoder/OnlineCity/tree/dev/Source/DiscordChatBotServer
 
 
-More details on how to configure the mode of exact matching mods.
+Подробнее как настроить режим точного соответствия модов.
 
-To install everything correctly, configure your RimWorld so that all mods are taken from the Mods folder (not a single mod from Steam!). Check that everything works fine in a regular game. And copy your Mods folder to the server.
+Чтобы правильно всё установить настройте свой RimWorld так, чтобы все моды брались из папки Mods (ни одного мода из Steam!). Проверьте, что всё нормально работает в обычной игре. И скопируйте свою папку Mods на сервер. Как минимум у вас должно быть три папки (внутри Mods): Harmony, HugsLib, OnlineCity.
 
-After that, copy the ModsConfig.xml file from the game to the server in the World folder
+После этого скопируйте на сервер в папку World файл ModsConfig.xml из игры 
 %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config
-For example, I have it here:
-"c:\Users\Ant\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config\ModsConfig.xml"
+У меня, например, он лежит тут:
+"c:\Users\Ant\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config\ModsConfig.xml" 
+
+В настройке ModsConfigsDirectoryPath должна указываться папка на сервере, куда нужно скопировать файлы настроек модов. То есть все остальные файлы из той же папки где находиться ModsConfig.xml
 
 
-Some solutions to problems starting your server:
+Некоторые решения при проблемах запуска своего сервере:
 
-1. The server console is open and there are no errors
-2. Try to enter the game from the same computer at localhost
-3. Check that friends are joining at the right IP address (you can google "how to find my IP")
-4. Forward port 19019 in the router (also google "how to open the port")
-5. Verify that the firewall allows the use of connections, or disable it
-6. Verify the version of the mod with the one who is connecting. This can be done by clicking Network game, and What’s what, there will be a version in the first line
-7. The game is poorly stable with poor communication, if it is often torn, problems may occur.
-8. If it turns out to connect / register, and then the black screen, then try to wait 5 minutes
-9. If you are unable to register and writes that such a login is already taken, then try to use more than 3 characters in the login and password, and in the login more Latin letters
-
-
-All player saves are in a subfolder of World\DataPlayers and have the name {player name}.dat {number}
-
-{player name} is the player’s login, but some characters that are not allowed for the file name are replaced with the symbol _
-
-{number} is the save history, 1 is the latest, 2 is the previous, 3 is the oldest
-
-There are also situations when, instead of history, only the file {player name}.dat1 and {player name}.bak remains. This means that a return to a previous save is undesirable. For example, this happens after a player transfers something to another player in order to exclude endless transmission.
-
-How can an administrator help a player?
-
-If you delete the files {player name}.dat *, then the next time you enter the player will be asked to create a new settlement. However, it is better to use the command from the console /killhimplease {UserLogin}
-
-If the player’s save is corrupted, you can delete the file {player name}.dat1 and rename the file {player name}.dat2 or {player name}.dat3 to this name
-
-You can regularly delete settlements of players who have played less than a few gaming days and have not entered for a long time. To do this, in the game you can find their settlements on the map by the icon of the smallest house, click on them, then on the information i. Here you can see the total cost of the settlement (for example, if it is less than 30000) and when the user last visited. If you decide to remove the player, then use the command /killhimplease {UserLogin}
-
-How to make sure that the player is who he claims to be? For example, if a player writes that his preservation is broken, and he asks to remove his settlement. In this case, ask him to try to enter the game right now. Then ask him to send you his logs for today. Then you can find the lines of his login to the server and compare the time with the logs on the server itself (keep in mind that there may be different time zones).
+1. Консоль сервера открыта и в ней нет ошибок
+2. Попробовать с того же компьютера зайти в игру по адресу localhost
+3. Проверить, что друзья присоединяются по нужному IP адресу (можно гуглить "как узнать мой IP")
+4. Пробросить порт 19019 в роутере (также гуглится "как открыть порт")
+5. Проверить, что брандмауэр разрешает использовать подключения, либо отключить его
+6. Сверить версии мода у того, кто подключается. Это можно сделать нажав Сетевая игра, и Что к чему, тут будет версия в первой строке
+7. Игра плохо устойчива с плохой связью, если она часто рвется возможны проблемы
+8. Если получается подключиться/зарегистрироваться, а дальше черный экран, то попробуйте подождать 5 минут
+9. Если не получается зарегистрироваться и пишет, что такой логин уже занят, то попробуйте использовать больше 3х символов в логине и пароле, и в логине больше латинских букв
 
 
-7. Functions of the mod in the game
+Все сохранения игроков лежат в подпапке World\DataPlayers и имеют имя {имя игрока}.dat{номер}
 
-Special commands are written in the chat (usually in any channel), and they will not be displayed in it. All such commands begin with a /
+{имя игрока} - это логин игрока, но некоторые символы недопустимые для имени файла заменяются на символ _
 
-/killmyallplease - removes the save from the server, and all settlements and caravans from the map. Registration remains. At the next call, it will be proposed to create a new settlement. The function can also be called from the About tab by clicking the Start again button.
+{номер} - это история сохранений, 1 - самое последнее, 2 - предыдущее, 3 - самое старое
 
-/killhimplease {UserLogin} - (admin only) is similar to /killmyallplease, but the specified player.
+Также бывают ситуации, когда вместо истории остается только файл {имя игрока}.dat1 и {имя игрока}.bak. Это значит, что возврат к прошлому сохранению нежелателен. Например, так происходит после того, как игрок что-то передал другому игроку, чтобы исключить бесконечную передачу.
 
-/everybodylogoff - (admin only) command for the server to shut down correctly. All online players are given a save and exit command. After calling the team, you need to monitor the server console: as soon as the activity of the players disappears and the server saves the data, the console can be turned off. It is not recommended to start with an active PVP session.
+Как администратор может помочь игроку?
 
-/createchat {Name} - creates a new chat with the specified name, also available in the chat interface
+Если удалить файлы {имя игрока}.dat*, то при следующем входе игроку будет предложено создать новое поселение. Однако лучше для этого воспользоваться командой из консоли /killhimplease {UserLogin}
 
-/addplayer {UserLogin} - adds a player to the current chat, also available in the chat interface
+Если сохранение игрока испортилось, вы можете удалить файл {имя игрока}.dat1 и переименовать в это имя файл {имя игрока}.dat2 или {имя игрока}.dat3
 
-/renamechat {Name} - renames the current chat, also available in the chat interface
+Вы можете регулярно удалять поселения игроков, которые играли меньше нескольких игровых дней и не заходили уже давно. Для этого в игре можно найти их поселения на карте по значку самого маленького домика, нажать на них, затем на информацию i. Здесь можно увидеть общую стоимость поселения (например, если она меньше 30000) и когда пользователь заходил последний раз. Если решено удалить игрока, то воспользуйтесь командой /killhimplease {UserLogin}
+Либо сервер может это делать сам по настройке DeleteAbandonedSettlements.
 
-/exitchat - leaves the current chat, also available in the chat interface
-
-/discord - for details see https://github.com/AantCoder/OnlineCity/tree/dev/Source/DiscordChatBotServer
-
-
-8. Possible problems
-
-If the game crashes (the colony does not load or it is impossible to play due to errors), then you can contact the administrator and ask him to restore the game from the previous save. You can also restart the game under the same account.
-
-There is an unresolved issue of transferring pawns when using HardcoreSK. Maybe a similar problem will be with some other mods, is not yet known.
-
-If you tried to log into the server, but the game showed a message that not all files passed the test, then just go again. This is a normal situation. Or there have been some, possibly minor, changes in the modpack. Either something has changed in the Mods folder or the ModsConfig.xml file has been changed by your game.
-
-After registration and login, mods can be downloaded and saved from the server. Sometimes this can take several minutes, during which the game may freeze or display a black screen. Try to wait up to 10 minutes. In some cases, when you first enter the server with downloading a large modpack with poor Internet speed, this can take a significantly longer time.
-
-If you have already logged in and played on the server with the mods synchronized, then if after restarting the game click on the Mods main menu, then the next time you log into the server, the game will most likely restart. In fact, nothing has changed, but the game after opening the list of mods overwrites ModsConfig.xml and it can change a little. This is normal behavior, just click the Fashion button less often :)
-
-There is a bug that is difficult to catch. Sometimes after transferring a settler to another player, a copy of it (a pawn with the same name, profession and skills) may appear in some event or ask to join the settlement. Do not agree, eyewitnesses say that this is a ghost that crashes the game! :)
+Как убедиться, что игрок тот за кого себя выдает? Например, если игрок пишет, что его сохранение сломалось, и он просит удалить его поселение. В этом случае попросите его попытаться зайти в игру прямо сейчас. Потом попросите, чтобы он прислал вам свои логи за сегодняшний день. Потом можно найти строки его входа на сервер и сравнить время с логами на самом сервере (имейти в виду, что могут быть разные часовые пояса). 
 
 
-9. Other frequently asked questions
+Можно получить общие данные по всем игрокам в консоле, нажав букву S. Будет создан файл Players_дата.csv со списком игроков, временем последнего входа и некоторой игровой информацией. 
 
-> How to choose a game scenario?
-The game scenario cannot be customized, but the narrator and difficulty can be changed immediately after starting through the settings. Initially, the game begins with the narrator Cassandra, a standard scenario of the Classic and the complexity that was set when creating the server.
+Логи сервера создаются автоматически Log_дата.txt, вместе с файлом с инцидентами Incidents_месяц.csv. Здесь отмечается несколько событий на каждый инцидент:
+NewIncident - игрок fromLogin заказал рейд на toLogin
+SendMail - у toLogin прошли все ожидание от прошлых, и пол дня ожидания перед атакой для рейдов и событие непосредственно началось
+DayAfterMail - прошел день после события, в этот момент определяется сколько нужно ждать ещё (или не нужно больше), удобно смотреть сколько рейд нанес урона
+End - окончание ожидания, событие полностью завершено и в этот момент освобождает очередь.
 
-> Is it possible to play together in one settlement?
-You cannot play on one map, except for attacking another player’s settlement, but this is still not direct control. If you need this type of game, try Zetrith Multiplayer
-
-> What happens to others when I pause?
-Nothing :) The course of the game of all participants is independent. Each player on the map has his own game session, in which interaction with foreign settlements and caravans is added. For example, you can pause and see how other people's caravans move on the map (although it’s difficult to get to the time when another player goes by caravan).
-But what an example of interaction may be: at the time of the attack, you can ask for help from a friend and pause the game, at that time he will come up as a caravan and transfer his settlers; after repulsing the attack, you can return the settlers in the same way. Or, for example, the one who came to the rescue can transfer all the pawns except one animal so that the caravan is not disbanded, then it will be possible to return the settlers immediately after repulsion, creating a new caravan from them and transferring them back to the friend’s caravan.
-
-> Game freezes after authorization
-It does not freeze, but it loads, just wait. The loading process can take up to ~ 5 - 10 minutes.
-
-> How to find logs
-Individual OnlineCity logs are written in: %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity (this can be inserted into Explorer)
-
-> How to remove your colony?
-You need to open the Online window through the panel below or through the Menu in the game. Next, on the About Fashion tab, click Start Again.
-The same action can be done by writing the command in the chat: /killmyallplease
-
-> How often is the game saved?
-The game is saved to the server once every 15 minutes, if you have not changed it on the Settings tab, it is also saved when you exit the game through the menu.
-Using ALT + F4, you can roll back your colony to the last save.
-
-> What should I do if I forget my password?
-Unfortunately, there is no password recovery system. Try to remember and if access cannot be restored in any way, then ask the administrator to delete your colony in order to free up space on the planet and register a new user.
-
-> Is developer mode available to other players?
-It depends on the server settings. If the mode is disabled, then everyone except the administrator will not be able to put it. You can check it out yourself :)
+Колонки:
+fromDay и toDay - какой на этот момент игровой день у нападающего и цели
+worth - это общая стоимость вещей и пешек. В отдельных колонках для всего аккаунта, в worthTarget именно поселения цели
+delayAfterMail - это сколько дней задержки было рассчитано (в момент расчета 1 день уже прошел)
 
 
-References:
-The main server address is: 194.87.95.90
-Discord: https://discord.gg/5DzWrnR
-Official VK mod group: https://vk.com/rimworldonline
-Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
-GitHub: https://github.com/AantCoder/OnlineCity
+8. Функции мода в игре
 
-</OCity_AboutGeneralText>
+Специальные команды пишутся в чате (обычно в любой канал), и они не будут в нём отображены. Все такие команды начинаются с символа /
+
+/killmyallplease - удаляет сохранение с сервера, и все поселения и караваны с карты. Регистрация остается. При следующем заходе будет предложено создать новое поселение. Функцию можно также вызвать с вкладки О моде по кнопке Начать заново.
+
+/killhimplease {UserLogin} - (только для администратора) аналогично /killmyallplease, но указанного игрока.
+
+/everybodylogoff - (только для администратора) команда для корректного завершения работы сервера. Всем онлайн игрокам передается команда на сохранение и выход. После вызова команды нужно следить за консолью сервера: как только активность игроков исчезнет и сервер сохранит данные консоль можно выключать. Не рекомендуется запускать при активной PVP сессии.
+
+/createchat {Name} - создает новый чат с указанным именем, также доступно в интерфейсе чата
+
+/addplayer {UserLogin} - добавляет игрока в текущий чат, также доступно в интерфейсе чата
+
+/renamechat {Name} - переименовывает текущий чат, также доступно в интерфейсе чата
+
+/exitchat - выходит из текущего чата, также доступно в интерфейсе чата
+
+/discord - подробнее смотри https://github.com/AantCoder/OnlineCity/tree/dev/Source/DiscordChatBotServer
+
+/say {'имя игрока'} {/цвет}* {'заголовок'} {текст} {продолжение текста} ... - отправляет сообщение игроку в виде игрового письма, доступно администратору.
+*не обязательный параметр цвет определяется по началу с / Может быть таким:
+	/treatbig - красное письмо со звуком
+	/treatsmall - красное письмо
+	/death - серое письмо со звуком
+	/negative - желтое письмо
+	/positive - синее письмо со звуком
+	/visitor - синее письмо
+	/neutral - серое письмо (по умолчанию)
+
+/call {событие} {'имя игрока'} {sId поселения цели} {мощность}* {способ прибытия}* {фракция}*
+*опционально для некоторых событий
+имя игрока обязательно в одинарных ковычках, например: /call raid 'babur'
+Список доступных событий:
+	raid - вызов рейда на игрока. Доступен выбор мощности, целое число от 1 до 10. Также доступен способ прибытия и выбор фракции.
+	inf - вызов жуков на карте игрока. Доступен выбор мощности
+	acid - вызов кислотного дождя на карте игрока
+Список доступных способов прибытия:
+	walk - прибытие пешком со случайного края карты
+	air - сброс в десантных капсулах в домашнюю область игрока
+	random - сброс в капсулах в случайные точки на карте. Даёт сильно рассредоточенный рейд
+Список доступных фракций:
+	tribe - враждебная фракция аборигенов. Огромное количество людей с примитивным оружием
+	pirate - враждебная фракция индустриального уровня развития. Прибудут как солдаты с хорошим огнестрельным оружием и ракетницами, так и бойцы ближнего боя
+	mech - фракция механоидов. Тяжелобронированные, как правило, прибывают в малом количестве. Когда качество важнее количества
+Пример:
+/call raid 'babur' 143 8 random pirate
+/call inf 'SSDExecutor' 23 4
+/call acid 'Aant' 16
+Примечание:
+если для события raid не указать мощность, способ прибытия и фракцию, по умолчанию вызывается
+/call raid {'имя игрока'} 1 walk pirate
+
+
+9. Возможные проблемы
+
+Если игра сломалась (не загружается колония или из-за ошибок невозможно играть), то вы можете связаться с администратором и попросить его восстановить игру с прошлого сохранения. Также вы можете начать игру заново под тем же аккаунтом.
+
+Есть не решенная проблема передачи пешек при использовании HardcoreSK. Может быть подобная проблема будет с ещё каким-нибудь модами, пока не известно.
+
+Если вы попытались зайти на сервер, но игра выдала сообщение, что не все файлы прошли проверку, то просто зайдите ещё раз. Это нормальная ситуация. Либо произошли какие-нибудь, возможно незначительные, изменения в модпаке. Либо что-то изменилось в папке Mods или файл ModsConfig.xml был изменен вашей игрой.
+
+После регистрации и входа может происходить загрузка модов и сохранения с сервера. Иногда это может занимать несколько минут, в течении которых игра может зависнуть или отображать чёрный экран. Попробуйте подождать до 10 минут. В отдельных случаях при первом заходе на сервер с загрузкой большого модпака с плохой скоростью интернета это может занять значительно большее время.
+
+Если вы уже заходили и играли на сервер с синхронизацией модов, то если после перезагрузки игры нажать в главном меню Моды, то при следующем заходе на сервер игра скорее всего будет перезапущена. Фактически ничего не менялось, но игра после открытия списка модов перезаписывает ModsConfig.xml и он может немного измениться. Это нормальное поведение, просто реже нажимайте кнопку Моды :)
+
+Есть баг, который сложно поймать. Иногда после передачи поселенца другому игроку его копия (пешка с тем же именем, професией и навыками) может появиться в каком-нибудь событии или попросить присоединиться к поселению. Не соглашайтесь, очивидцы говорят, что это призрак который крашит игру! :)
+
+10. Другие часто задаваемые вопросы
+
+>Как выбрать сценарий игры?
+Сценарий игры настроить нельзя, но рассказчика и сложность можно сменить сразу после старта через настройки. Первоначально игра начинается с рассказчиком Кассандрой, стандартным сценарием Классика и сложности, которую установили при создании сервера.
+
+>Можно ли играть вместе за одно поселение?
+Играть на одной карте нельзя, кроме нападения на поселение другого игрока, но это всё равно не прямое управление. Если вам нужна такого типа игра, попробуйте Zetrith Multiplayer
+
+>Что происходит у других когда я нажимаю паузу?
+Ничего :) Течение игры всех участников независимо. У каждого игрока на карте своя игровая сессия, в которую добавлено взаимодействие с чужими поселениями и караванами. Например, можно поставить паузу, и посмотреть, как чужие караваны двигаются по карте (хотя, попасть на время когда другой игрок ходит караваном сложно).
+А вот какой может быть пример взаимодействия: в момент нападения можно запросить помощи у друга и поставить игру на паузу, он в это время подойдёт караваном и передаст своих поселенцев; после отбития атаки можно вернуть поселенцев таким же способом. Или, например, тот кто пришёл на помощь может передать всех пешек кроме одного животного, чтобы караван не был расформирован, тогда вернуть поселенцев можно будет сразу же после отбития, создав из них новый караван и передав их в назад в караван друга.
+
+>Игра зависает после авторизации
+Не зависает, а прогружает, просто подождите. Процесс подгрузки может занять до ~5 - 10 минут.
+
+>Как найти логи
+Отдельные логи OnlineCity пишутся в: %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity (это можно вставить в проводник)
+
+>Как удалить свою колонию?
+Нужно открыть окно Онлайн через панель внизу или через Меню в игре. Далее на вкладке О моде нажать Начать заново.
+Это же действие можно сделать, написав в чат команду: /killmyallplease
+
+>Как часто сохраняется игра?
+Игра сохраняется на сервер раз в 15 минут, если вы не изменили это на вкладке Настройки, также сохраняется при выходе из игры через меню. 
+Используя ALT + F4, вы можете откатить свою колонию к последнему сохранению.
+
+>Что делать если я забыл пароль?
+К сожалению системы восстановления пароля нету. Попытайтесь вспомнить и если доступ никак не получиться восстановить, то попросите администратора удалить вашу колонию, чтобы освободить место на планете и зарегистрируйте нового пользователя.
+
+>Доступен ли режим разработчика другим игрокам?
+Это зависит от настроек сервера. Если режим запрещен, то все, кроме администратора, не смогут его поставить. Вы можете проверить это сами :)
+
+
+Ссылки:
+Основной сервер для игры и тестирования:  rimworld.online
+Discord:  https://discord.gg/5DzWrnR
+Оф. группа мода ВК:  https://vk.com/rimworldonline
+Trello:  https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
+GitHub:  https://github.com/AantCoder/OnlineCity
+	</OCity_AboutGeneralText>
 
 </LanguageData>

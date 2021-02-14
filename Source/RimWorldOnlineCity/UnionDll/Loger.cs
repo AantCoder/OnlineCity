@@ -9,9 +9,7 @@ using System.Threading;
 namespace OCUnion
 {
     public static class Loger
-    {
-        //public static event Action<string> LogMessage;
-
+    {        
         private static string _PathLog;
         private static Dictionary<int, DateTime> LastMsg = new Dictionary<int, DateTime>();
         public static CultureInfo Culture = CultureInfo.GetCultureInfo("ru-RU");
@@ -21,7 +19,10 @@ namespace OCUnion
         public static string PathLog
         {
             get { return _PathLog; }
-            set { _PathLog = Path.GetDirectoryName(value + @"\") + @"\"; }
+            set
+            {
+                _PathLog = Path.GetDirectoryName(value + Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            }
         }
 
         public static string Bytes(byte[] bs)

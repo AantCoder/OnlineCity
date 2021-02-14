@@ -18,11 +18,12 @@ namespace RimWorldOnlineCity
         private string InputLogin = "";
         private string InputPassword = "";
         private string InputPassword2 = "";
+        private string InputEmail = "";
         private bool NeedFockus = true;
 
         public override Vector2 InitialSize
         {
-            get { return new Vector2(400f, 350f); }
+            get { return new Vector2(400f, 400f); }
         }
 
         public Dialog_Registration()
@@ -73,9 +74,17 @@ namespace RimWorldOnlineCity
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 2, buttonYStart, btnSize.x, btnSize.y), "OCity_Dialog_Registration_BtnReg".Translate())
                 || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
             {
-                if (InputAddr.Length > 2 && InputLogin.Length > 2 && InputPassword.Length > 2)
+                if (InputPassword2 != InputPassword)
                 {
-                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword
+                    Find.WindowStack.Add(new Dialog_MessageBox("OCity_LoginForm_Err1".Translate()));
+                }
+                else if (InputAddr.Length <= 2 || InputLogin.Length <= 2 || InputPassword.Length <= 2)
+                {
+                    Find.WindowStack.Add(new Dialog_MessageBox("OCity_LoginForm_Err2".Translate()));
+                }
+                else
+                {
+                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword, InputEmail
                         , () => 
                         { 
                             SessionClientController.LoginInNewServerIP = ModBaseData.GlobalData.LastIP.Value != InputAddr;
@@ -127,6 +136,12 @@ namespace RimWorldOnlineCity
                     InputPassword2 = GUI.PasswordField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputPassword2, "*"[0], 100);
                 });
 
+            TextInput(mainListing, "OCity_LoginForm_Mail".Translate(),
+                (sub, rect) =>
+                {
+                    InputEmail = GUI.TextField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputEmail, 100);
+                });
+
             if (NeedFockus)
             {
                 NeedFockus = false;
@@ -146,7 +161,7 @@ namespace RimWorldOnlineCity
             const float radioLabelInset = 40f;
             const float mainListingSpacing = 6f;
             const float subListingSpacing = 0;// 6f;
-            const float subListingLabelWidth = 130;// 100f;
+            const float subListingLabelWidth = 180f;// 130f;
             const float subListingRowHeight = 25;// 30f;
             const float checkboxListingWidth = 280f;
             const float listingColumnSpacing = 17f;

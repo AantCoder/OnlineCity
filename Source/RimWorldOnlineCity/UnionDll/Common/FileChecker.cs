@@ -21,7 +21,10 @@ namespace OCUnion.Common
         /// <summary>
         /// Расширения файлов исключаемые из проверки
         /// </summary>
-        public static readonly string[] ExcludedExternals = new string[] { ".cs", ".csproj", ".sln", ".md", ".gitignore", ".gitattributes" }; // , ".png"
+
+        public static readonly string[] IgnoredModFiles = new string[] { ".cs", ".csproj", ".sln", ".gitignore", ".gitattributes" };
+
+        public static readonly string[] IgnoredConfigFiles = { "KeyPrefs.xml", "Knowledge.xml", "LastPlayedVersion.txt", "Prefs.xml" };
 
         public static byte[] GetCheckSum(string fileName)
         {
@@ -80,7 +83,14 @@ namespace OCUnion.Common
             }
         }
 
-        public static List<ModelFileInfo> GenerateHashFiles(string rootFolder, string[] checkFolders)
+        /// <summary>
+        /// Generate hash for all files contains in root folder 
+        /// </summary>
+        /// <param name="rootFolder">can be null, then calc hash for all folder </param>
+        /// <param name="checkFolders"></param>
+        /// <param name="onStartUpdateFolder"> string : </param>
+        /// <returns></returns>
+        public static List<ModelFileInfo> GenerateHashFiles(string rootFolder, Action<string, int> onStartUpdateFolder)
         {
             var result = new List<ModelFileInfo>();
 
@@ -90,20 +100,24 @@ namespace OCUnion.Common
                 return result;
             }
 
-            // Файл который есть у клиента не найден, проверяем Первую директорию    
-            foreach (var folder in checkFolders)
-            {
+            var checkFolders = Directory.GetDirectories(rootFolder);
 
+
+            // Файл который есть у клиента не найден, проверяем Первую директорию    
+            for (var i = 0; i < checkFolders.Length; i++)
+            {
+                var folder = checkFolders[i];
+                onStartUpdateFolder?.Invoke(folder, i);
 #if DEBUG
                 var di = new DirectoryInfo(folder);
                 if ("OnlineCity".Equals(di.Name))
                     continue;
 #endif
+
                 var checkFolder = Path.Combine(rootFolder, folder);
                 if (Directory.Exists(checkFolder))
                 {
-                    result.AddRange(generateHashFiles(ref rootFolder, checkFolder));
-
+                    generateHashFiles(result, ref rootFolder, checkFolder);
                 }
                 else
                 {
@@ -141,34 +155,62 @@ namespace OCUnion.Common
         /// <param name="folder"></param>
         /// <param name="isSteam"></param>
         /// <returns></returns>
-        private static List<ModelFileInfo> generateHashFiles(ref string rootFolder, string folder)
+        private static void generateHashFiles(List<ModelFileInfo> result, ref string rootFolder, string folder)
         {
-            var result = new List<ModelFileInfo>();
             var dirs = Directory.GetDirectories(folder);
             var files = Directory.GetFiles(folder);
             int fileNamePos = rootFolder.Length + 1;
 
             foreach (var subDir in dirs)
             {
-                result.AddRange(generateHashFiles(ref rootFolder, subDir));
+                generateHashFiles(result, ref rootFolder, subDir);
             }
 
             foreach (var file in files.Where(x => ApproveExt(x)))
             {
-                result.Add(new ModelFileInfo()
+                var mfi = new ModelFileInfo()
                 {
                     FileName = file.Substring(fileNamePos),
-                    Hash = getCheckSum(file)
-                }
-                );
+                    Hash = getCheckSum(file),
+                    Size = new FileInfo(file).Length,
+                };
+#if DEBUG
+                /*
+                if (mfi.FileName.Contains("armony"))
+                {
+                    Loger.Log($"generateHashFiles Harmony: {FileName} {Hash}");
+                }*/
+#endif
+                result.Add(mfi);
             }
+        }
 
-            return result;
+        public static void ReHashFiles(List<ModelFileInfo> rep, string folder, List<string> fileNames)
+        {
+            var dir = rep.ToDictionary(f => f.FileName);
+            foreach (var fileName in fileNames)
+            {
+                ModelFileInfo mfi;
+                if (!dir.TryGetValue(fileName, out mfi))
+                {
+                    mfi = new ModelFileInfo()
+                    {
+                        FileName = fileName,
+                    };
+                    rep.Add(mfi);
+                }
+                var file = Path.Combine(folder, fileName);
+                var oldHash = mfi.Hash;
+                mfi.Hash = getCheckSum(file);
+                mfi.Size = new FileInfo(file).Length;
+                if (MainHelper.DebugMode) Loger.Log($"ReHashFile {file} {(oldHash == null ? "" : Convert.ToBase64String(oldHash))}" +
+                    $"->{(mfi.Hash == null ? "" : Convert.ToBase64String(mfi.Hash))}");
+            }
         }
 
         private static bool ApproveExt(string fileName)
         {
-            foreach (var ext in ExcludedExternals)
+            foreach (var ext in IgnoredModFiles)
             {
                 if (fileName.EndsWith(ext))
                 {

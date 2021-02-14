@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Model;
+using OCUnion.Transfer.Model;
 using ServerOnlineCity.Model;
 using Transfer;
 
@@ -7,9 +8,9 @@ namespace ServerOnlineCity.Services
 {
     internal sealed class CreatingWorld : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 7;
+        public int RequestTypePackage => (int)PackageType.Request7CreateWorld;
 
-        public int ResponseTypePackage => 8;
+        public int ResponseTypePackage => (int)PackageType.Response8WorldCreated;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
@@ -43,6 +44,7 @@ namespace ServerOnlineCity.Services
 
                 var data = Repository.GetData;
                 data.WorldSeed = packet.Seed;
+                data.WorldScenarioName = packet.ScenarioName;
                 data.WorldDifficulty = packet.Difficulty;
                 data.WorldMapSize = packet.MapSize;
                 data.WorldPlanetCoverage = packet.PlanetCoverage;

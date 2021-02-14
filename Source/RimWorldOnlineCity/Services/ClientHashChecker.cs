@@ -2,10 +2,12 @@
 using OCUnion.Common;
 using OCUnion.Transfer.Model;
 using OCUnion.Transfer.Types;
-using System;
+using RimWorldOnlineCity.ClientHashCheck;
+using RimWorldOnlineCity.UI;
 using System.Collections.Generic;
+using System;
 using System.IO;
-using System.Threading;
+using System.Linq;
 using Verse;
 
 namespace RimWorldOnlineCity.Services
@@ -15,15 +17,7 @@ namespace RimWorldOnlineCity.Services
         public PackageType RequestTypePackage => PackageType.Request35ListFiles;
         public PackageType ResponseTypePackage => PackageType.Response36ListFiles;
 
-        private static List<ModelFileInfo> SteamFiles;
-        private static List<ModelFileInfo> ModsFiles;
-        /// <summary>
-        /// Поток который считает хеш сумму файлов
-        /// </summary>
-        private static Thread CheckHashModsThread;
         private readonly Transfer.SessionClient _sessionClient;
-
-        public static string SteamFolder { get; private set; }
 
         public ClientHashChecker(Transfer.SessionClient sessionClient)
         {
@@ -37,101 +31,61 @@ namespace RimWorldOnlineCity.Services
         /// <returns></returns>
         public ApproveLoadWorldReason GenerateRequestAndDoJob(object context)
         {
-            // По хорошему надо разнести на два вызова один для модов второй для стим с передачей параметров через контекст
-            Loger.Log("Send hash to server");
-            var modsResCheck = _sessionClient.TransObject2<ModelModsFiles>(generateHashFiles(false), RequestTypePackage, ResponseTypePackage);
-            var steamCheck = _sessionClient.TransObject2<ModelModsFiles>(generateHashFiles(true), RequestTypePackage, ResponseTypePackage);
+            // each request - response Client-Server-Client ~100-200 ms, get all check hash in one request             
+            // каждый запрос-отклик к серверу ~100-200 мс, получаем за один запрос все файлы
+            // ~40 000 files *512 SHA key ~ size of package ~ 2,5 Mb 
 
             ApproveLoadWorldReason result = ApproveLoadWorldReason.LoginOk;
-            if (modsResCheck.Files.Count > 0)
+            bool downloading = true;
+            long totalSize = 0;
+            long downloadSize = 0;
+            while (downloading)
             {
-                result = result | ApproveLoadWorldReason.ModsFilesFail;
-                FileChecker.FileSynchronization(GenFilePaths.ModsFolderPath, modsResCheck);
-            }
+                var clientFileChecker = (ClientFileChecker)context;
+                var model = new ModelModsFiles()
+                {
+                    Files = clientFileChecker.FilesHash,
+                    FolderType = clientFileChecker.FolderType,
+                };
 
-            if (steamCheck.Files.Count > 0)
-            {
-                result = result | ApproveLoadWorldReason.ModsSteamWorkShopFail;
-                FileChecker.FileSynchronization(SteamFolder, steamCheck);
-            }
+                UpdateModsWindow.Title = "OC_Hash_Downloading".Translate();
+                UpdateModsWindow.HashStatus = "";
+                UpdateModsWindow.SummaryList = null;
+                Loger.Log($"Send hash {clientFileChecker.Folder}");
 
+                var res = _sessionClient.TransObject2<ModelModsFiles>(model, RequestTypePackage, ResponseTypePackage);
+
+                if (res.Files.Count > 0)
+                {
+                    if (totalSize == 0) totalSize = res.TotalSize;
+                    downloadSize += res.Files.Sum(f => f.Size);
+                    Loger.Log($"Files that need for a change:");
+                    UpdateModsWindow.HashStatus = "OC_Hash_Downloading_Finish".Translate()
+                        + (downloadSize * 100 / totalSize).ToString() + "%";
+
+                    result = result | ApproveLoadWorldReason.ModsFilesFail;
+                    FileChecker.FileSynchronization(clientFileChecker.Folder, res);
+                    clientFileChecker.RecalculateHash(res.Files.Select(f => f.FileName).ToList());
+
+                    var addList = res.Files
+                        .Select(f => f.FileName)
+                        .Where(f => f.Contains("\\"))
+                        .Select(f => f.Substring(0, f.IndexOf("\\")))
+                        //.Distinct() //вместо дистинкта группируем без разницы заглавных букв, но сохраняем оригинальное название
+                        .Select(f => new { orig = f, comp = f.ToLower() })
+                        .GroupBy(p => p.comp)
+                        .Select(g => g.Max(p => p.orig))
+                        .Where(f => UpdateModsWindow.SummaryList == null || !UpdateModsWindow.SummaryList.Any(sl => sl == f))
+                        .ToList();
+                    if (UpdateModsWindow.SummaryList == null)
+                        UpdateModsWindow.SummaryList = addList;
+                    else
+                        UpdateModsWindow.SummaryList.AddRange(addList);
+                }
+                downloading = res.TotalSize != 0;
+            }
             return result;
-        }
-
-        private static bool CheckHashModsThreadRun;
-        private static object CheckHashModsThreadSunc = new Object();
-
-        /// <summary>
-        /// Send hash files of loaded mods to server and update it if hash different
-        /// </summary>
-        public static void StartGenerateHashFiles(string modsFileName, string steamFileName)
-        {
-            var modsListFolder = File.ReadAllLines(modsFileName);
-            var steamListFolder = File.ReadAllLines(steamFileName);
-
-            Loger.Log("Start Hash:" + modsFileName);
-            Loger.Log("Start Hash:" + steamFileName);
-            // может быть есть лучше вариант, как указать папку модов со steam ???
-            SteamFolder = GenFilePaths.ModsFolderPath.Replace("common\\RimWorld\\Mods", "workshop\\content\\294100");
-            Loger.Log("GenFilePaths.ModsConfigFilePath = " + GenFilePaths.ModsConfigFilePath);
-            if (SteamFolder.Equals(GenFilePaths.ModsFolderPath) || !Directory.Exists(SteamFolder))
-            {
-                var steamFolder = Path.Combine(SessionClientController.ConfigPath, "workshop");
-                Log.Message($"Directory {SteamFolder} not found, using {steamFolder}");
-                if (!Directory.Exists(steamFolder))
-                {
-                    Log.Message($"Create {steamFolder}");
-                    Log.Message("Таян наверное расстроится, скорее всего используется пиратская версия игры");
-                    Directory.CreateDirectory(steamFolder);
-                }
-
-                SteamFolder = steamFolder;
-            }
-
-            Loger.Log("SteamFolder=" + SteamFolder);
-
-            CheckHashModsThread = new Thread(() =>
-            {
-                lock (CheckHashModsThreadSunc)
-                {
-                    try
-                    {
-                        Loger.Log($"GenerateHashFiles {GenFilePaths.ModsFolderPath}");
-                        ClientHashChecker.ModsFiles = FileChecker.GenerateHashFiles(GenFilePaths.ModsFolderPath, modsListFolder);
-                        Loger.Log($"GenerateHashFiles {SteamFolder}");
-                        ClientHashChecker.SteamFiles = FileChecker.GenerateHashFiles(SteamFolder, steamListFolder);
-
-                    }
-                    catch (Exception exc)
-                    {
-                        Loger.Log($"GenerateHashFiles Exception {exc.ToString()}");
-                    }
-                    CheckHashModsThreadRun = false;
-                }
-            });
-            CheckHashModsThreadRun = true;
-            CheckHashModsThread.IsBackground = true;
-            CheckHashModsThread.Start();
-        }
-
-        private ModelModsFiles generateHashFiles(bool isSteam)
-        {
-            if (CheckHashModsThreadRun)
-            {
-                Loger.Log("Wait...");
-                lock (CheckHashModsThreadSunc)
-                {
-                    Loger.Log("Wait end");
-                }
-            }
-
-            return
-                new ModelModsFiles()
-                {
-                    IsSteam = isSteam,
-                    Files = isSteam ? SteamFiles : ModsFiles,
-                }
-           ;
         }
     }
 }
+

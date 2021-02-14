@@ -121,7 +121,7 @@ namespace OC.DiscordBotServer
             if (arg.Message != null)
             {
                 Task.Factory.StartNew(() => { Loger.Log(arg.Message); });
-                Console.WriteLine(arg.Message);
+                //Console.WriteLine(arg.Message);
             }
 
             if (arg.Exception != null)

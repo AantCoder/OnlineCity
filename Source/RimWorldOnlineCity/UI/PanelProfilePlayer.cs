@@ -88,19 +88,23 @@ namespace RimWorldOnlineCity
             Widgets.Label(inRect, "OCity_PlayerClient_Settings".Translate().ToString() + " " + Player.Login);
             Text.Font = GameFont.Small;
             float topOffset = 30;
+            Rect rect;
 
             /// Я учавствую в PVP
-            var rect = new Rect(inRect.x + 30f, inRect.y + topOffset, 250f, 25f);
-            Widgets.CheckboxLabeled(rect, "OCity_PlayerClient_InvolvedInPVP".Translate(), ref Input_EnablePVP, SessionClientController.Data.TimeChangeEnablePVP >= DateTime.UtcNow, null, null, true);
-            rect = new Rect(inRect.x + 30f + 250f, inRect.y + topOffset, inRect.width - 30f - 250f, 25f);
-            if (SessionClientController.Data.TimeChangeEnablePVP >= DateTime.UtcNow)
+            if (SessionClientController.Data.GeneralSettings.EnablePVP || Player.EnablePVP)
             {
-                Input_EnablePVP = Player.EnablePVP;
-                Widgets.Label(rect, "OCity_PlayerClient_CanChange".Translate(SessionClientController.Data.TimeChangeEnablePVP.ToGoodUtcString()));
-            }
-            else
-            {
-                Widgets.Label(rect, "OCity_PlayerClient_CanChangeNow".Translate());
+                rect = new Rect(inRect.x + 30f, inRect.y + topOffset, 250f, 25f);
+                Widgets.CheckboxLabeled(rect, "OCity_PlayerClient_InvolvedInPVP".Translate(), ref Input_EnablePVP, SessionClientController.Data.TimeChangeEnablePVP >= DateTime.UtcNow, null, null, true);
+                rect = new Rect(inRect.x + 30f + 250f, inRect.y + topOffset, inRect.width - 30f - 250f, 25f);
+                if (SessionClientController.Data.TimeChangeEnablePVP >= DateTime.UtcNow)
+                {
+                    Input_EnablePVP = Player.EnablePVP;
+                    Widgets.Label(rect, "OCity_PlayerClient_CanChange".Translate(SessionClientController.Data.TimeChangeEnablePVP.ToGoodUtcString()));
+                }
+                else
+                {
+                    Widgets.Label(rect, "OCity_PlayerClient_CanChangeNow".Translate());
+                }
             }
             topOffset += 30f;
 

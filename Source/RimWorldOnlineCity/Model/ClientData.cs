@@ -1,4 +1,5 @@
 ﻿using Model;
+using OCUnion;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -91,13 +92,19 @@ namespace RimWorldOnlineCity
 
         public int DelaySaveGame { get; set; } = 15;
 
+        public bool IsAdmin { get; set; }
+
         public bool DisableDevMode { get; set; }
 
         public int MinutesIntervalBetweenPVP { get; set; }
 
         public DateTime TimeChangeEnablePVP { get; set; }
 
+        public bool ProtectingNovice { get; set; }
+
         public bool BackgroundSaveGameOff { get; set; }
+
+        public ServerGeneralSettings GeneralSettings { get; set; }
 
         public Faction FactionPirate
         {
@@ -114,6 +121,15 @@ namespace RimWorldOnlineCity
 
         public bool ApplyChats(ModelUpdateChat updateDate)
         {
+            //переводим сообщения с сервера
+            for (int ic = 0; ic < updateDate.Chats.Count; ic++)
+            {
+                for (int ip = 0; ip < updateDate.Chats[ic].Posts.Count; ip++)
+                {
+                    updateDate.Chats[ic].Posts[ip].Message = ChatController.ServerCharTranslate(updateDate.Chats[ic].Posts[ip].Message);
+                }
+            }
+
             int newPost = 0;
             var newStr = "";
             if (Chats != null)

@@ -8,43 +8,43 @@ namespace OCUnion.Transfer.Model
         /// <summary>
         /// 1 - регистрация (логин, пароль) EN: register (login, password)
         /// </summary>
-        RequestRegister = 1,
+        Request1Register = 1,
         /// <summary>
         /// 2 - ответ регистрации (успешно, сообщение) EN: answer ( sucess, message)
         /// </summary>
-        ResponseRegister = 2,
+        Response2Register = 2,
         /// <summary>
         /// 3 - вход (логин, пароль)
         /// </summary>
-        RequestLogin = 3,
+        Request3Login = 3,
         /// <summary>
         /// 4 - ответ на вход (успешно, сообщение)
         /// </summary>
-        ResponseLogin = 4,
+        Response4Login = 4,
         /// <summary>
         /// 5 - запрос информации
         /// </summary>
-        RequestUserInfo = 5,
+        Request5UserInfo = 5,
         /// <summary>
         /// 6 - информация о самом пользователе
         /// </summary>
-        ResponseUserInfo = 6,
+        Response6UserInfo = 6,
         /// <summary>
         /// 7 - создать мир (всё, что нужно для начала работы сервера)
         /// </summary>
-        RequestCreateWorld = 7,
+        Request7CreateWorld = 7,
         /// <summary>
         /// 8 - ответ на 7 (успешно, сообщение)
         /// </summary>
-        ResponseWorldCreated = 8,
+        Response8WorldCreated = 8,
         /// <summary>
         /// 9 - создать поселение (запрос с данными о поселении нового игрока, всё что передается после создания карты поселения игроком)
         /// </summary>
-        RequestCreateSettlement = 9,
+        Request9CreateSettlement = 9,
         /// <summary>
         /// 10 - ответ на 9 (успешно, сообщение)
         /// </summary>
-        ResponseSettlementCreated = 10,
+        Response10SettlementCreated = 10,
         /// <summary>
         /// 11 - синхронизация мира (тип синхранезации, время последней синхронизации, все данные для сервера)
         /// </summary>
@@ -138,14 +138,8 @@ namespace OCUnion.Transfer.Model
         /// Получение ответа cо списком файлов 
         /// </summary>
         Response36ListFiles,
-        /// <summary>
-        /// Запрос на получение списка папок для проверки с сервера
-        /// </summary>
-        Request37GetApproveFolders,
-        /// <summary>
-        /// Ответ содержит файл содержащий список папок с сервера
-        /// </summary>
-        Response38GetApproveFolders,
+       
+       
         /// <summary>
         /// Уведомление о дисконнекте
         /// </summary>
@@ -157,5 +151,13 @@ namespace OCUnion.Transfer.Model
 
         Request41SetPlayerInfo,
         Response42SetPlayerInfo,
+        /// <summary>
+        /// World Object Online GetWorldObjectUpdate()
+        /// </summary>
+        Request43WObjectUpdate,
+        /// <summary>
+        /// World Object Online GetWorldObjectUpdate()
+        /// </summary>
+        Response44WObjectUpdate,
     }
 }

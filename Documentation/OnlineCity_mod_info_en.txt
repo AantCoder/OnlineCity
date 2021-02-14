@@ -4,13 +4,14 @@ After registration, you can create your own settlement and begin to develop alon
 
 1. General description
 2. Exchange between players
-3. Attack on player settlements (PVP)
-4. Installing the mod and how to start playing
-5. Additional modifications
-6. Server
-7. Functions of the mod in the game
-8. Possible problems
-9. Other frequently asked questions
+3. Other interaction
+4. Attack on player settlements (PVP)
+5. Installing the mod and how to start playing
+6. Additional modifications
+7. Server
+8. Functions of the mod in the game
+9. Possible problems
+10. Other frequently asked questions
 
 1. General description
 
@@ -42,7 +43,30 @@ When a settler is transferred, all his connections with other settlers are lost.
 There is an unresolved issue of transferring pawns when using HardcoreSK. Maybe a similar problem will be with some other mods, is not yet known.
 
 
-3. Attack on player settlements (PVP)
+3. Other interaction
+
+Pirates and warlike natives will gladly agree to work for a reward. In addition, by paying the required amount of gold, you can cause acid precipitation, set beetles, mechanoids, and so on. To trigger different events, find another player's settlement on the palnet, select it, and click on the Interact button.
+
+Certain events can have a force of impact, such as raids and beetles. You can double, triple, etc. their number, relative to what the game itself generates for the settlement. As a rule, * 10 is very difficult to survive even for experienced players. The price of a call increases non-linearly with an increase in the level. Here is the general price per call formula:
+
+(value_of_attacked_settlement / 100 000) ^ (2/3) * 100 * impact_power ^ (3/2)
+
+Additional multiplier * 3 if it is a beetle summon. Multiplier * 2 for summoning industrial grade pirates. Multiplier * 5 for summoning mechanoids.
+
+Takde a raid can be called not only on foot from the edge of the map, but also with a landing in the center (price * 1.4), or scattered landing (price * 1.5), while the cost of capsules will also be deducted by the game from the total cost of the raid.
+
+These calculations may change over time, during balance adjustment. In addition, on the server, you can set the total price coefficient and the final cost of the attacking raid. You can also change the maximum force factor (default * 10).
+
+The summoned raid will come to the goal when the player enters the game. If the raid is very large (the strength is more than 50% of the possible choice), then the settlers will notice its approach in half a day. After the attack, the next one will come no earlier than in a game day, but after how much it will be calculated using the following formula:
+
+1 + impact_power * 0.16666 + 0.03333 * (attack_set_value / 100 000) = days delay before next event
+
+There is novice defense: both the attacking player and his target must have a playtime of more than two years and a settlement cost of more than 100 000.
+
+Events from different tabs can be called simultaneously. Each player can only trigger 1 event from each tab per player. But another player can also add his own event to the same target: in this case, they will be triggered in turn, keeping the delays. The total number of events in the queue cannot exceed 2.
+
+
+4. Attack on player settlements (PVP)
 
 Now, if you want, you can attack a foreign colony with your caravan. You will appear at the edge of the map in a random place. Then you can look at the enemy’s base, be horrified and retreat (all pawns near the edge of the map in this case will go to the caravan). Rob, if something can be carried away with you. Or capture the settlement, killing or knocking down all the enemy pawns.
 
@@ -83,7 +107,7 @@ A target that is slain will not be selected by an auto attack and cannot be beat
 The extreme position on the border of the map is not available due to the patch. The fact is that the AI of the game, seeing that the attacking pawn wants to leave and is already on the edge, immediately removes it. It turns out that things that have fallen to the very edge will be available only after the capture of the colony. There is also a problem associated with this: sometimes, when a pawn is located across the cell from the edge of the map, it gets stuck there and does not respond to commands. It has not yet been possible to fix this, but if this happened, then try to select a pawn and quickly click
 
 
-4. Installing the mod and how to start playing
+5. Installing the mod and how to start playing
 
 1) Have any RimWorld not lower than 1.1
 
@@ -112,6 +136,7 @@ In the ModsConfig.xml file, the list of mods should start with
 And end (preferably at the very end):
     <li> aant.onlinecity </li>
 
+	
 Common problems:
 
 * If your computer can barely handle RimWorld, then keep in mind that with this mod the memory requirement is slightly increased. It is recommended to play on a 64-bit operating system.
@@ -129,7 +154,7 @@ Common problems:
 * If all else fails, then try disabling other mods. If this helped, and the game started, then write to us which mod turned out to be incompatible.
 
 
-5. Additional modifications
+6. Additional modifications
 
 On the server there is an exact match mods setting. If it is enabled, the game’s Mods folder and the ModsConfig.xml file will be deleted and downloaded from the server. Be careful, and before entering the server for the first time, make sure that there is nothing valuable in the Mods folder! The presence of DLC Royality is not controlled and will not be downloaded from the server; you must install it yourself if it is required for the game on the server. Make sure you have one if you need one. If it is not needed for the server where you play, then before entering it is better to disable it. If the server does not need it, but you have it, then it will be correctly disabled. Further in the text, it is assumed that the setting is turned off and no synchronization occurs.
 
@@ -146,7 +171,7 @@ At the moment, there is only one incompatible mod: Save Our Ship 2
 Potentially, OnlineCity is compatible with any other mods, but, of course, you need to be careful, especially when using large modpacks. It's funny that the mod is even compatible with Zetrith Multiplayer (except, perhaps, the PVP mode was not tested). After all, OnlineCity synchronizes the planet where everyone has their own settlement, and Zetrith Multiplayer is a cooperative of one settlement.
 
 
-6. Server
+7. Server
 
 Unzip the archive with the server to any folder. After that, you need to create a subfolder of World, which will store all the game data.
 
@@ -158,10 +183,34 @@ Create a Settings.json file in the World folder (it can be opened with a simple 
   "Port": 19019,
   "Description": "Official server OnlineCity with modpack",
   "IsModsWhitelisted": true,
-  "DisableDevMode": false,
+  "DisableDevMode": true,
   "MinutesIntervalBetweenPVP": 20,
-  "ModsDirectory": "c:\\CityOnlineTest19019\\Mods"
+  "GeneralSettings": {
+    "EnablePVP": false,
+    "DisableGameSettings": false,
+    "IncidentEnable": true,
+    "IncidentCountInOffline": 2,
+    "IncidentMaxMult": 10,
+    "IncidentTickDelayBetween": 60000,
+    "IncidentCostPrecent": 100,
+    "IncidentPowerPrecent": 100,
+    "EquableWorldObjects": false,
+    "ExchengeEnable": false,
+    "StartGameYear": -1
+  },
+  "ModsDirectory": "C:\\CityOnlineTest19019\\Mods",
+  "ProtectingNovice": true,
+  "DeleteAbandonedSettlements": false,
+  "ModsConfigsDirectoryPath": "C:\\CityOnlineTest19019\\Config\\",
+  "IgnoredLocalConfigFiles": [
+    "KeyPrefs.xml",
+    "Knowledge.xml",
+    "LastPlayedVersion.txt",
+    "Prefs.xml"
+  ],
+  "IgnoredLocalModFiles": [ ]
 }
+
 ServerName and Description - the name and description of the server, while not used anywhere, is not necessary.
 
 SaveInterval - the frequency in ms at which the server will save new data, if any, it is better not to change the default value of 10000.
@@ -172,9 +221,43 @@ IsModsWhitelisted - if exact mod matching is used, then set to true, otherwise f
 
 ModsDirectory - if IsModsWhitelisted is set to true, then there is a folder that will be copied to each client in its Mods folder, otherwise the value is ignored. More details below.
 
+ModsConfigsDirectoryPath - if IsModsWhitelisted is true, then, similarly to ModsDirectory, you should specify the folder with mods settings. More details below.
+
 DisableDevMode - whether the developer mode will be disabled when players enter online.
 
 MinutesIntervalBetweenPVP - after an attack on one player by another, he cannot be attacked for a given number of minutes. You can put, for example, 0 or 20.
+
+ProtectingNovice - Protection of novice players from attack, as well as a ban on transferring goods from new settlements.
+
+DeleteAbandonedSettlements - The server will automatically delete undeveloped settlements that have not been played for a long time.
+
+GeneralSettings - A hierarchy of settings existing for technical needs, within it, the settings are as important as the rest.
+
+EnablePVP - Enable the mode of attacking players against each other online with limited control
+
+DisableGameSettings - Disallow changing the settings of the narrator and modifications in the game
+
+IncidentEnable - are incidents allowed (actions on the Interaction button on foreign settlements)
+
+IncidentCountInOffline - How many incidents are allowed in the queue (from one player in any case only one)
+
+IncidentMaxMult - Maximum odds. the forces of incidents
+
+IncidentTickDelayBetween - Minimum pause between incidents in ticks (1 day = 60000)
+
+IncidentCostPrecent - Percentage hiring cost modifier
+
+IncidentPowerPrecent - Percentage raid strength modifier
+
+StartGameYear - Assign the starting year in the game instead of 5500
+
+IgnoredLocalConfigFiles - The names of the configuration files to ignore. The rest will be synchronized with the server folder specified in ModsConfigsDirectoryPath if IsModsWhitelisted is true.
+
+IgnoredLocalModFiles - The ending of ignored file names from the mods folder. The rest will be synchronized with the server folder specified in ModsDirectory if IsModsWhitelisted is true.
+
+EquableWorldObjects - the functionality is not ready yet, you should delete the line or put false.
+
+ExchengeEnable - the functionality is not ready yet, you should delete the line or put false.
 
 
 Check that you have .NET Core 3.1 installed before starting: https://dotnet.microsoft.com/download/dotnet-core/current/runtime
@@ -228,11 +311,26 @@ If you delete the files {player name}.dat *, then the next time you enter the pl
 If the player’s save is corrupted, you can delete the file {player name}.dat1 and rename the file {player name}.dat2 or {player name}.dat3 to this name
 
 You can regularly delete settlements of players who have played less than a few gaming days and have not entered for a long time. To do this, in the game you can find their settlements on the map by the icon of the smallest house, click on them, then on the information i. Here you can see the total cost of the settlement (for example, if it is less than 30000) and when the user last visited. If you decide to remove the player, then use the command /killhimplease {UserLogin}
+Or the server can do it itself by configuring DeleteAbandonedSettlements.
 
 How to make sure that the player is who he claims to be? For example, if a player writes that his preservation is broken, and he asks to remove his settlement. In this case, ask him to try to enter the game right now. Then ask him to send you his logs for today. Then you can find the lines of his login to the server and compare the time with the logs on the server itself (keep in mind that there may be different time zones).
 
 
-7. Functions of the mod in the game
+You can get a summary of all the players in the console by pressing the letter S. This will create a Players_date.csv file with a list of players, last login time and some game information.
+
+Server logs are created automatically Log_date.txt, together with the file with incidents Incidents_month.csv. Several events are noted here for each incident:
+NewIncident - fromLogin player ordered a raid on toLogin
+SendMail - toLogin passed all the expectations from the past, and half a day of waiting before the attack for raids and the event started directly
+DayAfterMail - a day has passed after the event, at this moment it is determined how long you need to wait more (or not more), it is convenient to see how much damage the raid did
+End - the end of the wait, the event is fully completed and at this moment releases the queue.
+
+Columns:
+fromDay and toDay - what is the attacker's game day and target at this moment
+worth is the total cost of items and pawns. In separate columns for the entire account, in the worthTarget exactly the settlement of the target
+delayAfterMail is how many days of delay were calculated (at the time of calculation, 1 day has already passed)
+
+
+8. Functions of the mod in the game
 
 Special commands are written in the chat (usually in any channel), and they will not be displayed in it. All such commands begin with a /
 
@@ -252,8 +350,41 @@ Special commands are written in the chat (usually in any channel), and they will
 
 /discord - for details see https://github.com/AantCoder/OnlineCity/tree/dev/Source/DiscordChatBotServer
 
+/say {'player name'} {/color}* {'title'} {text} {continuation of the text} ... - sends a message to the player in the form of a game letter, available to the administrator.
+*optional parameter color is defined by beginning with / Can be like this:
+	/treatbig - red letter with sound
+	/treatsmall - red letter
+	/death - gray letter with sound
+	/negative - yellow letter
+	/positive - blue letter with sound
+	/visitor - blue letter
+	/neutral - gray letter (default)
 
-8. Possible problems
+/call {событие} {'player name'} {sId settlement target} {power}* {way of arrival}* {fraction}*
+*optional for some events
+the player's name is required in single quotes, for example: /call raid 'babur'
+List of available events:
+	raid - calling a raid on a player. The choice of capacity is available, an integer from 1 to 10. The method of arrival and the choice of fraction are also available.
+	inf - summon beetles on the player's card. Power selection available
+	acid - acid rain challenge on player card
+List of available arrival methods:
+	walk - arriving on foot from a random edge of the map
+	air - drop in drop pods to the player's home area
+	random - drop in capsules to random points on the map. Grants a highly dispersed raid
+List of available factions:
+	tribe - a hostile Aboriginal faction. A huge number of people with primitive weapons
+	pirate - hostile faction of the industrial level of development. Soldiers with good firearms and rocket launchers as well as melee fighters will arrive
+	mech - fraction of mechanoids. Heavily armored, as a rule, arrive in small numbers. When quality is more important than quantity
+Example:
+/call raid 'babur' 143 8 random pirate
+/call inf 'SSDExecutor' 23 4
+/call acid 'Aant' 16
+Note:
+if the power, arrival method and fraction are not specified for the raid event, the default is called
+/call raid {'player name'} 1 walk pirate
+
+
+9. Possible problems
 
 If the game crashes (the colony does not load or it is impossible to play due to errors), then you can contact the administrator and ask him to restore the game from the previous save. You can also restart the game under the same account.
 
@@ -268,7 +399,7 @@ If you have already logged in and played on the server with the mods synchronize
 There is a bug that is difficult to catch. Sometimes after transferring a settler to another player, a copy of it (a pawn with the same name, profession and skills) may appear in some event or ask to join the settlement. Do not agree, eyewitnesses say that this is a ghost that crashes the game! :)
 
 
-9. Other frequently asked questions
+10. Other frequently asked questions
 
 > How to choose a game scenario?
 The game scenario cannot be customized, but the narrator and difficulty can be changed immediately after starting through the settings. Initially, the game begins with the narrator Cassandra, a standard scenario of the Classic and the complexity that was set when creating the server.
@@ -302,7 +433,7 @@ It depends on the server settings. If the mode is disabled, then everyone except
 
 
 References:
-The main server address is: 194.87.95.90
+The main server address is: rimworld.online
 Discord: https://discord.gg/5DzWrnR
 Official VK mod group: https://vk.com/rimworldonline
 Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld

@@ -17,6 +17,7 @@ namespace OCUnion.Transfer.Model
         /// </summary>
         public string FileName { get; set; }
         public byte[] Hash { get; set; }
+        public long Size { get; set; }
 
         public override int GetHashCode()
         {
@@ -83,46 +84,6 @@ namespace OCUnion.Transfer.Model
                         return false;
                 return true;
             }
-        }
-
-        public List<ModelFileInfo> GetModList()
-        {
-            var serverList = new List<ModelFileInfo>();
-            var serverFiles = new Dictionary<string, ModelFileInfo>();
-            var result = new List<ModelFileInfo>();
-            var clientFiles = new List<ModelFileInfo>();
-
-            foreach (var clientFile in clientFiles)
-            {
-                if (serverFiles.TryGetValue(clientFile.FileName, out ModelFileInfo serverFile))
-                {
-                    if (ModelFileInfo.UnsafeByteArraysEquale(clientFile.Hash, serverFile.Hash))
-                    {
-                        continue;
-                    }
-
-                    // файл  найден, но хеши не совпадают, необходимо заменить файл
-                    using (var fileStream = File.Open(Path.Combine("", serverFile.FileName), FileMode.Open))
-                    {
-                        var buffer = new byte[fileStream.Length];
-                        fileStream.Read(buffer, 0, buffer.Length);
-
-                        result.Add(new ModelFileInfo()
-                        {
-                            FileName = serverFile.FileName,
-                            Hash = buffer
-                        }); ;
-                    }
-                }
-                else
-                {
-                    // Если файл с таким именем не найден, помечаем файл на удаление
-                    clientFile.Hash = null;
-                    result.Add(clientFile);
-                }
-            }
-
-            return result;
         }
     }
 }

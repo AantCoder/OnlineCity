@@ -40,14 +40,10 @@ namespace ServerOnlineCity.ChatService
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.UserNotFound, ownLogin, chat, "User " + argsM[0] + " not found");
             }
 
-            var msg = "User " + killPlayer.Public.Login + " deleted settlements.";
+            //var msg = "User " + killPlayer.Public.Login + " deleted settlements.";
+            //_chatManager.AddSystemPostToPublicChat(msg); //раскомментировать, чтобы постить в общем чате всем
 
-            _chatManager.AddSystemPostToPublicChat(msg);
-
-            Repository.DropUserFromMap(killPlayer.Public.Login);
-            Repository.GetSaveData.DeletePlayerData(killPlayer.Public.Login);
-            killPlayer.Public.LastSaveTime = DateTime.MinValue;
-            Repository.Get.ChangeData = true;
+            killPlayer.AbandonSettlement();
             Loger.Log("Server killhimplease " + killPlayer.Public.Login);
 
             return new ModelStatus() { Status = 0 };

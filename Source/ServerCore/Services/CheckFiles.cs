@@ -16,6 +16,8 @@ namespace ServerOnlineCity.Services
 
         public int ResponseTypePackage => (int)PackageType.Response36ListFiles;
 
+        private const long MaxPacketSize = 5000000;
+
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
             if (context.Player == null) return null;
@@ -26,33 +28,56 @@ namespace ServerOnlineCity.Services
 
         private ModelModsFiles checkFiles(ModelModsFiles packet, ServiceContext context)
         {
-            var modsDir = packet.IsSteam ? ServerManager.ServerSettings.SteamWorkShopModsDir : ServerManager.ServerSettings.ModsDirectory;
-            var NoApproveWorld = packet.IsSteam ? ApproveLoadWorldReason.ModsSteamWorkShopFail : ApproveLoadWorldReason.ModsFilesFail;
-            var workDict = packet.IsSteam ? ServerManager.SteamFilesDict : ServerManager.ModFilesDict;
-            var foldersTree = packet.IsSteam ? ServerManager.ServerSettings.SteamDirConfig.FoldersTree : ServerManager.ServerSettings.ModsDirConfig.FoldersTree;
+            var NoApproveWorld = ServerManager.FileHashChecker.ApproveWorldType[packet.FolderType];
+            var filesDir = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].ServerDirectory;
+            var foldersTree = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].FolderTree;
+            var workDict = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].HashFiles;
+            var ignoredFiles = ServerManager.FileHashChecker.CheckedDirAndFiles[packet.FolderType].IgrnoredFiles;
 
             var result = new List<ModelFileInfo>();
-
             var allServerFiles = new HashSet<string>(workDict.Keys);
-            foreach (var file in packet.Files)
-            {
-                if (workDict.TryGetValue(file.FileName, out ModelFileInfo fileInfo))
-                {
-                    allServerFiles.Remove(file.FileName); // 
+            var packetFiles = packet.Files != null ? packet.Files : new List<ModelFileInfo>(0);
 
-                    if (!ModelFileInfo.UnsafeByteArraysEquale(file.Hash, fileInfo.Hash))
+            long packetSize = 0;
+            long totalSize = 0;
+
+            foreach (var modelFile in packetFiles)
+            {
+                var modelFileFileName = modelFile.FileName.ToLower();
+                if (FileHashChecker.FileNameContainsIgnored(modelFileFileName, ignoredFiles))
+                {
+                    continue;
+                }
+
+                if (workDict.TryGetValue(modelFileFileName, out ModelFileInfo fileInfo))
+                {
+                    allServerFiles.Remove(modelFileFileName); // 
+
+                    if (!ModelFileInfo.UnsafeByteArraysEquale(modelFile.Hash, fileInfo.Hash))
                     {
                         // read file for send to Client      
                         // файл  найден, но хеши не совпадают, необходимо заменить файл
-                        result.Add(GetFile(modsDir, fileInfo.FileName));
+                        if (packetSize < MaxPacketSize)
+                        {
+                            var addFile = GetFile(filesDir, fileInfo.FileName);
+                            result.Add(addFile);
+                            packetSize += addFile.Size;
+                            totalSize += addFile.Size;
+                            //Loger.Log($"packetSize={packetSize} totalSize={totalSize}");
+                        }
+                        else
+                        {
+                            var size = GetFileSize(filesDir, fileInfo.FileName);
+                            totalSize += size;
+                        }
                     }
                 }
                 else
                 {
                     // mark file for delete 
                     // Если файл с таким именем не найден, помечаем файл на удаление
-                    file.Hash = null;
-                    result.Add(file);
+                    modelFile.Hash = null;
+                    result.Add(modelFile);
                 }
             }
 
@@ -64,7 +89,19 @@ namespace ServerOnlineCity.Services
                     context.Player.ApproveLoadWorldReason = context.Player.ApproveLoadWorldReason | ApproveLoadWorldReason.NotAllFilesOnClient;
                     foreach (var fileName in allServerFiles)
                     {
-                        result.Add(GetFile(modsDir, fileName));
+                        if (packetSize < MaxPacketSize)
+                        {
+                            var addFile = GetFile(filesDir, workDict[fileName].FileName); //workDict[fileName].FileName вместо fileName для восстановления заглавных
+                            result.Add(addFile); 
+                            packetSize += addFile.Size;
+                            totalSize += addFile.Size;
+                            //Loger.Log($"packetSize={packetSize} totalSize={totalSize}");
+                        }
+                        else
+                        {
+                            var size = GetFileSize(filesDir, workDict[fileName].FileName);
+                            totalSize += size;
+                        }
                     }
                 }
 
@@ -85,8 +122,9 @@ namespace ServerOnlineCity.Services
             return new ModelModsFiles()
             {
                 Files = result,
-                IsSteam = packet.IsSteam,
-                FoldersTree = foldersTree
+                FolderType = packet.FolderType,
+                FoldersTree = foldersTree,
+                TotalSize = totalSize, 
             };
         }
 
@@ -95,7 +133,14 @@ namespace ServerOnlineCity.Services
             var newFile = new ModelFileInfo() { FileName = fileName };
             var fullname = Path.Combine(rootDir, fileName);
             newFile.Hash = File.ReadAllBytes(fullname);
+            newFile.Size = newFile.Hash.Length;
             return newFile;
+        }
+
+        private long GetFileSize(string rootDir, string fileName)
+        {
+            var fullname = Path.Combine(rootDir, fileName);
+            return new FileInfo(fullname).Length;
         }
     }
 }

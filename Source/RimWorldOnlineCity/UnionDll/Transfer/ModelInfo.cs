@@ -1,4 +1,5 @@
 ﻿using Model;
+using OCUnion;
 using System;
 
 namespace Transfer
@@ -19,14 +20,17 @@ namespace Transfer
         public bool NeedCreateWorld { get; set; }
 
         public string Seed { get; set; }
+        public string ScenarioName { get; set; }
         public int MapSize { get; set; }
         public float PlanetCoverage { get; set; }
-        public int Difficulty { get; set; }
+        public string Difficulty { get; set; }
         public int DelaySaveGame { get; set; }
         public bool DisableDevMode { get; set; }
         public int MinutesIntervalBetweenPVP { get; set; }
         public bool EnableFileLog { get; set; }
         public DateTime TimeChangeEnablePVP { get; set; }
+        public bool ProtectingNovice { get; set; }
+        public ServerGeneralSettings GeneralSettings { get; set; }
 
         public DateTime ServerTime { get; set; }
 
@@ -39,5 +43,6 @@ namespace Transfer
         /// Заполняется только при WorldLoad() GetInfo = 3
         /// </summary>
         public byte[] SaveFileData { get; set; }
+
     }
 }

@@ -52,6 +52,7 @@ namespace ServerOnlineCity
                     var item = data.WorldObjects[i];
                     if (item.LoginOwner != login) continue;
                     //удаление из базы
+                    i--;
                     item.UpdateTime = DateTime.UtcNow;
                     data.WorldObjects.Remove(item);
                     data.WorldObjectsDeleted.Add(item);
@@ -100,7 +101,7 @@ namespace ServerOnlineCity
                         + Data.PlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
                         );
 
-                    ChatManager.Instance.NewChatManager(Data.MaxIdChat, Data.PlayersAll[0].Chats.Keys.First());
+                    ChatManager.Instance.NewChatManager(Data.MaxIdChat, Data.PlayerSystem.Chats.Keys.First());
                 }
             }
 

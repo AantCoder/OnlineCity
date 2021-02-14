@@ -67,6 +67,7 @@ namespace OC.Chat
 
         public void Disconnected(string msg = "Error Connection.")
         {
+            //зачем этот запрос? Похоже он не заполняет My
             var login = _sessionClient.GetInfo(OCUnion.Transfer.ServerInfoType.Short).My.Login;
             _sessionClient.Disconnect();
         }

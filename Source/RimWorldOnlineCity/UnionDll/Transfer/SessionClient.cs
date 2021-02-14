@@ -7,6 +7,7 @@ using Transfer;
 using Util;
 using Model;
 using OCUnion.Transfer.Model;
+using OCUnion.Transfer;
 
 namespace Transfer
 {
@@ -15,9 +16,22 @@ namespace Transfer
         public const int DefaultPort = 19019; // :) https://www.random.org/integers/?num=1&min=5001&max=49151&col=5&base=10&format=html&rnd=new
         public const bool UseCryptoKeys = false;
         private Object LockObj = new Object();
+
+        public Action<int, string, ModelStatus> OnPostingChatAfter;
+        public Func<int, string, ModelStatus> OnPostingChatBefore;
+
         #region
 
-        public volatile bool IsLogined = false;
+        /// <summary>
+        /// Поддерживаем статус открытого соединения пока пытаемся переподключиться, чтобы не разблокировать уязвимости обычной игры
+        /// </summary>
+        public static bool IsRelogin = false;
+        public bool IsLogined
+        {
+            get { return IsLogined_ || IsRelogin; }
+            private set { IsLogined_ = value; }
+        }
+        private volatile bool IsLogined_ = false;
 
         public ConnectClient Client;
         private byte[] Key;
@@ -253,43 +267,10 @@ namespace Transfer
         }
         #endregion
 
-        /*
-1 - регистрация (логин, пароль)
-2 - ответ регистрации (успешно, сообщение)
-3 - вход (логин, пароль)
-4 - ответ на вход (успешно, сообщение)
-5 - запрос информации 
-6 - информация о самом пользователе
-7 - создать мир (всё, что нужно для начала работы сервера)
-8 - ответ на 7 (успешно, сообщение)
- 9 - созадть поселение (запрос с данными о поселении нового игрока, всё что передается после создания карты поселения игроком)
- 10 - ответ на 9 (успешно, сообщение)
-11 - синхронизация мира (тип синхранезации, время последней синхронизации, все данные для сервера)
-12 - ответ на 11 (время сервера, все данные мира которые изменились с указанного времени)
- 13 - создать игру (id лобби)
- 14 - ответ (сиид для создания мира, ?)
-15 - отправка игрового действия (данные для обновления на сервере)
-16 - ответ (успешно, сообщение)
-17 - обновить чат (время после которого нужны данные)
-18 - данные чата
-19 - написать в чат (id канала, сообщение) //здесь же командами создать канал, добавить в канал и прочее
-20 - ответ (успешно, сообщение)
-21 - команды работы с биржей
-22 - ответ 
-23 - команды работы с биржей
-24 - ответ 
-25 - команды работы с биржей
-26 - ответ 
-27 - атака онлайн
-28 - ответ  
-29 - атакуемый онлайн
-30 - ответ 
-        */
-
-        public bool Registration(string login, string pass)
+        public bool Registration(string login, string pass, string email)
         {
-            var packet = new ModelLogin() { Login = login, Pass = pass };
-            var good = TransStatus(packet, 1, 2);
+            var packet = new ModelLogin() { Login = login, Pass = pass, Email = email };
+            var good = TransStatus(packet, (int)PackageType.Request1Register, (int)PackageType.Response2Register);
 
             if (good) IsLogined = true;
             return good;
@@ -298,7 +279,7 @@ namespace Transfer
         public bool Login(string login, string pass)
         {
             var packet = new ModelLogin() { Login = login, Pass = pass };
-            var good = TransStatus(packet, 3, 4);
+            var good = TransStatus(packet, (int)PackageType.Request3Login, (int)PackageType.Response4Login);
 
             if (good) IsLogined = true;
             return good;
@@ -307,24 +288,24 @@ namespace Transfer
         public bool Reconnect(string login, string key)
         {
             var packet = new ModelLogin() { Login = login, KeyReconnect = key };
-            var good = TransStatus(packet, 3, 4);
+            var good = TransStatus(packet, (int)PackageType.Request3Login, (int)PackageType.Response4Login);
 
             if (good) IsLogined = true;
             return good;
         }
 
-        public ModelInfo GetInfo(OCUnion.Transfer.ServerInfoType serverInfoType)
+        public ModelInfo GetInfo(ServerInfoType serverInfoType)
         {
             Loger.Log("Client GetInfo " + serverInfoType.ToString());
             var packet = new ModelInt() { Value = (int)serverInfoType };
-            var stat = TransObject<ModelInfo>(packet, 5, 6);
+            var stat = TransObject<ModelInfo>(packet, (int)PackageType.Request5UserInfo, (int)PackageType.Response6UserInfo);
             return stat;
         }
 
         public ModelPlayToClient PlayInfo(ModelPlayToServer info)
         {
             //Loger.Log("Client PlayInfo "/* + info.TypeInfo.ToString()*/);
-            var stat = TransObject<ModelPlayToClient>(info, 11, 12);
+            var stat = TransObject<ModelPlayToClient>(info, (int)PackageType.Request11, (int)PackageType.Response12);
             return stat;
         }
 
@@ -332,7 +313,7 @@ namespace Transfer
         {
             Loger.Log("Client UpdateChat " + modelUpdate.Time.ToGoodUtcString());
             var packet = modelUpdate;
-            var stat = TransObject<ModelUpdateChat>(packet, 17, 18);
+            var stat = TransObject<ModelUpdateChat>(packet, (int)PackageType.Request17, (int)PackageType.Response18);
     
             return stat;
         }
@@ -340,10 +321,19 @@ namespace Transfer
         public ModelStatus PostingChat(int chatId, string msg)
         {
             Loger.Log("Client PostingChat " + chatId.ToString() + ", " + msg);
+
+            if (OnPostingChatBefore != null)
+            {
+                var cancel = OnPostingChatBefore(chatId, msg);
+                if (cancel != null) return cancel;
+            }
+
             var packet = new ModelPostingChat() { IdChat = chatId, Message = msg };
-            var stat = TransObject<ModelStatus>(packet, 19, 20);
+            var stat = TransObject<ModelStatus>(packet, (int)PackageType.Request19PostingChat, (int)PackageType.Response20PostingChat);
 
             ErrorMessage = stat?.Message;
+
+            if (OnPostingChatAfter != null) OnPostingChatAfter(chatId, msg, stat);
 
             return stat;
         }
@@ -352,6 +342,15 @@ namespace Transfer
         {
             var stat = TransObject2<Player>(guidToken, PackageType.RequestPlayerByToken, PackageType.ResponsePlayerByToken);
 
+            return stat;
+        }
+
+        //WIP World Object
+        public ModelGameServerInfo GetGameServerInfo()
+        {
+            Loger.Log("Client Get WorldObject From Server");
+            var packet = new ModelInt() { Value = 1 };
+            var stat = TransObject<ModelGameServerInfo>(packet, (int)PackageType.Request43WObjectUpdate, (int)PackageType.Response44WObjectUpdate);
             return stat;
         }
     }

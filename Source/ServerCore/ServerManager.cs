@@ -27,9 +27,9 @@ namespace ServerOnlineCity
     {
         public int MaxActiveClientCount = 10000; //todo провверить корректность дисконнекта
         public static ServerSettings ServerSettings = new ServerSettings();
-        public static IReadOnlyDictionary<string, ModelFileInfo> ModFilesDict;
-        public static IReadOnlyDictionary<string, ModelFileInfo> SteamFilesDict;
 
+        public static FileHashChecker FileHashChecker;
+       
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
 
@@ -51,10 +51,19 @@ namespace ServerOnlineCity
             get { return _ActiveClientCount; }
         }
 
-        public void Start(string path)
+        private string GetSettingsFileName(string path)
         {
-            //var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
-            var jsonFile = Path.Combine(path, "Settings.json");
+            return Path.Combine(path, "Settings.json");
+        }
+
+        private string GetWorldFileName(string path)
+        {
+            return Path.Combine(path, "World.dat");
+        }
+
+        public bool StartPrepare(string path)
+        {
+            var jsonFile = GetSettingsFileName(path);
             if (!File.Exists(jsonFile))
             {
                 using (StreamWriter file = File.CreateText(jsonFile))
@@ -67,7 +76,7 @@ namespace ServerOnlineCity
                 Console.WriteLine($"RU: Настройте сервер, заполните {jsonFile}");
                 Console.WriteLine("Enter some key");
                 Console.ReadKey();
-                return;
+                return false;
             }
             else
             {
@@ -91,7 +100,7 @@ namespace ServerOnlineCity
                         }
 
                         Console.ReadKey();
-                        return;
+                        return false;
                     }
                 }
                 catch (Exception ex)
@@ -100,7 +109,7 @@ namespace ServerOnlineCity
                     Console.WriteLine($"RU: Проверьте настройки сервера {jsonFile}");
                     Console.WriteLine("EN: Check Settings.json");
                     Console.ReadKey();
-                    return;
+                    return false;
                 }
             }
 
@@ -109,10 +118,17 @@ namespace ServerOnlineCity
             Loger.IsServer = true;
 
             var rep = Repository.Get;
-            rep.SaveFileName = Path.Combine(path, "World.dat");
+            rep.SaveFileName = GetWorldFileName(path);
             rep.Load();
             CheckDiscrordUser();
-            createFilesDictionary();
+            FileHashChecker = new FileHashChecker(ServerSettings);
+
+            return true;
+        }
+
+        public void Start()
+        {
+            var rep = Repository.Get;
 
             //общее обслуживание
             rep.Timer.Add(1000, DoWorld);
@@ -123,6 +139,8 @@ namespace ServerOnlineCity
                 rep.Save(true);
             });
 
+            //ServerManager.ServerSettings.AutoSaveStatisticsFile SavePlayerStatisticsFile()
+
             //ActiveClientCount = 0;
 
             Connect = new ConnectServer();
@@ -131,71 +149,7 @@ namespace ServerOnlineCity
             Loger.Log($"Server starting on port: {ServerSettings.Port}");
             Connect.Start(null, ServerSettings.Port);
         }
-
-        private void createFilesDictionary()
-        {
-            if (!ServerSettings.IsModsWhitelisted)
-            {
-                return;
-            }
-
-            // 1. Создаем словарь со всеми файлами
-            Loger.Log($"Calc hash {ServerSettings.ModsDirectory}");
-            var modFiles = FileChecker.GenerateHashFiles(ServerSettings.ModsDirectory, Directory.GetDirectories(ServerSettings.ModsDirectory));
-            Loger.Log($"Calc hash {ServerSettings.SteamWorkShopModsDir}");
-            ///!!!!!!!!!!!!!!!! STEAM FOLDER CHECK SWITCH HERE  !!!!!!!!!!!!!!!
-            // 1. Если будем использовать steamworkshop диреторию, эти две строчки ниже закомментировать 
-            // 2. remove JsobIgnrore atribbute in ServerSettings  
-            ServerSettings.SteamWorkShopModsDir = Environment.CurrentDirectory;
-            ///!!!!!!!!!!!!!!!! STEAM FOLDER CHECK SWITCH HERE  !!!!!!!!!!!!!!!
-            var steamFiles = FileChecker.GenerateHashFiles(ServerSettings.SteamWorkShopModsDir, new string[0]);
-
-            ModFilesDict = modFiles.ToDictionary(f => f.FileName);
-            SteamFilesDict = steamFiles.ToDictionary(f => f.FileName);
-
-            // 2. Создаем файлы со списком разрешенных папок, которые отправим клиенту
-            var modsFolders = new ModelFileInfo() // 0 
-            {
-                FileName = "ApprovedMods.txt",
-                Hash = FileChecker.CreateListFolder(ServerSettings.ModsDirectory)
-            }; 
-            var steamFolders = new ModelFileInfo() // 1 
-            {
-                FileName = "ApprovedSteamWorkShop.txt",
-                Hash = FileChecker.CreateListFolder(ServerSettings.SteamWorkShopModsDir)
-            }; 
-            var modsConfigFileName = Path.Combine(ServerSettings.WorkingDirectory, "ModsConfig.xml");
-            var modsConfig = new ModelFileInfo() // 2
-            {
-                FileName = "ModsConfig.xml",
-                Hash = Encoding.UTF8.GetBytes(File.ReadAllText(modsConfigFileName))
-            };
-            // index: 0 - list Folders in Mods dir, 1 -list Folders in Steam dir , 2 - ModsConfig.xml 
-            ServerSettings.AppovedFolderAndConfig = new ModelModsFiles()
-            {
-                Files = new List<ModelFileInfo>()
-                {
-                    modsFolders,
-                    steamFolders,
-                    modsConfig,
-                }
-            };
-
-            ServerSettings.ModsDirConfig = new ModelModsFiles()
-            {
-                IsSteam = false,
-                Files = new List<ModelFileInfo>() { modsFolders },
-                FoldersTree = FoldersTree.GenerateTree(ServerSettings.ModsDirectory),
-            };
-
-            ServerSettings.SteamDirConfig = new ModelModsFiles()
-            {
-                IsSteam = true,
-                Files = new List<ModelFileInfo>() { steamFolders },
-                FoldersTree = FoldersTree.GenerateTree(ServerSettings.SteamWorkShopModsDir),
-            };
-        }
-
+       
         /// <summary>
         /// check and create if it is necessary DiscrordUser
         /// </summary>
@@ -223,17 +177,21 @@ namespace ServerOnlineCity
             Repository.Get.Save();
         }
 
+        private long DoWorldCountRun = -1;
+
         /// <summary>
         /// Общее обслуживание мира
         /// </summary>
         private void DoWorld()
         {
+            DoWorldCountRun++;
+
             HashSet<string> allLogins = null;
             //Есть ли какие-то изменения в списках пользователей
             bool changeInPlayers = false;
 
             ///Обновляем кто кого видит
-            
+
             foreach (var player in Repository.GetData.PlayersAll)
             {
                 var pl = ChatManager.Instance.PublicChat.PartyLogin;
@@ -242,7 +200,7 @@ namespace ServerOnlineCity
                 changeInPlayers = true;
 
                 if (player.IsAdmin
-                    || true //todo переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
+                    || true //to do переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
                     )
                 {
                     if (allLogins == null) allLogins = new HashSet<string>(Repository.GetData.PlayersAll.Select(p => p.Public.Login));
@@ -265,10 +223,10 @@ namespace ServerOnlineCity
                         .ToList();
 
                     //те, кто запустил спутники
-                    //todo когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
+                    //to do когда сделаем, то потом, может быть, стоит это убрать для тех кто не построил ещё хотя бы консоль связи
 
                     //и те кто географически рядом
-                    //todo
+                    //to do
 
                     //себя и system
                     if (!plNeed.Any(p => p == player.Public.Login)) plNeed.Add(player.Public.Login);
@@ -285,37 +243,40 @@ namespace ServerOnlineCity
 
             /// Удаляем колонии за которые давно не заходили, игровое время которых меньше полугода и ценность в них меньше второй иконки
 
-            var minCostForTrade = 25000; // эту цифру изменять вместе с CaravanOnline.GetFloatMenuOptions()
-            foreach (var player in Repository.GetData.PlayersAll)
+            if (DoWorldCountRun % 10 == 0)
             {
-                if (player.Public.LastSaveTime == DateTime.MinValue) continue;
-                if (player.Public.LastTick > 3600000 / 2) continue;
+                if (ServerManager.ServerSettings.DeleteAbandonedSettlements)
+                {
+                    var minCostForTrade = 25000; // эту цифру изменять вместе с CaravanOnline.GetFloatMenuOptions()
+                    foreach (var player in Repository.GetData.PlayersAll)
+                    {
+                        if (player.Public.LastSaveTime == DateTime.MinValue) continue;
+                        if (player.Public.LastTick > 3600000 / 2) continue;
 
-                if ((DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays < 7) continue;
-                if ((DateTime.UtcNow - player.LastUpdateTime).TotalDays < 7) continue;
-                if ((DateTime.UtcNow - player.Public.LastSaveTime).TotalDays < 7) continue;
+                        if ((DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays < 7) continue;
+                        if ((DateTime.UtcNow - player.LastUpdateTime).TotalDays < 7) continue;
+                        if ((DateTime.UtcNow - player.Public.LastSaveTime).TotalDays < 7) continue;
 
-                if (player.IsAdmin) continue;
+                        if (player.IsAdmin) continue;
 
-                var costAll = player.CostWorldObjects();
-                if (costAll.BaseCount + costAll.CaravanCount == 0) continue;
-                if (costAll.MarketValue + costAll.MarketValuePawn == 0) continue; //какой-то сбой отсутствия данных
-                if (costAll.MarketValue + costAll.MarketValuePawn > minCostForTrade) continue;
-                
-                var msg = $"User {player.Public.Login} deleted settlements (game abandoned): " +
-                    $"cost {costAll.MarketValue + costAll.MarketValuePawn}, " +
-                    $"game days {player.Public.LastTick / 60000}, " +
-                    $"last online (day) {(int)(DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays} ";
+                        var costAll = player.CostWorldObjects();
+                        if (costAll.BaseCount + costAll.CaravanCount == 0) continue;
+                        if (costAll.MarketValue + costAll.MarketValuePawn == 0) continue; //какой-то сбой отсутствия данных
+                        if (costAll.MarketValue + costAll.MarketValuePawn > minCostForTrade) continue;
 
-                //блок удаления из AbandonHimSettlementCmd
+                        var msg = $"User {player.Public.Login} deleted settlements (game abandoned): " +
+                            $"cost {costAll.MarketValue + costAll.MarketValuePawn}, " +
+                            $"game days {player.Public.LastTick / 60000}, " +
+                            $"last online (day) {(int)(DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays} ";
 
-                ChatManager.Instance.AddSystemPostToPublicChat(msg);
+                        //блок удаления из AbandonHimSettlementCmd
 
-                Repository.DropUserFromMap(player.Public.Login);
-                Repository.GetSaveData.DeletePlayerData(player.Public.Login);
-                player.Public.LastSaveTime = DateTime.MinValue;
-                Repository.Get.ChangeData = true;
-                Loger.Log("Server " + msg);
+                        //ChatManager.Instance.AddSystemPostToPublicChat(msg); // раскоментировать, для поста в общий чат
+
+                        player.AbandonSettlement();
+                        Loger.Log("Server " + msg);
+                    }
+                }
             }
 
             /// Завершение
@@ -450,7 +411,25 @@ namespace ServerOnlineCity
             thread.IsBackground = true;
             thread.Start();
         }
-        
+
+        private List<SessionServer> Sessions = new List<SessionServer>();
+
+        /// <summary>
+        /// Обработать в событии все активные сессии. Корректно завершить выбранные сессии только через этот механизм
+        /// </summary>
+        /// <param name="act"></param>
+        private void SessionsAction(Action<SessionServer> act)
+        {
+            lock (Sessions)
+            {
+                for(int i = 0; i < Sessions.Count; i++)
+                {
+                    if (Sessions[i].IsActive) act(Sessions[i]);
+                    if (!Sessions[i].IsActive) Sessions.RemoveAt(i--);
+                }
+            }
+        }
+
         private void DoClient(ConnectClient client)
         {
             SessionServer session = null;
@@ -461,7 +440,15 @@ namespace ServerOnlineCity
                 {
                     Loger.Log($"New connect {addrIP} (connects: {ActiveClientCount})");
                     session = new SessionServer();
-                    session.Do(client);
+                    lock (Sessions)
+                    {
+                        Sessions.Add(session);
+                    }
+                    session.Do(client, SessionsAction);
+                }
+                catch (ObjectDisposedException)
+                {
+                    Loger.Log("Abort connect Relogin " + addrIP);
                 }
                 catch (Transfer.ConnectClient.ConnectSilenceTimeOutException)
                 {

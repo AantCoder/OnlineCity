@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Model;
 using OCUnion;
+using OCUnion.Transfer.Model;
 using ServerOnlineCity.Common;
 using ServerOnlineCity.Model;
 using Transfer;
+using Transfer.ModelMails;
 
 namespace ServerOnlineCity.Services
 {
     internal sealed class PlayInfo : IGenerateResponseContainer
     {
-        public int RequestTypePackage => 11;
+        public int RequestTypePackage => (int)PackageType.Request11;
 
-        public int ResponseTypePackage => 12;
+        public int ResponseTypePackage => (int)PackageType.Response12;
 
         public ModelContainer GenerateModelContainer(ModelContainer request, ServiceContext context)
         {
@@ -46,6 +48,10 @@ namespace ServerOnlineCity.Services
                 {
                     Repository.GetSaveData.SavePlayerData(context.Player.Public.Login, packet.SaveFileData, packet.SingleSave);
                     context.Player.Public.LastSaveTime = timeNow;
+
+                    //Действия при сохранении, оно происодит только здесь!
+                    context.Player.MailsConfirmationSave = new List<ModelMail>();
+
                     Repository.Get.ChangeData = true;
                 }
                 context.Player.Public.LastTick = packet.LastTick;
@@ -156,23 +162,67 @@ namespace ServerOnlineCity.Services
                         }
                     }
 
+                    //World Object Online
+                    if (ServerManager.ServerSettings.GeneralSettings.EquableWorldObjects)
+                    {
+                        try
+                        {
+                            if (packet.WObjectOnlineToDelete != null && packet.WObjectOnlineToDelete.Count > 0)
+                            {
+                                data.WorldObjectOnlineList.RemoveAll(data => packet.WObjectOnlineToDelete.Any(pkt => ValidateWorldObject(pkt, data)));
+                            }
+                            if (packet.WObjectOnlineToAdd != null && packet.WObjectOnlineToAdd.Count > 0)
+                            {
+                                data.WorldObjectOnlineList.AddRange(packet.WObjectOnlineToAdd);
+                            }
+                            if (packet.WObjectOnlineList != null && packet.WObjectOnlineList.Count > 0)
+                            {
+                                if (data.WorldObjectOnlineList.Count == 0)
+                                {
+                                    data.WorldObjectOnlineList = packet.WObjectOnlineList;
+                                }
+                                else if (data.WorldObjectOnlineList != null && data.WorldObjectOnlineList.Count > 0)
+                                {
+                                    toClient.WObjectOnlineToDelete = packet.WObjectOnlineList.Where(pkt => !data.WorldObjectOnlineList.Any(data => ValidateWorldObject(pkt, data))).ToList();
+                                    toClient.WObjectOnlineToAdd = data.WorldObjectOnlineList.Where(data => !packet.WObjectOnlineList.Any(pkt => ValidateWorldObject(pkt, data))).ToList();
+                                }
+                            }
+                            toClient.WObjectOnlineList = data.WorldObjectOnlineList;
+                        }
+                        catch
+                        {
+                            Loger.Log("ERROR PLAYINFO World Object Online");
+                        }
+                    }
+
                     //завершили сбор информации клиенту
                     toClient.WObjects = outWO;
                     toClient.WObjectsToDelete = outWOD;
                     context.Player.LastUpdateTime = timeNow;
                 }
 
+                //обновляем состояние отложенной отправки писем
+                if (context.Player.FunctionMails.Count > 0)
+                {
+                    for (int i = 0; i < context.Player.FunctionMails.Count; i++)
+                    {
+                        var needRemove = context.Player.FunctionMails[i].Run(context);
+                        if (needRemove) context.Player.FunctionMails.RemoveAt(i--);
+                    }
+                }
+
                 //прикрепляем письма
                 //если есть команда на отключение без сохранения, то посылаем только одно это письмо
-                var md = context.Player.Mails.FirstOrDefault(m => m.Type == ModelMailTradeType.AttackCancel);
+                var md = context.Player.Mails.FirstOrDefault(m => m is ModelMailAttackCancel);
                 if (md == null)
                 {
                     toClient.Mails = context.Player.Mails;
-                    context.Player.Mails = new List<ModelMailTrade>();
+                    context.Player.MailsConfirmationSave.AddRange(context.Player.Mails.Where(m => m.NeedSaveGame).ToList());
+                    context.Player.Mails = new List<ModelMail>();
                 }
                 else
                 {
-                    toClient.Mails = new List<ModelMailTrade>() { md };
+                    toClient.Mails = new List<ModelMail>() { md };
                     context.Player.Mails.Remove(md);
                 }
 
@@ -184,6 +234,16 @@ namespace ServerOnlineCity.Services
 
                 return toClient;
             }
+        }
+
+        private static bool ValidateWorldObject(WorldObjectOnline pkt, WorldObjectOnline data)
+        {
+            if(pkt.Name == data.Name
+                && pkt.Tile == data.Tile)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

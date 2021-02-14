@@ -15,12 +15,13 @@ namespace RimWorldOnlineCity
     public class GameStarter
     {
         public static Scenario SetScenario = null;
+        public static string SetScenarioName = null;
         public static int SetMapSize = 0;
         public static float SetPlanetCoverage = 0;
         public static string SetSeed = null;
         public static OverallRainfall SetOverallRainfall = OverallRainfall.Normal;
         public static OverallTemperature SetOverallTemperature = OverallTemperature.Normal;
-        public static int SetDifficulty = 0;        //todo
+        public static string SetDifficulty = null;        //todo
         public static Action AfterStart = null;
         public static List<Pawn> SetPawns = null;
         //public static bool DisableAllRandom = false;
