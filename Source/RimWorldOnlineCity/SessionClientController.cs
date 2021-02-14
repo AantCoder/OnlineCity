@@ -708,8 +708,35 @@ namespace RimWorldOnlineCity
                     return;
                 }
 
-                CheckFiles((checkFiles) => InitConnectedPart2(serverInfo, checkFiles));
+                if (!string.IsNullOrEmpty(Data.GeneralSettings.EntranceWarning))
+                {
+                    //определяем локализованные сообщения
+                    var entranceWarning = MainHelper.CultureFromGame.StartsWith("Russian")
+                        ? Data.GeneralSettings.EntranceWarningRussian
+                        : null;
+                    //если на нужном языке нет, то выводим по умолчанию
+                    if (string.IsNullOrEmpty(entranceWarning))
+                    {
+                        entranceWarning = Data.GeneralSettings.EntranceWarning;
+                    }
 
+                    var form = new Dialog_Input(serverInfo.ServerName + " (" + ModBaseData.GlobalData.LastIP.Value + ")", entranceWarning, false);
+                    Find.WindowStack.Add(form);
+                    form.PostCloseAction = () =>
+                    {
+                        if (!form.ResultOK)
+                        {
+                            Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate(), () => ModsConfig.RestartFromChangedMods());
+                            return;
+                        }
+
+                        CheckFiles((checkFiles) => InitConnectedPart2(serverInfo, checkFiles));
+                    };
+                }
+                else
+                {
+                    CheckFiles((checkFiles) => InitConnectedPart2(serverInfo, checkFiles));
+                }
             }
             catch (Exception ext)
             {

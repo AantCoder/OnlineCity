@@ -79,6 +79,16 @@ namespace OCUnion
         /// </summary>
         public int StartGameYear { get; set; }
 
+        /// <summary>
+        /// Предупреждение при входе на сервер.
+        /// </summary>
+        public string EntranceWarning { get; set; }
+
+        /// <summary>
+        /// Предупреждение при входе на сервер. На русском.
+        /// </summary>
+        public string EntranceWarningRussian { get; set; }
+
         public ServerGeneralSettings SetDefault()
         {
             EnablePVP = true;
