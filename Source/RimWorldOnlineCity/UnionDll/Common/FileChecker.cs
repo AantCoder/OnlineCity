@@ -261,6 +261,7 @@ namespace OCUnion.Common
                     rep.RemoveAt(i--);
                 }
             }
+            computeHash.Wait();
         }
 
         private static bool ApproveExt(string fileName)
