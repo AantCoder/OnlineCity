@@ -203,7 +203,7 @@ namespace OCUnion.Common
                 var oldHash = mfi.Hash;
                 mfi.Hash = getCheckSum(file);
                 mfi.Size = new FileInfo(file).Length;
-                Loger.Log($"ReHashFile {file} {(oldHash == null ? "" : Convert.ToBase64String(oldHash))}" +
+                if (MainHelper.DebugMode) Loger.Log($"ReHashFile {file} {(oldHash == null ? "" : Convert.ToBase64String(oldHash))}" +
                     $"->{(mfi.Hash == null ? "" : Convert.ToBase64String(mfi.Hash))}");
             }
         }
