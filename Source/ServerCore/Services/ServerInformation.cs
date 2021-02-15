@@ -57,7 +57,6 @@ namespace ServerOnlineCity.Services
                                 }
                             }
 
-                            Loger.Log($"Load World for {context.Player.Public.Login}");
                             result.SaveFileData = Repository.GetSaveData.LoadPlayerData(context.Player.Public.Login, 1);
 
                             if (result.SaveFileData != null)
@@ -84,6 +83,7 @@ namespace ServerOnlineCity.Services
                                     Loger.Log($"MailsConfirmationSave (mails={context.Player.Mails.Count})");
                                 }
                             }
+                            Loger.Log($"Load World for {context.Player.Public.Login}. (mails={context.Player.Mails.Count}, fMails={context.Player.FunctionMails.Count})");
 
                             return result;
                         }

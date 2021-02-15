@@ -9,6 +9,15 @@ namespace OCUnion
     [Serializable]
     public struct ServerGeneralSettings
     {
+        /// <summary>
+        /// Включить режим нападения игроков друг на друга онлайн с ограниченным управлением
+        /// </summary>
+        public bool EnablePVP { get; set; }
+
+        /// <summary>
+        /// Запретить менять настройки рассказчика и модификаций в игре
+        /// </summary>
+        public bool DisableGameSettings { get; set; }
 
         /// <summary>
         /// Разрешены ли инценденты
@@ -65,8 +74,27 @@ namespace OCUnion
         /// </summary>
         public int ExchengeAddPrecentCostForFastCargoDelivery { get; set; }
 
+        /// <summary>
+        /// Назначит стартовый год в игре вместо 5500
+        /// </summary>
+        public int StartGameYear { get; set; }
+
+        /// <summary>
+        /// Предупреждение при входе на сервер.
+        /// </summary>
+        public string EntranceWarning { get; set; }
+
+        /// <summary>
+        /// Предупреждение при входе на сервер. На русском.
+        /// </summary>
+        public string EntranceWarningRussian { get; set; }
+
         public ServerGeneralSettings SetDefault()
         {
+            EnablePVP = true;
+
+            DisableGameSettings = false;
+
             IncidentEnable = true;
 
             IncidentCountInOffline = 2;
@@ -88,6 +116,8 @@ namespace OCUnion
             ExchengeCostCargoDelivery = 1000;
 
             ExchengeAddPrecentCostForFastCargoDelivery = 100;
+
+            StartGameYear = -1;
 
             return this;
         }

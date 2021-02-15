@@ -267,9 +267,9 @@ namespace Transfer
         }
         #endregion
 
-        public bool Registration(string login, string pass)
+        public bool Registration(string login, string pass, string email)
         {
-            var packet = new ModelLogin() { Login = login, Pass = pass };
+            var packet = new ModelLogin() { Login = login, Pass = pass, Email = email };
             var good = TransStatus(packet, (int)PackageType.Request1Register, (int)PackageType.Response2Register);
 
             if (good) IsLogined = true;

@@ -35,6 +35,9 @@ namespace Transfer.ModelMails
         Quest,
         Bombing,
         Acid,
+        EMP,
+        Pack,
+        Eclipse,
     }
     public enum IncidentStrategys
     {

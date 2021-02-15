@@ -50,6 +50,7 @@ namespace ServerOnlineCity.Services
                 Pass = packet.Pass,
                 IsAdmin = isAdmin,
             };
+            context.Player.Public.EMail = packet.Email;
 
             context.Player.Public.Grants = Grants.UsualUser;
             if (isAdmin)
