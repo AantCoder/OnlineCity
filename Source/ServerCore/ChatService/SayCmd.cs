@@ -18,7 +18,7 @@ namespace ServerOnlineCity.ChatService
         //только для модераторов и админов
         public Grants GrantsForRun => Grants.SuperAdmin | Grants.Moderator | Grants.DiscordBot;
 
-        public string Help => ChatManager.prefix + "/say {UserLogin | system} {/color} {Label} {text}";
+        public string Help => ChatManager.prefix + "say {UserLogin | system} {/color} {Label} {text}";
 
         private readonly ChatManager _chatManager;
 
@@ -33,7 +33,7 @@ namespace ServerOnlineCity.ChatService
             if (argsM.Count < 3)
             {
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                   "Необходимо минимум 3 аргумента: имя игрока, заголовок, текст".NeedTranslate());
+                   "OC_IncdidentMessadge_ArgErr"); // Необходимо минимум 3 аргумента: имя игрока, заголовок, текст
             }
             int argNum = 0;
 
@@ -45,7 +45,7 @@ namespace ServerOnlineCity.ChatService
             if (targetPlayer == player)
             {
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                "Нельзя указывать самого себя".NeedTranslate());
+                    "OC_IncdidentMessadge_targetErr");// Нельзя указывать самого себя
             }
 
             ModelMailMessadge.MessadgeTypes type = ModelMailMessadge.MessadgeTypes.Neutral;
@@ -80,7 +80,7 @@ namespace ServerOnlineCity.ChatService
                         break;
                     default:
                         return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                        "Неверный тип сообщения".NeedTranslate());
+                        "OC_IncdidentMessadge_typeErr");  // Неверный тип сообщения
                 }
                 argNum++;
             }

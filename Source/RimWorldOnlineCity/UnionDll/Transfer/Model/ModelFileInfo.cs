@@ -17,6 +17,7 @@ namespace OCUnion.Transfer.Model
         /// </summary>
         public string FileName { get; set; }
         public byte[] Hash { get; set; }
+        public long Size { get; set; }
 
         public override int GetHashCode()
         {

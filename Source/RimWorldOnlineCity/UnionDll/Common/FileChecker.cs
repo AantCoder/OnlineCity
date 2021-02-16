@@ -6,6 +6,7 @@ using OCUnion.Transfer.Model;
 using OCUnion.Transfer;
 using System.Text;
 using System;
+using System.Threading.Tasks;
 
 namespace OCUnion.Common
 {
@@ -26,29 +27,65 @@ namespace OCUnion.Common
 
         public static readonly string[] IgnoredConfigFiles = { "KeyPrefs.xml", "Knowledge.xml", "LastPlayedVersion.txt", "Prefs.xml" };
 
-        public static byte[] GetCheckSum(string fileName)
+        private class FastComputeHash
         {
-            if (!File.Exists(fileName))
-            {
-                return new byte[0];
-            }
+            public Task<byte[]> ReadFile;
 
-            return getCheckSum(fileName);
+            public Task GetHash;
+
+            public void Wait()
+            {
+                if (GetHash != null) GetHash.Wait();
+            }
         }
 
-        private static byte[] getCheckSum(string fileName)
+        private static void GetCheckSum(ModelFileInfo mfi, string fileName, FastComputeHash computeHash)
         {
-            using (var fs = new FileStream(fileName, FileMode.Open))
+            try
             {
+                if (computeHash.ReadFile != null) computeHash.ReadFile.Wait();
+
+                computeHash.ReadFile = Task.Run(() =>
+                {
+                    try
+                    {
+                        if (!File.Exists(fileName)) return null;
+                        var fileData = File.ReadAllBytes(fileName);
+                        mfi.Size = fileData.Length;
+                        return fileData;
+                    }
+                    catch (Exception exp)
+                    {
+                        ExceptionUtil.ExceptionLog(exp, "GetCheckSum 2 " + fileName);
+                    }
+                    return null;
+                });
+                computeHash.GetHash = computeHash.ReadFile.ContinueWith((task) =>
+                {
+                    try
+                    {
+                        if (task.Result == null) mfi.Hash = null;
+                        var sha = SHA512.Create();
+                        mfi.Hash = sha.ComputeHash(task.Result);
+                    }
+                    catch(Exception exp)
+                    {
+                        ExceptionUtil.ExceptionLog(exp, "GetCheckSum 3 " + fileName);
+                    }
+                });
+
+                /*
                 var sha = SHA512.Create();
-                return sha.ComputeHash(fs);
+                using (var fs = new FileStream(fileName, FileMode.Open))
+                {
+                    return sha.ComputeHash(fileData);
+                }
+                */
             }
-        }
-
-        public static byte[] GetCheckSum(byte[] file)
-        {
-            var sha = SHA512.Create();
-            return sha.ComputeHash(file);
+            catch(Exception exp)
+            {
+                ExceptionUtil.ExceptionLog(exp, "GetCheckSum 1 " + fileName);
+            }
         }
 
         public static void FileSynchronization(string modsDir, ModelModsFiles serverFiles)
@@ -100,8 +137,9 @@ namespace OCUnion.Common
                 return result;
             }
 
-            var checkFolders = Directory.GetDirectories(rootFolder);
+            generateHashFiles(result, ref rootFolder, rootFolder, true);
 
+            var checkFolders = Directory.GetDirectories(rootFolder);
 
             // Файл который есть у клиента не найден, проверяем Первую директорию    
             for (var i = 0; i < checkFolders.Length; i++)
@@ -117,8 +155,7 @@ namespace OCUnion.Common
                 var checkFolder = Path.Combine(rootFolder, folder);
                 if (Directory.Exists(checkFolder))
                 {
-                    result.AddRange(generateHashFiles(ref rootFolder, checkFolder));
-
+                    generateHashFiles(result, ref rootFolder, checkFolder);
                 }
                 else
                 {
@@ -156,29 +193,75 @@ namespace OCUnion.Common
         /// <param name="folder"></param>
         /// <param name="isSteam"></param>
         /// <returns></returns>
-        private static List<ModelFileInfo> generateHashFiles(ref string rootFolder, string folder)
+        private static void generateHashFiles(List<ModelFileInfo> result, ref string rootFolder, string folder, bool level0 = false)
         {
-            var result = new List<ModelFileInfo>();
-            var dirs = Directory.GetDirectories(folder);
+            if (!level0)
+            {
+                var dirs = Directory.GetDirectories(folder);
+                foreach (var subDir in dirs)
+                {
+                    generateHashFiles(result, ref rootFolder, subDir);
+                }
+            }
+
             var files = Directory.GetFiles(folder);
             int fileNamePos = rootFolder.Length + 1;
-
-            foreach (var subDir in dirs)
-            {
-                result.AddRange(generateHashFiles(ref rootFolder, subDir));
-            }
-
+            var computeHash = new FastComputeHash();
             foreach (var file in files.Where(x => ApproveExt(x)))
             {
-                result.Add(new ModelFileInfo()
+                var mfi = new ModelFileInfo()
                 {
-                    FileName = file.Substring(fileNamePos),
-                    Hash = getCheckSum(file)
-                }
-                );
+                    FileName = file.Substring(fileNamePos)
+                };
+                GetCheckSum(mfi, file, computeHash);
+#if DEBUG
+                /*
+                if (mfi.FileName.Contains("armony"))
+                {
+                    Loger.Log($"generateHashFiles Harmony: {FileName} {Hash}");
+                }*/
+#endif
+                result.Add(mfi);
             }
+            computeHash.Wait();
+        }
 
-            return result;
+        public static void ReHashFiles(List<ModelFileInfo> rep, string folder, List<string> fileNames)
+        {
+            var dir = rep.ToDictionary(f => f.FileName);
+            var computeHash = new FastComputeHash();
+            foreach (var fileName in fileNames)
+            {
+                ModelFileInfo mfi;
+                if (!dir.TryGetValue(fileName, out mfi))
+                {
+                    mfi = new ModelFileInfo()
+                    {
+                        FileName = fileName,
+                    };
+                    rep.Add(mfi);
+                }
+                var file = Path.Combine(folder, fileName);
+                var oldHash = mfi.Hash;
+
+                //if (MainHelper.DebugMode)  
+                Loger.Log($"ReHashFile b {file} {(oldHash == null ? "" : Convert.ToBase64String(oldHash))}" + $"->{(mfi.Hash == null ? "" : Convert.ToBase64String(mfi.Hash))}");
+
+                GetCheckSum(mfi, file, computeHash);
+
+                //if (MainHelper.DebugMode)  
+                Loger.Log($"ReHashFile e {file} {(oldHash == null ? "" : Convert.ToBase64String(oldHash))}" + $"->{(mfi.Hash == null ? "" : Convert.ToBase64String(mfi.Hash))}");
+            }
+            computeHash.Wait();
+
+            for (int i = 0; i < rep.Count; i++)
+            {
+                if (rep[i].Hash == null)
+                {
+                    rep.RemoveAt(i--);
+                }
+            }
+            computeHash.Wait();
         }
 
         private static bool ApproveExt(string fileName)

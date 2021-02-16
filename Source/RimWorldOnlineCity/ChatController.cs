@@ -27,6 +27,28 @@ namespace RimWorldOnlineCity
             connect.OnPostingChatBefore = Before;
         }
 
+        public static string ServerCharTranslate(string textChat)
+        {
+            int pos = 0;
+            var clonSpace = textChat.Replace('\r', ' ').Replace('\n', ' ').Replace('\t', ' ').Replace(',', ' ').Replace('.', ' ') + " ";
+            while ((pos = textChat.IndexOf("OC_", pos)) >= 0)
+            {
+                var ep = clonSpace.IndexOf(" ", pos);
+                var sub = textChat.Substring(pos, ep - pos);
+                var tr = sub.Translate().ToString();
+                if (!tr.StartsWith("OC_"))
+                {
+                    clonSpace = clonSpace.Replace(sub, tr);
+                    textChat = textChat.Replace(sub, tr);
+                    pos += tr.Length;
+                }
+                else
+                    pos++;
+            }
+
+            return textChat;
+        }
+
         /// <summary>
         /// Перед отправкой сообщения в игровой чат
         /// </summary>
@@ -61,32 +83,13 @@ namespace RimWorldOnlineCity
         private static ModelStatus BeforeStartIncident(int chatId, string msg)
         {
             Loger.Log("IncidentLod ChatController.BeforeStartIncident 1 msg:" + msg);
-            //разбираем аргументы в кавычках '. Удвоенная кавычка указывает на её символ.
-            string command;
-            List<string> args;
-            ChatUtils.ParceCommand(msg, out command, out args);
+            string error;
+            OCIncident.GetCostOnGameByCommand(msg, true, out error);
 
-            if (args.Count < 3)
+            if (error != null)
             {
-                var errorMessage = "Неверно заданы аргументы".NeedTranslate().ToString();
-                Loger.Log("IncidentLod ChatController.BeforeStartIncident errorMessage:" + errorMessage);
-                Find.WindowStack.Add(new Dialog_Input(errorMessage, msg, true));
-
-                return new ModelStatus() { Status = 1 };
-            }
-
-            //проверка, что денег хватает
-            int cost = OCIncident.CalculateRaidCost(Int64.Parse(args[2]), Int32.Parse(args[3]));
-            int gold = Find.CurrentMap?.resourceCounter.GetCount(ThingDefOf.Gold) ?? -1;
-            if (cost < 0 || gold < 0 || gold < cost)
-            {
-                Loger.Log("IncidentLod ChatController.BeforeStartIncident no");
-
-                var errorMessage = cost < 0 || gold < 0
-                    ? "Ошибка определения стоимости".NeedTranslate().ToString() + $" cost={cost} gold={gold}"
-                    : "Недостаточно золота {0} из {1}, нехватает {2}".NeedTranslate(gold, cost, cost - gold).ToString();
-                Loger.Log("IncidentLod ChatController.BeforeStartIncident errorMessage:" + errorMessage);
-                Find.WindowStack.Add(new Dialog_Input(errorMessage, msg, true));
+                Loger.Log("IncidentLod ChatController.BeforeStartIncident errorMessage:" + error);
+                Find.WindowStack.Add(new Dialog_MessageBox(error));
 
                 return new ModelStatus() { Status = 1 };
             }
@@ -102,48 +105,17 @@ namespace RimWorldOnlineCity
             Loger.Log("IncidentLod ChatController.AfterStartIncident 1 msg:" + msg);
             if (stat.Status == 0)
             {
-                //разбираем аргументы в кавычках '. Удвоенная кавычка указывает на её символ.
-                string command;
-                List<string> args;
-                ChatUtils.ParceCommand(msg, out command, out args);
-
-                if (args.Count < 3)
-                {
-                    Loger.Log("IncidentLod ChatController.AfterStartIncident 1 error");
-                    return;
-                }
-
-                //отнимаем нужное кол-во денег(золото или серебро... или что-нибудь ещё)
-                int cost = OCIncident.CalculateRaidCost(Int64.Parse(args[2]), Int32.Parse(args[3]));
-                List<Thing> things = GameUtils.GetAllThings(Find.CurrentMap);
-                foreach(Thing thing in things)
-                {
-                    if(thing.def == ThingDefOf.Gold)
-                    {
-                        if (thing.stackCount < cost)
-                        {
-                            cost -= thing.stackCount;
-                            thing.Destroy();
-                        }
-                        else
-                        {
-                            thing.SplitOff(cost);
-                            break;
-                        }
-                    }
-                }
-                Loger.Log("IncidentLod ChatController.AfterStartIncident 2");
-                //принудительное сохранение
-                if (!SessionClientController.Data.BackgroundSaveGameOff)
-                    SessionClientController.SaveGameNow(true);
-                Loger.Log("IncidentLod ChatController.AfterStartIncident 3");
+                string error;
+                var result = OCIncident.GetCostOnGameByCommand(msg, false, out error);
+                //Find.WindowStack.Add(new Dialog_Input("Вызов инциндента", error ?? result, true));
+                Find.WindowStack.Add(new Dialog_MessageBox(error ?? result));
             }
             else
             {
                 //выводим сообщение с ошибкой
                 var errorMessage = string.IsNullOrEmpty(stat.Message) ? "Error call" : stat.Message.Translate().ToString();
                 Loger.Log("IncidentLod ChatController.AfterStartIncident errorMessage:" + errorMessage);
-                Find.WindowStack.Add(new Dialog_Input(errorMessage, msg, true));
+                Find.WindowStack.Add(new Dialog_MessageBox(errorMessage));
             }
         }
         #endregion

@@ -4,6 +4,11 @@ using OCUnion.Transfer.Model;
 using OCUnion.Transfer.Types;
 using RimWorldOnlineCity.ClientHashCheck;
 using RimWorldOnlineCity.UI;
+using System.Collections.Generic;
+using System;
+using System.IO;
+using System.Linq;
+using Verse;
 
 namespace RimWorldOnlineCity.Services
 {
@@ -30,27 +35,59 @@ namespace RimWorldOnlineCity.Services
             // каждый запрос-отклик к серверу ~100-200 мс, получаем за один запрос все файлы
             // ~40 000 files *512 SHA key ~ size of package ~ 2,5 Mb 
 
-            var clientFileChecker = (ClientFileChecker)context;
-            var model = new ModelModsFiles()
-            {
-                Files = clientFileChecker.FilesHash,
-                FolderType = clientFileChecker.FolderType,
-            };
-
-            UpdateModsWindow.WindowTitle = $"Send files {clientFileChecker.FolderType.ToString()} to server";
-            Loger.Log($"Send hash {clientFileChecker.Folder}");
-
-            var res = _sessionClient.TransObject2<ModelModsFiles>(model, RequestTypePackage, ResponseTypePackage);
-
             ApproveLoadWorldReason result = ApproveLoadWorldReason.LoginOk;
-            if (res.Files.Count > 0)
+            bool downloading = true;
+            long totalSize = 0;
+            long downloadSize = 0;
+            while (downloading)
             {
-                Loger.Log($"Files that need for a change:");
-                UpdateModsWindow.HashStatus = string.Join("\n", res.Files);
-                    result = result | ApproveLoadWorldReason.ModsFilesFail;
-                FileChecker.FileSynchronization(clientFileChecker.Folder, res);
-            }
+                var clientFileChecker = (ClientFileChecker)context;
+                var model = new ModelModsFiles()
+                {
+                    Files = clientFileChecker.FilesHash,
+                    FolderType = clientFileChecker.FolderType,
+                };
 
+                UpdateModsWindow.Title = "OC_Hash_Downloading".Translate();
+                UpdateModsWindow.HashStatus = "";
+                UpdateModsWindow.SummaryList = null;
+                Loger.Log($"Send hash {clientFileChecker.Folder}");
+
+                var res = _sessionClient.TransObject2<ModelModsFiles>(model, RequestTypePackage, ResponseTypePackage);
+
+                if (res.Files.Count > 0)
+                {
+                    if (totalSize == 0) totalSize = res.TotalSize;
+                    downloadSize += res.Files.Sum(f => f.Size);
+                    Loger.Log($"Files that need for a change: {downloadSize}/{totalSize} count={res.Files}");
+                    var pr = downloadSize > totalSize || totalSize == 0 ? 100 : downloadSize * 100 / totalSize;
+                    UpdateModsWindow.HashStatus = "OC_Hash_Downloading_Finish".Translate()
+                        + pr.ToString() + "%";
+
+                    result = result | ApproveLoadWorldReason.ModsFilesFail;
+                    //Loger.Log("TTTTT 0");
+                    FileChecker.FileSynchronization(clientFileChecker.Folder, res);
+                    //Loger.Log("TTTTT 1");
+                    clientFileChecker.RecalculateHash(res.Files.Select(f => f.FileName).ToList());
+                    //Loger.Log("TTTTT 2");
+
+                    var addList = res.Files
+                        .Select(f => f.FileName)
+                        .Where(f => f.Contains("\\"))
+                        .Select(f => f.Substring(0, f.IndexOf("\\")))
+                        //.Distinct() //вместо дистинкта группируем без разницы заглавных букв, но сохраняем оригинальное название
+                        .Select(f => new { orig = f, comp = f.ToLower() })
+                        .GroupBy(p => p.comp)
+                        .Select(g => g.Max(p => p.orig))
+                        .Where(f => UpdateModsWindow.SummaryList == null || !UpdateModsWindow.SummaryList.Any(sl => sl == f))
+                        .ToList();
+                    if (UpdateModsWindow.SummaryList == null)
+                        UpdateModsWindow.SummaryList = addList;
+                    else
+                        UpdateModsWindow.SummaryList.AddRange(addList);
+                }
+                downloading = res.TotalSize != 0;
+            }
             return result;
         }
     }

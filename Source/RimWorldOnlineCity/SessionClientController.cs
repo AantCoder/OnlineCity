@@ -75,12 +75,14 @@ namespace RimWorldOnlineCity
             Loger.Log("Client Language: " + Prefs.LangFolderName);
 
             Loger.Log("Client MainThreadNum=" + ModBaseData.GlobalData.MainThreadNum.ToString());
+
+            Task.Factory.StartNew(() => SessionClientController.CalculateHash());
         }
 
         public static void CalculateHash()
         {
-            UpdateModsWindow.WindowTitle = "Calculate hash for local files".NeedTranslate();
-            Find.WindowStack.Add(new UpdateModsWindow());
+            UpdateModsWindow.Title = "OC_Hash_CalculateLocalFiles".Translate();
+            //Find.WindowStack.Add(new UpdateModsWindow());
             var factory = new ClientFileCheckerFactory();
 
             var folderTypeValues = Enum.GetValues(typeof(FolderType));
@@ -88,15 +90,15 @@ namespace RimWorldOnlineCity
             var filesCount = 0;
             foreach (FolderType folderType in folderTypeValues)
             {
-                UpdateModsWindow.WindowTitle = "Calculate hash for: " + folderType.ToString();
+                UpdateModsWindow.Title = "OC_Hash_CalculateFor".Translate() + folderType.ToString();
                 ClientFileCheckers[(int)folderType] = factory.GetFileChecker(folderType);
                 ClientFileCheckers[(int)folderType].CalculateHash();
                 filesCount += ClientFileCheckers[(int)folderType].FilesHash.Count;
             }
 
 
-            UpdateModsWindow.WindowTitle = "Calculate hash completed";
-            UpdateModsWindow.HashStatus = "Mods Config files: " + ClientFileCheckers[(int)FolderType.ModsConfigPath].FilesHash.Count.ToString() + "\n" +
+            UpdateModsWindow.Title = "OC_Hash_CalculateComplete".Translate();
+            UpdateModsWindow.HashStatus = "OC_Hash_CalculateConfFile".Translate() + ClientFileCheckers[(int)FolderType.ModsConfigPath].FilesHash.Count.ToString() + "\n" +
             "Mods files: " + ClientFileCheckers[(int)FolderType.ModsFolder].FilesHash.Count.ToString();
             //Task.Run(() => ClientHashChecker.StartGenerateHashFiles());
         }
@@ -498,7 +500,7 @@ namespace RimWorldOnlineCity
         /// Регистрация
         /// </summary>
         /// <returns>null, или текст произошедшей ошибки</returns>
-        public static string Registration(string addr, string login, string password, Action LoginOK)
+        public static string Registration(string addr, string login, string password, string email, Action LoginOK)
         {
             var msgError = Connect(addr);
             if (msgError != null) return msgError;
@@ -512,7 +514,7 @@ namespace RimWorldOnlineCity
             var pass = new CryptoProvider().GetHash(password);
 
             var connect = SessionClient.Get;
-            if (!connect.Registration(login, pass))
+            if (!connect.Registration(login, pass, email))
             {
                 logMsg = "Registration fail: " + connect.ErrorMessage;
                 Loger.Log("Client " + logMsg);
@@ -663,6 +665,7 @@ namespace RimWorldOnlineCity
             Data.DelaySaveGame = serverInfo.DelaySaveGame;
             if (Data.DelaySaveGame == 0) Data.DelaySaveGame = 15;
             if (Data.DelaySaveGame < 5) Data.DelaySaveGame = 5;
+            Data.IsAdmin = serverInfo.IsAdmin;
             Data.DisableDevMode = !serverInfo.IsAdmin && serverInfo.DisableDevMode;
             Data.MinutesIntervalBetweenPVP = serverInfo.MinutesIntervalBetweenPVP;
             Data.TimeChangeEnablePVP = serverInfo.TimeChangeEnablePVP;
@@ -685,7 +688,7 @@ namespace RimWorldOnlineCity
                 TimerReconnect = new WorkTimer();
 
                 var connect = SessionClient.Get;
-                var serverInfo = connect.GetInfo(ServerInfoType.Full);
+                ModelInfo serverInfo = connect.GetInfo(ServerInfoType.Full);
                 ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
                 SetFullInfo(serverInfo);
 
@@ -699,9 +702,59 @@ namespace RimWorldOnlineCity
                     + " DisableDevMode=" + Data.DisableDevMode);
                 Loger.Log("Client Grants=" + serverInfo.My.Grants.ToString());
 
-                if (serverInfo.IsModsWhitelisted && !CheckFiles())
+                if (!serverInfo.IsModsWhitelisted)
                 {
-                    var msg = "OCity_SessionCC_FilesUpdated".Translate();
+                    InitConnectedPart2(serverInfo, true);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(Data.GeneralSettings.EntranceWarning))
+                {
+                    //определяем локализованные сообщения
+                    var entranceWarning = MainHelper.CultureFromGame.StartsWith("Russian")
+                        ? Data.GeneralSettings.EntranceWarningRussian
+                        : null;
+                    //если на нужном языке нет, то выводим по умолчанию
+                    if (string.IsNullOrEmpty(entranceWarning))
+                    {
+                        entranceWarning = Data.GeneralSettings.EntranceWarning;
+                    }
+
+                    var form = new Dialog_Input(serverInfo.ServerName + " (" + ModBaseData.GlobalData.LastIP.Value + ")", entranceWarning, false);
+                    Find.WindowStack.Add(form);
+                    form.PostCloseAction = () =>
+                    {
+                        if (!form.ResultOK)
+                        {
+                            Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate(), () => ModsConfig.RestartFromChangedMods());
+                            return;
+                        }
+
+                        CheckFiles((checkFiles) => InitConnectedPart2(serverInfo, checkFiles));
+                    };
+                }
+                else
+                {
+                    CheckFiles((checkFiles) => InitConnectedPart2(serverInfo, checkFiles));
+                }
+            }
+            catch (Exception ext)
+            {
+                Loger.Log("Exception InitConnected: " + ext.ToString());
+            }
+        }
+
+        private static void InitConnectedPart2(ModelInfo serverInfo, bool checkFiles)
+        {
+            try
+            {
+                if (!checkFiles)
+                {
+                    var msg = "OCity_SessionCC_FilesUpdated".Translate() + Environment.NewLine
+                         + (UpdateModsWindow.SummaryList == null ? ""
+                            : Environment.NewLine
+                                + "OC_Hash_Complete".Translate().ToString() + Environment.NewLine
+                                + string.Join(Environment.NewLine, UpdateModsWindow.SummaryList));
                     //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
                     Disconnected(msg, () => ModsConfig.RestartFromChangedMods());
                     return;
@@ -752,7 +805,7 @@ namespace RimWorldOnlineCity
             }
             catch (Exception ext)
             {
-                Loger.Log("Exception InitConnected: " + ext.ToString());
+                Loger.Log("Exception InitConnectedPart2: " + ext.ToString());
             }
         }
 
@@ -876,26 +929,38 @@ namespace RimWorldOnlineCity
             return worldObject;
         }
 
-        public static bool CheckFiles()
+        public static void CheckFiles(Action<bool> done)
         {
             if (ClientFileCheckers == null || ClientFileCheckers.Any(x => x == null))
             {
-                return false;
+                done(false);
+                return;
             }
 
-            Find.WindowStack.Add(new UpdateModsWindow());
-
-            var fc = new ClientHashChecker(SessionClient.Get);
-            var approveModList = true;
-            foreach (var clientFileChecker in ClientFileCheckers)
+            var form = new UpdateModsWindow()
             {
-                var res = (int)fc.GenerateRequestAndDoJob(clientFileChecker);
-                approveModList = approveModList && ((int)res == 0);
-            }
+                doCloseX = false
+            };
+            Find.WindowStack.Add(form);
+            form.HideOK = true;
 
-            UpdateModsWindow.WindowTitle = $"Check files from Server is Completed. Close Window . . .";
+            Task.Factory.StartNew(() =>
+            {
+                var fc = new ClientHashChecker(SessionClient.Get);
+                var approveModList = true;
+                foreach (var clientFileChecker in ClientFileCheckers)
+                {
+                    var res = (int)fc.GenerateRequestAndDoJob(clientFileChecker);
+                    approveModList = approveModList && ((int)res == 0);
+                }
 
-            return approveModList;
+                UpdateModsWindow.CompletedAndClose = true;
+                form.OnCloseed = () =>
+                { 
+                    done(approveModList);
+                };
+            });
+
         }
 
         public static Page GetFirstConfigPage()

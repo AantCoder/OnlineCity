@@ -68,6 +68,7 @@ namespace ServerOnlineCity.Model
 
         public string New(PlayerServer player, PlayerServer hostPlayer, AttackInitiatorToSrv fromClient, bool testMode)
         {
+            if (ServerManager.ServerSettings.GeneralSettings.EnablePVP) return "PVP online disable on this server";
             if (!player.Online || !hostPlayer.Online)
             {
                 Loger.Log($"Server AttackServer {Attacker.Public.Login} -> {Host.Public.Login} canceled: Attack not possible: player offline");

@@ -139,6 +139,8 @@ namespace ServerOnlineCity
                 rep.Save(true);
             });
 
+            //ServerManager.ServerSettings.AutoSaveStatisticsFile SavePlayerStatisticsFile()
+
             //ActiveClientCount = 0;
 
             Connect = new ConnectServer();
