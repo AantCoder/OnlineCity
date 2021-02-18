@@ -132,8 +132,8 @@ namespace RimWorldOnlineCity
                     if (firstRun)
                     {
                         GetPlayersInfoCountRequest = 0;
-                        ModelGameServerInfo fromServWObject = connect.GetGameServerInfo();
-                        UpdateWorldController.SendToServer(toServ, firstRun, fromServWObject);
+                        ModelGameServerInfo gameServerInfo = connect.GetGameServerInfo();
+                        UpdateWorldController.SendToServer(toServ, firstRun, gameServerInfo);
                     }
 
                     //запрос на информацию об игроках. Можно будет ограничить редкое получение для тех кто оффлайн
@@ -161,7 +161,7 @@ namespace RimWorldOnlineCity
                     ModelPlayToClient fromServ = connect.PlayInfo(toServ);
                     //Loger.Log("Client UpdateWorld 5 ");
                     Loger.Log("Client " + My.Login + " UpdateWorld "
-                        + string.Format("To Server. Objects {0}, To Delete {1}{5}. From Server {2}, Deleted {3}, Players {8}, Mail {4}, isAttacking? {6}, NeedSaveAndExit? {7}, OnlineWorldObject {9}"
+                        + string.Format("To Server. Objects {0}, To Delete {1}{5}. From Server {2}, Deleted {3}, Players {8}, Mail {4}, isAttacking? {6}, NeedSaveAndExit? {7}, OnlineWorldObject {9}, Factions {10}"
                             , toServ.WObjects == null ? 0 : toServ.WObjects.Count // 0
                             , toServ.WObjectsToDelete == null ? 0 : toServ.WObjectsToDelete.Count // 1
                             , fromServ.WObjects == null ? 0 : fromServ.WObjects.Count // 2
@@ -172,6 +172,7 @@ namespace RimWorldOnlineCity
                             , fromServ.NeedSaveAndExit ? "Disconnect command" : "" // 7
                             , fromServ.PlayersInfo == null ? "null" : fromServ.PlayersInfo.Count.ToString() // 8
                             , fromServ.WObjectOnlineList == null ? 0 : fromServ.WObjectOnlineList.Count() // 9
+                            , fromServ.FactionOnlineList == null ? 0 : fromServ.FactionOnlineList.Count() // 10
                             ));
 
                     //сохраняем время актуальности данных
@@ -797,10 +798,12 @@ namespace RimWorldOnlineCity
 
                 if (serverInfo.NeedCreateWorld)
                 {
+                    Loger.Log("serverInfo.NeedCreateWorld");
                     CreatePlayerWorld(serverInfo);
                     return;
                 }
 
+                Loger.Log("LoadPlayerWorld");
                 LoadPlayerWorld();
             }
             catch (Exception ext)

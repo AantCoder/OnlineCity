@@ -165,6 +165,7 @@ namespace ServerOnlineCity.Services
                     //World Object Online
                     if (ServerManager.ServerSettings.GeneralSettings.EquableWorldObjects)
                     {
+                        //World Object Online
                         try
                         {
                             if (packet.WObjectOnlineToDelete != null && packet.WObjectOnlineToDelete.Count > 0)
@@ -192,6 +193,37 @@ namespace ServerOnlineCity.Services
                         catch
                         {
                             Loger.Log("ERROR PLAYINFO World Object Online");
+                        }
+
+                        //Faction Online
+                        try
+                        {
+                            if (packet.FactionOnlineToDelete != null && packet.FactionOnlineToDelete.Count > 0)
+                            {
+                                data.FactionOnlineList.RemoveAll(data => packet.FactionOnlineToDelete.Any(pkt => ValidateFaction(pkt, data)));
+                            }
+                            if (packet.FactionOnlineToAdd != null && packet.FactionOnlineToAdd.Count > 0)
+                            {
+                                data.FactionOnlineList.AddRange(packet.FactionOnlineToAdd);
+                            }
+                            if (packet.FactionOnlineList != null && packet.FactionOnlineList.Count > 0)
+                            {
+                                if (data.FactionOnlineList.Count == 0)
+                                {
+                                    data.FactionOnlineList = packet.FactionOnlineList;
+                                }
+                                else if (data.FactionOnlineList != null && data.FactionOnlineList.Count > 0)
+                                {
+
+                                    toClient.FactionOnlineToDelete = packet.FactionOnlineList.Where(pkt => !data.FactionOnlineList.Any(data => ValidateFaction(pkt, data))).ToList();
+                                    toClient.FactionOnlineToAdd = data.FactionOnlineList.Where(data => !packet.FactionOnlineList.Any(pkt => ValidateFaction(pkt, data))).ToList();
+                                }
+                            }
+                            toClient.FactionOnlineList = data.FactionOnlineList;
+                        }
+                        catch
+                        {
+                            Loger.Log("ERROR PLAYINFO Faction Online");
                         }
                     }
 
@@ -240,6 +272,17 @@ namespace ServerOnlineCity.Services
         {
             if(pkt.Name == data.Name
                 && pkt.Tile == data.Tile)
+            {
+                return true;
+            }
+            return false;
+        }
+
+         private static bool ValidateFaction(FactionOnline pkt, FactionOnline data)
+        {
+            if (pkt.DefName == data.DefName && 
+                pkt.LabelCap == data.LabelCap &&
+                pkt.loadID == data.loadID)
             {
                 return true;
             }
