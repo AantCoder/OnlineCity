@@ -798,12 +798,10 @@ namespace RimWorldOnlineCity
 
                 if (serverInfo.NeedCreateWorld)
                 {
-                    Loger.Log("serverInfo.NeedCreateWorld");
                     CreatePlayerWorld(serverInfo);
                     return;
                 }
 
-                Loger.Log("LoadPlayerWorld");
                 LoadPlayerWorld();
             }
             catch (Exception ext)
