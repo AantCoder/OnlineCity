@@ -622,9 +622,8 @@ namespace RimWorldOnlineCity
 
         public static void Command(Action<SessionClient> netAct)
         {
-            var connect = SessionClient.Get;
             int time = 0;
-            while (SessionClient.IsRelogin && time < 40)
+            while (SessionClient.IsRelogin && time < 40000)
             {
                 Thread.Sleep(500);
                 time += 500;
@@ -633,6 +632,7 @@ namespace RimWorldOnlineCity
             {
                 Loger.Log("Client Command: fail wait IsRelogin. Try to continue");
             }
+            var connect = SessionClient.Get;
             netAct(connect);
         }
 
@@ -1207,7 +1207,7 @@ namespace RimWorldOnlineCity
                 if (sec > 30/*(Data.AddTimeCheckTimerFail ? 120 : 30)*/)
                 {
                     needReconnect = true;
-                    Loger.Log($"Client ReconnectWithTimers timerFail {sec}");
+                    Loger.Log($"Client ReconnectWithTimers timerFail {sec} (LastForceRecount {(DateTime.UtcNow - UpdateWorldController.LastForceRecount).TotalSeconds})");
                     Timers.LastLoop = DateTime.UtcNow; //сбрасываем, т.к. поток в таймере продолжает ждать наш коннект
                 }
             }
