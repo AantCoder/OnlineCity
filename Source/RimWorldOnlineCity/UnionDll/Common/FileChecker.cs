@@ -39,6 +39,12 @@ namespace OCUnion.Common
             }
         }
 
+        public static string GetCheckSum(string data)
+        {
+            var sha = SHA512.Create();
+            return Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(data)));
+        }
+
         private static void GetCheckSum(ModelFileInfo mfi, string fileName, FastComputeHash computeHash)
         {
             try
@@ -64,7 +70,11 @@ namespace OCUnion.Common
                 {
                     try
                     {
-                        if (task.Result == null) mfi.Hash = null;
+                        if (task.Result == null)
+                        {
+                            mfi.Hash = null;
+                            return;
+                        }
                         var sha = SHA512.Create();
                         mfi.Hash = sha.ComputeHash(task.Result);
                     }

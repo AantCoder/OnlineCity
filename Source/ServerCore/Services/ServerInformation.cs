@@ -41,6 +41,11 @@ namespace ServerOnlineCity.Services
 
                     case (long)ServerInfoType.SendSave:
                         {
+                            if (context.PossiblyIntruder)
+                            {
+                                context.Disconnect("Possibly intruder");
+                                return null;
+                            }
                             var result = new ModelInfo();
                             //передача файла игры, для загрузки WorldLoad();
                             // файл передать можно только в том случае если файлы прошли проверку
@@ -133,32 +138,48 @@ namespace ServerOnlineCity.Services
         private ModelInfo GetModelInfo(PlayerServer player)
         {
             var data = Repository.GetData;
+            var needCreateWorld = Repository.GetSaveData.GetListPlayerDatas(player.Public.Login).Count == 0;
+            if (needCreateWorld) BeforeBeginSettlement(player);
+
             var result =
-            new ModelInfo()
-            {
-                My = player.Public,
-                IsAdmin = player.IsAdmin,
-                VersionInfo = MainHelper.VersionInfo,
-                VersionNum = MainHelper.VersionNum,
-                Seed = data.WorldSeed ?? "",
-                ScenarioName = data.WorldScenarioName,
-                MapSize = data.WorldMapSize,
-                PlanetCoverage = data.WorldPlanetCoverage,
-                Difficulty = data.WorldDifficulty,
-                NeedCreateWorld = Repository.GetSaveData.GetListPlayerDatas(player.Public.Login).Count == 0,
-                ServerTime = DateTime.UtcNow,
-                IsModsWhitelisted = ServerManager.ServerSettings.IsModsWhitelisted,
-                ServerName = ServerManager.ServerSettings.ServerName,
-                DelaySaveGame = player.SettingDelaySaveGame,
-                DisableDevMode = ServerManager.ServerSettings.DisableDevMode,
-                MinutesIntervalBetweenPVP = ServerManager.ServerSettings.MinutesIntervalBetweenPVP,
-                EnableFileLog = player.SettingEnableFileLog,
-                TimeChangeEnablePVP = player.TimeChangeEnablePVP,
-                GeneralSettings = ServerManager.ServerSettings.GeneralSettings,
-                ProtectingNovice = ServerManager.ServerSettings.ProtectingNovice,
-            };
+                new ModelInfo()
+                {
+                    My = player.Public,
+                    IsAdmin = player.IsAdmin,
+                    VersionInfo = MainHelper.VersionInfo,
+                    VersionNum = MainHelper.VersionNum,
+                    Seed = data.WorldSeed ?? "",
+                    ScenarioName = data.WorldScenarioName,
+                    MapSize = data.WorldMapSize,
+                    PlanetCoverage = data.WorldPlanetCoverage,
+                    Difficulty = data.WorldDifficulty,
+                    NeedCreateWorld = needCreateWorld,
+                    ServerTime = DateTime.UtcNow,
+                    IsModsWhitelisted = ServerManager.ServerSettings.IsModsWhitelisted,
+                    ServerName = ServerManager.ServerSettings.ServerName,
+                    DelaySaveGame = player.SettingDelaySaveGame,
+                    DisableDevMode = ServerManager.ServerSettings.DisableDevMode,
+                    MinutesIntervalBetweenPVP = ServerManager.ServerSettings.MinutesIntervalBetweenPVP,
+                    EnableFileLog = player.SettingEnableFileLog,
+                    TimeChangeEnablePVP = player.TimeChangeEnablePVP,
+                    GeneralSettings = ServerManager.ServerSettings.GeneralSettings,
+                    ProtectingNovice = ServerManager.ServerSettings.ProtectingNovice,
+                };
 
             return result;
+        }
+
+        private void BeforeBeginSettlement(PlayerServer player)
+        {
+            player.StartMarketValue = 0;
+            player.StartMarketValuePawn = 0;
+            player.TotalRealSecond = 0;
+            /* //если сбрасывать для новых поселений, то можно не заметить следов абуза в отчете
+            player.MaxDeltaGameMarketValue = 0;
+            player.MaxDeltaGameMarketValuePawn = 0;
+            player.MaxDeltaRealMarketValue = 0;
+            player.MaxDeltaRealMarketValuePawn = 0;
+            */
         }
     }
 }

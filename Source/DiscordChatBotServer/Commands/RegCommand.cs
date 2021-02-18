@@ -81,7 +81,7 @@ namespace OC.DiscordBotServer.Commands
                 }
 
                 var pass = new CryptoProvider().GetHash(token);
-                if (!client.Login(SessionClientWrapper.DiscrodLogin, pass))
+                if (!client.Login(SessionClientWrapper.DiscrodLogin, pass, null))
                 {
                     return Languages.Translator.ErrInvalidToken;
                 }

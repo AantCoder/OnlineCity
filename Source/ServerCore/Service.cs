@@ -62,7 +62,15 @@ namespace ServerOnlineCity
         {
             if (ServiceDictionary.TryGetValue(inputPackage.TypePacket, out IGenerateResponseContainer generateResponseContainer))
             {
-                Loger.Log("Server " + (Context.Player == null ? "     " : Context.Player.Public.Login.PadRight(5)) + " " + generateResponseContainer.GetType().Name);
+                var name = generateResponseContainer.GetType().Name;
+                Loger.Log("Server " + (Context.Player == null ? "     " : Context.Player.Public.Login.PadRight(5)) 
+                    + " " + name
+                    + (name == "PlayInfo" 
+                        ? $" dMS={(Context.Player.LastUpdateTime - Context.Player.WLastUpdateTime).TotalMilliseconds} "
+                            + $"dTicks={Context.Player.Public.LastTick - Context.Player.WLastTick} "
+                            + $"dValue={Context.Player.DeltaMarketValue} "
+                            + $"dPawn={Context.Player.DeltaMarketValuePawn} "
+                        : ""));
                 return generateResponseContainer.GenerateModelContainer(inputPackage, Context);
             }
 

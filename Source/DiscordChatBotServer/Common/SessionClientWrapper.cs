@@ -51,7 +51,7 @@ namespace OC.DiscordBotServer.Common
 
             lock (_sessionClient)
             {
-                if (!_sessionClient.Login(DiscrodLogin, pass))
+                if (!_sessionClient.Login(DiscrodLogin, pass, null))
                 {
                     return false;
                 }

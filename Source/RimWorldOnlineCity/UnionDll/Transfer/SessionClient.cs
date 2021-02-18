@@ -276,18 +276,18 @@ namespace Transfer
             return good;
         }
 
-        public bool Login(string login, string pass)
+        public bool Login(string login, string pass, string email)
         {
-            var packet = new ModelLogin() { Login = login, Pass = pass };
+            var packet = new ModelLogin() { Login = login, Pass = pass, Email = email };
             var good = TransStatus(packet, (int)PackageType.Request3Login, (int)PackageType.Response4Login);
 
             if (good) IsLogined = true;
             return good;
         }
 
-        public bool Reconnect(string login, string key)
+        public bool Reconnect(string login, string key, string email)
         {
-            var packet = new ModelLogin() { Login = login, KeyReconnect = key };
+            var packet = new ModelLogin() { Login = login, KeyReconnect = key, Email = email };
             var good = TransStatus(packet, (int)PackageType.Request3Login, (int)PackageType.Response4Login);
 
             if (good) IsLogined = true;

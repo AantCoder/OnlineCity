@@ -115,7 +115,21 @@ namespace ServerOnlineCity.Mechanics
 
             Loger.Log("IncidentLogAppend. " + contentLog);
 
-            File.AppendAllText(fileName, contentLog, Encoding.UTF8);
+            try
+            {
+                File.AppendAllText(fileName, contentLog, Encoding.UTF8);
+            }
+            catch
+            {
+                try
+                {
+                    File.AppendAllText(fileName + "add", contentLog, Encoding.UTF8);
+                }
+                catch
+                {
+                    Loger.Log("IncidentLogAppend. Error write file " + fileName);
+                }
+            }
         }
 
         public static IncidentTypes? ParseIncidentTypes(string arg)
