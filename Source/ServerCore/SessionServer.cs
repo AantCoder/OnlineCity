@@ -23,6 +23,7 @@ namespace ServerOnlineCity
         private Service Worker;
         private DateTime ServiceCheckTime;
 
+
         public void Dispose()
         {
             IsActive = false;
@@ -92,6 +93,7 @@ namespace ServerOnlineCity
                     Client.SendMessage(Key);
 
                 var context = new ServiceContext();
+                context.AddrIP = ((IPEndPoint)client.Client.Client.RemoteEndPoint).Address.ToString();
                 context.AllSessionAction = allSessionAction;
                 Worker = new Service(context);
 
@@ -137,6 +139,7 @@ namespace ServerOnlineCity
                     try
                     {
                         sendObj = Worker.GetPackage(recObj);
+                        if (!IsActive) break;
                     }
                     catch (Exception ext)
                     {

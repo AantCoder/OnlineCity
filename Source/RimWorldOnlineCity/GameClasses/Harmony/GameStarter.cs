@@ -21,7 +21,7 @@ namespace RimWorldOnlineCity
         public static string SetSeed = null;
         public static OverallRainfall SetOverallRainfall = OverallRainfall.Normal;
         public static OverallTemperature SetOverallTemperature = OverallTemperature.Normal;
-        public static string SetDifficulty = null;        //todo
+        public static string SetDifficulty = null;
         public static Action AfterStart = null;
         public static List<Pawn> SetPawns = null;
         //public static bool DisableAllRandom = false;

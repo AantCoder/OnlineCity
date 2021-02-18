@@ -251,7 +251,7 @@ namespace RimWorldOnlineCity
         public void Start(SessionClient connect)
         {
             Find.TickManager.Pause();
-            SessionClientController.Data.DontChactTimerFail = true;
+            SessionClientController.Data.DontCheckTimerFail = true;
 
             Loger.Log("Client GameAttackHost Start 1");
             //Loger.PathLog = "E:\\RWT";
@@ -510,7 +510,7 @@ namespace RimWorldOnlineCity
 
                         TimerObj = SessionClientController.Timers.Add(AttackUpdateDelay, AttackUpdate);
 
-                        SessionClientController.Data.DontChactTimerFail = false;
+                        SessionClientController.Data.DontCheckTimerFail = false;
 
                         //включаем обработку событий урона и уничтожения объектов
                         GameAttackTrigger_Patch.ActiveAttackHost.Add(GameMap, this);
@@ -1343,7 +1343,7 @@ namespace RimWorldOnlineCity
             if (GameMap != null) GameAttackTrigger_Patch.ActiveAttackHost.Remove(GameMap);
             SessionClientController.Data.AttackUsModule = null;
             SessionClientController.Data.BackgroundSaveGameOff = false;
-            SessionClientController.Data.DontChactTimerFail = false;
+            SessionClientController.Data.DontCheckTimerFail = false;
             GameAttackTrigger_Patch.ForceSpeed = -1f;
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using OCUnion;
 using OCUnion.Transfer.Model;
 using ServerOnlineCity.Model;
 using Transfer;
@@ -48,6 +49,7 @@ namespace ServerOnlineCity.Services
             {
                 toPlayer.Mails.Add(packet);
             }
+            Loger.Log($"Mail SendThings {packet.From.Login}->{packet.To.Login} {packet.ContentString()}");
             return new ModelStatus()
             {
                 Status = 0,

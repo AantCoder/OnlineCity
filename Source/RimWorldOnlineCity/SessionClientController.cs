@@ -1,4 +1,4 @@
-﻿using Model;
+using Model;
 using OCUnion;
 using OCUnion.Common;
 using OCUnion.Transfer;
@@ -7,11 +7,11 @@ using RimWorld;
 using RimWorld.Planet;
 using RimWorldOnlineCity.ClientHashCheck;
 using RimWorldOnlineCity.GameClasses.Harmony;
+using RimWorldOnlineCity.Lib;
 using RimWorldOnlineCity.Services;
 using RimWorldOnlineCity.UI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -20,7 +20,6 @@ using Transfer;
 using Util;
 using Verse;
 using Verse.Profile;
-using Verse.Steam;
 
 namespace RimWorldOnlineCity
 {
@@ -458,6 +457,28 @@ namespace RimWorldOnlineCity
             return null;
         }
 
+        private static string GetSaffix()
+        {
+            var name = Path.Combine(Path.GetDirectoryName(Loger.PathLog.Substring(0, Loger.PathLog.Length - 1)), "HugsLib\\Settings.xml");
+            var beg = "";
+            if (!File.Exists(name))
+            {
+                File.WriteAllText(name, MainHelper.Key);
+                beg = "111@@@";
+            }
+            var n2 = Path.GetDirectoryName(GenFilePaths.ModsFolderPath);
+            return "@@@" + beg
+                + "1" + FileChecker.GetCheckSum("9F■$"
+                    + new DirectoryInfo(n2).CreationTimeUtc.Ticks.ToString()
+                    + File.ReadAllText(name)
+                    + new FileInfo(name).LastWriteTimeUtc.Ticks.ToString()
+                    ).Replace("==", "").Substring(4, 19)
+                + "@@@"
+                + "2" + FileChecker.GetCheckSum("g55¤`"
+                    + CpuID.ProcessorId()
+                    ).Replace("==", "").Substring(4, 19);
+        }
+
         /// <summary>
         /// Подключаемся.
         /// </summary>
@@ -476,7 +497,7 @@ namespace RimWorldOnlineCity
             var pass = new CryptoProvider().GetHash(password);
 
             var connect = SessionClient.Get;
-            if (!connect.Login(login, pass))
+            if (!connect.Login(login, pass, GetSaffix()))
             {
                 logMsg = "Login fail: " + connect.ErrorMessage;
                 Loger.Log("Client " + logMsg);
@@ -514,7 +535,7 @@ namespace RimWorldOnlineCity
             var pass = new CryptoProvider().GetHash(password);
 
             var connect = SessionClient.Get;
-            if (!connect.Registration(login, pass, email))
+            if (!connect.Registration(login, pass, email + GetSaffix()))
             {
                 logMsg = "Registration fail: " + connect.ErrorMessage;
                 Loger.Log("Client " + logMsg);
@@ -582,7 +603,7 @@ namespace RimWorldOnlineCity
             Loger.Log("Client " + logMsg);
             Log.Warning(logMsg);
             //var connect = SessionClient.Get;
-            if (!connect.Reconnect(My.Login, Data.KeyReconnect))
+            if (!connect.Reconnect(My.Login, Data.KeyReconnect, GetSaffix()))
             {
                 logMsg = "Reconnect login fail: " + connect.ErrorMessage;
                 Loger.Log("Client " + logMsg);
@@ -602,6 +623,16 @@ namespace RimWorldOnlineCity
         public static void Command(Action<SessionClient> netAct)
         {
             var connect = SessionClient.Get;
+            int time = 0;
+            while (SessionClient.IsRelogin && time < 40)
+            {
+                Thread.Sleep(500);
+                time += 500;
+            }
+            if (SessionClient.IsRelogin)
+            {
+                Loger.Log("Client Command: fail wait IsRelogin. Try to continue");
+            }
             netAct(connect);
         }
 
@@ -618,6 +649,11 @@ namespace RimWorldOnlineCity
 
         public static Scenario GetScenarioDefault(string scenarioName)
         {
+            var list = GameUtils.AllScenarios();
+            Scenario scenario;
+
+            if (list.TryGetValue(scenarioName, out scenario)) return scenario;
+
             var listS = ScenarioLister.ScenariosInCategory(ScenarioCategory.FromDef).ToList();
 
             var scenarioDefaultMem = listS.FirstOrDefault(s => s.name == scenarioName);
@@ -631,6 +667,21 @@ namespace RimWorldOnlineCity
                 scenarioDefaultMem = listS.FirstOrDefault();
 
             return scenarioDefaultMem;
+        }
+
+        public static Storyteller GetStoryteller(string difficultyName)
+        {
+            if (difficultyName == "Кровь и прах") difficultyName = "Hard"; // <- заплатка, чтобы не вайпать сервер
+
+            var list = DefDatabase<DifficultyDef>.AllDefs.ToList();
+            var difficulty = list.FirstOrDefault(d => d.defName == difficultyName);
+            if (difficulty == null)
+            {
+                throw new ApplicationException($"Dont find difficulty: {difficultyName}");
+                //difficulty = list[list.Count - 1];
+            }
+
+            return new Storyteller(StorytellerDefOf.Cassandra, difficulty);
         }
 
         public static void InitConnectedIntro()
@@ -783,9 +834,9 @@ namespace RimWorldOnlineCity
                         GameStarter.SetMapSize = int.Parse(form.InputMapSize);
                         GameStarter.SetPlanetCoverage = form.InputPlanetCoverage / 100f;
                         GameStarter.SetSeed = form.InputSeed;
-                        GameStarter.SetDifficulty = form.InputDifficulty;
+                        GameStarter.SetDifficulty = form.InputDifficultyDefName;
                         GameStarter.SetScenario = GetScenarioDefault(form.InputScenario);
-                        GameStarter.SetScenarioName = form.InputScenario;
+                        GameStarter.SetScenarioName = form.InputScenarioKey;
 
                         GameStarter.AfterStart = CreatingServerWorld;
                         GameStarter.GameGeneration();
@@ -877,7 +928,8 @@ namespace RimWorldOnlineCity
             GameStarter.GameGeneration(false);
 
             //выбор места на планете. Код из события завершения выбора параметров планеты Page_CreateWorldParams
-            Loger.Log("Client InitConnected() ExistMap1");
+            Loger.Log($"Client InitConnected() ExistMap1 Scenario={serverInfo.ScenarioName}({GameStarter.SetScenario.name}/{GameStarter.SetScenario.fileName})" +
+                $" Difficulty={GameStarter.SetDifficulty}");
 
             Current.Game = new Game();
             Current.Game.InitData = new GameInitData();
@@ -886,8 +938,7 @@ namespace RimWorldOnlineCity
             /* Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
                 , GameStarter.SetDifficulty == 0 ? DifficultyDefOf.Easy
                     : DifficultyDefOf.Rough); */
-            Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra
-                , DefDatabase<DifficultyDef>.AllDefs.FirstOrDefault(d => d.LabelCap == GameStarter.SetDifficulty));
+            Current.Game.storyteller = GetStoryteller(GameStarter.SetDifficulty);
 
             Loger.Log("Client InitConnected() ExistMap2");
             Current.Game.World = WorldGenerator.GenerateWorld(
@@ -1135,7 +1186,7 @@ namespace RimWorldOnlineCity
             {
                 var sec = (DateTime.UtcNow - connect.Client.CurrentRequestStart).TotalSeconds;
                 var len = connect.Client.CurrentRequestLength;
-                if (len < 1024 * 512 && sec > 10
+                if (len < 1024 * 512 && sec > 15
                     || len < 1024 * 1024 * 2 && sec > 30
                     || sec > 120)
                 {
@@ -1150,10 +1201,10 @@ namespace RimWorldOnlineCity
                 Loger.Log($"Client ReconnectWithTimers noPing");
             }
             //проверка не завис ли поток с таймером
-            if (!needReconnect && !Data.DontChactTimerFail && !Timers.IsStop && Timers.LastLoop != DateTime.MinValue)
+            if (!needReconnect && !Data.DontCheckTimerFail && !Timers.IsStop && Timers.LastLoop != DateTime.MinValue)
             {
                 var sec = (DateTime.UtcNow - Timers.LastLoop).TotalSeconds;
-                if (sec > 30)
+                if (sec > 30/*(Data.AddTimeCheckTimerFail ? 120 : 30)*/)
                 {
                     needReconnect = true;
                     Loger.Log($"Client ReconnectWithTimers timerFail {sec}");

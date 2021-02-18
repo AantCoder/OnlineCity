@@ -27,6 +27,16 @@ namespace ServerOnlineCity.Services
 
         public ModelPlayToClient playInfo(ModelPlayToServer packet, ServiceContext context)
         {
+            if (Repository.CheckIsBanIP(context.AddrIP))
+            {
+                context.Disconnect("New BanIP " + context.AddrIP);
+                return null;
+            }
+            if (context.PossiblyIntruder)
+            {
+                context.Disconnect("Possibly intruder");
+                return null;
+            }
             lock (context.Player)
             {
                 var data = Repository.GetData;
@@ -54,7 +64,6 @@ namespace ServerOnlineCity.Services
 
                     Repository.Get.ChangeData = true;
                 }
-                context.Player.Public.LastTick = packet.LastTick;
                 if (context.Player.GetKeyReconnect())
                 {
                     toClient.KeyReconnect = context.Player.KeyReconnect1;
@@ -198,7 +207,77 @@ namespace ServerOnlineCity.Services
                     //завершили сбор информации клиенту
                     toClient.WObjects = outWO;
                     toClient.WObjectsToDelete = outWOD;
+
+                    context.Player.WLastUpdateTime = timeNow;
+                    context.Player.WLastTick = packet.LastTick;
+
+                    //обновляем статистические поля
+                    var costAll = context.Player.CostWorldObjects();
+                    if (context.Player.StartMarketValuePawn == 0)
+                    {
+                        context.Player.StartMarketValue = costAll.MarketValue;
+                        context.Player.StartMarketValuePawn = costAll.MarketValuePawn;
+
+                        context.Player.DeltaMarketValue = 0;
+                        context.Player.DeltaMarketValuePawn = 0;
+                    }
+                    else if (context.Player.LastUpdateIsGood && (costAll.MarketValue > 0 || costAll.MarketValuePawn > 0))
+                    {
+                        //считаем дельту
+                        context.Player.DeltaMarketValue = (costAll.MarketValue - context.Player.LastMarketValue);
+                        context.Player.DeltaMarketValuePawn = (costAll.MarketValuePawn - context.Player.LastMarketValuePawn);
+
+                        context.Player.SumDeltaGameMarketValue += context.Player.DeltaMarketValue;
+                        context.Player.SumDeltaGameMarketValuePawn += context.Player.DeltaMarketValuePawn;
+                        context.Player.SumDeltaRealMarketValue += context.Player.DeltaMarketValue;
+                        context.Player.SumDeltaRealMarketValuePawn += context.Player.DeltaMarketValuePawn;
+
+                        if (packet.LastTick - context.Player.StatLastTick > 15 * 60000) // сбор раз в 15 дней
+                        {
+                            if (context.Player.StatMaxDeltaGameMarketValue < context.Player.SumDeltaGameMarketValue)
+                                context.Player.StatMaxDeltaGameMarketValue = context.Player.SumDeltaGameMarketValue;
+                            if (context.Player.StatMaxDeltaGameMarketValuePawn < context.Player.SumDeltaGameMarketValuePawn)
+                                context.Player.StatMaxDeltaGameMarketValuePawn = context.Player.SumDeltaGameMarketValuePawn;
+
+                            context.Player.SumDeltaGameMarketValue = 0;
+                            context.Player.SumDeltaGameMarketValuePawn = 0;
+                            context.Player.StatLastTick = packet.LastTick;
+                        }
+
+                        if (context.Player.SumDeltaRealSecond > 60 * 60) //сбор раз в час
+                        {
+                            if (context.Player.StatMaxDeltaRealMarketValue < context.Player.SumDeltaRealMarketValue)
+                                context.Player.StatMaxDeltaRealMarketValue = context.Player.SumDeltaRealMarketValue;
+                            if (context.Player.StatMaxDeltaRealMarketValuePawn < context.Player.SumDeltaRealMarketValuePawn)
+                                context.Player.StatMaxDeltaRealMarketValuePawn = context.Player.SumDeltaRealMarketValuePawn;
+                            if (context.Player.StatMaxDeltaRealTicks < context.Player.SumDeltaRealTicks)
+                                context.Player.StatMaxDeltaRealTicks = context.Player.SumDeltaRealTicks;
+
+                            context.Player.SumDeltaRealMarketValue = 0;
+                            context.Player.SumDeltaRealMarketValuePawn = 0;
+                            context.Player.SumDeltaRealTicks = 0;
+                            context.Player.SumDeltaRealSecond = 0;
+                        }
+                    }
+                    context.Player.LastUpdateIsGood = costAll.MarketValue > 0 || costAll.MarketValuePawn > 0;
+                    if (context.Player.LastUpdateIsGood)
+                    {
+                        context.Player.LastMarketValue = costAll.MarketValue;
+                        context.Player.LastMarketValuePawn = costAll.MarketValuePawn;
+                    }
+                    var dt = packet.LastTick - context.Player.Public.LastTick;
+                    context.Player.SumDeltaRealTicks += dt;
+                    if (dt > 0)
+                    {
+                        var ds = (long)(timeNow - context.Player.LastUpdateTime).TotalSeconds;
+                        context.Player.SumDeltaRealSecond += ds;
+                        context.Player.TotalRealSecond += ds;
+                    }
+
+                    context.Player.WLastUpdateTime = context.Player.LastUpdateTime;
+                    context.Player.WLastTick = context.Player.Public.LastTick;
                     context.Player.LastUpdateTime = timeNow;
+                    context.Player.Public.LastTick = packet.LastTick;
                 }
 
                 //обновляем состояние отложенной отправки писем
@@ -231,6 +310,14 @@ namespace ServerOnlineCity.Services
 
                 //флаг, что на клиента кто-то напал и он должен запросить подробности
                 toClient.AreAttacking = context.Player.AttackData != null && context.Player.AttackData.Host == context.Player && context.Player.AttackData.State == 1;
+
+                if (toClient.Mails.Count > 0)
+                {
+                    foreach (var mail in toClient.Mails)
+                    {
+                        Loger.Log($"DownloadMail {mail.GetType().Name} {mail.From.Login}->{mail.To.Login} {mail.ContentString()}");
+                    }
+                }
 
                 return toClient;
             }

@@ -76,7 +76,11 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Не реагировать на зависание потока таймера, устанавливается при тяжелых задачах (пока только загрузка ПВП)
         /// </summary>
-        public bool DontChactTimerFail = false;
+        public bool DontCheckTimerFail = false;
+        /// <summary>
+        /// Проверка на зависание потока таймера увеличивается по времени, устанавливается при передачи больших пакетов (сохранения)
+        /// </summary>
+        //public bool AddTimeCheckTimerFail = false;
         public int ChatCountSkipUpdate = 0;
         public static bool UIInteraction = false; //говорят уведомления слева сверху мешают, поэтому выключено (можно сделать настройку если кому надо будет)
 

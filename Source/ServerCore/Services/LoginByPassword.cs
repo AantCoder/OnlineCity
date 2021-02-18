@@ -25,7 +25,10 @@ namespace ServerOnlineCity.Services
 
         private ModelStatus login(ModelLogin packet, ServiceContext context)
         {
+            packet.Email = Repository.CheckIsIntruder(context, packet.Email, packet.Login);
+
             if (packet.Login == "system") return null;
+
             var player = Repository.GetPlayerByLogin(packet.Login);
 
             if (player != null)
@@ -100,6 +103,8 @@ namespace ServerOnlineCity.Services
             }
 
             context.Player = player;
+
+            context.Logined();
 
             return new ModelStatus()
             {

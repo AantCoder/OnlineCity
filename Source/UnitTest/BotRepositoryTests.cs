@@ -28,7 +28,7 @@ namespace OC.UnitTest
             var res = _sessionClient.Connect("127.0.0.1");
             Assert.IsTrue(res);
             var pass = new CryptoProvider().GetHash(userName);
-            res = _sessionClient.Login(userName, pass);
+            res = _sessionClient.Login(userName, pass, null);
             Assert.IsTrue(res);
         }
 

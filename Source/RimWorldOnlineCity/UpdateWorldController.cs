@@ -391,12 +391,19 @@ namespace RimWorldOnlineCity
                     //Loger.Log("Client TestBagSD 008");
                     try
                     {
+                        map.wealthWatcher.ForceRecount();
                         worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
                     }
                     catch
                     {
                         Thread.Sleep(100);
-                        worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
+                        try
+                        {
+                            worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
+                        }
+                        catch
+                        {
+                        }
                     }
 
                     worldObjectEntry.MarketValuePawn = 0;
