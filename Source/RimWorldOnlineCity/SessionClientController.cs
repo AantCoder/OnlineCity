@@ -1208,6 +1208,7 @@ namespace RimWorldOnlineCity
                 {
                     needReconnect = true;
                     Loger.Log($"Client ReconnectWithTimers timerFail {sec}");
+                    Timers.LastLoop = DateTime.UtcNow; //сбрасываем, т.к. поток в таймере продолжает ждать наш коннект
                 }
             }
             if (needReconnect)

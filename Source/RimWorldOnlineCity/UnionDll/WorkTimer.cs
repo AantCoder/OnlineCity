@@ -21,7 +21,7 @@ namespace OCUnion
         public bool IsStop { get; private set; } = false;
         public bool Pause { get; set; } = false;
         public Thread ThreadDo { get; private set; }
-        public DateTime LastLoop { get; private set; }
+        public DateTime LastLoop { get; set; }
 
         public WorkTimer()
         {
