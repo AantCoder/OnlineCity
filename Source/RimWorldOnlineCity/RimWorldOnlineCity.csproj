@@ -132,6 +132,7 @@
     <Compile Include="CommonUtils.cs" />
     <Compile Include="GameClasses\Harmony\GameFix.cs" />
     <Compile Include="GameClasses\Harmony\GamePatch.cs" />
+    <Compile Include="GameClasses\OCFactionManager.cs" />
     <Compile Include="Lib\Proc.cs" />
     <Compile Include="MailController.cs" />
     <Compile Include="Services\ClientHashChecker.cs" />
