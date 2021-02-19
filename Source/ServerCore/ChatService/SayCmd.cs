@@ -18,7 +18,7 @@ namespace ServerOnlineCity.ChatService
         //только для модераторов и админов
         public Grants GrantsForRun => Grants.SuperAdmin | Grants.Moderator | Grants.DiscordBot;
 
-        public string Help => ChatManager.prefix + "/say {UserLogin | system} {/color} {Label} {text}";
+        public string Help => ChatManager.prefix + "say {UserLogin | system} {/color} {Label} {text}";
 
         private readonly ChatManager _chatManager;
 
@@ -45,7 +45,7 @@ namespace ServerOnlineCity.ChatService
             if (targetPlayer == player)
             {
                 return _chatManager.PostCommandPrivatPostActivChat(ChatCmdResult.IncorrectSubCmd, ownLogin, chat,
-                "OC_IncdidentMessadge_targetErr");// Нельзя указывать самого себя
+                    "OC_IncdidentMessadge_targetErr");// Нельзя указывать самого себя
             }
 
             ModelMailMessadge.MessadgeTypes type = ModelMailMessadge.MessadgeTypes.Neutral;

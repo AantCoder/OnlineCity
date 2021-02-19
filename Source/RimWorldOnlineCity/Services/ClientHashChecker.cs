@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Linq;
+using Verse;
 
 namespace RimWorldOnlineCity.Services
 {
@@ -47,7 +48,7 @@ namespace RimWorldOnlineCity.Services
                     FolderType = clientFileChecker.FolderType,
                 };
 
-                UpdateModsWindow.Title = "OC_Hash_Downloading";
+                UpdateModsWindow.Title = "OC_Hash_Downloading".Translate();
                 UpdateModsWindow.HashStatus = "";
                 UpdateModsWindow.SummaryList = null;
                 Loger.Log($"Send hash {clientFileChecker.Folder}");
@@ -58,13 +59,17 @@ namespace RimWorldOnlineCity.Services
                 {
                     if (totalSize == 0) totalSize = res.TotalSize;
                     downloadSize += res.Files.Sum(f => f.Size);
-                    Loger.Log($"Files that need for a change:");
-                    UpdateModsWindow.HashStatus = "OC_Hash_Downloading_Finish"
-                        + (downloadSize * 100 / totalSize).ToString() + "%";
+                    Loger.Log($"Files that need for a change: {downloadSize}/{totalSize} count={res.Files}");
+                    var pr = downloadSize > totalSize || totalSize == 0 ? 100 : downloadSize * 100 / totalSize;
+                    UpdateModsWindow.HashStatus = "OC_Hash_Downloading_Finish".Translate()
+                        + pr.ToString() + "%";
 
                     result = result | ApproveLoadWorldReason.ModsFilesFail;
+                    //Loger.Log("TTTTT 0");
                     FileChecker.FileSynchronization(clientFileChecker.Folder, res);
+                    //Loger.Log("TTTTT 1");
                     clientFileChecker.RecalculateHash(res.Files.Select(f => f.FileName).ToList());
+                    //Loger.Log("TTTTT 2");
 
                     var addList = res.Files
                         .Select(f => f.FileName)
