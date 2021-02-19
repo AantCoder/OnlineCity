@@ -20,7 +20,7 @@ namespace OCUnion
         public static bool OffAllLog = false;
 
         //public static string VersionInfo = $"Version {Assembly.GetExecutingAssembly().FullName}";
-        public static string VersionInfo = "Version 0.03.55a from 2021.02.18";
+        public static string VersionInfo = "Version 0.03.56a from 2021.02.19";
 
         public static string Key = "";
 

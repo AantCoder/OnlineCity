@@ -228,6 +228,7 @@ namespace RimWorldOnlineCity
                         GameAttackHost.Get.Start(connect);
                     }
 
+                    Data.CountReconnectBeforeUpdate = 0;
                 });
             }
         }
@@ -331,6 +332,7 @@ namespace RimWorldOnlineCity
                 Command((connect) =>
                 {
                     connect.ServicePing();
+                    Data.CountReconnectBeforeUpdate = 0;
                 });
             }
             catch
@@ -1150,7 +1152,7 @@ namespace RimWorldOnlineCity
                         if (Reconnect())
                         {
                             Data.LastServerConnectFail = false;
-                            Loger.Log("Client CheckReconnectTimer() OK");
+                            Loger.Log($"Client CheckReconnectTimer() OK #{Data.CountReconnectBeforeUpdate}");
                             return true;
                         }
                     }
@@ -1207,14 +1209,14 @@ namespace RimWorldOnlineCity
                 if (sec > 30/*(Data.AddTimeCheckTimerFail ? 120 : 30)*/)
                 {
                     needReconnect = true;
-                    Loger.Log($"Client ReconnectWithTimers timerFail {sec} (LastForceRecount {(DateTime.UtcNow - UpdateWorldController.LastForceRecount).TotalSeconds})");
+                    Loger.Log($"Client ReconnectWithTimers timerFail {sec}");
                     Timers.LastLoop = DateTime.UtcNow; //сбрасываем, т.к. поток в таймере продолжает ждать наш коннект
                 }
             }
             if (needReconnect)
             {
                 //котострофа
-                if (!ReconnectWithTimers())
+                if (++Data.CountReconnectBeforeUpdate > 4 || !ReconnectWithTimers())
                 {
                     Loger.Log("Client CheckReconnectTimer Disconnected after try reconnect");
                     Disconnected("OCity_SessionCC_Disconnected".Translate());
