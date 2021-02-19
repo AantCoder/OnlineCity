@@ -23,5 +23,9 @@ namespace Transfer
         public List<WorldObjectOnline> WObjectOnlineList { get; set; }
         public List<WorldObjectOnline> WObjectOnlineToAdd { get; set; }
         public List<WorldObjectOnline> WObjectOnlineToDelete { get; set; }
+
+        public List<FactionOnline> FactionOnlineList { get; set; }
+        public List<FactionOnline> FactionOnlineToAdd { get; set; }
+        public List<FactionOnline> FactionOnlineToDelete { get; set; }
     }
 }

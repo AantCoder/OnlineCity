@@ -20,13 +20,14 @@ namespace ServerOnlineCity.Services
         private ModelGameServerInfo GetWorldObjectUpdate(ModelInt packet, ServiceContext context)
         {
             var data = Repository.GetData;
-            var toClientWObject = new ModelGameServerInfo();
+            var toClientGServerInfo = new ModelGameServerInfo();
             if (packet != null)
             {
-                toClientWObject.WObjectOnlineList = data.WorldObjectOnlineList;
+                toClientGServerInfo.WObjectOnlineList = data.WorldObjectOnlineList;
+                toClientGServerInfo.FactionOnlineList = data.FactionOnlineList;
             }
 
-            return toClientWObject;
+            return toClientGServerInfo;
         }
     }
 }

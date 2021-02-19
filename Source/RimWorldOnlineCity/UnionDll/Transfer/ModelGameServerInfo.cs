@@ -11,5 +11,6 @@ namespace Transfer
     public class ModelGameServerInfo
     {
         public List<WorldObjectOnline> WObjectOnlineList  { get; set; }
+        public List<FactionOnline> FactionOnlineList { get; set; }
     }
 }
