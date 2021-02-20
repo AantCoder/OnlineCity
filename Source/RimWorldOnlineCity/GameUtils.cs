@@ -790,5 +790,15 @@ namespace RimWorldOnlineCity
 
             return res;
         }
+
+        public static bool isBuilding(Thing thing)
+        {
+            if(thing.def.category == ThingCategory.Building && thing.def.destroyable)
+            {
+                if (thing.def.building.IsDeconstructible && thing.def.building.uninstallWork > 0)
+                    return true;
+            }
+            return false;
+        }
     }
 }
