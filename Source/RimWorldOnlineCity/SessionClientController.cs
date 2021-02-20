@@ -1219,7 +1219,12 @@ namespace RimWorldOnlineCity
                 if (++Data.CountReconnectBeforeUpdate > 4 || !ReconnectWithTimers())
                 {
                     Loger.Log("Client CheckReconnectTimer Disconnected after try reconnect");
-                    Disconnected("OCity_SessionCC_Disconnected".Translate());
+                    Disconnected("OCity_SessionCC_Disconnected".Translate()
+                        , Data.CountReconnectBeforeUpdate > 4 ? () =>
+                        {
+                            Environment.Exit(0);
+                        }
+                        : (Action)null);
                 }
             }
             //Loger.Log("Client TestBagSD CRTe");
