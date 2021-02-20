@@ -627,7 +627,7 @@ namespace RimWorldOnlineCity
                     err += "18 ";
                     ConverterServerId[worldObjectEntry.ServerId] = worldObject.ID; //на всякий случай
                     err += "19 ";
-                    Loger.Log("SetID " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
+                    //Loger.Log("SetID " + worldObjectEntry.ServerId + " " + worldObjectEntry.Name);
                 }
                 err += "20 ";
                 //обновление

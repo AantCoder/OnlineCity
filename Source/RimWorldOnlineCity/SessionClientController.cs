@@ -159,20 +159,19 @@ namespace RimWorldOnlineCity
                     //we send to the server, we get a response2
                     ModelPlayToClient fromServ = connect.PlayInfo(toServ);
                     //Loger.Log("Client UpdateWorld 5 ");
-                    Loger.Log("Client " + My.Login + " UpdateWorld "
-                        + string.Format("To Server. Objects {0}, To Delete {1}{5}. From Server {2}, Deleted {3}, Players {8}, Mail {4}, isAttacking? {6}, NeedSaveAndExit? {7}, OnlineWorldObject {9}, Factions {10}"
-                            , toServ.WObjects == null ? 0 : toServ.WObjects.Count // 0
-                            , toServ.WObjectsToDelete == null ? 0 : toServ.WObjectsToDelete.Count // 1
-                            , fromServ.WObjects == null ? 0 : fromServ.WObjects.Count // 2
-                            , fromServ.WObjectsToDelete == null ? 0 : fromServ.WObjectsToDelete.Count // 3
-                            , fromServ.Mails == null ? 0 : fromServ.Mails.Count // 4
-                            , toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : ", сейв" // 5
-                            , fromServ.AreAttacking ? " Attacking!" : "" // 6 
-                            , fromServ.NeedSaveAndExit ? "Disconnect command" : "" // 7
-                            , fromServ.PlayersInfo == null ? "null" : fromServ.PlayersInfo.Count.ToString() // 8
-                            , fromServ.WObjectOnlineList == null ? 0 : fromServ.WObjectOnlineList.Count() // 9
-                            , fromServ.FactionOnlineList == null ? 0 : fromServ.FactionOnlineList.Count() // 10
-                            ));
+
+                    Loger.Log($"Client {My.Login} UpdateWorld myWO->{toServ.WObjects?.Count}"
+                        + ((toServ.WObjectsToDelete?.Count ?? 0) > 0 ? " myWOToDelete->" + toServ.WObjectsToDelete.Count : "")
+                        + (toServ.SaveFileData == null || toServ.SaveFileData.Length == 0 ? "" : " SaveData->" + toServ.SaveFileData.Length)
+                        + ((fromServ.Mails?.Count ?? 0) > 0 ? " Mail<-" + fromServ.Mails.Count : "")
+                        + (fromServ.AreAttacking ? " Attacking!" : "")
+                        + (fromServ.NeedSaveAndExit ? " Disconnect command!" : "")
+                        + (fromServ.PlayersInfo != null ? " Players<-" + fromServ.PlayersInfo.Count : "")
+                        + ((fromServ.WObjects?.Count ?? 0) > 0 ? " WO<-" + fromServ.WObjects.Count : "")
+                        + ((fromServ.WObjectsToDelete?.Count ?? 0) > 0 ? " WOToDelete<-" + fromServ.WObjectsToDelete.Count : "")
+                        + ((fromServ.FactionOnlineList?.Count ?? 0) > 0 ? " Faction<-" + fromServ.FactionOnlineList.Count : "")
+                        + ((fromServ.WObjectOnlineList?.Count ?? 0) > 0 ? " NonPWO<-" + fromServ.WObjectOnlineList.Count : "")
+                        );
 
                     //сохраняем время актуальности данных
                     Data.UpdateTime = fromServ.UpdateTime;
@@ -367,14 +366,14 @@ namespace RimWorldOnlineCity
 
                         if (test.Value || Data.ChatCountSkipUpdate > 60) // 60 * 500ms = принудительно раз в пол минуты
                         {
-                            Loger.Log("Client UpdateChats f0");
+                            //Loger.Log("Client UpdateChats f0");
                             var dc = connect.UpdateChat(Data.ChatsTime);
                             if (dc != null)
                             {
                                 Data.ServetTimeDelta = dc.Time - DateTime.UtcNow;
                                 Data.ChatsTime.Time = dc.Time;
-                                Loger.Log("Client UpdateChats: " + dc.Chats.Count.ToString() + " - " + dc.Time.Ticks //dc.Time.ToString(Loger.Culture)
-                                    + "   " + (dc.Chats.Count == 0 ? "" : dc.Chats[0].Posts.Count.ToString()));
+                                //Loger.Log("Client UpdateChats: " + dc.Chats.Count.ToString() //+ " - " + dc.Time.Ticks //dc.Time.ToString(Loger.Culture)
+                                //    + "   " + (dc.Chats.Count == 0 ? "" : dc.Chats[0].Posts.Count.ToString()));
 
                                 if (Data.ApplyChats(dc) && !test.Value)
                                 {
