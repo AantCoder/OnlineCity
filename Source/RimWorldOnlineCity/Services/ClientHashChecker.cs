@@ -59,7 +59,7 @@ namespace RimWorldOnlineCity.Services
                 {
                     if (totalSize == 0) totalSize = res.TotalSize;
                     downloadSize += res.Files.Sum(f => f.Size);
-                    Loger.Log($"Files that need for a change: {downloadSize}/{totalSize} count={res.Files}");
+                    Loger.Log($"Files that need for a change: {downloadSize}/{totalSize} count={res.Files.Count}");
                     var pr = downloadSize > totalSize || totalSize == 0 ? 100 : downloadSize * 100 / totalSize;
                     UpdateModsWindow.HashStatus = "OC_Hash_Downloading_Finish".Translate()
                         + pr.ToString() + "%";

@@ -329,6 +329,7 @@ namespace RimWorldOnlineCity
             return storeWO;
         }
 
+        public static Dictionary<int, DateTime> LastForceRecount = new Dictionary<int, DateTime>();
         /// <summary>
         /// Только для своих объетков
         /// </summary>
@@ -391,12 +392,29 @@ namespace RimWorldOnlineCity
                     //Loger.Log("Client TestBagSD 008");
                     try
                     {
+                        DateTime lastForceRecount;
+                        if (!LastForceRecount.TryGetValue(map.uniqueID, out lastForceRecount))
+                            LastForceRecount.Add(map.uniqueID, DateTime.UtcNow.AddSeconds(new Random(map.uniqueID * 7).Next(0, 10)));
+                        else if ((DateTime.UtcNow - lastForceRecount).TotalSeconds> 30)
+                        {
+                            LastForceRecount[map.uniqueID] = DateTime.UtcNow;
+                            ModBaseData.RunMainThread(() =>
+                            {
+                                map.wealthWatcher.ForceRecount();
+                            });
+                        }
                         worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
                     }
                     catch
                     {
                         Thread.Sleep(100);
-                        worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
+                        try
+                        {
+                            worldObjectEntry.MarketValue = map.wealthWatcher.WealthTotal;
+                        }
+                        catch
+                        {
+                        }
                     }
 
                     worldObjectEntry.MarketValuePawn = 0;

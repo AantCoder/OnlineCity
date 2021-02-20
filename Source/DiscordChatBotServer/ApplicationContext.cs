@@ -59,7 +59,7 @@ namespace OC.DiscordBotServer
         internal bool RegisterNewServer(Chanel2Server server, SessionClientWrapper sessionClient)
         {
             var apadr = IPAddress.Parse(server.IP);
-            var endPoint = new IPEndPoint(apadr, server.Port);
+            var endPoint = new IPEndPoint(apadr, server.Port);            
             var result =
             OCServerToDiscrord.TryAdd(endPoint, server.Id) &&
             UserOnServers.TryAdd(server.Id, new ConcurrentDictionary<ulong, OCUser>());
@@ -68,8 +68,8 @@ namespace OC.DiscordBotServer
 
             // if sessionClient.IsLogined  then must be registred in DataBase
             if (sessionClient.IsLogined)
-            {
-                result &= _repositoryChanel2Server.AddNewItem(server);
+            {                
+                result &= _repositoryChanel2Server.AddNewItem(server);                
             }
             else
             {

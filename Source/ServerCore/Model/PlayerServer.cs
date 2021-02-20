@@ -63,8 +63,8 @@ namespace ServerOnlineCity.Model
         /// </summary>
         public List<IFunctionMail> FunctionMails = new List<IFunctionMail>();
 
-        [NonSerialized]
-        public long LastTickIncidents;
+        //[NonSerialized]
+        //public long LastTickIncidents;
 
         [NonSerialized]
         public AttackServer AttackData;
@@ -97,6 +97,82 @@ namespace ServerOnlineCity.Model
 
         [NonSerialized]
         private string KeyReconnect2;
+
+        public string IntruderKeys;
+
+        public float StartMarketValue;
+
+        public float StartMarketValuePawn;
+
+        public float LastMarketValue;
+
+        public float LastMarketValuePawn;
+
+        //за обновление
+        public float DeltaMarketValue;
+
+        public float DeltaMarketValuePawn;
+
+        //накапливаем до срабатывания таймера
+        public float SumDeltaGameMarketValue;
+
+        public float SumDeltaGameMarketValuePawn;
+
+        public float SumDeltaRealMarketValue;
+
+        public float SumDeltaRealMarketValuePawn;
+
+        public long SumDeltaRealTicks;
+
+        public long SumDeltaRealSecond; //кол-во секунд реального времени, которое прошло не на паузе
+
+        public long TotalRealSecond; //всего за игрой в этой колонии
+
+        /* пиковые данных с обновлений каждые 5 сек не нужны
+        //за игровой день
+        public float DeltaGameMarketValue => DeltaMarketValue * 60000f / (float)(WLastTick - Public.LastTick);
+
+        public float DeltaGameMarketValuePawn => DeltaMarketValuePawn * 60000f / (float)(WLastTick - Public.LastTick);
+
+        //за реальную минуту
+        public float DeltaRealMarketValue => DeltaMarketValue * 60000f / (float)(WLastUpdateTime - LastUpdateTime).TotalMilliseconds;
+
+        public float DeltaRealMarketValuePawn => DeltaMarketValuePawn * 60000f / (float)(WLastUpdateTime - LastUpdateTime).TotalMilliseconds;
+        */
+
+        //Данные за 1 час и за 15 дней
+        public float StatMaxDeltaGameMarketValue;
+
+        public float StatMaxDeltaGameMarketValuePawn;
+
+        public float StatMaxDeltaRealMarketValue;
+
+        public float StatMaxDeltaRealMarketValuePawn;
+
+        public long StatMaxDeltaRealTicks;
+
+        [NonSerialized]
+        public DateTime StatLastUpdateTime;
+
+        [NonSerialized]
+        public long StatLastTick;
+
+        /// <summary>
+        /// Если false, то не учитывать данные прошлого обновления, т.к. произошел сбой (не было данных) или сервер был перезагружен
+        /// </summary>
+        [NonSerialized]
+        public bool LastUpdateIsGood;
+
+        /// <summary>
+        /// Рабочее поле на период обновление Delta
+        /// </summary>
+        [NonSerialized]
+        public DateTime WLastUpdateTime;
+        /// <summary>
+        /// Рабочее поле на период обновление Delta
+        /// </summary>
+        [NonSerialized]
+        public long WLastTick;
 
         private PlayerServer()
         {

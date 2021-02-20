@@ -458,13 +458,13 @@ namespace RimWorldOnlineCity
                     if (i == 0) ret = cell;
 
                     //if (MainHelper.DebugMode) 
-                    try 
-                    { 
-                        Loger.Log("Spawn... " + thin.Label); 
-                    } 
-                    catch 
-                    { 
-                        Loger.Log("Spawn... "); 
+                    try
+                    {
+                        Loger.Log("Spawn... " + thin.Label);
+                    }
+                    catch
+                    {
+                        Loger.Log("Spawn... ");
                     }
                     if (thin is Pawn)
                     {
@@ -473,7 +473,7 @@ namespace RimWorldOnlineCity
                         {
                             GenSpawn.Spawn((Pawn)thin, cell, map);
                         }
-                        catch(Exception exp)
+                        catch (Exception exp)
                         {
                             Loger.Log("SpawnList Exception " + thing.Name + ": " + exp.ToString());
                             Thread.Sleep(5);
@@ -553,7 +553,7 @@ namespace RimWorldOnlineCity
                     thing.HitPoints = state.HitPoints;
                 }
             }
-            
+
             if (thing is Pawn)
             {
                 var pawn = thing as Pawn;
@@ -728,7 +728,7 @@ namespace RimWorldOnlineCity
         public static int FindThings(ThingDef def, int destroy, bool getMaxByMap)
         {
             int countAll = 0;
-            int countMax = 0; 
+            int countMax = 0;
             List<Pair<List<Thing>, int>> maps = new List<Pair<List<Thing>, int>>();
             for (int i = 0; i < Current.Game.Maps.Count; i++)
             {
@@ -767,6 +767,38 @@ namespace RimWorldOnlineCity
                 }
             }
             return count;
+        }
+
+        public static Dictionary<string, Scenario> AllScenarios()
+        {
+            var res = new Dictionary<string, Scenario>();
+
+            ScenarioLister.AllScenarios().ToList();
+
+            foreach (ScenarioDef allDef in DefDatabase<ScenarioDef>.AllDefs)
+            {
+                if (!res.ContainsKey(allDef.defName)) res.Add(allDef.defName, allDef.scenario);
+            }
+            foreach (Scenario item in ScenarioFiles.AllScenariosLocal)
+            {
+                if (!res.ContainsKey(item.fileName)) res.Add(item.fileName, item);
+            }
+            foreach (Scenario item2 in ScenarioFiles.AllScenariosWorkshop)
+            {
+                if (!res.ContainsKey(item2.fileName)) res.Add(item2.fileName, item2);
+            }
+
+            return res;
+        }
+
+        public static bool isBuilding(Thing thing)
+        {
+            if(thing.def.category == ThingCategory.Building && thing.def.destroyable)
+            {
+                if (thing.def.building.IsDeconstructible && thing.def.building.uninstallWork > 0)
+                    return true;
+            }
+            return false;
         }
     }
 }

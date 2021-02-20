@@ -32,7 +32,7 @@ namespace OC.DiscordBotServer.Repositories
 
         public void Delete(IEnumerable<Chanel2Server> servers)
         {
-            _dataContext.Chanel2Servers.RemoveRange(servers);
+            _dataContext.Chanel2Servers.RemoveRange(servers);            
         }
     }
 }

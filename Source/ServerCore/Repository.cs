@@ -42,6 +42,133 @@ namespace ServerOnlineCity
             return res;
         }
 
+        /// <summary>
+        /// Проверка на блокировку по оборудованию. 
+        /// Функция подверждает если ключь есть. 
+        /// Вешает ограничение, если ключа не пришло (чтобы можно было обновить клиент и только).
+        /// Дисконнект, если ключь в блокировке
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="key">Поле с ключами между @@@. До первого разделителя игнорируется</param>
+        /// <returns>Часть key до первого разделителя @@@</returns>
+        public static string CheckIsIntruder(ServiceContext context, string key, string login)
+        {
+            if (key == null
+                || !key.Contains("@@@"))
+            {
+                context.PossiblyIntruder = true;
+                Loger.Log($"Is possibly intruder or not update {login} (empty key)");
+                return key;
+            }
+            else
+            {
+                context.IntruderKeys = key;
+                var keys = key.Split(new string[] { "@@@" }, StringSplitOptions.None);
+                for (int i = 1; i < keys.Length; i++)
+                {
+                    if (string.IsNullOrEmpty(keys[i])) continue;
+                    if (Repository.CheckIsIntruder(keys[i]))
+                    {
+                        Loger.Log($"Is intruder {login} key={keys[i]}");
+                        context.Disconnect("intruder");
+                        break;
+                    }
+                }
+
+                Loger.Log($"Checked {login} key={key.Substring(key.IndexOf("@@@") + 3)}");
+                return keys[0];
+            }
+        }
+
+        private static HashSet<string> Blockkey = null;
+        private static DateTime BlockkeyUpdate = DateTime.MinValue;
+        public static bool CheckIsIntruder(string key)
+        {
+            if ((DateTime.UtcNow - BlockkeyUpdate).TotalSeconds > 30)
+            {
+                var fileName = Loger.PathLog + "blockkey.txt";
+
+                BlockkeyUpdate = DateTime.UtcNow;
+                if (!File.Exists(fileName)) Blockkey = new HashSet<string>();
+                else
+                    try
+                    {
+                        var listBlock = File.ReadAllLines(fileName, Encoding.UTF8)
+                            .Select(b => b.Replace("@@@", "").Trim())
+                            .Select(b => b.Contains(" ") ? b.Substring(0, b.IndexOf(" ")) : b)
+                            .Where(b => b != String.Empty)
+                            .ToArray();
+                        Blockkey = new HashSet<string>(listBlock);
+                    }
+                    catch (Exception exp)
+                    {
+                        Loger.Log("CheckIsIntruder error " + exp.Message);
+                        Blockkey = new HashSet<string>();
+                        return false;
+                    }
+            }
+            var k = key.Replace("@@@", "").Trim();
+            return Blockkey.Contains(k);
+        }
+
+        private static HashSet<string> Blockip = null;
+        private static DateTime BlockipUpdate = DateTime.MinValue;
+        public static bool CheckIsBanIP(string IP)
+        {
+            if ((DateTime.UtcNow - BlockipUpdate).TotalSeconds > 30)
+            {
+                var fileName = Loger.PathLog + "blockip.txt";
+
+                BlockipUpdate = DateTime.UtcNow;
+                if (!File.Exists(fileName)) Blockip = new HashSet<string>();
+                else
+                    try
+                    {
+                        var listBlock = File.ReadAllLines(fileName, Encoding.UTF8);
+                        if (listBlock.Any(b => b.Contains("/")))
+                        {
+                            listBlock = listBlock
+                                .SelectMany(b =>
+                                {
+                                    var bb = b.Trim();
+                                    var comment = "";
+                                    var ic = bb.IndexOf(" ");
+                                    if (ic > 0)
+                                    {
+                                        comment = bb.Substring(ic);
+                                        bb = bb.Substring(0, ic);
+                                    }
+                                    if (bb.Any(c => !char.IsDigit(c) && c != '.' && c != '/')) return new List<string>();
+                                    var ls = bb.LastIndexOf("/");
+                                    if (ls < 0) return new List<string>() { bb + comment };
+                                    var lp = bb.LastIndexOf(".");
+                                    if (lp <= 0) return new List<string>();
+                                    var ib = int.Parse(bb.Substring(lp + 1, ls - (lp + 1)));
+                                    var ie = int.Parse(bb.Substring(ls + 1));
+                                    var res = new List<string>();
+                                    var s = bb.Substring(0, lp + 1);
+                                    for (int i = ib; i <= ie; i++)
+                                        res.Add(s + i.ToString() + comment);
+                                    return res;
+                                })
+                                .ToArray();
+                            File.WriteAllLines(fileName, listBlock, Encoding.Default);
+                        }
+                        Blockip = new HashSet<string>(listBlock
+                            .Select(b => b.Contains(" ") ? b.Substring(0, b.IndexOf(" ")) : b));
+                    }
+                    catch (Exception exp)
+                    {
+                        Loger.Log("CheckIsBanIP error " + exp.Message);
+                        Blockip = new HashSet<string>();
+                        return false;
+                    }
+
+            }
+
+            return Blockip.Contains(IP.Trim());
+        }
+
         public static void DropUserFromMap(string login)
         {
             var data = Repository.GetData;
