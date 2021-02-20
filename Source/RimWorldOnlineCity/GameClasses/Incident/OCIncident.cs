@@ -176,7 +176,7 @@ namespace RimWorldOnlineCity
 
             Loger.Log($"IncidentLod OCIncident.CalculateRaidCost({serverId}, {mult}). targetCost={(int)cost} raidCost={raidCost}");
 
-            return SessionClientController.Data.IsAdmin ? 1 : raidCost;
+            return SessionClientController.Data.IsAdmin && Prefs.DevMode ? 1 : raidCost;
         }
     }
 }

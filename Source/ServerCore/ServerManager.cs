@@ -365,7 +365,9 @@ namespace ServerOnlineCity
 
                 Func<DateTime, string> dateTimeToStr = dt => dt == DateTime.MinValue ? "" : dt.ToString("yyyy-MM-dd hh:mm:ss", CultureInfo.InvariantCulture);
 
-                var content = "Login;LastOnlineTime;LastOnlineDay;GameDays;BaseCount;CaravanCount;MarketValue;MarketValuePawn;Grants;EnablePVP;EMail;DiscordUserName" + Environment.NewLine;
+                var content = $"Login;LastOnlineTime;LastOnlineDay;GameDays;BaseCount;CaravanCount;MarketValue;MarketValuePawn" +
+                    $";Grants;EnablePVP;EMail;DiscordUserName;IntruderKeys;StartMarketValue;StartMarketValuePawn" +
+                    $";MarketValueBy15Day;MarketValuePawnBy15Day;MarketValueByHour;MarketValuePawnByHour;TicksByHour;HourInGame" + Environment.NewLine;
                 foreach (var player in Repository.GetData.PlayersAll)
                 {
                     var costAll = player.CostWorldObjects();
@@ -381,7 +383,17 @@ namespace ServerOnlineCity
                         $"{player.Public.Grants.ToString()};" +
                         $"{(player.Public.EnablePVP ? 1 : 0)};" +
                         $"{player.Public.EMail};" +
-                        $"{player.Public.DiscordUserName}";
+                        $"{player.Public.DiscordUserName};" +
+                        $"{player.IntruderKeys};" +
+                        $"{player.StartMarketValue};" +
+                        $"{player.StartMarketValuePawn};" +
+                        $"{player.StatMaxDeltaGameMarketValue};" +
+                        $"{player.StatMaxDeltaGameMarketValuePawn};" +
+                        $"{player.StatMaxDeltaRealMarketValue};" +
+                        $"{player.StatMaxDeltaRealMarketValuePawn};" +
+                        $"{player.StatMaxDeltaRealTicks};" +
+                        $"{player.TotalRealSecond / 60f / 60f};"
+                        ;
                     newLine = newLine.Replace(Environment.NewLine, " ")
                         .Replace("/r", "").Replace("/n", "");
 
@@ -438,13 +450,20 @@ namespace ServerOnlineCity
             {
                 try
                 {
-                    Loger.Log($"New connect {addrIP} (connects: {ActiveClientCount})");
-                    session = new SessionServer();
-                    lock (Sessions)
+                    if (Repository.CheckIsBanIP(addrIP))
                     {
-                        Sessions.Add(session);
+                        Loger.Log("Abort connect BanIP " + addrIP);
                     }
-                    session.Do(client, SessionsAction);
+                    else
+                    {
+                        Loger.Log($"New connect {addrIP} (connects: {ActiveClientCount})");
+                        session = new SessionServer();
+                        lock (Sessions)
+                        {
+                            Sessions.Add(session);
+                        }
+                        session.Do(client, SessionsAction);
+                    }
                 }
                 catch (ObjectDisposedException)
                 {

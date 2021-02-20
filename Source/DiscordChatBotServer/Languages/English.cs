@@ -5,7 +5,7 @@ namespace OC.DiscordBotServer.Languages
     public class English
     {
         public const string ErrInvalidIP = "Invalid server IP adress or port";
-        public const string ErrTryAddToExistChannel = "On Channel {0} registred server";
+        public const string ErrTryAddToExistChannel = "On this channel already registred server linked to";
         public const string ErrServerNotAvailable = "The server is unavailable now, try again later";
         public const string ErrInvalidToken = "Invalid Token";
 

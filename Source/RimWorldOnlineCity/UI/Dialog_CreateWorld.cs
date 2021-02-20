@@ -20,7 +20,9 @@ namespace RimWorldOnlineCity
 
         public string InputSeed { get; private set; }
         public string InputScenario { get; private set; }
+        public string InputScenarioKey { get; private set; }
         public string InputDifficulty { get; private set; }
+        public string InputDifficultyDefName { get; private set; }
         public string InputMapSize { get; private set; }
         public float InputPlanetCoverage { get; private set; }
 
@@ -47,6 +49,7 @@ namespace RimWorldOnlineCity
             InputSeed = "";
             InputScenario = "none";
             InputDifficulty = "none";
+            InputDifficultyDefName = null;
             InputMapSize = "300";
             InputPlanetCoverage = Prefs.DevMode ? 5f : 30f;
         }
@@ -63,6 +66,8 @@ namespace RimWorldOnlineCity
             if (!ResultOK) InputText = null;
             if (PostCloseAction != null) PostCloseAction();
         }
+
+        private Dictionary<string, Scenario> ScenarioList = null;
         public override void DoWindowContents(Rect inRect)
         {
             const float mainListingSpacing = 6f;
@@ -130,15 +135,17 @@ namespace RimWorldOnlineCity
 
             
             mainListing.Gap(6f);
-            var sList = ScenarioLister.AllScenarios().ToList();
+
+            if (ScenarioList == null) ScenarioList = GameUtils.AllScenarios();
             if (mainListing.ButtonTextLabeled("OCity_Dialog_CreateWorld_Scenario".Translate(), InputScenario))
             {
                 List<FloatMenuOption> floatList1 = new List<FloatMenuOption>();
-                foreach (var s in sList)
+                foreach (var s in ScenarioList)
                 {
-                    floatList1.Add(new FloatMenuOption(s.name, delegate
+                    floatList1.Add(new FloatMenuOption(s.Value.name, delegate
                     {
-                        InputScenario = s.name;
+                        InputScenario = s.Value.name;
+                        InputScenarioKey = s.Key;
                     }, MenuOptionPriority.Default, null, null, 0f, null, null));
                 }
                 Find.WindowStack.Add(new FloatMenu(floatList1));
@@ -154,6 +161,7 @@ namespace RimWorldOnlineCity
                         floatList1.Add(new FloatMenuOption(difficultyDef.LabelCap, delegate
                         { 
                             InputDifficulty = difficultyDef.LabelCap;
+                            InputDifficultyDefName = difficultyDef.defName;
                         }, MenuOptionPriority.Default, null, null, 0f, null, null));
                 }
                 Find.WindowStack.Add(new FloatMenu(floatList1));

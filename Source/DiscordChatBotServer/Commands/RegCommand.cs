@@ -32,7 +32,15 @@ namespace OC.DiscordBotServer.Commands
 
             if (_appContext.DiscrordToOCServer.TryGetValue(context.Channel.Id, out SessionClientWrapper server2Chanel))
             {
-                return string.Format(Languages.Translator.ErrTryAddToExistChannel, getChannelLinkByServerIP(serverAdr));
+                if (!ip.Equals(server2Chanel.Chanel2Server.IP))
+                {
+                    return Languages.Translator.ErrTryAddToExistChannel + $"{server2Chanel.Chanel2Server.IP}, Register on new discrord channel pls ";
+                }
+                else 
+                {
+                    // TO DO: if ip is eqauls, 
+                    return Languages.Translator.ErrTryAddToExistChannel + $"{server2Chanel.Chanel2Server.IP}, Register on new discrord channel pls ";
+                }
             }
 
             if (context.IsPrivate)
@@ -46,12 +54,7 @@ namespace OC.DiscordBotServer.Commands
             }
 
             return string.Empty;
-        }
-
-        private object getChannelLinkByServerIP(IPEndPoint serverAdr)
-        {
-            return "{here must be link to Discrord Channel}";
-        }
+        }     
 
         public string Execute(SocketCommandContext context, string ip, string token)
         {
@@ -81,7 +84,7 @@ namespace OC.DiscordBotServer.Commands
                 }
 
                 var pass = new CryptoProvider().GetHash(token);
-                if (!client.Login(SessionClientWrapper.DiscrodLogin, pass))
+                if (!client.Login(SessionClientWrapper.DiscrodLogin, pass, null))
                 {
                     return Languages.Translator.ErrInvalidToken;
                 }
@@ -97,10 +100,13 @@ namespace OC.DiscordBotServer.Commands
                     LastRecivedPostIndex = -1,
                 };
 
+                //
+
+
                 _appContext.RegisterNewServer(channelToServer, new SessionClientWrapper(channelToServer, client));
                 context.Message.DeleteAsync();
 
-                return string.Format(Languages.Translator.InfServerReg, serverAdr.ToString(), context.Channel.Name);
+                return string.Format(Languages.Translator.InfServerReg, serverAdr.ToString(), "#" + context.Channel.Name);
             }
             catch (Exception ex)
             {

@@ -41,8 +41,8 @@ namespace Transfer
         {
             byte[] packlength = BitConverter.GetBytes(message.Length);
 
-            CurrentRequestStart = DateTime.UtcNow;
             CurrentRequestLength = message.Length + packlength.Length;
+            CurrentRequestStart = DateTime.UtcNow;
             try
             {
                 ClientStream.Write(packlength, 0, packlength.Length);
@@ -63,8 +63,8 @@ namespace Transfer
             //длина передаваемого сообщения (принимается в первых 4 байтах (константа Int32Length))
             int lenghtAllMessageByte;
 
-            CurrentRequestStart = DateTime.UtcNow;
             CurrentRequestLength = Int32Length;
+            CurrentRequestStart = DateTime.UtcNow;
             try
             {
 
@@ -72,8 +72,8 @@ namespace Transfer
                 lenghtAllMessageByte = BitConverter.ToInt32(receiveBuffer, 0);
                 if (lenghtAllMessageByte == 0) return new byte[0];
 
-                CurrentRequestStart = DateTime.UtcNow;
                 CurrentRequestLength = lenghtAllMessageByte;
+                CurrentRequestStart = DateTime.UtcNow;
 
                 receiveBuffer = ReceiveBytes(lenghtAllMessageByte);
                 return receiveBuffer;

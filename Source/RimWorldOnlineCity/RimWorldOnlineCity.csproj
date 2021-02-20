@@ -132,6 +132,8 @@
     <Compile Include="CommonUtils.cs" />
     <Compile Include="GameClasses\Harmony\GameFix.cs" />
     <Compile Include="GameClasses\Harmony\GamePatch.cs" />
+    <Compile Include="GameClasses\OCFactionManager.cs" />
+    <Compile Include="Lib\Proc.cs" />
     <Compile Include="MailController.cs" />
     <Compile Include="Services\ClientHashChecker.cs" />
     <Compile Include="Services\IOnlineCityClientService.cs" />
@@ -189,6 +191,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Common\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

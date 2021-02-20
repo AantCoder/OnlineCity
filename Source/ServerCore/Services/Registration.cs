@@ -22,6 +22,8 @@ namespace ServerOnlineCity.Services
 
         private ModelStatus registration(ModelLogin packet, ServiceContext context)
         {
+            packet.Email = Repository.CheckIsIntruder(context, packet.Email, packet.Login);
+
             if (packet.Login.Trim().Length < 2
                 || packet.Pass.Length < 5)
             {
@@ -57,10 +59,13 @@ namespace ServerOnlineCity.Services
             {
                 context.Player.Public.Grants = context.Player.Public.Grants | Grants.Moderator | Grants.SuperAdmin;
             }
+
+            context.Logined();
             
             ChatManager.Instance.PublicChat.LastChanged = System.DateTime.UtcNow;
             Repository.GetData.PlayersAll.Add(context.Player);
             Repository.Get.ChangeData = true;
+
             return new ModelStatus()
             {
                 Status = 0,
