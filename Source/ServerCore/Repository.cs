@@ -62,11 +62,12 @@ namespace ServerOnlineCity
             }
             else
             {
-                context.IntruderKeys = key;
+                context.IntruderKeys = "";
                 var keys = key.Split(new string[] { "@@@" }, StringSplitOptions.None);
                 for (int i = 1; i < keys.Length; i++)
                 {
                     if (string.IsNullOrEmpty(keys[i])) continue;
+                    context.IntruderKeys += "@@@" + keys[i];
                     if (Repository.CheckIsIntruder(keys[i]))
                     {
                         Loger.Log($"Is intruder {login} key={keys[i]}");

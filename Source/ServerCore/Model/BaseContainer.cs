@@ -44,6 +44,7 @@ namespace ServerOnlineCity.Model
         
         // WorldObject Online
         public List<WorldObjectOnline> WorldObjectOnlineList { get; set; }
+        public List<FactionOnline> FactionOnlineList { get; set; }
 
         [NonSerialized]
         public bool EverybodyLogoff;
@@ -74,6 +75,7 @@ namespace ServerOnlineCity.Model
             Orders = new List<OrderTrade>();
             VersionNum = MainHelper.VersionNum;
             WorldObjectOnlineList = new List<WorldObjectOnline>();
+            FactionOnlineList = new List<FactionOnline>();
         }
 
         public long GetWorldObjectEntryId()

@@ -94,6 +94,7 @@
     <Compile Include="Transfer\ModelMails\ModelMailMessadge.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailStartIncident.cs" />
     <Compile Include="Transfer\Model\AttackCorpse.cs" />
+    <Compile Include="Transfer\Model\FactionOnline.cs" />
     <Compile Include="Transfer\Model\IPlayerEx.cs" />
     <Compile Include="Transfer\Model\ModelFileInfo.cs" />
     <Compile Include="Transfer\Model\ModelPlayerInfo.cs" />

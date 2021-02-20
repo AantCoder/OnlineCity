@@ -674,9 +674,37 @@ Or the server can do it itself by configuring DeleteAbandonedSettlements.
 How to make sure that the player is who he claims to be? For example, if a player writes that his preservation is broken, and he asks to remove his settlement. In this case, ask him to try to enter the game right now. Then ask him to send you his logs for today. Then you can find the lines of his login to the server and compare the time with the logs on the server itself (keep in mind that there may be different time zones).
 
 
-You can get a summary of all the players in the console by pressing the letter S. This will create a Players_date.csv file with a list of players, last login time and some game information.
+Blocking intruders.
+In the World folder, you can create two files for the connection ban.
+blockip.txt - IP addresses to be blocked. One line one IP, the last value can be written through the fraction 1.2.3.0/2 will add three IPs uploaded to .0, .1 and .2
 
-Server logs are created automatically Log_date.txt, together with the file with incidents Incidents_month.csv. Several events are noted here for each incident:
+blockkey.txt is a key ban. each player has unique keys. You can find them out from the logs by searching for "key=", there is something like this line:
+Checked loginName key=hlw57jjSV5HacQbb9iiB@@@51b36et2ZBvBUkUztF+N
+Each user has several keys and matching any of them is enough to block. Therefore, to ban by key, you need to add both to the file (each on a separate line). Keys are separated by three @@@ symbols, you do not need to write them.
+When you first log in from new equipment, a special key 111@@@ is added
+
+In both of these files, you can write comments that must go after the key or IP separated by a space
+
+
+You can get a summary of all the players in the console by pressing the letter S. This will create a Players_date.csv file with a list of players, last login time and some game information. Here's a description of some of the columns:
+LastOnlineDay - how many real days ago the player was online
+BaseCount - current number of settlements
+CaravanCount - the current number of caravans
+MarketValue - the current value of the settlement
+MarketValuePawn - the current value of the pawns
+Grants - rights on the server, "UsualUser" - regular user, "SuperAdmin. Moderator" - world creator (first registered)
+IntruderKeys - keys by which you can ban and search for logins to which you enter from one computer
+StartMarketValue - the price of the starting settlement
+StartMarketValuePawn - price of starting pawns
+MarketValueBy15Day - the maximum settlement value that the player has collected in 15 days
+MarketValuePawnBy15Day - the maximum value of pawns that a player has collected in 15 days
+MarketValueByHour - the maximum settlement value that a player has collected in 1 hour of play, excluding pause time
+MarketValuePawnByHour - the maximum value of the pawns that the player has collected in 1 hour of play, excluding the pause time
+TicksByHour - maximum number of ticks in one hour online (including pause time)
+HourInGame - game time for the current colony, excluding pause time
+
+
+Server logs are created automatically Log_data.txt, together with the file with incidents Incidents_month.csv. Several events are marked here for each incident:
 NewIncident - fromLogin player ordered a raid on toLogin
 SendMail - toLogin passed all the expectations from the past, and half a day of waiting before the attack for raids and the event started directly
 DayAfterMail - a day has passed after the event, at this moment it is determined how long you need to wait more (or not more), it is convenient to see how much damage the raid did
@@ -796,6 +824,7 @@ Discord: https://discord.gg/5DzWrnR
 Official VK mod group: https://vk.com/rimworldonline
 Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
 GitHub: https://github.com/AantCoder/OnlineCity
+
 	</OCity_AboutGeneralText>
 
 </LanguageData>
