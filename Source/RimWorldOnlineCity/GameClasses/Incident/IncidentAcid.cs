@@ -28,7 +28,7 @@ namespace RimWorldOnlineCity
             parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, target);
             parms.customLetterLabel = "OC_Incidents_Acid_Label".Translate();
             parms.customLetterText = "OC_Incidents_Acid_Text".Translate() + ". " + "OC_Incident_Atacker".Translate() + " " + attacker;
-            parms.faction = GetFaction();
+            parms.faction = null;
             parms.forced = true;  //игнорировать все условия для события
             parms.target = target;
             parms.points = CalculatePoints();

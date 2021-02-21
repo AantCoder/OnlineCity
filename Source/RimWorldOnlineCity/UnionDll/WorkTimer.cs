@@ -38,10 +38,7 @@ namespace OCUnion
         public void Stop()
         {
             IsStop = true;
-            lock (Timers)
-            {
-                Timers = new List<WorkTimerData>();
-            }
+            Timers = new List<WorkTimerData>(); //без блокировки это может вызвать исключение, но это допустимо, т.к. останавливаем, а блокировка недопкустима
         }
 
         public object Add(long interval, Action action)
@@ -81,29 +78,35 @@ namespace OCUnion
                 }
                 if (needSleep) Thread.Sleep(1);
                 needSleep = true;
-                lock (Timers)
+                try
                 {
-                    if (Timers.Count == 0) continue;
-                    var now = DateTime.UtcNow;
-                    LastLoop = now;
-                    var curIndex = Index;
-                    while (true)
+                    lock (Timers)
                     {
-                        var item = Timers[curIndex++];
-                        if (curIndex >= Timers.Count) curIndex = 0;
-                        if (item.LastRun.AddMilliseconds(item.Interval) < now)
+                        if (Timers.Count == 0) continue;
+                        var now = DateTime.UtcNow;
+                        LastLoop = now;
+                        var curIndex = Index;
+                        while (true)
                         {
-                            //выполнение
-                            item.LastRun = now;
-                            DoItem(item.Act);
-                            //записываем индекс с которого начнем цикл в следующий раз
-                            Index = curIndex;
-                            needSleep = false;
-                            break;
+                            var item = Timers[curIndex++];
+                            if (curIndex >= Timers.Count) curIndex = 0;
+                            if (item.LastRun.AddMilliseconds(item.Interval) < now)
+                            {
+                                //выполнение
+                                item.LastRun = now;
+                                DoItem(item.Act);
+                                //записываем индекс с которого начнем цикл в следующий раз
+                                Index = curIndex;
+                                needSleep = false;
+                                break;
+                            }
+                            //если ничего не выполняли, то проверяем, не завешен ли цикл
+                            if (IsStop || curIndex == Index) break;
                         }
-                        //если ничего не выполняли, то проверяем, не завешен ли цикл
-                        if (curIndex == Index) break;
                     }
+                }
+                catch
+                {
                 }
             }
 
