@@ -198,9 +198,30 @@ namespace ServerOnlineCity.Model
                     ? ModelMailMessadge.MessadgeTypes.Positive
                     : ModelMailMessadge.MessadgeTypes.ThreatBig,
                 label = "OC_Incidents_Raid_Warning_label",
-                text = Mail.IncidentType == IncidentTypes.Raid ? Mail.IncidentFaction.ToLower().Trim() == "mech" ? "OC_Incidents_Raid_Warning_Text_mech"
-                    : "OC_Incidents_Raid_Warning_Text_human" : " ",
+                text = GetWarningText(),  //Кто-то же хотел вариативность сообщений?
             };
+        }
+
+        private string GetWarningText()
+        {
+            string text = " ";
+            if(Mail.IncidentType == IncidentTypes.Raid)
+            {
+                switch (Mail.IncidentFaction.ToLower().Trim())
+                {
+                    case "mech":
+                        text = "OC_Incidents_Raid_Warning_Text_mech";
+                        break;
+                    default:
+                        text = "OC_Incidents_Raid_Warning_Text_human";
+                        break;
+                }
+            }
+            else if(Mail.IncidentType == IncidentTypes.Infistation)
+            {
+                text = "OC_Incidents_Inf_Warning_Text_inf";
+            }
+            return text;
         }
 
 
