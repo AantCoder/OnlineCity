@@ -89,8 +89,11 @@ If interested, here is the exact formula for the maximum price of an attacking c
 4 / (25/1000000 + 10 / colony wealth)
 It turns out, for example, like this: the cost of a colony -> maximum for a caravan
 100,000 -> 32,000
+
 400,000 -> 80,000
+
 1,000,000 -> 114,400
+
 2,000,000 -> 133,332
 
 
@@ -176,6 +179,7 @@ Potentially, OnlineCity is compatible with any other mods, but, of course, you n
 Unzip the archive with the server to any folder. After that, you need to create a subfolder of World, which will store all the game data.
 
 Create a Settings.json file in the World folder (it can be opened with a simple notepad). Here is an example of its contents:
+```
 
 {
   "ServerName": "OnlineCity Server with modpack",
@@ -210,6 +214,7 @@ Create a Settings.json file in the World folder (it can be opened with a simple 
   ],
   "IgnoredLocalModFiles": [ ]
 }
+```
 
 ServerName and Description - the name and description of the server, while not used anywhere, is not necessary.
 
@@ -321,7 +326,9 @@ In the World folder, you can create two files for the connection ban.
 blockip.txt - IP addresses to be blocked. One line one IP, the last value can be written through the fraction 1.2.3.0/2 will add three IPs uploaded to .0, .1 and .2
 
 blockkey.txt is a key ban. each player has unique keys. You can find them out from the logs by searching for "key=", there is something like this line:
+
 Checked loginName key=hlw57jjSV5HacQbb9iiB@@@51b36et2ZBvBUkUztF+N
+
 Each user has several keys and matching any of them is enough to block. Therefore, to ban by key, you need to add both to the file (each on a separate line). Keys are separated by three @@@ symbols, you do not need to write them.
 When you first log in from new equipment, a special key 111@@@ is added
 
@@ -329,41 +336,72 @@ In both of these files, you can write comments that must go after the key or IP 
 
 
 You can get a summary of all the players in the console by pressing the letter S. This will create a Players_date.csv file with a list of players, last login time and some game information. Here's a description of some of the columns:
+
 LastOnlineDay - how many real days ago the player was online
+
 BaseCount - current number of settlements
+
 CaravanCount - the current number of caravans
+
 MarketValue - the current value of the settlement
+
 MarketValuePawn - the current value of the pawns
+
 AttacksWonCount - how many incidents were directed at the player
+
 AttacksInitiatorCount - how many incidents the player made on other players
+
 ColonistsCount - how many colonists there are
+
 ColonistsDownCount - how many of the colonists are off their feet
+
 ColonistsBleedCount - how many of the colonists have bleed
+
 PawnMaxSkill - how many colonists have 8 out of 12 skills of level 20. It should probably always be = 0. If it is equal to ColonistsCount, then this is definitely a cheat
+
 KillsHumanlikes - How many player colonists killed other people
+
 KillsMechanoids - how many player colonists killed mechanoids
+
 KillsBestPawn - which colonist killed the most
+
 Grants - rights on the server, "UsualUser" - regular user, "SuperAdmin. Moderator" - world creator (first registered)
+
 IntruderKeys - keys by which you can ban and search for logins to which you enter from one computer
+
 StartMarketValue - the price of the starting settlement
+
 StartMarketValuePawn - price of starting pawns
+
 MarketValueBy15Day - the maximum settlement value that the player has collected in 15 days
+
 MarketValuePawnBy15Day - the maximum value of pawns that a player has collected in 15 days
+
 MarketValueByHour - the maximum settlement value that a player has collected in 1 hour of play, excluding pause time
+
 MarketValuePawnByHour - the maximum value of the pawns that the player has collected in 1 hour of play, excluding the pause time
+
 TicksByHour - maximum number of ticks in one hour online (including pause time)
+
 HourInGame - game time for the current colony, excluding pause time
 
 
 Server logs are created automatically Log_data.txt, together with the file with incidents Incidents_month.csv. Several events are marked here for each incident:
+
 NewIncident - fromLogin player ordered a raid on toLogin
+
 SendMail - toLogin passed all the expectations from the past, and half a day of waiting before the attack for raids and the event started directly
+
 DayAfterMail - a day has passed after the event, at this moment it is determined how long you need to wait more (or not more), it is convenient to see how much damage the raid did
+
 End - the end of the wait, the event is fully completed and at this moment releases the queue.
 
 Columns:
+
 fromDay and toDay - what is the attacker's game day and target at this moment
-worth is the total cost of items and pawns. In separate columns for the entire account, in the worthTarget exactly the settlement of the target
+
+worth - is the total cost of items and pawns. In separate columns for the entire account, in the worthTarget exactly the settlement of the target
+
 delayAfterMail is how many days of delay were calculated (at the time of calculation, 1 day has already passed)
 
 
@@ -400,24 +438,34 @@ Special commands are written in the chat (usually in any channel), and they will
 /call {событие} {'player name'} {sId settlement target} {power}* {way of arrival}* {fraction}*
 *optional for some events
 the player's name is required in single quotes, for example: /call raid 'babur'
+
 List of available events:
-	raid - calling a raid on a player. The choice of capacity is available, an integer from 1 to 10. The method of arrival and the choice of fraction are also available.
-	inf - summon beetles on the player's card. Power selection available
-	acid - acid rain challenge on player card
+*	raid - calling a raid on a player. The choice of capacity is available, an integer from 1 to 10. The method of arrival and the choice of fraction are also available.
+*	inf - summon beetles on the player's card. Power selection available
+*	acid - acid rain challenge on player card
+	
 List of available arrival methods:
-	walk - arriving on foot from a random edge of the map
-	air - drop in drop pods to the player's home area
-	random - drop in capsules to random points on the map. Grants a highly dispersed raid
+*	walk - arriving on foot from a random edge of the map
+*	air - drop in drop pods to the player's home area
+*	random - drop in capsules to random points on the map. Grants a highly dispersed raid
+	
 List of available factions:
-	tribe - a hostile Aboriginal faction. A huge number of people with primitive weapons
-	pirate - hostile faction of the industrial level of development. Soldiers with good firearms and rocket launchers as well as melee fighters will arrive
-	mech - fraction of mechanoids. Heavily armored, as a rule, arrive in small numbers. When quality is more important than quantity
+*	tribe - a hostile Aboriginal faction. A huge number of people with primitive weapons
+*	pirate - hostile faction of the industrial level of development. Soldiers with good firearms and rocket launchers as well as melee fighters will arrive
+*	mech - fraction of mechanoids. Heavily armored, as a rule, arrive in small numbers. When quality is more important than quantity
+	
 Example:
+
 /call raid 'babur' 143 8 random pirate
+
 /call inf 'SSDExecutor' 23 4
+
 /call acid 'Aant' 16
+
 Note:
+
 if the power, arrival method and fraction are not specified for the raid event, the default is called
+
 /call raid {'player name'} 1 walk pirate
 
 
@@ -439,33 +487,42 @@ There is a bug that is difficult to catch. Sometimes after transferring a settle
 # 10. Other frequently asked questions
 
 > How to choose a game scenario?
+
 The game scenario cannot be customized, but the narrator and difficulty can be changed immediately after starting through the settings. Initially, the game begins with the narrator Cassandra, a standard scenario of the Classic and the complexity that was set when creating the server.
 
 > Is it possible to play together in one settlement?
+
 You cannot play on one map, except for attacking another player’s settlement, but this is still not direct control. If you need this type of game, try Zetrith Multiplayer
 
 > What happens to others when I pause?
+
 Nothing :) The course of the game of all participants is independent. Each player on the map has his own game session, in which interaction with foreign settlements and caravans is added. For example, you can pause and see how other people's caravans move on the map (although it’s difficult to get to the time when another player goes by caravan).
 But what an example of interaction may be: at the time of the attack, you can ask for help from a friend and pause the game, at that time he will come up as a caravan and transfer his settlers; after repulsing the attack, you can return the settlers in the same way. Or, for example, the one who came to the rescue can transfer all the pawns except one animal so that the caravan is not disbanded, then it will be possible to return the settlers immediately after repulsion, creating a new caravan from them and transferring them back to the friend’s caravan.
 
 > Game freezes after authorization
+
 It does not freeze, but it loads, just wait. The loading process can take up to ~ 5 - 10 minutes.
 
 > How to find logs
+
 Individual OnlineCity logs are written in: %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity (this can be inserted into Explorer)
 
 > How to remove your colony?
+
 You need to open the Online window through the panel below or through the Menu in the game. Next, on the About Fashion tab, click Start Again.
 The same action can be done by writing the command in the chat: /killmyallplease
 
 > How often is the game saved?
+
 The game is saved to the server once every 15 minutes, if you have not changed it on the Settings tab, it is also saved when you exit the game through the menu.
 Using ALT + F4, you can roll back your colony to the last save.
 
 > What should I do if I forget my password?
+
 Unfortunately, there is no password recovery system. Try to remember and if access cannot be restored in any way, then ask the administrator to delete your colony in order to free up space on the planet and register a new user.
 
 > Is developer mode available to other players?
+
 It depends on the server settings. If the mode is disabled, then everyone except the administrator will not be able to put it. You can check it out yourself :)
 
 
