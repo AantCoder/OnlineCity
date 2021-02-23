@@ -353,7 +353,7 @@ namespace RimWorldOnlineCity
         private static void GameProgressAdd(PlayerGameProgress gameProgress, Pawn pawn)
         {
             if (pawn.Dead) return;
-            if (pawn.IsColonist && !pawn.IsPrisoner && !pawn.IsPrisonerOfColony)
+            if (pawn.IsFreeColonist && !pawn.IsPrisoner && !pawn.IsPrisonerOfColony)
             {
                 gameProgress.ColonistsCount++;
                 if (pawn.Downed) gameProgress.ColonistsDownCount++;
