@@ -38,8 +38,7 @@ namespace RimWorldOnlineCity
                     Loger.Log($"Mail {mail.GetType().Name} "
                         + (mail.From == null ? "-" : mail.From.Login) + "->"
                         + (mail.To == null ? "-" : mail.To.Login) + ":"
-                        + mail.ContentString()
-                        + "  hash=" + mail.GetHash());
+                        + " hash=" + mail.GetHash());
                     action(mail);
                 }
                 else

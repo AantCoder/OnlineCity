@@ -69,6 +69,7 @@ namespace RimWorldOnlineCity
         }
 
         public DateTime LastServerConnect = DateTime.MinValue;
+
         /// <summary>
         /// Истина, если нет ответа на пинг (пропала связь)
         /// </summary>
@@ -77,6 +78,13 @@ namespace RimWorldOnlineCity
         /// Не реагировать на зависание потока таймера, устанавливается при тяжелых задачах (пока только загрузка ПВП)
         /// </summary>
         public bool DontCheckTimerFail = false;
+        /// <summary>
+        /// Событие после рекконекта, назначается перед командой, для которой нужно проконтролировать, что она отправлена успешно.
+        /// Команда будет выполнена в основном потоке
+        /// Если это событие возникает, значит был рекконект, и команду возможно нужно отправить ещё раз
+        /// </summary>
+        public Action ActionAfterReconnect = null;
+
         public int CountReconnectBeforeUpdate = 0;
         /// <summary>
         /// Проверка на зависание потока таймера увеличивается по времени, устанавливается при передачи больших пакетов (сохранения)

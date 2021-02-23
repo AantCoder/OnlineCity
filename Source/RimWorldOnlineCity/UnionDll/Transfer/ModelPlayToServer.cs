@@ -16,6 +16,7 @@ namespace Transfer
         public byte[] SaveFileData { get; set; }
         public bool SingleSave { get; set; }
         public long LastTick { get; set; }
+        public PlayerGameProgress GameProgress { get; set; }
         public List<string> GetPlayersInfo { get; set; }
         public List<WorldObjectOnline> WObjectOnlineList { get; set; }
         public List<WorldObjectOnline> WObjectOnlineToAdd { get; set; }

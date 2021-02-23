@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Transfer;
@@ -233,6 +234,62 @@ namespace RimWorldOnlineCity
             }
         }
 
+        /// <summary>
+        /// Аналогично SaveGameNow(true, () => { Command((connect) => ActionCommand); } );
+        /// Но безопасный вариант с повтором при переподключении
+        /// </summary>
+        public static void SaveGameNowSingleAndCommandSafely(
+            Func<SessionClient, bool> ActionCommand,
+            Action FinishGood,
+            Action FinishBad)
+        {
+            bool actIsRuned = false;
+            Action act = () =>
+            {
+                Data.ActionAfterReconnect = null;
+                if (actIsRuned)
+                {
+                    Loger.Log("Client SaveGameNowSingleAndCommandSafely cancel by actIsRuned ");
+                    return;
+                }
+                actIsRuned = true;
+                Loger.Log("Client SaveGameNowSingleAndCommandSafely run ");
+                Command((connect) =>
+                {
+                    Loger.Log("Client SaveGameNowSingleAndCommandSafely try ");
+                    int repeat = 0;
+                    do
+                    {
+                        if (ActionCommand(connect))
+                        {
+                            repeat = 1000;
+                        }
+                        else
+                        {
+                            Thread.Sleep(1000);
+                            Loger.Log("Client SaveGameNowSingleAndCommandSafely try again ");
+                        }
+                    }
+                    while (++repeat < 3); //делаем 3 попытки включая первую
+                    if (repeat < 1000)
+                    {
+                        if (FinishBad != null) FinishBad();
+                    }
+                    else
+                    {
+                        if (FinishGood != null) FinishGood();
+                    }
+                });
+            };
+            Data.ActionAfterReconnect = () =>
+            {
+                //повторить, если во время сохранения произошла ошибка, если не выйдет, то ошибка
+                Data.ActionAfterReconnect = FinishBad;
+                SaveGameNow(true, act);
+            };
+            SaveGameNow(true, act);
+        }
+
         private static byte[] SaveGameCore()
         {
             byte[] content;
@@ -247,6 +304,13 @@ namespace RimWorldOnlineCity
             {
                 ScribeSaver_InitSaving_Patch.Enable = false;
                 ScribeSaver_InitSaving_Patch.SaveData = null;
+            }
+            try
+            {
+                File.WriteAllBytes(SaveFullName, content);
+            }
+            catch
+            {
             }
             return content;
         }
@@ -1153,6 +1217,12 @@ namespace RimWorldOnlineCity
                         {
                             Data.LastServerConnectFail = false;
                             Loger.Log($"Client CheckReconnectTimer() OK #{Data.CountReconnectBeforeUpdate}");
+                            if (Data.ActionAfterReconnect != null)
+                            {
+                                var aar = Data.ActionAfterReconnect;
+                                Data.ActionAfterReconnect = null;
+                                ModBaseData.RunMainThread(aar);
+                            }
                             return true;
                         }
                     }

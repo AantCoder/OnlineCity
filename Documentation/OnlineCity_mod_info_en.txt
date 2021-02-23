@@ -334,6 +334,15 @@ BaseCount - current number of settlements
 CaravanCount - the current number of caravans
 MarketValue - the current value of the settlement
 MarketValuePawn - the current value of the pawns
+AttacksWonCount - how many incidents were directed at the player
+AttacksInitiatorCount - how many incidents the player made on other players
+ColonistsCount - how many colonists there are
+ColonistsDownCount - how many of the colonists are off their feet
+ColonistsBleedCount - how many of the colonists have bleed
+PawnMaxSkill - how many colonists have 8 out of 12 skills of level 20. It should probably always be = 0. If it is equal to ColonistsCount, then this is definitely a cheat
+KillsHumanlikes - How many player colonists killed other people
+KillsMechanoids - how many player colonists killed mechanoids
+KillsBestPawn - which colonist killed the most
 Grants - rights on the server, "UsualUser" - regular user, "SuperAdmin. Moderator" - world creator (first registered)
 IntruderKeys - keys by which you can ban and search for logins to which you enter from one computer
 StartMarketValue - the price of the starting settlement

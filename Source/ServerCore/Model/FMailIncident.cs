@@ -112,6 +112,7 @@ namespace ServerOnlineCity.Model
                 SendTick = context.Player.Public.LastTick;
                 MailSended = true;
                 WorthBefore = GetWorthTarget(context.Player);
+                context.Player.AttacksWonCount++;   //не прибавлять положительные инцинденты! 
 
                 CallIncident.IncidentLogAppend("SendMail", Mail, $"{(int)WorthBefore};;{NumberOrder};{countInOrder_}");
                 return false;

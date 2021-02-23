@@ -172,34 +172,20 @@ namespace RimWorldOnlineCity
                         }
                     }
 
-                    //После передачи сохраняем, чтобы нельзя было обузить
-                    SessionClientController.SaveGameNow(true, () =>
-                    {
-                        SessionClientController.Command((connect) =>
+                    //После передачи сохраняем, чтобы нельзя было обузить, после чего передаем вещи
+                    SessionClientController.SaveGameNowSingleAndCommandSafely(
+                        (connect) =>
                         {
-                            int repeat = 0;
-                            do
-                            {
-                                if (connect.SendThings(sendThings
+                            return connect.SendThings(sendThings
                                     , SessionClientController.My.Login
                                     , сaravanOnline.OnlinePlayerLogin
                                     , сaravanOnline.OnlineWObject.ServerId
                                     , сaravanOnline.Tile
-                                    ))
-                                {
-                                    repeat = 1000;
-                                }
-                                else
-                                {
-                                    Thread.Sleep(5000);
-                                    //вроде как этот механизм не нужен, т.к. в SessionClientController.Command добавили ожидание реконнекта
-                                    Loger.Log("Client exchangeOfGoods: try SendThings again ");
-                                }
-                            }
-                            while (++repeat < 3); //делаем 3 попытки включая первую
-                            //если не удалось отправить письмо (repeat < 1000), то жопа так как сейв уже прошел
-                        });
-                    });
+                                    );
+                        },
+                        null,
+                        null); //если не удалось отправить письмо, то жопа так как сейв уже прошел
+
                 }
             });
             Find.WindowStack.Add(form);

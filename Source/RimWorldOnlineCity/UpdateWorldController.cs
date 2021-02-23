@@ -29,6 +29,7 @@ namespace RimWorldOnlineCity
         public static void SendToServer(ModelPlayToServer toServ, bool firstRun, ModelGameServerInfo modelGameServerInfo)
         {
             toServ.LastTick = (long)Find.TickManager.TicksGame;
+            var gameProgress = new PlayerGameProgress();
 
             var allWorldObjectsArr = new WorldObject[Find.WorldObjects.AllWorldObjects.Count];
             Find.WorldObjects.AllWorldObjects.CopyTo(allWorldObjectsArr);
@@ -75,7 +76,7 @@ namespace RimWorldOnlineCity
                 toServ.WObjects = allWorldObjects
                     .Where(o => o.Faction?.IsPlayer == true //o.Faction != null && o.Faction.IsPlayer
                         && (o is Settlement || o is Caravan)) //Чтобы отсеч разные карты событий
-                    .Select(o => GetWorldObjectEntry(o, cacheColonists))
+                    .Select(o => GetWorldObjectEntry(o, gameProgress, cacheColonists))
                     .ToList();
                 LastSendMyWorldObjects = toServ.WObjects;
 
@@ -92,6 +93,7 @@ namespace RimWorldOnlineCity
 
                 toServ.WObjectsToDelete = ToDelete;
             }
+            toServ.GameProgress = gameProgress;
 
             if (SessionClientController.Data.GeneralSettings.EquableWorldObjects)
             {
@@ -348,11 +350,50 @@ namespace RimWorldOnlineCity
             return storeWO;
         }
 
+        private static void GameProgressAdd(PlayerGameProgress gameProgress, Pawn pawn)
+        {
+            if (pawn.Dead) return;
+            if (pawn.IsColonist && !pawn.IsPrisoner && !pawn.IsPrisonerOfColony)
+            {
+                gameProgress.ColonistsCount++;
+                if (pawn.Downed) gameProgress.ColonistsDownCount++;
+                if (pawn.health.hediffSet.BleedRateTotal > 0) gameProgress.ColonistsBleedCount++;
+                //pawn.health.hediffset.pain_total    // уровень боли
+
+                int maxSkill = 0;
+                for (int i = 0; i < pawn.skills.skills.Count; i++)
+                {
+                    if (pawn.skills.skills[i].Level == 20) maxSkill++;
+                }
+                if (maxSkill >= 8) gameProgress.PawnMaxSkill++;
+
+                var kh = pawn.records.GetAsInt(RecordDefOf.KillsHumanlikes);
+                var km = pawn.records.GetAsInt(RecordDefOf.KillsMechanoids);
+
+                gameProgress.KillsHumanlikes += kh;
+                gameProgress.KillsMechanoids += km;
+                if (gameProgress.KillsBestHumanlikesPawnName == null
+                    || kh > gameProgress.KillsBestHumanlikes)
+                {
+                    gameProgress.KillsBestHumanlikesPawnName = pawn.LabelCapNoCount;
+                    gameProgress.KillsBestHumanlikes = kh;
+                }
+                if (gameProgress.KillsBestMechanoidsPawnName == null
+                    || km > gameProgress.KillsBestMechanoids)
+                {
+                    gameProgress.KillsBestMechanoidsPawnName = pawn.LabelCapNoCount;
+                    gameProgress.KillsBestMechanoids = km;
+                }
+            }
+        }
+
         public static Dictionary<int, DateTime> LastForceRecount = new Dictionary<int, DateTime>();
         /// <summary>
         /// Только для своих объетков
         /// </summary>
-        public static WorldObjectEntry GetWorldObjectEntry(WorldObject worldObject, Dictionary<Map, List<Pawn>> cacheColonists)
+        public static WorldObjectEntry GetWorldObjectEntry(WorldObject worldObject
+            , PlayerGameProgress gameProgress
+            , Dictionary<Map, List<Pawn>> cacheColonists)
         {
             var worldObjectEntry = new WorldObjectEntry();
             worldObjectEntry.Type = worldObject is Caravan ? WorldObjectEntryType.Caravan : WorldObjectEntryType.Base;
@@ -395,6 +436,7 @@ namespace RimWorldOnlineCity
                         {
                             worldObjectEntry.MarketValuePawn += thing.MarketValue
                                 + WealthWatcher.GetEquipmentApparelAndInventoryWealth(thing as Pawn);
+                            GameProgressAdd(gameProgress, thing as Pawn);
                         }
                         else
                             worldObjectEntry.MarketValue += thing.MarketValue * (float)count;
@@ -453,6 +495,8 @@ namespace RimWorldOnlineCity
                     foreach (Pawn current in ps)
                     {
                         worldObjectEntry.MarketValuePawn += current.MarketValue;
+
+                        GameProgressAdd(gameProgress, current);
                     }
                     //Loger.Log("Client TestBagSD 017");
                     //Loger.Log("Map things "+ worldObjectEntry.MarketValue + " pawns " + worldObjectEntry.MarketValuePawn);
@@ -666,8 +710,8 @@ namespace RimWorldOnlineCity
 
             if (worldObject != null)
             {
-                Loger.Log("DeleteWorldObject " + DevelopTest.TextObj(worldObjectEntry) + " " 
-                    + (worldObject == null ? "null" : worldObject.ID.ToString()));
+                //Loger.Log("DeleteWorldObject " + DevelopTest.TextObj(worldObjectEntry) + " " 
+                //    + (worldObject == null ? "null" : worldObject.ID.ToString()));
                 Find.WorldObjects.Remove(worldObject);
             }
         }
