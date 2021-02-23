@@ -533,8 +533,13 @@ delayAfterMail - это сколько дней задержки было рас
 
 
 Ссылки:
+
 Основной сервер для игры и тестирования:  rimworld.online
+
 Discord:  https://discord.gg/5DzWrnR
+
 Оф. группа мода ВК:  https://vk.com/rimworldonline
+
 Trello:  https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
+
 GitHub:  https://github.com/AantCoder/OnlineCity
