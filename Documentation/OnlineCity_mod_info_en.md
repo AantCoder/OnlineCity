@@ -527,8 +527,13 @@ It depends on the server settings. If the mode is disabled, then everyone except
 
 
 References:
+
 The main server address is: rimworld.online
+
 Discord: https://discord.gg/5DzWrnR
+
 Official VK mod group: https://vk.com/rimworldonline
+
 Trello: https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
+
 GitHub: https://github.com/AantCoder/OnlineCity
