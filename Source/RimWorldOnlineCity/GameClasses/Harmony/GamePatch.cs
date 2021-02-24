@@ -106,6 +106,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
     //public T ObjectWithLoadID<T>(string loadID)
     //[HarmonyPatch(typeof(LoadedObjectDirectory), new Type[] { typeof(Faction) })]
     //[HarmonyPatch("ObjectWithLoadID")]
+    /* крашит игру
     [HarmonyPatch()]
     public class LoadedObjectDirectory_ObjectWithLoadID_Patch
     {
@@ -135,7 +136,32 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
             return true;
         }
     }
+    */
+    /// ////////////////////////////////////////////////////////////
 
+    //Выключаем настройки модов
+    [HarmonyPatch(typeof(CrossRefHandler))]
+    [HarmonyPatch("ResolveAllCrossReferences")]
+    public class CrossRefHandler_ResolveAllCrossReferences_Patch
+    {
+        public static List<IExposable> crossReferencingExposables = new List<IExposable>();
+
+        [HarmonyPrefix]
+        public static bool Prefix()
+        {
+            if (!GameXMLUtils.FromXmlIsActive) return true;
+            if (Current.Game == null) return true;
+
+            if (Scribe.loader?.crossRefs?.crossReferencingExposables == null) return true;
+
+            Scribe.loader.crossRefs.crossReferencingExposables.AddRange(crossReferencingExposables
+                .Where(e => !Scribe.loader.crossRefs.crossReferencingExposables.Any(ee => ee == e))
+                .ToList());
+            
+            return true;
+        }
+
+    }
 
     /// ////////////////////////////////////////////////////////////
 }
