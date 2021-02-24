@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Model;
 using OCUnion;
 using OCUnion.Transfer;
 using OCUnion.Transfer.Model;
@@ -171,6 +172,10 @@ namespace ServerOnlineCity.Services
 
         private void BeforeBeginSettlement(PlayerServer player)
         {
+            player.GameProgress = new PlayerGameProgress();
+            player.AttacksWonCount = 0;
+            player.AttacksInitiatorCount = 0;
+
             player.StartMarketValue = 0;
             player.StartMarketValuePawn = 0;
             player.TotalRealSecond = 0;

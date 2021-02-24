@@ -12,6 +12,8 @@ using RimWorld.Planet;
 using UnityEngine;
 using OCUnion.Transfer.Model;
 using System.Threading;
+using HarmonyLib;
+using RimWorldOnlineCity.GameClasses.Harmony;
 
 namespace RimWorldOnlineCity
 {
@@ -490,6 +492,33 @@ namespace RimWorldOnlineCity
             return ret;
         }
 
+        private static void RegisterReferencing(IExposable obj)
+        {
+            /*  Не сработало, не понятно почему
+            if (Scribe.loader?.crossRefs?.crossReferencingExposables != null
+                && !Scribe.loader.crossRefs.crossReferencingExposables.Contains(obj))
+            {
+                Scribe.loader.crossRefs.RegisterForCrossRefResolve(obj);
+            }
+            */
+            /*  Тоже не сработало, тоже не понятно почему
+            try
+            {
+                Loger.Log("Client RegisterReferencing " + obj.GetUniqueLoadID());
+                var that = Traverse.Create(Scribe.loader.crossRefs);
+                LoadedObjectDirectory loadedObjectDirectory = that.Field("loadedObjectDirectory").GetValue<LoadedObjectDirectory>();
+
+                loadedObjectDirectory.RegisterLoaded(obj);
+            }
+            catch (Exception exp)
+            {
+                ExceptionUtil.ExceptionLog(exp, "Client RegisterReferencing");
+            }
+            */
+            if (!CrossRefHandler_ResolveAllCrossReferences_Patch.crossReferencingExposables.Contains(obj))
+                CrossRefHandler_ResolveAllCrossReferences_Patch.crossReferencingExposables.Add(obj);
+        }
+
         /// <summary>
         /// Создает игровой объект. 
         /// Если это пешка не колонист, то делаем его пиратом заключённым.
@@ -498,10 +527,28 @@ namespace RimWorldOnlineCity
         public static Thing PrepareSpawnThingEntry(ThingEntry thing, Faction factionPirate, bool freePirate = false)
         {
             var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
+            //var fractionRoyaltyLoadID = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire)?.GetUniqueLoadID();
+            var fractionRoyalty = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire);
+
+            //if (string.IsNullOrEmpty(fractionRoyaltyLoadID)) Loger.Log("Client fractionRoyaltyLoadID is not find");
+
             //var factionPirateLoadID = factionPirate.GetUniqueLoadID();
+            RegisterReferencing(Find.FactionManager.OfPlayer);
 
             //меняем фракцию на игрока для всех
-            thing.SetFaction(factionColonistLoadID);
+            thing.SetFaction(factionColonistLoadID, () =>
+            {
+                if (fractionRoyalty == null)
+                {
+                    Loger.Log("Client fractionRoyalty is not find");
+                    return null;
+                }
+
+                Loger.Log("Client fractionRoyalty RegisterReferencing");
+                RegisterReferencing(fractionRoyalty);
+
+                return fractionRoyalty.GetUniqueLoadID();
+            });
             Thing thin;
             thin = thing.CreateThing(false, 0, freePirate);
             return thin;
@@ -789,6 +836,16 @@ namespace RimWorldOnlineCity
             }
 
             return res;
+        }
+
+        public static bool isBuilding(Thing thing)
+        {
+            if(thing.def.category == ThingCategory.Building && thing.def.destroyable)
+            {
+                if (thing.def.building.IsDeconstructible && thing.def.building.uninstallWork > 0)
+                    return true;
+            }
+            return false;
         }
     }
 }

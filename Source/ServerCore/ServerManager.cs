@@ -366,6 +366,8 @@ namespace ServerOnlineCity
                 Func<DateTime, string> dateTimeToStr = dt => dt == DateTime.MinValue ? "" : dt.ToString("yyyy-MM-dd hh:mm:ss", CultureInfo.InvariantCulture);
 
                 var content = $"Login;LastOnlineTime;LastOnlineDay;GameDays;BaseCount;CaravanCount;MarketValue;MarketValuePawn" +
+                    $";AttacksWonCount;AttacksInitiatorCount;ColonistsCount;ColonistsDownCount;ColonistsBleedCount;PawnMaxSkill" +
+                    $";KillsHumanlikes;KillsMechanoids;KillsBestPawnHN;KillsBestPawnH;KillsBestPawnMN;KillsBestPawnM" +
                     $";Grants;EnablePVP;EMail;DiscordUserName;IntruderKeys;StartMarketValue;StartMarketValuePawn" +
                     $";MarketValueBy15Day;MarketValuePawnBy15Day;MarketValueByHour;MarketValuePawnByHour;TicksByHour;HourInGame" + Environment.NewLine;
                 foreach (var player in Repository.GetData.PlayersAll)
@@ -380,6 +382,18 @@ namespace ServerOnlineCity
                         $"{costAll.CaravanCount};" +
                         $"{costAll.MarketValue};" +
                         $"{costAll.MarketValuePawn};" +
+                        $"{player.AttacksWonCount};" +
+                        $"{player.AttacksInitiatorCount};" +
+                        $"{player.GameProgress?.ColonistsCount};" +
+                        $"{player.GameProgress?.ColonistsDownCount};" +
+                        $"{player.GameProgress?.ColonistsBleedCount};" +
+                        $"{player.GameProgress?.PawnMaxSkill};" +
+                        $"{player.GameProgress?.KillsHumanlikes};" +
+                        $"{player.GameProgress?.KillsMechanoids};" +
+                        $"{player.GameProgress?.KillsBestHumanlikesPawnName};" +
+                        $"{player.GameProgress?.KillsBestHumanlikes};" +
+                        $"{player.GameProgress?.KillsBestMechanoidsPawnName};" +
+                        $"{player.GameProgress?.KillsBestMechanoids};" +
                         $"{player.Public.Grants.ToString()};" +
                         $"{(player.Public.EnablePVP ? 1 : 0)};" +
                         $"{player.Public.EMail};" +

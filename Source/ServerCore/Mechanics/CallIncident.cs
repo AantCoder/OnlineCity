@@ -81,6 +81,8 @@ namespace ServerOnlineCity.Mechanics
                 targetPlayer.FunctionMails.Add(fPacket);
             }
 
+            player.AttacksInitiatorCount++;   //не прибавлять положительные инцинденты! 
+
             //Добавляем в спец лог
             IncidentLogAppend("NewIncident", packet, "", (int)costAllPlayer, (int)costAllTargetPlayer);
 

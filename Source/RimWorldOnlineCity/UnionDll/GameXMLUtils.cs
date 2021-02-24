@@ -10,6 +10,7 @@ namespace OCUnion
 {
     public class GameXMLUtils
     {
+        public static bool FromXmlIsActive = false;
         public StringBuilder OutXml;
         private string rootElementName = "data";
         private object SuncObj = new Object();
@@ -44,15 +45,32 @@ namespace OCUnion
                 Scribe.mode = LoadSaveMode.LoadingVars;
                 try
                 {
+                    /*
+                    bool flag = typeof(T).IsValueType || typeof(Name).IsAssignableFrom(typeof(T));
+                    if (!flag)
+                    {
+                        Scribe.loader.crossRefs.RegisterForCrossRefResolve(exposable);
+                    }*/
+                    FromXmlIsActive = true;
                     Scribe.EnterNode(rootElementName);
                     var thing = new T();
                     Scribe_Deep.Look<T>(ref thing, "saveable", new object[0]);
+
+                    // Scribe.loader.crossRefs.ResolveAllCrossReferences()
+
                     return thing;
                 }
                 finally
                 {
-                    //Finish()
-                    Scribe.loader.FinalizeLoading();
+                    try
+                    {
+                        //Finish()
+                        Scribe.loader.FinalizeLoading();
+                    }
+                    finally
+                    {
+                        FromXmlIsActive = false;
+                    }
                 }
             }
         }
@@ -92,12 +110,12 @@ namespace OCUnion
 
             var tagNameB = "<" + tagName + ">";
             int pos = xml.IndexOf(tagNameB, after);
-            if (pos < 0) return xml;
+            if (pos < 0) return null;
             pos += tagNameB.Length;
 
             var tagNameE = "</" + tagName + ">";
             int posE = xml.IndexOf(tagNameE, pos);
-            if (posE < 0) return xml;
+            if (posE < 0) return null;
 
             return xml.Substring(pos, posE - pos);
         }

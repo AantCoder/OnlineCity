@@ -46,28 +46,37 @@ namespace RimWorldOnlineCity
         }
         public Faction GetFaction()
         {
-            switch (faction.ToLower().Trim())
+            try
             {
-                case "mech":
-                    return Find.FactionManager.OfMechanoids;
-                case "pirate":
-                    /*Faction fac = null;
-                    bool flag = false;
-                    while (!flag)  //так делать очень плохо
-                    {
-                        fac = Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Industrial);
-                        if(fac.def.techLevel <= TechLevel.Archotech && fac.def.techLevel >= TechLevel.Medieval)
+                switch (faction.ToLower().Trim())
+                {
+                    case "mech":
+                        return Find.FactionManager.OfMechanoids;
+                    case "pirate":
+                        /*Faction fac = null;
+                        bool flag = false;
+                        while (!flag)  //так делать очень плохо
                         {
-                            flag = true;
+                            fac = Find.FactionManager.RandomEnemyFaction(false, false, true, TechLevel.Industrial);
+                            if(fac.def.techLevel <= TechLevel.Archotech && fac.def.techLevel >= TechLevel.Medieval)
+                            {
+                                flag = true;
+                            }
+
                         }
-                        
-                    }
-                    return fac; */  // может оно не глючит?
-                    //todo: поиск начинает глючить при добавлении фракций из модов
-                    return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate" && f.def.permanentEnemy == true && f.def.humanlikeFaction == true && f.def.techLevel >= TechLevel.Industrial && f.def.techLevel < TechLevel.Archotech);
-                case "tribe": default:
-                    return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.permanentEnemy == true && f.def.humanlikeFaction == true && f.def.techLevel <= TechLevel.Medieval);
+                        return fac; */  // может оно не глючит?
+                                        //todo: поиск начинает глючить при добавлении фракций из модов
+                        return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate" && f.def.permanentEnemy == true && f.def.humanlikeFaction == true && f.def.techLevel >= TechLevel.Industrial && f.def.techLevel < TechLevel.Archotech);
+                    case "tribe":
+                    default:
+                        return Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.permanentEnemy == true && f.def.humanlikeFaction == true && f.def.techLevel <= TechLevel.Medieval);
                 }
+            }
+            catch
+            {
+                Loger.Log("IncidentGenerate Error: faction not found");
+                return null;
+            }
         }
 
         /// <summary>

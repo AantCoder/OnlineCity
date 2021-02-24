@@ -109,10 +109,10 @@ namespace RimWorldOnlineCity
             // Передача товара
             var minCostForTrade = 25000; // эту цифру изменять вместе с ServerManager.DoWorld()
             bool disTrade = false;
-            if (SessionClientController.Data.ProtectingNovice)
+            if (!SessionClientController.Data.IsAdmin && SessionClientController.Data.ProtectingNovice)
             {
-                var costAll = player.CostAllWorldObjects();
-                disTrade = player.Public.LastTick < 3600000 / 2 || costAll.MarketValue + costAll.MarketValuePawn < minCostForTrade;
+                var costAll = SessionClientController.Data.MyEx.CostAllWorldObjects();
+                disTrade = SessionClientController.My.LastTick < 3600000 / 2 || costAll.MarketValue + costAll.MarketValuePawn < minCostForTrade;
             }
             var fmoTrade = new FloatMenuOption("OCity_Caravan_Trade".Translate(OnlinePlayerLogin + " " + OnlineName)
                 + (disTrade ? "OCity_Caravan_Abort".Translate().ToString() + " " + minCostForTrade.ToString() : "") // "Вам нет года или стоимость меньше" You are under a year old or cost less than

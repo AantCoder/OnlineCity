@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Transfer;
@@ -120,6 +121,7 @@ namespace RimWorldOnlineCity
                     //данные сохранения игры // save game data
                     if (Data.SaveFileData != null)
                     {
+                        Data.AddTimeCheckTimerFail = true;
                         toServ.SaveFileData = Data.SaveFileData;
                         toServ.SingleSave = Data.SingleSave;
                         Data.SaveFileData = null;
@@ -158,6 +160,7 @@ namespace RimWorldOnlineCity
                     //отправляем на сервер, получаем ответ
                     //we send to the server, we get a response2
                     ModelPlayToClient fromServ = connect.PlayInfo(toServ);
+                    Data.AddTimeCheckTimerFail = false;
                     //Loger.Log("Client UpdateWorld 5 ");
 
                     Loger.Log($"Client {My.Login} UpdateWorld myWO->{toServ.WObjects?.Count}"
@@ -233,6 +236,62 @@ namespace RimWorldOnlineCity
             }
         }
 
+        /// <summary>
+        /// Аналогично SaveGameNow(true, () => { Command((connect) => ActionCommand); } );
+        /// Но безопасный вариант с повтором при переподключении
+        /// </summary>
+        public static void SaveGameNowSingleAndCommandSafely(
+            Func<SessionClient, bool> ActionCommand,
+            Action FinishGood,
+            Action FinishBad)
+        {
+            bool actIsRuned = false;
+            Action act = () =>
+            {
+                Data.ActionAfterReconnect = null;
+                if (actIsRuned)
+                {
+                    Loger.Log("Client SaveGameNowSingleAndCommandSafely cancel by actIsRuned ");
+                    return;
+                }
+                actIsRuned = true;
+                Loger.Log("Client SaveGameNowSingleAndCommandSafely run ");
+                Command((connect) =>
+                {
+                    Loger.Log("Client SaveGameNowSingleAndCommandSafely try ");
+                    int repeat = 0;
+                    do
+                    {
+                        if (ActionCommand(connect))
+                        {
+                            repeat = 1000;
+                        }
+                        else
+                        {
+                            Thread.Sleep(1000);
+                            Loger.Log("Client SaveGameNowSingleAndCommandSafely try again ");
+                        }
+                    }
+                    while (++repeat < 3); //делаем 3 попытки включая первую
+                    if (repeat < 1000)
+                    {
+                        if (FinishBad != null) FinishBad();
+                    }
+                    else
+                    {
+                        if (FinishGood != null) FinishGood();
+                    }
+                });
+            };
+            Data.ActionAfterReconnect = () =>
+            {
+                //повторить, если во время сохранения произошла ошибка, если не выйдет, то ошибка
+                Data.ActionAfterReconnect = FinishBad;
+                SaveGameNow(true, act);
+            };
+            SaveGameNow(true, act);
+        }
+
         private static byte[] SaveGameCore()
         {
             byte[] content;
@@ -247,6 +306,13 @@ namespace RimWorldOnlineCity
             {
                 ScribeSaver_InitSaving_Patch.Enable = false;
                 ScribeSaver_InitSaving_Patch.SaveData = null;
+            }
+            try
+            {
+                File.WriteAllBytes(SaveFullName, content);
+            }
+            catch
+            {
             }
             return content;
         }
@@ -1153,6 +1219,12 @@ namespace RimWorldOnlineCity
                         {
                             Data.LastServerConnectFail = false;
                             Loger.Log($"Client CheckReconnectTimer() OK #{Data.CountReconnectBeforeUpdate}");
+                            if (Data.ActionAfterReconnect != null)
+                            {
+                                var aar = Data.ActionAfterReconnect;
+                                Data.ActionAfterReconnect = null;
+                                ModBaseData.RunMainThread(aar);
+                            }
                             return true;
                         }
                     }
@@ -1206,7 +1278,7 @@ namespace RimWorldOnlineCity
             if (!needReconnect && !Data.DontCheckTimerFail && !Timers.IsStop && Timers.LastLoop != DateTime.MinValue)
             {
                 var sec = (DateTime.UtcNow - Timers.LastLoop).TotalSeconds;
-                if (sec > 30/*(Data.AddTimeCheckTimerFail ? 120 : 30)*/)
+                if (sec > (Data.AddTimeCheckTimerFail ? 120 : 30))
                 {
                     needReconnect = true;
                     Loger.Log($"Client ReconnectWithTimers timerFail {sec}");
@@ -1219,7 +1291,12 @@ namespace RimWorldOnlineCity
                 if (++Data.CountReconnectBeforeUpdate > 4 || !ReconnectWithTimers())
                 {
                     Loger.Log("Client CheckReconnectTimer Disconnected after try reconnect");
-                    Disconnected("OCity_SessionCC_Disconnected".Translate());
+                    Disconnected("OCity_SessionCC_Disconnected".Translate()
+                        , Data.CountReconnectBeforeUpdate > 4 ? () =>
+                        {
+                            Environment.Exit(0);
+                        }
+                        : (Action)null);
                 }
             }
             //Loger.Log("Client TestBagSD CRTe");

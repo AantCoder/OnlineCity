@@ -36,4 +36,22 @@ namespace Model
         public Grants Grants { get; set; }
 
     }
+
+    [Serializable]
+    public class PlayerGameProgress
+    {
+        public int ColonistsCount { get; set; }
+        public int ColonistsDownCount { get; set; }
+        public int ColonistsBleedCount { get; set; }
+        /// <summary>
+        /// Сколько пешек имеют 8 из 12 навыков 20 уровня. Предположительно всегда должно быть = 0. Если оно равно ColonistsCount, значит это чит
+        /// </summary>
+        public int PawnMaxSkill { get; set; }
+        public int KillsHumanlikes { get; set; }
+        public int KillsMechanoids { get; set; }
+        public string KillsBestHumanlikesPawnName { get; set; }
+        public string KillsBestMechanoidsPawnName { get; set; }
+        public int KillsBestHumanlikes { get; set; }
+        public int KillsBestMechanoids { get; set; }
+    } 
 }

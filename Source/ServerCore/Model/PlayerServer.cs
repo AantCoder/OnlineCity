@@ -100,6 +100,12 @@ namespace ServerOnlineCity.Model
 
         public string IntruderKeys;
 
+        public PlayerGameProgress GameProgress;
+
+        public int AttacksWonCount;
+
+        public int AttacksInitiatorCount;
+
         public float StartMarketValue;
 
         public float StartMarketValuePawn;

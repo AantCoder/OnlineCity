@@ -4,6 +4,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Verse;
 
@@ -101,5 +102,68 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
     /// ////////////////////////////////////////////////////////////
 
+    //Подключаемся к разрешению ссылок (Например Faction_10) при загрузке кусочков сейвов: при создании вещщей в GameXMLUtils.FromXml
+    //public T ObjectWithLoadID<T>(string loadID)
+    //[HarmonyPatch(typeof(LoadedObjectDirectory), new Type[] { typeof(Faction) })]
+    //[HarmonyPatch("ObjectWithLoadID")]
+    /* крашит игру
+    [HarmonyPatch()]
+    public class LoadedObjectDirectory_ObjectWithLoadID_Patch
+    {
+        static MethodBase TargetMethod()
+        {
+            return typeof(LoadedObjectDirectory).GetMethod("ObjectWithLoadID").MakeGenericMethod(typeof(Faction));
+        }
 
+        [HarmonyPrefix]
+        public static bool Prefix(string loadID, ref object __result)
+        {
+            if (!GameXMLUtils.FromXmlIsActive) return true;
+            if (Current.Game == null) return true;
+            if (loadID == null) return true;
+
+            if (loadID.StartsWith("Faction_"))
+            {
+                Loger.Log("LoadedObjectDirectory_ObjectWithLoadID_Patch " + loadID);
+                var faction = Find.FactionManager.AllFactions.FirstOrDefault(f => f.GetUniqueLoadID() == loadID);
+                if (faction != null)
+                {
+                    __result = faction;
+                    return false;
+                }
+                return true;
+            }
+            return true;
+        }
+    }
+    */
+    /// ////////////////////////////////////////////////////////////
+
+    //Выключаем настройки модов
+    [HarmonyPatch(typeof(CrossRefHandler))]
+    [HarmonyPatch("ResolveAllCrossReferences")]
+    public class CrossRefHandler_ResolveAllCrossReferences_Patch
+    {
+        public static List<IExposable> crossReferencingExposables = new List<IExposable>();
+
+        [HarmonyPrefix]
+        public static bool Prefix()
+        {
+            if (!GameXMLUtils.FromXmlIsActive) return true;
+            if (Current.Game == null) return true;
+
+            if (Scribe.loader?.crossRefs?.crossReferencingExposables == null) return true;
+
+            Scribe.loader.crossRefs.crossReferencingExposables.AddRange(crossReferencingExposables
+                .Where(e => !Scribe.loader.crossRefs.crossReferencingExposables.Any(ee => ee == e))
+                .ToList());
+
+            crossReferencingExposables = new List<IExposable>();
+
+            return true;
+        }
+
+    }
+
+    /// ////////////////////////////////////////////////////////////
 }
