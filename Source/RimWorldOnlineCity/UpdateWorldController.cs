@@ -28,6 +28,8 @@ namespace RimWorldOnlineCity
 
         public static void SendToServer(ModelPlayToServer toServ, bool firstRun, ModelGameServerInfo modelGameServerInfo)
         {
+            Loger.Log("Empire=" + Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire)?.GetUniqueLoadID());
+
             toServ.LastTick = (long)Find.TickManager.TicksGame;
             var gameProgress = new PlayerGameProgress();
 

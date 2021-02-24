@@ -121,6 +121,7 @@ namespace RimWorldOnlineCity
                     //данные сохранения игры // save game data
                     if (Data.SaveFileData != null)
                     {
+                        Data.AddTimeCheckTimerFail = true;
                         toServ.SaveFileData = Data.SaveFileData;
                         toServ.SingleSave = Data.SingleSave;
                         Data.SaveFileData = null;
@@ -159,6 +160,7 @@ namespace RimWorldOnlineCity
                     //отправляем на сервер, получаем ответ
                     //we send to the server, we get a response2
                     ModelPlayToClient fromServ = connect.PlayInfo(toServ);
+                    Data.AddTimeCheckTimerFail = false;
                     //Loger.Log("Client UpdateWorld 5 ");
 
                     Loger.Log($"Client {My.Login} UpdateWorld myWO->{toServ.WObjects?.Count}"
@@ -1276,7 +1278,7 @@ namespace RimWorldOnlineCity
             if (!needReconnect && !Data.DontCheckTimerFail && !Timers.IsStop && Timers.LastLoop != DateTime.MinValue)
             {
                 var sec = (DateTime.UtcNow - Timers.LastLoop).TotalSeconds;
-                if (sec > 30/*(Data.AddTimeCheckTimerFail ? 120 : 30)*/)
+                if (sec > (Data.AddTimeCheckTimerFail ? 120 : 30))
                 {
                     needReconnect = true;
                     Loger.Log($"Client ReconnectWithTimers timerFail {sec}");

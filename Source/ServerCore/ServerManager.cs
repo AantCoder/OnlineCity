@@ -384,16 +384,16 @@ namespace ServerOnlineCity
                         $"{costAll.MarketValuePawn};" +
                         $"{player.AttacksWonCount};" +
                         $"{player.AttacksInitiatorCount};" +
-                        $"{player.GameProgress.ColonistsCount};" +
-                        $"{player.GameProgress.ColonistsDownCount};" +
-                        $"{player.GameProgress.ColonistsBleedCount};" +
-                        $"{player.GameProgress.PawnMaxSkill};" +
-                        $"{player.GameProgress.KillsHumanlikes};" +
-                        $"{player.GameProgress.KillsMechanoids};" +
-                        $"{player.GameProgress.KillsBestHumanlikesPawnName};" +
-                        $"{player.GameProgress.KillsBestHumanlikes};" +
-                        $"{player.GameProgress.KillsBestMechanoidsPawnName};" +
-                        $"{player.GameProgress.KillsBestMechanoids};" +
+                        $"{player.GameProgress?.ColonistsCount};" +
+                        $"{player.GameProgress?.ColonistsDownCount};" +
+                        $"{player.GameProgress?.ColonistsBleedCount};" +
+                        $"{player.GameProgress?.PawnMaxSkill};" +
+                        $"{player.GameProgress?.KillsHumanlikes};" +
+                        $"{player.GameProgress?.KillsMechanoids};" +
+                        $"{player.GameProgress?.KillsBestHumanlikesPawnName};" +
+                        $"{player.GameProgress?.KillsBestHumanlikes};" +
+                        $"{player.GameProgress?.KillsBestMechanoidsPawnName};" +
+                        $"{player.GameProgress?.KillsBestMechanoids};" +
                         $"{player.Public.Grants.ToString()};" +
                         $"{(player.Public.EnablePVP ? 1 : 0)};" +
                         $"{player.Public.EMail};" +

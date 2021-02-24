@@ -499,6 +499,9 @@ namespace RimWorldOnlineCity
         {
             var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
             var fractionRoyaltyLoadID = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire)?.GetUniqueLoadID();
+
+            if (string.IsNullOrEmpty(fractionRoyaltyLoadID)) Loger.Log("Client fractionRoyaltyLoadID is not find");
+
             //var factionPirateLoadID = factionPirate.GetUniqueLoadID();
 
             //меняем фракцию на игрока для всех
