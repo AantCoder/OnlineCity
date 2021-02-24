@@ -15,7 +15,9 @@ namespace Transfer
         public readonly Encoding MessageEncoding = Encoding.UTF8;
         protected const int DefaultTimeout = 180000; //3 мин
         public DateTime LastSend;
-        public long CurrentRequestLength = 0;
+        private long CurrentSendRequestLength = 0;
+        private long CurrentReceiveRequestLength = 0;
+        public long CurrentRequestLength => CurrentSendRequestLength + CurrentReceiveRequestLength;
         public DateTime CurrentRequestStart = DateTime.MinValue;
 
         public ConnectClient(string addr, int port)
@@ -41,7 +43,8 @@ namespace Transfer
         {
             byte[] packlength = BitConverter.GetBytes(message.Length);
 
-            CurrentRequestLength = message.Length + packlength.Length;
+            CurrentSendRequestLength = message.Length + packlength.Length;
+            CurrentReceiveRequestLength = 0;
             CurrentRequestStart = DateTime.UtcNow;
             try
             {
@@ -63,8 +66,10 @@ namespace Transfer
             //длина передаваемого сообщения (принимается в первых 4 байтах (константа Int32Length))
             int lenghtAllMessageByte;
 
-            CurrentRequestLength = Int32Length;
+            CurrentReceiveRequestLength = Int32Length;
             CurrentRequestStart = DateTime.UtcNow;
+            //оставляем кол-во байт к последней отправке, чтобы ждать не только приема этих 4, но и окончания отправки тех CurrentSendRequestLength
+            if ((CurrentRequestStart - LastSend).TotalSeconds > 1d) CurrentSendRequestLength = 0;
             try
             {
 
@@ -72,7 +77,8 @@ namespace Transfer
                 lenghtAllMessageByte = BitConverter.ToInt32(receiveBuffer, 0);
                 if (lenghtAllMessageByte == 0) return new byte[0];
 
-                CurrentRequestLength = lenghtAllMessageByte;
+                CurrentSendRequestLength = 0;
+                CurrentReceiveRequestLength = lenghtAllMessageByte;
                 CurrentRequestStart = DateTime.UtcNow;
 
                 receiveBuffer = ReceiveBytes(lenghtAllMessageByte);

@@ -239,6 +239,7 @@ namespace ServerOnlineCity.Services
                     //завершили сбор информации клиенту
                     toClient.WObjects = outWO;
                     toClient.WObjectsToDelete = outWOD;
+                    context.Player.GameProgress = packet.GameProgress;
 
                     context.Player.WLastUpdateTime = timeNow;
                     context.Player.WLastTick = packet.LastTick;

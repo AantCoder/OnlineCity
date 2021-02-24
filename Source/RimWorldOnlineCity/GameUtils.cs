@@ -498,10 +498,14 @@ namespace RimWorldOnlineCity
         public static Thing PrepareSpawnThingEntry(ThingEntry thing, Faction factionPirate, bool freePirate = false)
         {
             var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
+            var fractionRoyaltyLoadID = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire)?.GetUniqueLoadID();
+
+            if (string.IsNullOrEmpty(fractionRoyaltyLoadID)) Loger.Log("Client fractionRoyaltyLoadID is not find");
+
             //var factionPirateLoadID = factionPirate.GetUniqueLoadID();
 
             //меняем фракцию на игрока для всех
-            thing.SetFaction(factionColonistLoadID);
+            thing.SetFaction(factionColonistLoadID, fractionRoyaltyLoadID);
             Thing thin;
             thin = thing.CreateThing(false, 0, freePirate);
             return thin;

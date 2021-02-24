@@ -92,12 +92,12 @@ namespace OCUnion
 
             var tagNameB = "<" + tagName + ">";
             int pos = xml.IndexOf(tagNameB, after);
-            if (pos < 0) return xml;
+            if (pos < 0) return null;
             pos += tagNameB.Length;
 
             var tagNameE = "</" + tagName + ">";
             int posE = xml.IndexOf(tagNameE, pos);
-            if (posE < 0) return xml;
+            if (posE < 0) return null;
 
             return xml.Substring(pos, posE - pos);
         }

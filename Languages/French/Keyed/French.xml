@@ -372,7 +372,7 @@ After registration, you can create your own settlement and begin to develop alon
 9. Possible problems
 10. Other frequently asked questions
 
-1. General description
+# 1. General description
 
 This mod almost does not change the gameplay. All events, settlements of the NPC and game mechanics for each player are different and are not connected with each other. Thanks to this, the balance of the game, which was conceived by the developers, is not upset. What exactly is changing?
 
@@ -387,7 +387,7 @@ In the game, by clicking the Online button, you can open chat, settings, and mor
 For those who want more, you can set the Participate in PVP item on the Settings tab. After that, it will be possible to attack the settlements of players who also have this option turned on, and, of course, if they are also online.
 
 
-2. Exchange between players
+# 2. Exchange between players
 
 Transfer between players is possible only from the caravan. To transfer anything you need to select your usual caravan, right-click on the settlement or caravan of another player and select the item Exchange of goods. An intuitive window for selecting the item to transfer opens. You can transfer the player any amount of goods, animals and settlers. You can transfer as many times as you like, even if the player is offline.
 
@@ -402,7 +402,7 @@ When a settler is transferred, all his connections with other settlers are lost.
 There is an unresolved issue of transferring pawns when using HardcoreSK. Maybe a similar problem will be with some other mods, is not yet known.
 
 
-3. Other interaction
+# 3. Other interaction
 
 Pirates and warlike natives will gladly agree to work for a reward. In addition, by paying the required amount of gold, you can cause acid precipitation, set beetles, mechanoids, and so on. To trigger different events, find another player's settlement on the palnet, select it, and click on the Interact button.
 
@@ -425,7 +425,7 @@ There is novice defense: both the attacking player and his target must have a pl
 Events from different tabs can be called simultaneously. Each player can only trigger 1 event from each tab per player. But another player can also add his own event to the same target: in this case, they will be triggered in turn, keeping the delays. The total number of events in the queue cannot exceed 2.
 
 
-4. Attack on player settlements (PVP)
+# 4. Attack on player settlements (PVP)
 
 Now, if you want, you can attack a foreign colony with your caravan. You will appear at the edge of the map in a random place. Then you can look at the enemy’s base, be horrified and retreat (all pawns near the edge of the map in this case will go to the caravan). Rob, if something can be carried away with you. Or capture the settlement, killing or knocking down all the enemy pawns.
 
@@ -466,7 +466,7 @@ A target that is slain will not be selected by an auto attack and cannot be beat
 The extreme position on the border of the map is not available due to the patch. The fact is that the AI of the game, seeing that the attacking pawn wants to leave and is already on the edge, immediately removes it. It turns out that things that have fallen to the very edge will be available only after the capture of the colony. There is also a problem associated with this: sometimes, when a pawn is located across the cell from the edge of the map, it gets stuck there and does not respond to commands. It has not yet been possible to fix this, but if this happened, then try to select a pawn and quickly click
 
 
-5. Installing the mod and how to start playing
+# 5. Installing the mod and how to start playing
 
 1) Have any RimWorld not lower than 1.1
 
@@ -513,7 +513,7 @@ Common problems:
 * If all else fails, then try disabling other mods. If this helped, and the game started, then write to us which mod turned out to be incompatible.
 
 
-6. Additional modifications
+# 6. Additional modifications
 
 On the server there is an exact match mods setting. If it is enabled, the game’s Mods folder and the ModsConfig.xml file will be deleted and downloaded from the server. Be careful, and before entering the server for the first time, make sure that there is nothing valuable in the Mods folder! The presence of DLC Royality is not controlled and will not be downloaded from the server; you must install it yourself if it is required for the game on the server. Make sure you have one if you need one. If it is not needed for the server where you play, then before entering it is better to disable it. If the server does not need it, but you have it, then it will be correctly disabled. Further in the text, it is assumed that the setting is turned off and no synchronization occurs.
 
@@ -530,7 +530,7 @@ At the moment, there is only one incompatible mod: Save Our Ship 2
 Potentially, OnlineCity is compatible with any other mods, but, of course, you need to be careful, especially when using large modpacks. It's funny that the mod is even compatible with Zetrith Multiplayer (except, perhaps, the PVP mode was not tested). After all, OnlineCity synchronizes the planet where everyone has their own settlement, and Zetrith Multiplayer is a cooperative of one settlement.
 
 
-7. Server
+# 7. Server
 
 Unzip the archive with the server to any folder. After that, you need to create a subfolder of World, which will store all the game data.
 
@@ -693,6 +693,15 @@ BaseCount - current number of settlements
 CaravanCount - the current number of caravans
 MarketValue - the current value of the settlement
 MarketValuePawn - the current value of the pawns
+AttacksWonCount - how many incidents were directed at the player
+AttacksInitiatorCount - how many incidents the player made on other players
+ColonistsCount - how many colonists there are
+ColonistsDownCount - how many of the colonists are off their feet
+ColonistsBleedCount - how many of the colonists have bleed
+PawnMaxSkill - how many colonists have 8 out of 12 skills of level 20. It should probably always be = 0. If it is equal to ColonistsCount, then this is definitely a cheat
+KillsHumanlikes - How many player colonists killed other people
+KillsMechanoids - how many player colonists killed mechanoids
+KillsBestPawn - which colonist killed the most
 Grants - rights on the server, "UsualUser" - regular user, "SuperAdmin. Moderator" - world creator (first registered)
 IntruderKeys - keys by which you can ban and search for logins to which you enter from one computer
 StartMarketValue - the price of the starting settlement
@@ -717,7 +726,7 @@ worth is the total cost of items and pawns. In separate columns for the entire a
 delayAfterMail is how many days of delay were calculated (at the time of calculation, 1 day has already passed)
 
 
-8. Functions of the mod in the game
+# 8. Functions of the mod in the game
 
 Special commands are written in the chat (usually in any channel), and they will not be displayed in it. All such commands begin with a /
 
@@ -771,7 +780,7 @@ if the power, arrival method and fraction are not specified for the raid event, 
 /call raid {'player name'} 1 walk pirate
 
 
-9. Possible problems
+# 9. Possible problems
 
 If the game crashes (the colony does not load or it is impossible to play due to errors), then you can contact the administrator and ask him to restore the game from the previous save. You can also restart the game under the same account.
 
@@ -786,7 +795,7 @@ If you have already logged in and played on the server with the mods synchronize
 There is a bug that is difficult to catch. Sometimes after transferring a settler to another player, a copy of it (a pawn with the same name, profession and skills) may appear in some event or ask to join the settlement. Do not agree, eyewitnesses say that this is a ghost that crashes the game! :)
 
 
-10. Other frequently asked questions
+# 10. Other frequently asked questions
 
 > How to choose a game scenario?
 The game scenario cannot be customized, but the narrator and difficulty can be changed immediately after starting through the settings. Initially, the game begins with the narrator Cassandra, a standard scenario of the Classic and the complexity that was set when creating the server.
