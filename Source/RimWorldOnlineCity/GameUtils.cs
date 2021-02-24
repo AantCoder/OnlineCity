@@ -13,6 +13,7 @@ using UnityEngine;
 using OCUnion.Transfer.Model;
 using System.Threading;
 using HarmonyLib;
+using RimWorldOnlineCity.GameClasses.Harmony;
 
 namespace RimWorldOnlineCity
 {
@@ -491,15 +492,16 @@ namespace RimWorldOnlineCity
             return ret;
         }
 
-        private static void RegisterReferencing(ILoadReferenceable obj)
+        private static void RegisterReferencing(IExposable obj)
         {
-            /*
+            /*  Не сработало, не понятно почему
             if (Scribe.loader?.crossRefs?.crossReferencingExposables != null
-                && !Scribe.loader.crossRefs.crossReferencingExposables.Contains(Find.FactionManager.OfPlayer))
+                && !Scribe.loader.crossRefs.crossReferencingExposables.Contains(obj))
             {
-                Scribe.loader.crossRefs.RegisterForCrossRefResolve(Find.FactionManager.OfPlayer);
+                Scribe.loader.crossRefs.RegisterForCrossRefResolve(obj);
             }
             */
+            /*  Тоже не сработало, тоже не понятно почему
             try
             {
                 Loger.Log("Client RegisterReferencing " + obj.GetUniqueLoadID());
@@ -512,6 +514,9 @@ namespace RimWorldOnlineCity
             {
                 ExceptionUtil.ExceptionLog(exp, "Client RegisterReferencing");
             }
+            */
+            if (!CrossRefHandler_ResolveAllCrossReferences_Patch.crossReferencingExposables.Contains(obj))
+                CrossRefHandler_ResolveAllCrossReferences_Patch.crossReferencingExposables.Add(obj);
         }
 
         /// <summary>
