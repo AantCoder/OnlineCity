@@ -115,10 +115,11 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
         }
 
         [HarmonyPrefix]
-        public static bool Prefix(string loadID, ref Faction __result)
+        public static bool Prefix(string loadID, ref object __result)
         {
             if (!GameXMLUtils.FromXmlIsActive) return true;
             if (Current.Game == null) return true;
+            if (loadID == null) return true;
 
             if (loadID.StartsWith("Faction_"))
             {
