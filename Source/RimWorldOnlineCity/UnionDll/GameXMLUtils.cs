@@ -10,6 +10,7 @@ namespace OCUnion
 {
     public class GameXMLUtils
     {
+        public static bool FromXmlIsActive = false;
         public StringBuilder OutXml;
         private string rootElementName = "data";
         private object SuncObj = new Object();
@@ -50,7 +51,7 @@ namespace OCUnion
                     {
                         Scribe.loader.crossRefs.RegisterForCrossRefResolve(exposable);
                     }*/
-
+                    FromXmlIsActive = true;
                     Scribe.EnterNode(rootElementName);
                     var thing = new T();
                     Scribe_Deep.Look<T>(ref thing, "saveable", new object[0]);
@@ -61,8 +62,15 @@ namespace OCUnion
                 }
                 finally
                 {
-                    //Finish()
-                    Scribe.loader.FinalizeLoading();
+                    try
+                    {
+                        //Finish()
+                        Scribe.loader.FinalizeLoading();
+                    }
+                    finally
+                    {
+                        FromXmlIsActive = false;
+                    }
                 }
             }
         }
