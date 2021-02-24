@@ -498,14 +498,37 @@ namespace RimWorldOnlineCity
         public static Thing PrepareSpawnThingEntry(ThingEntry thing, Faction factionPirate, bool freePirate = false)
         {
             var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
-            var fractionRoyaltyLoadID = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire)?.GetUniqueLoadID();
+            //var fractionRoyaltyLoadID = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire)?.GetUniqueLoadID();
+            var fractionRoyalty = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire);
 
-            if (string.IsNullOrEmpty(fractionRoyaltyLoadID)) Loger.Log("Client fractionRoyaltyLoadID is not find");
+            //if (string.IsNullOrEmpty(fractionRoyaltyLoadID)) Loger.Log("Client fractionRoyaltyLoadID is not find");
 
             //var factionPirateLoadID = factionPirate.GetUniqueLoadID();
 
+            if (Scribe.loader?.crossRefs?.crossReferencingExposables != null
+                && !Scribe.loader.crossRefs.crossReferencingExposables.Contains(Find.FactionManager.OfPlayer))
+            {
+                Loger.Log("Client factionOfPlayer RegisterForCrossRefResolve");
+                Scribe.loader.crossRefs.RegisterForCrossRefResolve(Find.FactionManager.OfPlayer);
+            }
+
             //меняем фракцию на игрока для всех
-            thing.SetFaction(factionColonistLoadID, fractionRoyaltyLoadID);
+            thing.SetFaction(factionColonistLoadID, () =>
+            {
+                if (fractionRoyalty == null)
+                {
+                    Loger.Log("Client fractionRoyalty is not find");
+                    return null;
+                }
+
+                if (Scribe.loader?.crossRefs?.crossReferencingExposables != null
+                    && !Scribe.loader.crossRefs.crossReferencingExposables.Contains(fractionRoyalty))
+                {
+                    Loger.Log("Client fractionRoyalty RegisterForCrossRefResolve");
+                    Scribe.loader.crossRefs.RegisterForCrossRefResolve(fractionRoyalty);
+                }
+                return fractionRoyalty.GetUniqueLoadID();
+            });
             Thing thin;
             thin = thing.CreateThing(false, 0, freePirate);
             return thin;

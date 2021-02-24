@@ -44,6 +44,13 @@ namespace OCUnion
                 Scribe.mode = LoadSaveMode.LoadingVars;
                 try
                 {
+                    /*
+                    bool flag = typeof(T).IsValueType || typeof(Name).IsAssignableFrom(typeof(T));
+                    if (!flag)
+                    {
+                        Scribe.loader.crossRefs.RegisterForCrossRefResolve(exposable);
+                    }*/
+
                     Scribe.EnterNode(rootElementName);
                     var thing = new T();
                     Scribe_Deep.Look<T>(ref thing, "saveable", new object[0]);

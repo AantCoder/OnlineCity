@@ -106,7 +106,7 @@ namespace Model
         /// </summary>
         /// <param name="fractionColonist"></param>
         /// <returns>Истина, если это особый вид - пленник</returns>
-        public bool SetFaction(string fractionColonist, string fractionRoyalty)
+        public bool SetFaction(string fractionColonist, Func<string> fractionRoyalty)
         {
             if (string.IsNullOrEmpty(Data) || !Data.Contains(" Class=\"Pawn\"")) return false;
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnB" + (++nnnn).ToString() + ".xml", Data);
@@ -146,7 +146,7 @@ namespace Model
                 do
                 {
                     oldTR = tagRoyalty;
-                    tagRoyalty = GameXMLUtils.ReplaceByTag(tagRoyalty, "faction", fractionRoyalty);
+                    tagRoyalty = GameXMLUtils.ReplaceByTag(tagRoyalty, "faction", fractionRoyalty());
                 } while (oldTR != tagRoyalty);
                 Data = GameXMLUtils.ReplaceByTag(Data, "royalty", tagRoyalty);
             }
