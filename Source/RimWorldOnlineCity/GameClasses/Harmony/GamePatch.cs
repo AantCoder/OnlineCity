@@ -4,6 +4,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Verse;
 
@@ -101,5 +102,39 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
     /// ////////////////////////////////////////////////////////////
 
+    //Подключаемся к разрешению ссылок (Например Faction_10) при загрузке кусочков сейвов: при создании вещщей в GameXMLUtils.FromXml
+    //public T ObjectWithLoadID<T>(string loadID)
+    //[HarmonyPatch(typeof(LoadedObjectDirectory), new Type[] { typeof(Faction) })]
+    //[HarmonyPatch("ObjectWithLoadID")]
+    [HarmonyPatch()]
+    public class LoadedObjectDirectory_ObjectWithLoadID_Patch
+    {
+        static MethodBase TargetMethod()
+        {
+            return typeof(LoadedObjectDirectory).GetMethod("ObjectWithLoadID").MakeGenericMethod(typeof(Faction));
+        }
 
+        [HarmonyPrefix]
+        public static bool Prefix(string loadID, ref Faction __result)
+        {
+            if (!GameXMLUtils.FromXmlIsActive) return true;
+            if (Current.Game == null) return true;
+
+            if (loadID.StartsWith("Faction_"))
+            {
+                Loger.Log("LoadedObjectDirectory_ObjectWithLoadID_Patch " + loadID);
+                var faction = Find.FactionManager.AllFactions.FirstOrDefault(f => f.GetUniqueLoadID() == loadID);
+                if (faction != null)
+                {
+                    __result = faction;
+                    return false;
+                }
+                return true;
+            }
+            return true;
+        }
+    }
+
+
+    /// ////////////////////////////////////////////////////////////
 }
