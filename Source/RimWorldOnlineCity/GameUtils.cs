@@ -12,6 +12,7 @@ using RimWorld.Planet;
 using UnityEngine;
 using OCUnion.Transfer.Model;
 using System.Threading;
+using HarmonyLib;
 
 namespace RimWorldOnlineCity
 {
@@ -490,6 +491,29 @@ namespace RimWorldOnlineCity
             return ret;
         }
 
+        private static void RegisterReferencing(ILoadReferenceable obj)
+        {
+            /*
+            if (Scribe.loader?.crossRefs?.crossReferencingExposables != null
+                && !Scribe.loader.crossRefs.crossReferencingExposables.Contains(Find.FactionManager.OfPlayer))
+            {
+                Scribe.loader.crossRefs.RegisterForCrossRefResolve(Find.FactionManager.OfPlayer);
+            }
+            */
+            try
+            {
+                Loger.Log("Client RegisterReferencing " + obj.GetUniqueLoadID());
+                var that = Traverse.Create(Scribe.loader.crossRefs);
+                LoadedObjectDirectory loadedObjectDirectory = that.Field("loadedObjectDirectory").GetValue<LoadedObjectDirectory>();
+
+                loadedObjectDirectory.RegisterLoaded(obj);
+            }
+            catch (Exception exp)
+            {
+                ExceptionUtil.ExceptionLog(exp, "Client RegisterReferencing");
+            }
+        }
+
         /// <summary>
         /// Создает игровой объект. 
         /// Если это пешка не колонист, то делаем его пиратом заключённым.
@@ -504,13 +528,7 @@ namespace RimWorldOnlineCity
             //if (string.IsNullOrEmpty(fractionRoyaltyLoadID)) Loger.Log("Client fractionRoyaltyLoadID is not find");
 
             //var factionPirateLoadID = factionPirate.GetUniqueLoadID();
-
-            if (Scribe.loader?.crossRefs?.crossReferencingExposables != null
-                && !Scribe.loader.crossRefs.crossReferencingExposables.Contains(Find.FactionManager.OfPlayer))
-            {
-                Loger.Log("Client factionOfPlayer RegisterForCrossRefResolve");
-                Scribe.loader.crossRefs.RegisterForCrossRefResolve(Find.FactionManager.OfPlayer);
-            }
+            RegisterReferencing(Find.FactionManager.OfPlayer);
 
             //меняем фракцию на игрока для всех
             thing.SetFaction(factionColonistLoadID, () =>
@@ -521,12 +539,9 @@ namespace RimWorldOnlineCity
                     return null;
                 }
 
-                if (Scribe.loader?.crossRefs?.crossReferencingExposables != null
-                    && !Scribe.loader.crossRefs.crossReferencingExposables.Contains(fractionRoyalty))
-                {
-                    Loger.Log("Client fractionRoyalty RegisterForCrossRefResolve");
-                    Scribe.loader.crossRefs.RegisterForCrossRefResolve(fractionRoyalty);
-                }
+                Loger.Log("Client fractionRoyalty RegisterReferencing");
+                RegisterReferencing(fractionRoyalty);
+
                 return fractionRoyalty.GetUniqueLoadID();
             });
             Thing thin;
