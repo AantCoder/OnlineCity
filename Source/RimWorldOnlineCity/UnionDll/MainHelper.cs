@@ -13,7 +13,7 @@ namespace OCUnion
         /// <summary>
         /// Активирует разрабатваемые блоки и дополнительное логирования
         /// </summary>
-        public static bool DebugMode = false;
+        public static bool DebugMode = true;
         /// <summary>
         /// Отключить все логи в файл и консоль. Сервер всегда меняет значение на false
         /// </summary>

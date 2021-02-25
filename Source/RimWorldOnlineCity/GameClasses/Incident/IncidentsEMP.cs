@@ -14,25 +14,16 @@ namespace RimWorldOnlineCity
     {
         public override bool TryExecuteEvent()
         {
-            if (!IncidentDefOf.SolarFlare.Worker.TryExecute(GetParms()))
-            {
-                Messages.Message($"Failed_EMP", MessageTypeDefOf.RejectInput);
-                return false;
-            }
-            return true;
-        }
-        private IncidentParms GetParms()
-        {
-            var target = (place as Settlement)?.Map ?? Find.CurrentMap;
+            Map map = Find.CurrentMap;
+            //int duration = Mathf.RoundToInt(1 * 60000f); // 1 день состояния
+            int duration = Mathf.RoundToInt(2500f); // 1 час
+            GameCondition_DisableElectricity emp = (GameCondition_DisableElectricity)GameConditionMaker.MakeCondition(GameConditionDefOf.SolarFlare, duration);
+            string label = "электро-магнитный импульс";
+            string text = "";
+            Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.NegativeEvent);
+            map.gameConditionManager.RegisterCondition(emp);
 
-            parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatSmall, target);
-            parms.customLetterLabel = "OC_Incidents_EMP_Label".Translate();
-            parms.customLetterText = "OC_Incidents_EMP_Text".Translate();
-            parms.forced = true;  //игнорировать все условия для события
-            parms.target = target;
-            parms.points = CalculatePoints();
-            //parms.points = StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult >= StorytellerUtility.GlobalPointsMax ? StorytellerUtility.GlobalPointsMax : StorytellerUtility.DefaultThreatPointsNow(Find.CurrentMap) * mult;
-            return parms;
+            return true;
         }
     }
 }
