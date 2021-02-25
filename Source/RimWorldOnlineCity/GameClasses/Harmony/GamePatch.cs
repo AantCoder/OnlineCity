@@ -157,7 +157,9 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
             Scribe.loader.crossRefs.crossReferencingExposables.AddRange(crossReferencingExposables
                 .Where(e => !Scribe.loader.crossRefs.crossReferencingExposables.Any(ee => ee == e))
                 .ToList());
-            
+
+            crossReferencingExposables = new List<IExposable>();
+
             return true;
         }
 
