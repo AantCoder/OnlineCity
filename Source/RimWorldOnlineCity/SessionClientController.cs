@@ -160,7 +160,11 @@ namespace RimWorldOnlineCity
                     //отправляем на сервер, получаем ответ
                     //we send to the server, we get a response2
                     ModelPlayToClient fromServ = connect.PlayInfo(toServ);
-                    Data.AddTimeCheckTimerFail = false;
+                    if (Data.AddTimeCheckTimerFail)
+                    {
+                        Timers.LastLoop = DateTime.UtcNow; //сбрасываем, чтобы проверка по диссконекту не сбросла подключение
+                        Data.AddTimeCheckTimerFail = false;
+                    }
                     //Loger.Log("Client UpdateWorld 5 ");
 
                     Loger.Log($"Client {My.Login} UpdateWorld myWO->{toServ.WObjects?.Count}"
@@ -255,12 +259,11 @@ namespace RimWorldOnlineCity
                     return;
                 }
                 actIsRuned = true;
-                Loger.Log("Client SaveGameNowSingleAndCommandSafely run ");
-                Command((connect) =>
+                Loger.Log("Client SaveGameNowSingleAndCommandSafely try ");
+                int repeat = 0;
+                do
                 {
-                    Loger.Log("Client SaveGameNowSingleAndCommandSafely try ");
-                    int repeat = 0;
-                    do
+                    Command((connect) =>
                     {
                         if (ActionCommand(connect))
                         {
@@ -271,17 +274,17 @@ namespace RimWorldOnlineCity
                             Thread.Sleep(1000);
                             Loger.Log("Client SaveGameNowSingleAndCommandSafely try again ");
                         }
-                    }
-                    while (++repeat < 3); //делаем 3 попытки включая первую
-                    if (repeat < 1000)
-                    {
-                        if (FinishBad != null) FinishBad();
-                    }
-                    else
-                    {
-                        if (FinishGood != null) FinishGood();
-                    }
-                });
+                    });
+                }
+                while (++repeat < 3); //делаем 3 попытки включая первую
+                if (repeat < 1000)
+                {
+                    if (FinishBad != null) FinishBad();
+                }
+                else
+                {
+                    if (FinishGood != null) FinishGood();
+                }
             };
             Data.ActionAfterReconnect = () =>
             {
