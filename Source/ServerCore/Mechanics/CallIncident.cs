@@ -146,6 +146,10 @@ namespace ServerOnlineCity.Mechanics
                 //  return IncidentTypes.Bombing;
                 case "acid":
                     return IncidentTypes.Acid;
+                case "storm":
+                    return IncidentTypes.Storm;
+                case "emp":
+                    return IncidentTypes.EMP;
                 default:
                     return null;
             }

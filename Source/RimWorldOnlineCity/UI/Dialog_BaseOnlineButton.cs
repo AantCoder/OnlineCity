@@ -102,6 +102,38 @@ namespace RimWorldOnlineCity.UI
                 SelectTab1Type = "acid";
             }
             rect.y += rect.height;
+            if (Widgets.RadioButtonLabeled(rect, "Шторм", SelectTab1Type == "storm"))
+            {
+                StatusNeedUpdate = true;
+                SelectTab1Type = "storm";
+            }
+            rect.y += rect.height;
+            if (Widgets.RadioButtonLabeled(rect, "Э.М.И", SelectTab1Type == "emp"))
+            {
+                StatusNeedUpdate = true;
+                SelectTab1Type = "emp";
+            }
+            rect.y += rect.height;
+
+            rect.y += rect.height; //пробел
+            Text.Font = GameFont.Medium;
+            Widgets.Label(rect, "Длительность".Translate((int)SelectTab0Mult));
+            Text.Font = GameFont.Small;
+            rect.y += rect.height;
+
+            rect.height = 22f;
+            if (SelectTab0Mult > SelectTab0MultMax) SelectTab0Mult = SelectTab0MultMax;
+            if (SelectTab0Mult < 1) SelectTab0Mult = 1;
+            SelectTab0Mult = (float)Math.Round(SelectTab0Mult + 0.001f);
+            var newVal = Widgets.HorizontalSlider(rect, SelectTab0Mult, 1, SelectTab0MultMax);
+            newVal = (float)Math.Round(newVal + 0.001f);
+            if (newVal != SelectTab0Mult)
+            {
+                StatusNeedUpdate = true;
+                SelectTab0Mult = newVal;
+            }
+            rect.y += rect.height;
+            rect.height = 30f;
 
             DoTab1And2ContentsDown(rect);
         }
@@ -301,7 +333,7 @@ namespace RimWorldOnlineCity.UI
                 + (TabIndex == 0 ? SelectTab0Type : SelectTab1Type)
                 + $" '{Base.OnlineWObject.LoginOwner}'"
                 + $" {Base.OnlineWObject.ServerId}"
-                + (TabIndex != 0 ? "" : $" {SelectTab0Mult}" + (SelectTab0Type != "raid" ? "": $" {SelectTab0ArrivalModes} {SelectTab0Faction}")
+                + (TabIndex != 0 ? $" {SelectTab0Mult}" : $" {SelectTab0Mult}" + (SelectTab0Type != "raid" ? "": $" {SelectTab0ArrivalModes} {SelectTab0Faction}")
                     );
         }
 

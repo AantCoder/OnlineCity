@@ -27,10 +27,11 @@ namespace RimWorldOnlineCity
                 : type == IncidentTypes.Infistation ? new IncidentInfistation()
                 : type == IncidentTypes.Quest ? new IncidentQuest()
                 : type == IncidentTypes.Bombing ? new IncidentBombing()
-                : type == IncidentTypes.Acid ? new IncidentAcid()
+                : type == IncidentTypes.Acid ? new IncidentAcid_NEW()
                 : type == IncidentTypes.EMP ? new IncidentEMP()
                 : type == IncidentTypes.Pack ? new IncidentPack()
                 : type == IncidentTypes.Eclipse ? new IncidentEclipse()
+                : type == IncidentTypes.Storm ? new IncidentStorm()
                 : (OCIncident)null;
         }
     }

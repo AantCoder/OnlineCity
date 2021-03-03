@@ -57,6 +57,8 @@ namespace ServerOnlineCity.Model
                     NumberOrder = 1;
                     break;
                 case IncidentTypes.Acid:
+                case IncidentTypes.EMP:
+                case IncidentTypes.Storm:
                     NumberOrder = 2;
                     break;
                 case IncidentTypes.Bombing:
@@ -88,8 +90,8 @@ namespace ServerOnlineCity.Model
                 if (currentIncident) return false;
 
                 ///Перед нами в очереди никого. Начинает операцию!
-                ///Проверяем нужно ли перед наподением предупредить
-                var delay = Mail.IncidentMult >= 5 ? CalcDelayStart() : 0;
+                ///Проверяем нужно ли перед ивентом предупредить
+                var delay = (Mail.IncidentMult >= 5) && (NumberOrder == 3) ? CalcDelayStart() : 0;
                 SendTick = context.Player.Public.LastTick + delay;
                 if (delay > 0)
                 {

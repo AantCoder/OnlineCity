@@ -23,6 +23,9 @@ namespace RimWorldOnlineCity
         public IncidentParms parms;
         public WorldObject place;
 
+        public const float hour = 2500f;
+        public const float day = 60000f;
+
         public abstract bool TryExecuteEvent();
 
         public static RaidStrategyDef GetStrategy(IncidentStrategys strat)
