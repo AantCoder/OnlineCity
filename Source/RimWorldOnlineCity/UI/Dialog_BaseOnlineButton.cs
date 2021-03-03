@@ -102,13 +102,13 @@ namespace RimWorldOnlineCity.UI
                 SelectTab1Type = "acid";
             }
             rect.y += rect.height;
-            if (Widgets.RadioButtonLabeled(rect, "Шторм", SelectTab1Type == "storm"))
+            if (Widgets.RadioButtonLabeled(rect, "OC_Storm".Translate(), SelectTab1Type == "storm"))
             {
                 StatusNeedUpdate = true;
                 SelectTab1Type = "storm";
             }
             rect.y += rect.height;
-            if (Widgets.RadioButtonLabeled(rect, "Э.М.И", SelectTab1Type == "emp"))
+            if (Widgets.RadioButtonLabeled(rect, "OC_EMP".Translate(), SelectTab1Type == "emp"))
             {
                 StatusNeedUpdate = true;
                 SelectTab1Type = "emp";
@@ -117,7 +117,7 @@ namespace RimWorldOnlineCity.UI
 
             rect.y += rect.height; //пробел
             Text.Font = GameFont.Medium;
-            Widgets.Label(rect, "Длительность".Translate((int)SelectTab0Mult));
+            Widgets.Label(rect, "OC_duration".Translate((int)SelectTab0Mult));
             Text.Font = GameFont.Small;
             rect.y += rect.height;
 

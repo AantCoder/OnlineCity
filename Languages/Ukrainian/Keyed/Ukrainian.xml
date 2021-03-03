@@ -322,6 +322,9 @@
 	<OC_Incidents_Inf_Warning_Text_inf>Земля дрожжит под ногами! Ваши специалисты утверждают что это не землятресение, а что-то в гигнатских объёмах целенаправленно движется к вам из-под земли! Ожидаемое время прибытия 10-14 часов</OC_Incidents_Inf_Warning_Text_inf>
 	<OC_Incidents_Execute>Сделать!</OC_Incidents_Execute>
 	<OC_Acid_Rain>Кислотный дождь</OC_Acid_Rain>
+	<OC_Storm>Шторм</OC_Storm>
+	<OC_EMP>Э.М.И.</OC_EMP>
+	<OC_duration>Длительность</OC_duration>
 	<OC_What_To_DO>Что делать</OC_What_To_DO>
 	<OC_Raid>Рейд</OC_Raid>
 	<OC_Bugs>Гигантские жуки</OC_Bugs>

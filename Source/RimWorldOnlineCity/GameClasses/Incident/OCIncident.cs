@@ -175,7 +175,7 @@ namespace RimWorldOnlineCity
             if (cost <= 0) return -1;
 
             //{цена поселения защитника/100 000}^(2/3) * 100 * lvl ^(3/2)
-            var raidCost = (int)((float)Math.Pow(cost / 100000f, 2f / 3f) * 100f 
+            var raidCost = (int)((float)Math.Pow(cost / 100000f, 5f / 9f) * 100f 
                 * (float)Math.Pow((float)mult, 3f / 2f) //* (float)mult
                 * (float)SessionClientController.Data.GeneralSettings.IncidentCostPrecent / 100f
                 * (type == "inf" ? 3f 
