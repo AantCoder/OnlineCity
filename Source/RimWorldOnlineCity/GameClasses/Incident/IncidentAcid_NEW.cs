@@ -16,7 +16,7 @@ namespace RimWorldOnlineCity
 		{
 			Map map = Find.CurrentMap;
 			//int duration = Mathf.RoundToInt(1 * 60000f); // 1 день состояния
-			int duration = Mathf.RoundToInt(30000f);
+			int duration = Mathf.RoundToInt((day * mult)/2);
 			GameConditionDef def = new GameConditionDef
 			{
 				label = "Химическая атака",
@@ -28,9 +28,9 @@ namespace RimWorldOnlineCity
 			OC_GameCondition_Acid acid = (OC_GameCondition_Acid)GameConditionMaker.MakeCondition(def, duration);
 			//acid.SkyGlow = 0.2f; //свет  !!опасно менять, поскольку может сломать небо!!
 			acid.PlantKillChance = 0.5f; //урон по растениям
-			acid.ToxicPerDay = 20f;  //урон по пешкам
+			acid.ToxicPerDay = 10f;  //урон по пешкам
 			acid.CorpseRotProgressAdd = 5000f; //порча трупов
-			acid.CheckInterval = 300;  //тиков кд между добавлением отравления по всем thing
+			acid.CheckInterval = 1250;  //тиков кд между добавлением отравления по всем thing
 			string label = "Хим атака";
 			string text = "";
 			Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.NegativeEvent);

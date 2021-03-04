@@ -38,6 +38,7 @@ namespace Transfer.ModelMails
         EMP,
         Pack,
         Eclipse,
+        Storm,
     }
     public enum IncidentStrategys
     {

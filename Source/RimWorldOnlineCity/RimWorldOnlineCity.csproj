@@ -112,6 +112,7 @@
     <Compile Include="ClientHashCheck\ClientFileChecker.cs" />
     <Compile Include="GameClasses\Harmony\GameSaveLoadInMem.cs" />
     <Compile Include="GameClasses\Incident\IncidentAcid.cs" />
+    <Compile Include="GameClasses\Incident\IncidentAcid_NEW.cs" />
     <Compile Include="GameClasses\Incident\IncidentBombing.cs" />
     <Compile Include="GameClasses\Incident\IncidentEclipse.cs" />
     <Compile Include="GameClasses\Incident\IncidentInfistation.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="GameClasses\Incident\IncidentQuest.cs" />
     <Compile Include="GameClasses\Incident\IncidentRaid.cs" />
     <Compile Include="GameClasses\Incident\IncidentsEMP.cs" />
+    <Compile Include="GameClasses\Incident\IncidentStorm.cs" />
     <Compile Include="GameClasses\Incident\OCIncident.cs" />
     <Compile Include="GameClasses\MainTabTestButton.cs" />
     <Compile Include="GameClasses\Incident\Incidents.cs" />

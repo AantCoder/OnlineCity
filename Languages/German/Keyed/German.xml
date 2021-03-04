@@ -322,6 +322,9 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OC_Incidents_Hire_text>Pirates and warlike tribes will gladly agree to do dirty work for a reward. It is even possible to contact scientists from high tech settlements who can lure a the swarm of beetles or mechanoids using special radio signals.</OC_Incidents_Hire_text>
 	<OC_Incidents_Execute>Execute!</OC_Incidents_Execute>
 	<OC_Acid_Rain>Acid rain</OC_Acid_Rain>
+	<OC_Storm>Storm</OC_Storm>
+	<OC_EMP>E.M.P.</OC_EMP>
+	<OC_duration>Duration</OC_duration>
 	<OC_What_To_DO>What to do</OC_What_To_DO>
 	<OC_Raid>Raid</OC_Raid>
 	<OC_Bugs>Giant bugs</OC_Bugs>

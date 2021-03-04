@@ -319,6 +319,9 @@
 	<OC_Incidents_Hire_text>Пираты и воинственные аборигены с радостью согласятся поработать за награду. Возможно даже связаться c умельцами из продвинутых поселений, которые могут с помощью особых радиосигналов привлечь рой жуков или механоидов. Чем богаче атакуемое поселение, тем больше денег потребуют наёмники.</OC_Incidents_Hire_text>
 	<OC_Incidents_Execute>Сделать!</OC_Incidents_Execute>
 	<OC_Acid_Rain>Кислотный дождь</OC_Acid_Rain>
+	<OC_Storm>Шторм</OC_Storm>
+	<OC_EMP>Э.М.И.</OC_EMP>
+	<OC_duration>Длительность</OC_duration>
 	<OC_What_To_DO>Что делать</OC_What_To_DO>
 	<OC_Raid>Рейд</OC_Raid>
 	<OC_Bugs>Гигантские жуки</OC_Bugs>

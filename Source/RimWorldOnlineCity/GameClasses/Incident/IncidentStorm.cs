@@ -17,7 +17,7 @@ namespace RimWorldOnlineCity
         {
             Map map = Find.CurrentMap;
             //int duration = Mathf.RoundToInt(1 * 60000f); // 1 день грозы
-            int duration = Mathf.RoundToInt(1000f);
+            int duration = Mathf.RoundToInt(hour * mult);
             GameConditionDef def = new GameConditionDef
             {
                 conditionClass = typeof(OC_GameCondition_Storm),
@@ -26,7 +26,7 @@ namespace RimWorldOnlineCity
                 temperatureOffset = 0,
             };
             OC_GameCondition_Storm storm = (OC_GameCondition_Storm)GameConditionMaker.MakeCondition(def, duration);
-            storm.cooldown = 25;
+            storm.cooldown = 50;
             string label = "Гнев зевса";
             string text = "";
             Find.LetterStack.ReceiveLetter(label, text, LetterDefOf.NegativeEvent);
