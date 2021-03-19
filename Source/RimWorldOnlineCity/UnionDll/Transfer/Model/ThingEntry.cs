@@ -64,7 +64,7 @@ namespace Model
             Data = gx.ToXml(thing);
         }
 
-        public virtual Thing CreateThing(bool useOriginalID = false, int stackCount = 0, bool needPirate = false)
+        public virtual Thing CreateThing(bool useOriginalID = false, int stackCount = 0)
         {
             var gx = new GameXMLUtils();
             Thing thing = gx.FromXml<Thing>(Data);
@@ -78,14 +78,6 @@ namespace Model
             {
                 thing.thingIDNumber = OriginalID;
             }
-
-            SetFaction(thing, isColonist && !needPirate);
-
-            return thing;
-        }
-
-        protected void SetFaction(Thing thing, bool isColonist)
-        {
             if (thing.def.CanHaveFaction)
             {
                 if (isColonist)
@@ -97,6 +89,7 @@ namespace Model
                     thing.SetFaction(Find.FactionManager.AllFactions.FirstOrDefault(f => f.def.defName == "Pirate"));
                 }
             }
+            return thing;
         }
 
         private static int nnnn = 0;
@@ -106,21 +99,16 @@ namespace Model
         /// </summary>
         /// <param name="fractionColonist"></param>
         /// <returns>Истина, если это особый вид - пленник</returns>
-        public bool SetFaction(string fractionColonist, Func<string> fractionRoyalty)
+        public bool SetFaction(string fractionColonist)
         {
             if (string.IsNullOrEmpty(Data) || !Data.Contains(" Class=\"Pawn\"")) return false;
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnB" + (++nnnn).ToString() + ".xml", Data);
-
             //логика коррекции основывается на 3х группыах:
             //колонист, человек не колонист (пират или пленник), животное
-
             bool col = Data.Contains("<kindDef>Colonist</kindDef>");
             if (!col) col = Data.Contains("ColonistGeneral</kindDef>"); //для мода с андроидами
-
             bool isAnimal = GameXMLUtils.GetByTag(Data, "def") == GameXMLUtils.GetByTag(Data, "kindDef");
-
             //для всех людей устанавливаем фракцию игрока (у животных не меняем)
-
             if (!isAnimal)
             {
                 string fraction = fractionColonist; //col ? fractionColonist : fractionPirate;
@@ -128,45 +116,25 @@ namespace Model
                 if (!col) Data = GameXMLUtils.ReplaceByTag(Data, "kindDef", "Colonist"); //"Pirate"
                 //if (MainHelper.DebugMode) Loger.Log(" Replace faction=>" + fraction);
             }
-
             //если это гости, то убираем у них это свойство - оно должно выставиться потом
-
             Data = GameXMLUtils.ReplaceByTag(Data, "guest", @"
     <hostFaction>null</hostFaction>
     <interactionMode>NoInteraction</interactionMode>
     <spotToWaitInsteadOfEscaping>(-1000, -1000, -1000)</spotToWaitInsteadOfEscaping>
     <lastPrisonBreakTicks>-1</lastPrisonBreakTicks>
   ");
-
-            //локализуем фракцию роялти
-            var tagRoyalty = GameXMLUtils.GetByTag(Data, "royalty");
-            if (tagRoyalty != null)
-            {
-                string oldTR;
-                do
-                {
-                    oldTR = tagRoyalty;
-                    tagRoyalty = GameXMLUtils.ReplaceByTag(tagRoyalty, "faction", fractionRoyalty());
-                } while (oldTR != tagRoyalty);
-                Data = GameXMLUtils.ReplaceByTag(Data, "royalty", tagRoyalty);
-            }
-
             /*
             Data = GameXMLUtils.ReplaceByTag(Data, "hostFaction", "null", "<guest>");
             Data = GameXMLUtils.ReplaceByTag(Data, "prisoner", "False", "<guest>");*/
-
             /* попытка передавать заключенных не получилась
             Data = GameXMLUtils.ReplaceByTag(Data, "hostFaction", 
                 (val) =>
                 {
                     if (MainHelper.DebugMode) Loger.Log(" Replace hostFaction "+ val + "=>" + fractionColonist);
                     return val == "null" ? null : fractionColonist;
-
                 });
                 */
-
             //возвращаем true, если это человек и не колонист (пират или пленник)
-
             if (MainHelper.DebugMode) File.WriteAllText(Loger.PathLog + "MailPawnA" + nnnn.ToString() + ".xml", Data);
             return !col && !isAnimal;
         }

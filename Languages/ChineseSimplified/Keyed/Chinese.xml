@@ -5,32 +5,32 @@
 	<OCity_LAN_btn>多人网络游戏</OCity_LAN_btn>
 	<!-- Kor -->
 	<OCity_MainMenu_Online>在线</OCity_MainMenu_Online>
-	<OCity_MainMenu_Withdraw>撤回</OCity_MainMenu_Withdraw>
+	<OCity_MainMenu_Withdraw>撤退</OCity_MainMenu_Withdraw>
 	<OCity_MainMenu_Surrender>投降</OCity_MainMenu_Surrender>
 
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
-	<OCity_Caravan_GoTrade>我们要用 {0} 来交换货物哦(￣▽￣)"。</OCity_Caravan_GoTrade>
+	<OCity_Caravan_GoTrade>我们要和 {0} 来交换货物哦(￣▽￣)"。</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
-	<OCity_Caravan_LOGNoData>服务器上没有，有关于此交易对象的数据(* ￣︿￣)</OCity_Caravan_LOGNoData>
+	<OCity_Caravan_LOGNoData>服务器上没有关于此交易对象的数据(* ￣︿￣)</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>商队交换：选择全部商队</OCity_Caravan_LOGSwap>
 	<!-- Kor -->
 	<OCity_Caravan_Go_Attack_Target>攻击╰（‵□′）╯</OCity_Caravan_Go_Attack_Target>
-	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>真的要攻打这个定居点吗？有可能在不计后果的情况下进行训练战！</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
-	<OCity_Caravan_Practive>不，只是练习呢。</OCity_Caravan_Practive>
+	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>要玩真的攻打这个定居点吗？（训练战不会造成损失哦）</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
+	<OCity_Caravan_Practive>不，只是训练战呢。</OCity_Caravan_Practive>
 
 	<!-- OnlineCity_CaravanOnline.cs -->
-	<OCity_Caravan_Player>{0}玩家 {1}</OCity_Caravan_Player>
-	<OCity_Caravan_Other>物品的价值：{2}
+	<OCity_Caravan_Player>{0} 属于玩家 {1}</OCity_Caravan_Player>
+	<OCity_Caravan_Other>总财富值：{2}
 人和动物的价值：{3}</OCity_Caravan_Other>
-	<OCity_Caravan_PlayerAttackCost>攻击者的最高价格：{0}</OCity_Caravan_PlayerAttackCost>
-	<OCity_Caravan_FreeWeight>剩余负载能力： </OCity_Caravan_FreeWeight>
+	<OCity_Caravan_PlayerAttackCost>进攻军队的最高财富值：{0}</OCity_Caravan_PlayerAttackCost>
+	<OCity_Caravan_FreeWeight>剩余载货能力： </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>与{0}交易</OCity_Caravan_Trade>
-	<OCity_Caravan_Abort>You are under a year old or the wealth is less than</OCity_Caravan_Abort>
+	<OCity_Caravan_Abort>你玩了不到一年，或者你的财富值小于</OCity_Caravan_Abort>
 	<!-- Kor -->
 	<OCity_Caravan_Attack>攻击 {0}</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
-	<OCity_DevTest_Test>检验</OCity_DevTest_Test>
+	<OCity_DevTest_Test>测试</OCity_DevTest_Test>
 	<OCity_DevTest_NameTestPlayer>测试者名称</OCity_DevTest_NameTestPlayer>
 
 	<!-- GameStarter.cs -->
@@ -46,15 +46,15 @@
 	<OCity_ClientData_Chat>聊天o(*￣▽￣*)o </OCity_ClientData_Chat>
 
 	<!-- OnlineCity_Hash_Checker -->
-	<OC_Hash_CalculateLocalFiles>Calculate hash for local files</OC_Hash_CalculateLocalFiles>
-	<OC_Hash_CalculateFor>Calculate hash for: </OC_Hash_CalculateFor>
-	<OC_Hash_CalculateComplete>Calculate hash completed</OC_Hash_CalculateComplete>
-	<OC_Hash_CalculateConfFile>Mods Config files: </OC_Hash_CalculateConfFile>
-	<OC_Hash_Complete>Complete:</OC_Hash_Complete>
-	<OC_Hash_Downloading>Downloading mods update...</OC_Hash_Downloading>
-	<OC_Hash_Downloading_Finish>Downloaded </OC_Hash_Downloading_Finish>
-	<OC_Mods_Wait>Wait before playing online...</OC_Mods_Wait>
-	<OC_Mods_Complete>Complete:</OC_Mods_Complete>
+	<OC_Hash_CalculateLocalFiles>验证本地文件</OC_Hash_CalculateLocalFiles>
+	<OC_Hash_CalculateFor>验证文件: </OC_Hash_CalculateFor>
+	<OC_Hash_CalculateComplete>验证文件完毕</OC_Hash_CalculateComplete>
+	<OC_Hash_CalculateConfFile>模组配置文件: </OC_Hash_CalculateConfFile>
+	<OC_Hash_Complete>完成:</OC_Hash_Complete>
+	<OC_Hash_Downloading>正在下载模组更新...</OC_Hash_Downloading>
+	<OC_Hash_Downloading_Finish>下载 </OC_Hash_Downloading_Finish>
+	<OC_Mods_Wait>还不能在线玩，请稍等...</OC_Mods_Wait>
+	<OC_Mods_Complete>完成:</OC_Mods_Complete>
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
@@ -83,25 +83,25 @@
 	<OCity_Dialog_ChennelAddUser>添加会员(成员)</OCity_Dialog_ChennelAddUser>
 	<OCity_Dialog_ChennelPlayerInfo>信息</OCity_Dialog_ChennelPlayerInfo>
 	<OCity_Dialog_ChennelPlayerInfoTitle>关于</OCity_Dialog_ChennelPlayerInfoTitle>
-	<OCity_Dialog_AboutMode>关于 OnlineCity(多人城镇)</OCity_Dialog_AboutMode>
+	<OCity_Dialog_AboutMode>关于多人城镇</OCity_Dialog_AboutMode>
 	<OCity_Dialog_AutorPage>作者页面</OCity_Dialog_AutorPage>
 	<OCity_Dialog_Regame>重新开始</OCity_Dialog_Regame>
 	<OCity_Dialog_DeleteData>删除所有游戏数据</OCity_Dialog_DeleteData>
 	<OCity_Dialog_DeleteDataCheck>你真的要完全删除游戏，然后重新开始吗？</OCity_Dialog_DeleteDataCheck>
-	<OCity_Dialog_DeletedData>游戏已被删除。再次登录以创建新的。</OCity_Dialog_DeletedData>
+	<OCity_Dialog_DeletedData>游戏已被删除。再次登录以重新开始。</OCity_Dialog_DeletedData>
 
 	<!-- OnlineCity_Dialog_CreateWorld.cs -->
-	<OCity_Dialog_CreateWorld_Create>创造世界</OCity_Dialog_CreateWorld_Create>
+	<OCity_Dialog_CreateWorld_Create>创建世界</OCity_Dialog_CreateWorld_Create>
 	<OCity_Dialog_CreateWorld_BtnOk>OK/好的</OCity_Dialog_CreateWorld_BtnOk>
 	<OCity_Dialog_CreateWorld_Err>错误</OCity_Dialog_CreateWorld_Err>
 	<OCity_Dialog_CreateWorld_Err2>设置不正确</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>取消</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>种子</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_ScenarioErr>Please select a Scenario</OCity_Dialog_CreateWorld_ScenarioErr>
-	<OCity_Dialog_CreateWorld_Scenario>Select Scenario</OCity_Dialog_CreateWorld_Scenario>
-	<OCity_Dialog_CreateWorld_Difficulty>Select Difficulty</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_ScenarioErr>请选择一个剧本</OCity_Dialog_CreateWorld_ScenarioErr>
+	<OCity_Dialog_CreateWorld_Scenario>选择剧本</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Difficulty>选择难度</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>当地地图的大小(200--小，400--大)</OCity_Dialog_CreateWorld_MapSize>
-	<OCity_Dialog_CreateWorld_PercentWorld>占地球表面生成量的百分比(从5到100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
+	<OCity_Dialog_CreateWorld_PercentWorld>占地球表面生成量的百分比(开发者模式从5到100，普通模式30到100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>登录</OCity_LoginForm_BtnEnter>
@@ -109,11 +109,11 @@
 	<OCity_LoginForm_Close>关闭</OCity_LoginForm_Close>
 	<OCity_LoginForm_LabelEnter>登录</OCity_LoginForm_LabelEnter>
 	<OCity_LoginForm_Server>服务器:</OCity_LoginForm_Server>
-	<OCity_LoginForm_Login>登录:</OCity_LoginForm_Login>
+	<OCity_LoginForm_Login>用户名:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>密码:</OCity_LoginForm_Pass>
-	<OCity_LoginForm_Err1>Password and confirmation are different</OCity_LoginForm_Err1>
-	<OCity_LoginForm_Err2>Address, login and password must be longer than two characters</OCity_LoginForm_Err2>
-	<OCity_LoginForm_Mail>EMail (optional)</OCity_LoginForm_Mail>
+	<OCity_LoginForm_Err1>两次密码不一致</OCity_LoginForm_Err1>
+	<OCity_LoginForm_Err2>服务器地址，用户名，密码都必须多于两个字符</OCity_LoginForm_Err2>
+	<OCity_LoginForm_Mail>电子邮箱（可不填）</OCity_LoginForm_Mail>
 
 	<!-- SessionClientController.cs -->
 	<OCity_SessionCC_ConnectionFailTitle>连接失败</OCity_SessionCC_ConnectionFailTitle>
@@ -126,13 +126,13 @@
 	<OCity_SessionCC_Disconnected>连接错误.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>断开连接</OCity_SessionCC_Disconnect>
 	<!-- Kor -->
-	<OCity_SessionCC_Shutdown_Command_ProgressSaved>我们收到了来自服务器的关机命令。进程已经保存下来了. Прогресс был сохранен.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
+	<OCity_SessionCC_Shutdown_Command_ProgressSaved>服务器即将关闭或重启，即将断开连接。游戏进度已经保存。请在服务器重启后重新登录。</OCity_SessionCC_Shutdown_Command_ProgressSaved>
 	<OCity_SessionCC_Shutdown_Command>服务器已收到关闭命令.</OCity_SessionCC_Shutdown_Command>
-	<OCity_SessionCC_Scenario_Classic>Классика/经典</OCity_SessionCC_Scenario_Classic>
+	<OCity_SessionCC_Scenario_Classic>经典</OCity_SessionCC_Scenario_Classic>
 	<OCity_SessionCC_Client_UpdateNeeded>升级客户端! 此服务器的版本: </OCity_SessionCC_Client_UpdateNeeded>
 	<OCity_SessionCC_InitConnectedIntro_Title>注意事项!</OCity_SessionCC_InitConnectedIntro_Title>
-	<OCity_SessionCC_InitConnectedIntro_Text>（MOD与服务器规定的不一样）如果服务器已经设置了准确匹配的mod，而且还没有安装的话，现在就会被下载。如果Mods游戏子文件夹里有重要信息，请点击取消并进行备份! mods同步的过程可能需要几分钟的时间，之后游戏将重新启动。</OCity_SessionCC_InitConnectedIntro_Text>
-	<OCity_SessionCC_FilesUpdated>不是所有的文件都是解析哈希检查，它们被更新后会重启游戏。</OCity_SessionCC_FilesUpdated>
+	<OCity_SessionCC_InitConnectedIntro_Text>如果你的模组跟服务器不一样，现在就会同步和下载。如果模组文件夹里有重要信息，请点击取消并进行备份! 模组同步的过程可能需要几分钟的时间，之后游戏将重新启动。</OCity_SessionCC_InitConnectedIntro_Text>
+	<OCity_SessionCC_FilesUpdated>文件验证和更新完成，需要重启游戏。</OCity_SessionCC_FilesUpdated>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
@@ -188,14 +188,14 @@
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
-	<OCity_ThingTrade_Quality_Strength>质量{0}。强度{1}的{2}。</OCity_ThingTrade_Quality_Strength>
+	<OCity_ThingTrade_Quality_Strength>品质{0}。强度{1}的{2}。</OCity_ThingTrade_Quality_Strength>
 	<OCity_ThingTrade_Cut_Body_Off>切掉身体。</OCity_ThingTrade_Cut_Body_Off>
-	<OCity_ThingTrade_QualityBetter_StrengthMore>质量{0}和更好。强度{1}%及以上</OCity_ThingTrade_QualityBetter_StrengthMore>
-	<OCity_ThingTrade_CouldTake_OffCorpse>可以从身体上取下。</OCity_ThingTrade_CouldTake_OffCorpse>
+	<OCity_ThingTrade_QualityBetter_StrengthMore>品质{0}或更好的。强度{1}%及以上</OCity_ThingTrade_QualityBetter_StrengthMore>
+	<OCity_ThingTrade_CouldTake_OffCorpse>可以从尸体上取下。</OCity_ThingTrade_CouldTake_OffCorpse>
 
 	<!-- UpdateWorldController.cs -->
 	<OCity_UpdateWorld_Trade>贸易</OCity_UpdateWorld_Trade>
-	<OCity_UpdateWorld_TradeDetails>玩家{0}到{1}转移物品。{2}</OCity_UpdateWorld_TradeDetails>
+	<OCity_UpdateWorld_TradeDetails>玩家{0}向{1}移交物品：{2}</OCity_UpdateWorld_TradeDetails>
 
 	<!-- Dialog_Input.cs -->
 	<OCity_DialogInput_Ok>好的</OCity_DialogInput_Ok>
@@ -206,7 +206,7 @@
 	<OCity_Dialog_Registration_BtnReg>注册</OCity_Dialog_Registration_BtnReg>
 	<OCity_Dialog_Registration_LabelReg>注册</OCity_Dialog_Registration_LabelReg>
 	<OCity_Dialog_Registration_Server>服务器:</OCity_Dialog_Registration_Server>
-	<OCity_Dialog_Registration_Login>登录:</OCity_Dialog_Registration_Login>
+	<OCity_Dialog_Registration_Login>用户名:</OCity_Dialog_Registration_Login>
 	<OCity_Dialog_Registration_Pass>密码:</OCity_Dialog_Registration_Pass>
 	<OCity_Dialog_Registration_Check>确认密码:</OCity_Dialog_Registration_Check>
 
@@ -218,23 +218,23 @@
 	<OCity_GrassFix_Grass> 药材</OCity_GrassFix_Grass>
 
 	<!-- PlayerClient.cs -->
-	<OCity_PlayerClient_LastTick>玩了多少年: {0}, 天: {1}.</OCity_PlayerClient_LastTick>
-	<OCity_PlayerClient_LastSaveTime>在游戏中：{2}</OCity_PlayerClient_LastSaveTime>
+	<OCity_PlayerClient_LastTick>游戏时长：{0}年, {1}天.</OCity_PlayerClient_LastTick>
+	<OCity_PlayerClient_LastSaveTime>上次在线：{2}</OCity_PlayerClient_LastSaveTime>
 	<OCity_PlayerClient_baseCount>基地数量： {3}</OCity_PlayerClient_baseCount>
-	<OCity_PlayerClient_caravanCount>商队：{4}</OCity_PlayerClient_caravanCount>
+	<OCity_PlayerClient_caravanCount>商队数量：{4}</OCity_PlayerClient_caravanCount>
 	<OCity_PlayerClient_marketValue>物品财富：{5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>人和动物的价值：{6}</OCity_PlayerClient_marketValuePawn>
 	<OCity_PlayerClient_LastSaveTimeNon>未参与</OCity_PlayerClient_LastSaveTimeNon>
-	<OCity_PlayerClient_InvolvedInPVP>参加VP</OCity_PlayerClient_InvolvedInPVP>
+	<OCity_PlayerClient_InvolvedInPVP>参加PVP</OCity_PlayerClient_InvolvedInPVP>
 	<OCity_PlayerClient_NotInvolvedInPVP>不参与PVP</OCity_PlayerClient_NotInvolvedInPVP>
-	<OCity_PlayerClient_Discord>纷争: </OCity_PlayerClient_Discord>
-	<OCity_PlayerClient_Email>Email: </OCity_PlayerClient_Email>
+	<OCity_PlayerClient_Discord>Discord（国外的聊天软件）: </OCity_PlayerClient_Discord>
+	<OCity_PlayerClient_Email>电子邮箱: </OCity_PlayerClient_Email>
 	<OCity_PlayerClient_AboutMyself>关于我自己: </OCity_PlayerClient_AboutMyself>
 	<OCity_PlayerClient_Settings>设置</OCity_PlayerClient_Settings>
 	<OCity_PlayerClient_Save>保存</OCity_PlayerClient_Save>
 	<OCity_PlayerClient_CanChange>(可以改变{0})</OCity_PlayerClient_CanChange>
-	<OCity_PlayerClient_CanChangeNow>(现在可以改了)</OCity_PlayerClient_CanChangeNow>
-	<OCity_PlayerClient_SaveInterval>保存时间，间隔为分钟（至少5，默认为15）。</OCity_PlayerClient_SaveInterval>
+	<OCity_PlayerClient_CanChangeNow>(现在可以修改)</OCity_PlayerClient_CanChangeNow>
+	<OCity_PlayerClient_SaveInterval>保存时间间隔（分钟）（至少5，默认为15）。</OCity_PlayerClient_SaveInterval>
 
 	<!-- Kor -->
 	<!-- GameUtils.cs -->
@@ -244,103 +244,103 @@
 	<!-- Kor -->
 	<!-- GameAttacker.cs -->
 	<OCity_GameAttacker_Dialog_ErrorMessage>错误攻击</OCity_GameAttacker_Dialog_ErrorMessage>
-	<OCity_GameAttacker_Dialog_Settlement_Attack>你在攻击定居点</OCity_GameAttacker_Dialog_Settlement_Attack>
+	<OCity_GameAttacker_Dialog_Settlement_Attack>你正在攻击定居点</OCity_GameAttacker_Dialog_Settlement_Attack>
 	<OCity_GameAttacker_Withdraw>撤回</OCity_GameAttacker_Withdraw>
-	<OCity_GameAttacker_Main_Dialog>在这种模式下，必须永久激活暂停。尽管如此，游戏还在继续，形势也发生了变化。如果你想完成一次攻击，把那些你能做的事情带到地图的任何边缘，从主菜单中按下 </OCity_GameAttacker_Main_Dialog>
-	<OCity_GameAttacker_Main_Preparation_Dialog>准备工作已经完成。你有1分钟的时间看一下地图，攻击就会开始!</OCity_GameAttacker_Main_Preparation_Dialog>
+	<OCity_GameAttacker_Main_Dialog>在这种模式下，必须永久激活暂停。尽管如此，游戏还在继续，事情也在发生变化。如果你想撤退，把你能带走的人带到地图的任何边缘，从主菜单中按下 </OCity_GameAttacker_Main_Dialog>
+	<OCity_GameAttacker_Main_Preparation_Dialog>准备工作已经完成。你有1分钟的时间看一下地图，然后攻击就会开始!</OCity_GameAttacker_Main_Preparation_Dialog>
 	<Ocity_GameAttacker_TrainingFight_Won>你赢了这场训练战！:)</Ocity_GameAttacker_TrainingFight_Won>
-	<Ocity_GameAttacker_TrainingFight_Caravan_Restore>车队现在要恢复了，你需要进入。:)</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
+	<Ocity_GameAttacker_TrainingFight_Caravan_Restore>远行队已经恢复了，你需要重新登录。:)</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
 	<Ocity_GameAttacker_TrainingFight_Lost>你在这次的训练攻击中被打败了。:(</Ocity_GameAttacker_TrainingFight_Lost>
 	<OCity_GameAttacker_Done>完成了.</OCity_GameAttacker_Done>
-	<OCity_GameAttacker_Settlement_TakenOver>你接管了这个定居点！:) </OCity_GameAttacker_Settlement_TakenOver>
+	<OCity_GameAttacker_Settlement_TakenOver>你占领了这个定居点！:) </OCity_GameAttacker_Settlement_TakenOver>
 	<OCity_GameAttacker_Defeated>你已经被打败了：(</OCity_GameAttacker_Defeated>
-	<OCity_GameAttacker_Colonist_Return>剩余的殖民者，有能力移动的，退到地图边缘的殖民者们，纷纷返回：</OCity_GameAttacker_Colonist_Return>
+	<OCity_GameAttacker_Colonist_Return>退到地图边缘并且有能力移动的殖民者们，将会返回。</OCity_GameAttacker_Colonist_Return>
 
 	<!-- Kor -->
 	<!-- GameAttackHost.cs -->
 	<OCity_GameAttack_Host_Test_Attack>{0}正在对你的定居点进行测试攻击</OCity_GameAttack_Host_Test_Attack>
 	<OCity_GameAttack_Host_Settlement_Attacking>你的定居点正在攻击{0}</OCity_GameAttack_Host_Settlement_Attacking>
 	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>等到攻击者准备好了之后。之后，速度会自动开启X1，并且不会改变。</OCity_GameAttack_Host_GameSpeed_Lock_Dialog>
-	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>如果你想完成并放弃结算，请点击主菜单。</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
-	<OCity_GameAttack_Host_Cancel_Action> 如果你想完成并取消操作，请点击主菜单。 </OCity_GameAttack_Host_Cancel_Action>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>如果你想结束并放弃你的基地，请点击主菜单。</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
+	<OCity_GameAttack_Host_Cancel_Action> 如果你想结束并取消操作，请点击主菜单。 </OCity_GameAttack_Host_Cancel_Action>
 	<OCity_GameAttack_Host_Surrender>投降</OCity_GameAttack_Host_Surrender>
 	<OCity_GameAttack_Host_Error_Message_Attack>错误攻击</OCity_GameAttack_Host_Error_Message_Attack>
-	<OCity_GameAttack_Host_Card_Restored>现在地图会恢复，你需要登录。</OCity_GameAttack_Host_Card_Restored>
+	<OCity_GameAttack_Host_Card_Restored>你的地图会恢复，你需要重新登录。</OCity_GameAttack_Host_Card_Restored>
 	<OCity_GameAttack_Host_Training_Attack_Repulsed>你击退了这次训练的攻击！:)</OCity_GameAttack_Host_Training_Attack_Repulsed>
-	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>你已经被打败了，你已经被打败了，和解的权利转给了新的主人。:(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
+	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>你已经被打败了，你的基地转给了新的主人。:(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
 	<OCity_GameAttack_Host_Atack_Repulsed>你击退了攻击！ :) </OCity_GameAttack_Host_Atack_Repulsed>
 	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>跑不掉的敌人会留在地图上，但他们已经和指挥官失去了联系</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- OCMessadge -->
-	<OC_IncdidentMessadge_ArgErr>At least 3 arguments are required: player name, title, text</OC_IncdidentMessadge_ArgErr>
-	<OC_IncdidentMessadge_targetErr>You can not indicate yourself</OC_IncdidentMessadge_targetErr>
-	<OC_IncdidentMessadge_typeErr>Invalid message type</OC_IncdidentMessadge_typeErr>
+	<OC_IncdidentMessadge_ArgErr>需要至少三个参数，玩家名，标题，文本</OC_IncdidentMessadge_ArgErr>
+	<OC_IncdidentMessadge_targetErr>你不能指示你自己</OC_IncdidentMessadge_targetErr>
+	<OC_IncdidentMessadge_typeErr>无效的消息类型</OC_IncdidentMessadge_typeErr>
 
 	<!-- OCIncidents -->
-	<OC_Incidents_CallIncidents_Err1>Enter incident type and player. Some incidents require additional parameters</OC_Incidents_CallIncidents_Err1>
-	<OC_Incidents_CallIncidents_TypeErr>Enter allowed incident type</OC_Incidents_CallIncidents_TypeErr>
-	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Reached max number of incidents in hour</OC_Incidents_CallIncidents_MaxIncidentsInHour>
-	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Reached max number of incodents for this player</OC_Incidents_CallIncidents_MaxIncidentsCnt>
-	<OC_Incidents_CallIncidents_NotShooted>Your previous incident for this player has not started yet</OC_Incidents_CallIncidents_NotShooted>
-	<OC_Incidents_IncidentsTurnedOFF>Incidents are disabled on this server</OC_Incidents_IncidentsTurnedOFF>
-	<OC_Incidents_CallIncidebts_selfErr>You cannot choose yourself</OC_Incidents_CallIncidebts_selfErr>
-	<OC_Incidents_CallIncidebts_YearErr1>You can attack after 2 years of your game</OC_Incidents_CallIncidebts_YearErr1>
-	<OC_Incidents_CallIncidebts_YearErr2>You can attack after 2 years of game of the attack target</OC_Incidents_CallIncidebts_YearErr2>
-	<OC_Incidents_CallIncidebts_CostErr1>Your settlement cost is too low</OC_Incidents_CallIncidebts_CostErr1>
-	<OC_Incidents_CallIncidebts_CostErr2>Attack target has too low settlement cost</OC_Incidents_CallIncidebts_CostErr2>
-	<OC_Incidents_OCIncident_WrongArg>Arguments set incorrectly</OC_Incidents_OCIncident_WrongArg>
-	<OC_Incidents_OCIncident_WealthErr>Wealth determination error</OC_Incidents_OCIncident_WealthErr>
-	<OC_Incidents_OCIncident_GoldErr>Not enough gold {0} from {1}, not enough {2}</OC_Incidents_OCIncident_GoldErr>
-	<OC_Incidents_OCIncident_NotEnoughGold>Required gold {0} is enough</OC_Incidents_OCIncident_NotEnoughGold>
-	<OC_Incidents_OCIncident_GoldPay>The required gold {0} has been paid to the mercenaries</OC_Incidents_OCIncident_GoldPay>
-	<OC_Incident_Atacker>The customer:</OC_Incident_Atacker>
+	<OC_Incidents_CallIncidents_Err1>输入事件类型和玩家。一些事件需要额外参数</OC_Incidents_CallIncidents_Err1>
+	<OC_Incidents_CallIncidents_TypeErr>输入允许的事件类型</OC_Incidents_CallIncidents_TypeErr>
+	<OC_Incidents_CallIncidents_MaxIncidentsInHour>达到了每小时允许的最大事件数量</OC_Incidents_CallIncidents_MaxIncidentsInHour>
+	<OC_Incidents_CallIncidents_MaxIncidentsCnt>达到了对这个玩家允许的最大事件数量</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+	<OC_Incidents_CallIncidents_NotShooted>你之前对这个玩家的事件还没开始</OC_Incidents_CallIncidents_NotShooted>
+	<OC_Incidents_IncidentsTurnedOFF>服务器禁用了事件</OC_Incidents_IncidentsTurnedOFF>
+	<OC_Incidents_CallIncidebts_selfErr>你不能选择你自己</OC_Incidents_CallIncidebts_selfErr>
+	<OC_Incidents_CallIncidebts_YearErr1>你必须玩至少两年才能进攻（新手保护）</OC_Incidents_CallIncidebts_YearErr1>
+	<OC_Incidents_CallIncidebts_YearErr2>目标必须玩至少两年才能被进攻（新手保护）</OC_Incidents_CallIncidebts_YearErr2>
+	<OC_Incidents_CallIncidebts_CostErr1>你的据点财富值过低（新手保护）</OC_Incidents_CallIncidebts_CostErr1>
+	<OC_Incidents_CallIncidebts_CostErr2>目标据点财富值过低（新手保护）</OC_Incidents_CallIncidebts_CostErr2>
+	<OC_Incidents_OCIncident_WrongArg>参数设置不正确</OC_Incidents_OCIncident_WrongArg>
+	<OC_Incidents_OCIncident_WealthErr>计算财富值错误</OC_Incidents_OCIncident_WealthErr>
+	<OC_Incidents_OCIncident_GoldErr>没有足够的黄金，现有{0}，需要{1}, 还需要{2}</OC_Incidents_OCIncident_GoldErr>
+	<OC_Incidents_OCIncident_NotEnoughGold>需要的黄金数量{0}已经足够</OC_Incidents_OCIncident_NotEnoughGold>
+	<OC_Incidents_OCIncident_GoldPay>需要的黄金数量{0}已经支付给了雇佣兵</OC_Incidents_OCIncident_GoldPay>
+	<OC_Incident_Atacker>客户:</OC_Incident_Atacker>
 
-	<OC_Incidents_Raid_Warning_label>Serious threat!</OC_Incidents_Raid_Warning_label>
-	<OC_Incidents_Raid_Warning_Text_human>Your colonists are thrilled! A huge number of armed men are seen approaching from another player! They will arrive in 10-14 hours. Perhaps you should ask your allies for help or prepare for settlement evacuation</OC_Incidents_Raid_Warning_Text_human>
-	<OC_Incidents_Raid_Warning_Text_mech>Your colonists are terrified! A large group of Mechs from another player has been detected! They will arrive in 10-14 hours. The chances of survival are extremely low, the support of allies is necessary.It is possible to survive by evacuation</OC_Incidents_Raid_Warning_Text_mech>
-	<OC_Incidents_Inf_Warning_Text_inf>The earth trembles underfoot! Your experts claim that this is not an earthquake, but something in gigantic volumes is purposefully moving towards you from underground! Estimated arrival time 10-14 hours</OC_Incidents_Inf_Warning_Text_inf>
-	<OC_Incidents_Raid_Label>Bounty hunters!</OC_Incidents_Raid_Label>
-	<OC_Incidents_Raid_Text>Mercenary group arrived at your settlement</OC_Incidents_Raid_Text>
-	<OC_Incidents_Acid_Label>Gas atack!</OC_Incidents_Acid_Label>
-	<OC_Incidents_Acid_Text>Toxic gas has been sprayed over your settlement</OC_Incidents_Acid_Text>
-	<OC_Incidents_Inf_Label>Man-made Infestation!</OC_Incidents_Inf_Label>
-	<OC_Incidents_Inf_Text>Someone lured the swarm to the surface with high frequency vibrations</OC_Incidents_Inf_Text>
+	<OC_Incidents_Raid_Warning_label>严重威胁!</OC_Incidents_Raid_Warning_label>
+	<OC_Incidents_Raid_Warning_Text_human>一大群其他玩家的武装分子正在接近！他们会在10到14小时后到达。请做好充足准备！</OC_Incidents_Raid_Warning_Text_human>
+	<OC_Incidents_Raid_Warning_Text_mech>一大群其他玩家的机械族正在接近！他们会在10到14小时后到达。请做好充足准备！</OC_Incidents_Raid_Warning_Text_mech>
+	<OC_Incidents_Inf_Warning_Text_inf>大地在颤抖！你的专家说这不是地震，你感到地下有什么在接近! 预计10到14小时后到达。（虫子？）</OC_Incidents_Inf_Warning_Text_inf>
+	<OC_Incidents_Raid_Label>赏金猎人们!</OC_Incidents_Raid_Label>
+	<OC_Incidents_Raid_Text>雇佣兵到达了你的据点。</OC_Incidents_Raid_Text>
+	<OC_Incidents_Acid_Label>毒气攻击！</OC_Incidents_Acid_Label>
+	<OC_Incidents_Acid_Text>毒气被喷到了你的据点。</OC_Incidents_Acid_Text>
+	<OC_Incidents_Inf_Label>人造虫灾!</OC_Incidents_Inf_Label>
+	<OC_Incidents_Inf_Text>有人用高频振动把虫子引出来了！</OC_Incidents_Inf_Text>
 	<OC_Incidents_EMP_Label>E.M.P.</OC_Incidents_EMP_Label>
-	<OC_Incidents_EMP_Text>Your settlement was irradiated with an electro-magnetic pulse that turned off all electronics</OC_Incidents_EMP_Text>
-	<OC_Incidents_Eclipse_Label>Solar rays absorber!</OC_Incidents_Eclipse_Label>
-	<OC_Incidents_Eclipse_Text>A special satellite was launched over your settlement, which absorbing sunlight</OC_Incidents_Eclipse_Text>
-	<OC_Incidents_Pack_Label>Battle beasts!</OC_Incidents_Pack_Label>
-	<OC_Incidents_Pack_Text>A pack of animals driven to madness has been sent to your settlement</OC_Incidents_Pack_Text>
+	<OC_Incidents_EMP_Text>你的据点被EMP攻击了，所有电气设备都不能用。</OC_Incidents_EMP_Text>
+	<OC_Incidents_Eclipse_Label>阳光吸收器!</OC_Incidents_Eclipse_Label>
+	<OC_Incidents_Eclipse_Text>一个特制的卫星被发射到你的据点上方，吸收你的阳光。</OC_Incidents_Eclipse_Text>
+	<OC_Incidents_Pack_Label>野兽战斗!</OC_Incidents_Pack_Label>
+	<OC_Incidents_Pack_Text>一群动物被搞疯了，然后送向了你的据点。</OC_Incidents_Pack_Text>
 
 	<!-- OCIncidents UI-->
-	<OC_Incidents_Hire_label>Hire raid</OC_Incidents_Hire_label>
-	<OC_Incidents_Impact_label>Affect the area</OC_Incidents_Impact_label>
-	<OC_Incidents_Impact_text>Some rogue scientists can change weather conditions.For now, they are only ready to make acid rain. Not for free</OC_Incidents_Impact_text>
-	<OC_Incidents_Hire_text>Pirates and warlike tribes will gladly agree to do dirty work for a reward. It is even possible to contact scientists from high tech settlements who can lure a the swarm of beetles or mechanoids using special radio signals.</OC_Incidents_Hire_text>
-	<OC_Incidents_Execute>Execute!</OC_Incidents_Execute>
-	<OC_Acid_Rain>Acid rain</OC_Acid_Rain>
-	<OC_Storm>Storm</OC_Storm>
+	<OC_Incidents_Hire_label>雇佣袭击</OC_Incidents_Hire_label>
+	<OC_Incidents_Impact_label>影响这个地区</OC_Incidents_Impact_label>
+	<OC_Incidents_Impact_text>一些疯狂科学家可以改变天气。现在他们可以制造酸雨。不免费！</OC_Incidents_Impact_text>
+	<OC_Incidents_Hire_text>海盗和部落野蛮人会接受报酬并替你做一些肮脏的活。你甚至可以联系高科技据点的科学家们，用特殊无线电吸引一群虫子或机械族。</OC_Incidents_Hire_text>
+	<OC_Incidents_Execute>执行！</OC_Incidents_Execute>
+	<OC_Acid_Rain>酸雨</OC_Acid_Rain>
+	<OC_Storm>风暴</OC_Storm>
 	<OC_EMP>E.M.P.</OC_EMP>
-	<OC_duration>Duration</OC_duration>
-	<OC_What_To_DO>What to do</OC_What_To_DO>
-	<OC_Raid>Raid</OC_Raid>
-	<OC_Bugs>Giant bugs</OC_Bugs>
-	<OC_Who_Hire>Who to hire</OC_Who_Hire>
-	<OC_Tribe>Tribe</OC_Tribe>
-	<OC_Pirate>Pirates</OC_Pirate>
-	<OC_Mech>Mechanoids</OC_Mech>
-	<OC_Arrive>Arrival mode</OC_Arrive>
-	<OC_Arrive_EdgeWalk>Edge walk</OC_Arrive_EdgeWalk>
-	<OC_Arrive_DropCenter>Drop to the center</OC_Arrive_DropCenter>
-	<OC_Arrive_RandomDrop>Random drop</OC_Arrive_RandomDrop>
-	<OC_Raid_Power>Raid power: x{0}</OC_Raid_Power>
-	<OC_Choose_what_to_do>Choose what to do</OC_Choose_what_to_do>
-	<OC_Choose_who_hire>Choose who to hire</OC_Choose_who_hire>
-	<OC_Choose_arrive>Choose arrival mode</OC_Choose_arrive>
+	<OC_duration>持续时间</OC_duration>
+	<OC_What_To_DO>要做什么</OC_What_To_DO>
+	<OC_Raid>袭击</OC_Raid>
+	<OC_Bugs>大虫子</OC_Bugs>
+	<OC_Who_Hire>雇佣谁</OC_Who_Hire>
+	<OC_Tribe>部落</OC_Tribe>
+	<OC_Pirate>海盗</OC_Pirate>
+	<OC_Mech>机械族</OC_Mech>
+	<OC_Arrive>到达方式</OC_Arrive>
+	<OC_Arrive_EdgeWalk>从地图边缘步行进入</OC_Arrive_EdgeWalk>
+	<OC_Arrive_DropCenter>空投到中心</OC_Arrive_DropCenter>
+	<OC_Arrive_RandomDrop>分散空投</OC_Arrive_RandomDrop>
+	<OC_Raid_Power>袭击强度: x{0}</OC_Raid_Power>
+	<OC_Choose_what_to_do>选择做什么</OC_Choose_what_to_do>
+	<OC_Choose_who_hire>选择雇佣谁</OC_Choose_who_hire>
+	<OC_Choose_arrive>选择到达方式</OC_Choose_arrive>
 
 	<!-- OC_World_Map-->
-	<OC_Base_Interact>Interact with {0}</OC_Base_Interact>
-	<OC_Base_InteractWith>Interaction with settlement {0} player {1}</OC_Base_InteractWith>
+	<OC_Base_Interact>与 {0} “互动”</OC_Base_Interact>
+	<OC_Base_InteractWith>与据点 {0} 玩家 {1} 的“互动”</OC_Base_InteractWith>
 	
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Ошибка соединения.</OCity_SCC_Disconnected>
@@ -350,7 +350,7 @@
 	<!-- Kor -->
 	<OCity_Dialog_Exchenge_Chat>聊天</OCity_Dialog_Exchenge_Chat>
 	<OCity_Dialog_Exchenge_Gamers>游戏玩家</OCity_Dialog_Exchenge_Gamers>
-	<OCity_Dialog_Exchenge_What_Point>有什么意义呢？</OCity_Dialog_Exchenge_What_Point>
+	<OCity_Dialog_Exchenge_What_Point>关于</OCity_Dialog_Exchenge_What_Point>
 
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> 作者AantCoder.</OCity_AboutTabText>

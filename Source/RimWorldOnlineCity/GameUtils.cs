@@ -329,8 +329,8 @@ namespace RimWorldOnlineCity
                 Find.SignalManager.RegisterReceiver(pawn);
             }
             */
-            /*if (pawn.Faction != Faction.OfPlayer)
-                pawn.SetFaction(Faction.OfPlayer);*/
+            if (pawn.Faction != Faction.OfPlayer)
+                pawn.SetFaction(Faction.OfPlayer, null);
             if (!pawn.IsWorldPawn())
             {
                 Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.Decide);
@@ -527,30 +527,35 @@ namespace RimWorldOnlineCity
         public static Thing PrepareSpawnThingEntry(ThingEntry thing, Faction factionPirate, bool freePirate = false)
         {
             var factionColonistLoadID = Find.FactionManager.OfPlayer.GetUniqueLoadID();
-            //var fractionRoyaltyLoadID = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire)?.GetUniqueLoadID();
-            var fractionRoyalty = Find.FactionManager.FirstFactionOfDef(FactionDefOf.Empire);
-
-            //if (string.IsNullOrEmpty(fractionRoyaltyLoadID)) Loger.Log("Client fractionRoyaltyLoadID is not find");
-
             //var factionPirateLoadID = factionPirate.GetUniqueLoadID();
-            RegisterReferencing(Find.FactionManager.OfPlayer);
 
             //меняем фракцию на игрока для всех
-            thing.SetFaction(factionColonistLoadID, () =>
-            {
-                if (fractionRoyalty == null)
-                {
-                    Loger.Log("Client fractionRoyalty is not find");
-                    return null;
-                }
-
-                Loger.Log("Client fractionRoyalty RegisterReferencing");
-                RegisterReferencing(fractionRoyalty);
-
-                return fractionRoyalty.GetUniqueLoadID();
-            });
+            var prisoner = thing.SetFaction(factionColonistLoadID);
             Thing thin;
-            thin = thing.CreateThing(false, 0, freePirate);
+            thin = thing.CreateThing(false);
+            if (MainHelper.DebugMode) Loger.Log("SetFaction...");
+            if (thin.def.CanHaveFaction)
+            {
+                if (MainHelper.DebugMode) Loger.Log("SetFaction...1");
+
+                if (thin is Pawn && (prisoner || freePirate && thin.Faction == Find.FactionManager.OfPlayer))
+                {
+                    //а тут меняем фракцию на пиратов, для тех кому нужно
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...2");
+                    thin.SetFaction(factionPirate);
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...3");
+                    var p = thin as Pawn;
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...4");
+                    if (!freePirate && p.guest != null) p.guest.SetGuestStatus(factionPirate, true);
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...5");
+                }
+                else
+                {
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...6");
+                    thin.SetFaction(Find.FactionManager.OfPlayer);
+                    if (MainHelper.DebugMode) Loger.Log("SetFaction...7");
+                }
+            }
             return thin;
         }
 

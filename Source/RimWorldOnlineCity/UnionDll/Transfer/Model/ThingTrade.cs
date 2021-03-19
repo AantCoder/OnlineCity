@@ -269,7 +269,7 @@ namespace Model
             return that;
         }
 
-        public override Thing CreateThing(bool useOriginalID = false, int stackCount = 0, bool needPirate = false)
+        public override Thing CreateThing(bool useOriginalID = false, int stackCount = 0)
         {
             //useOriginalID не используется.
 
@@ -281,8 +281,6 @@ namespace Model
             thing.stackCount = stackCount > 0 ? stackCount : Count;
 
             if (HitPoints > 0) thing.HitPoints = HitPoints;
-
-            SetFaction(thing, isColonist && !needPirate);
 
             CompQuality compQuality = thing.TryGetComp<CompQuality>();
             if (compQuality != null)
