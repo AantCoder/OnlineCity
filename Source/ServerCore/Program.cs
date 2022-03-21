@@ -1,7 +1,7 @@
-﻿using OCUnion;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -39,6 +39,9 @@ namespace ServerOnlineCity
 R - restart (shutdown and start), 
 L - command to save players for shutdown (EverybodyLogoff)
 S - save player statistics file");
+
+            writeDiscordTokenToConsole();
+
             while (true)
             {
                 Thread.Sleep(500);
@@ -49,6 +52,20 @@ S - save player statistics file");
                 else if (char.ToLower(key.KeyChar) == 's') Manager.SavePlayerStatisticsFile();
                 else Console.WriteLine($"Unknow command: {char.ToUpper(key.KeyChar)}");
             }
+        }
+
+        private static void writeDiscordTokenToConsole()
+        {
+            Console.WriteLine("Add discord bot to you server, with grants for read, delete and writre messages");
+            Console.WriteLine("Then type this in a discord channel to synchronize messages in the discord");
+            Console.WriteLine("Working rule: one discord channel for one Onlyne city server");
+            var discordServerToken = Repository.GetPlayerByLogin("discord").DiscordToken;
+            Console.WriteLine("OC! Reg IP_Server:Port Bot_Token");
+            // Получение имени компьютера.
+            String host = System.Net.Dns.GetHostName();
+            // Получение ip-адреса.
+            System.Net.IPAddress ip = System.Net.Dns.GetHostEntry(host).AddressList.First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+            Console.WriteLine($"OC! Reg {ip}:{ServerManager.ServerSettings.Port} {discordServerToken}");
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
