@@ -9,10 +9,20 @@
     <AssemblyVersion>0.3.0.0</AssemblyVersion>
     <Description />
     <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>x64</Platforms>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutputPath>..\BuildOutput\Chat\Debug</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutputPath>..\BuildOutput\Chat\Release</OutputPath>
+  </PropertyGroup>
+  
   <ItemGroup>
-    <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll.csproj" />
+    <ProjectReference Include="..\Client\UnionDll\UnionDll.csproj" />
   </ItemGroup>
 
 </Project>

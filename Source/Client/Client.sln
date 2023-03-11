@@ -1,0 +1,57 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29418.71
+MinimumVisualStudioVersion = 10.0.40219.1
+
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client.csproj", "{871528EA-8B2C-439D-AD2B-702863331980}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9513586E-B487-4BEE-A3FB-0D277D4E5B5C} = {9513586E-B487-4BEE-A3FB-0D277D4E5B5C}
+	EndProjectSection
+EndProject
+
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnionDll", "UnionDll\UnionDll.csproj", "{9513586E-B487-4BEE-A3FB-0D277D4E5B5C}"
+EndProject
+
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CD73A090-1BA1-4CB2-A9B7-28E1BB14A578}"
+	ProjectSection(SolutionItems) = preProject
+		..\Directory.Build.props = ..\Directory.Build.props
+	EndProjectSection
+EndProject
+
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+	    # OnlineCity Client Debug Actions
+		{871528EA-8B2C-439D-AD2B-702863331980}.Debug|x64.ActiveCfg = Debug|x64
+		{871528EA-8B2C-439D-AD2B-702863331980}.Debug|x64.Build.0   = Debug|x64
+		{871528EA-8B2C-439D-AD2B-702863331980}.Debug|x64.Deploy.0  = Debug|x64
+		# ###
+		
+		# Union.dll debug Actions
+		{9513586E-B487-4BEE-A3FB-0D277D4E5B5C}.Debug|x64.ActiveCfg = Debug|x64
+		{9513586E-B487-4BEE-A3FB-0D277D4E5B5C}.Debug|x64.Build.0   = Debug|x64
+		{9513586E-B487-4BEE-A3FB-0D277D4E5B5C}.Debug|x64.Deploy.0  = Debug|x64
+        # ###
+        
+        {871528EA-8B2C-439D-AD2B-702863331980}.Release|x64.ActiveCfg = Release|x64
+        {871528EA-8B2C-439D-AD2B-702863331980}.Release|x64.Build.0   = Release|x64
+        {871528EA-8B2C-439D-AD2B-702863331980}.Release|x64.Deploy.0  = Release|x64
+        
+        {9513586E-B487-4BEE-A3FB-0D277D4E5B5C}.Release|x64.ActiveCfg = Release|x64
+        {9513586E-B487-4BEE-A3FB-0D277D4E5B5C}.Release|x64.Build.0   = Release|x64
+        {9513586E-B487-4BEE-A3FB-0D277D4E5B5C}.Release|x64.Deploy.0  = Release|x64
+        
+	EndGlobalSection
+	
+	GlobalSection(SolutionProperties) = preSolution
+    	HideSolutionNode = FALSE    # Show .sln file in Solution Explorer
+    EndGlobalSection
+    
+    GlobalSection(ExtensibilityGlobals) = postSolution
+    	SolutionGuid = {0E39C29C-58E3-4D41-9C31-087892CC8220}
+    EndGlobalSection
+EndGlobal

@@ -45,6 +45,7 @@ namespace OC.DiscordBotServer
             {
                 Loger.PathLog = Environment.CurrentDirectory;
             }
+            Loger.Enable = true;
 
             new Program().RunBotAsync(args[0]).GetAwaiter().GetResult();
         }

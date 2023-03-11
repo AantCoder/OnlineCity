@@ -4,9 +4,9 @@
 	<!-- MainMenu.cs -->
 	<OCity_LAN_btn>Мережева гра</OCity_LAN_btn>
 	<!-- Kor -->
-	<OCity_MainMenu_Online>Online</OCity_MainMenu_Online>
-	<OCity_MainMenu_Withdraw>Withdraw</OCity_MainMenu_Withdraw>
-	<OCity_MainMenu_Surrender>Surrender</OCity_MainMenu_Surrender>
+	<OCity_MainMenu_Online>Онлайн</OCity_MainMenu_Online>
+	<OCity_MainMenu_Withdraw>Отступить</OCity_MainMenu_Withdraw>
+	<OCity_MainMenu_Surrender>Сдаться</OCity_MainMenu_Surrender>
 
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
 	<OCity_Caravan_GoTrade>Йдемо обмінюватися товарами з {0}</OCity_Caravan_GoTrade>
@@ -14,20 +14,21 @@
 	<OCity_Caravan_LOGNoData>Нема данних сервера про об'єкт торгівлі</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>Караван обмін: selectAllCaravan</OCity_Caravan_LOGSwap>
 	<!-- Kor -->
-	<OCity_Caravan_Go_Attack_Target>Attack</OCity_Caravan_Go_Attack_Target>
-	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Do you really want to attack this settlement? It's possible to have a training battle without consequences</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
-	<OCity_Caravan_Practive>No, just practice.</OCity_Caravan_Practive>
+	<OCity_Caravan_Go_Attack_Target>Атака</OCity_Caravan_Go_Attack_Target>
+	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Вы действительно хотите напасть на это поселение? Можно провести тренировочный бой, не имеющий последствий</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
+	<OCity_Caravan_Practive>Нет, только тренировка.</OCity_Caravan_Practive>
 
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} гравця {1}</OCity_Caravan_Player>
 	<OCity_Caravan_Other>Цінність речей: {2}
-Цінність людей та тварин: {3}</OCity_Caravan_Other>
-	<OCity_Caravan_PlayerAttackCost>The maximum price of attackers: {0}</OCity_Caravan_PlayerAttackCost>
+Цінність людей та тварин: {3}
+Ценность от биржи: {4}</OCity_Caravan_Other>
+	<OCity_Caravan_PlayerAttackCost>Максимальная ценность атакующих: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>Решта вантажопідйомності: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Обмін товарами з {0}</OCity_Caravan_Trade>
 	<OCity_Caravan_Abort>Вам нет года или стоимость меньше</OCity_Caravan_Abort>
 	<!-- Kor -->
-	<OCity_Caravan_Attack>Attack {0}</OCity_Caravan_Attack>
+	<OCity_Caravan_Attack>Атаковать {0}</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
 	<OCity_DevTest_Test>Тест</OCity_DevTest_Test>
@@ -44,17 +45,26 @@
 	<!-- OnlineCity_ClientData.cs -->
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
 	<OCity_ClientData_Chat>Чат </OCity_ClientData_Chat>
-	
+	<OC_OK>Ок</OC_OK>
+
 	<!-- OnlineCity_Hash_Checker -->
 	<OC_Hash_CalculateLocalFiles>Вычисление хэша локальных данных</OC_Hash_CalculateLocalFiles>
 	<OC_Hash_CalculateFor>Вычисление хэша для: </OC_Hash_CalculateFor>
 	<OC_Hash_CalculateComplete>Вычисление хэша завершено</OC_Hash_CalculateComplete>
-	<OC_Hash_CalculateConfFile>Mods Config files: </OC_Hash_CalculateConfFile>
+	<OC_Hash_CalculateConfFile>Файлы Mods Config: </OC_Hash_CalculateConfFile>
 	<OC_Hash_Complete>Завершено:</OC_Hash_Complete>
-	<OC_Hash_Downloading>Скачивание обновлений модов...</OC_Hash_Downloading>
+	<OC_Hash_Downloading>Загрузка модов...</OC_Hash_Downloading>
 	<OC_Hash_Downloading_Finish>Загружено </OC_Hash_Downloading_Finish>
-	<OC_Mods_Wait>Подождите перед запуском онлайна...</OC_Mods_Wait>
+	<OC_Mods_Wait>Подождите перед игрой онлайн...</OC_Mods_Wait>
 	<OC_Mods_Complete>Завершено:</OC_Mods_Complete>
+	<OC_HashCheckerResult_VersionErr>Отличается версия игры. У вас {0}, а требуется {1}</OC_HashCheckerResult_VersionErr>
+	<OC_HashCheckerResult_NeedMods>Не включены необходимые моды:</OC_HashCheckerResult_NeedMods>
+	<OC_HashCheckerResult_ExcessMods>Включены лишние моды:</OC_HashCheckerResult_ExcessMods>
+	<OC_HashCheckerResult_UnexpectedDiff>Неожиданное отличие ModsConfig.xml</OC_HashCheckerResult_UnexpectedDiff>
+	<OC_HashCheckerResult_DiffFiles>Отличаются файлы игры, попробуйте переустановить игру и DLC нужной версии</OC_HashCheckerResult_DiffFiles>
+	<OC_HashCheckerResult_ChangedFiles>Изменены следующие файлы:</OC_HashCheckerResult_ChangedFiles>
+	<OC_HashCheckerResult_ChangedDir>Изменены файлы в этих папках модов:</OC_HashCheckerResult_ChangedDir>
+	<OC_HashCheckerResult_CriticalDiff>Отличаются следующие необновляемые файлы:</OC_HashCheckerResult_CriticalDiff>
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
@@ -97,18 +107,24 @@
 	<OCity_Dialog_CreateWorld_Err2>Невірно заповнені параметри</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Відміна</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Зерно</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_ScenarioErr>Please select a Scenario</OCity_Dialog_CreateWorld_ScenarioErr>
-	<OCity_Dialog_CreateWorld_Scenario>Select Scenario</OCity_Dialog_CreateWorld_Scenario>
-	<OCity_Dialog_CreateWorld_Difficulty>Select Difficulty</OCity_Dialog_CreateWorld_Difficulty>
+	<OCity_Dialog_CreateWorld_Scenario>Сценарий</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Storyteller>Рассказчик</OCity_Dialog_CreateWorld_Storyteller>
+	<OCity_Dialog_CreateWorld_Difficulty>Сложность</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Розмір карти місцевості (200 - мала, 400 - величезна)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>Відсоток генерації поверхні планети (від 5 до 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
+	<!-- OnlineCity_Dialog_Scenario.cs -->
+	<OCity_Dialog_Choose_Scenario>Выберите сценарий</OCity_Dialog_Choose_Scenario>
+	<OCity_Dialog_CreateScen_Err>Ошибка</OCity_Dialog_CreateScen_Err>
+	<OCity_Dialog_CreateScen_Err2>Сценарий не указан</OCity_Dialog_CreateScen_Err2>
+	
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>Вхід</OCity_LoginForm_BtnEnter>
 	<OCity_LoginForm_Register>Реєстрація</OCity_LoginForm_Register>
 	<OCity_LoginForm_Close>Закрити</OCity_LoginForm_Close>
 	<OCity_LoginForm_LabelEnter>Вхід</OCity_LoginForm_LabelEnter>
 	<OCity_LoginForm_Server>Сервер:</OCity_LoginForm_Server>
+	<OCity_Dialog_Choose_server>Выберите сервер</OCity_Dialog_Choose_server>
 	<OCity_LoginForm_Login>Логін:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>Пароль:</OCity_LoginForm_Pass>
 	<OCity_LoginForm_Err1>Пароль и подтверждение отличаются</OCity_LoginForm_Err1>
@@ -126,72 +142,119 @@
 	<OCity_SessionCC_Disconnected>Помилка з'еднання.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Гра перервана</OCity_SessionCC_Disconnect>
 	<!-- Kor -->
-	<OCity_SessionCC_Shutdown_Command_ProgressSaved>We received a shutdown command from the server. The progress has been saved.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
-	<OCity_SessionCC_Shutdown_Command>The server has received a command to shut down</OCity_SessionCC_Shutdown_Command>
-	<OCity_SessionCC_Scenario_Classic>Classic</OCity_SessionCC_Scenario_Classic>
-	<OCity_SessionCC_Client_UpdateNeeded>Upgrade the client! Version for this server: </OCity_SessionCC_Client_UpdateNeeded>
-	<OCity_SessionCC_InitConnectedIntro_Title>Attention</OCity_SessionCC_InitConnectedIntro_Title>
-	<OCity_SessionCC_InitConnectedIntro_Text>If the exact match of the mods is set on the server, and they have not yet been installed, now they will be downloaded. If there is important information in the Mods game subfolder, click Cancel and make a backup copy! The mod synchronization process may take several minutes, after which the game will restart.</OCity_SessionCC_InitConnectedIntro_Text>
-	<OCity_SessionCC_FilesUpdated>Not all files are resolve hash check, they was been updated, Close and Open Game</OCity_SessionCC_FilesUpdated>
+	<OCity_SessionCC_Shutdown_Command_ProgressSaved>От сервера получена команда на отключение. Прогресс был сохранен.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
+	<OCity_SessionCC_Shutdown_Command>От сервера получена команда на отключение.</OCity_SessionCC_Shutdown_Command>
+	<OCity_SessionCC_Scenario_Classic>Классика</OCity_SessionCC_Scenario_Classic>
+	<OCity_SessionCC_Client_UpdateNeeded>Обновите клиент! Версия для данного сервера: </OCity_SessionCC_Client_UpdateNeeded>
+	<OCity_SessionCC_InitConnectedIntro_Title>Внимание!</OCity_SessionCC_InitConnectedIntro_Title>
+	<OCity_SessionCC_InitConnectedIntro_Text>Если сервер требует точное соответствие модов, сейчас будут скачаны недостающие у вас. Подпапка игры Mods будет обновлена. При необходимости нажмите "Отмена" и сделайте резервную копию! Процесс синхронизации модов может занять несколько минут, после чего игра будет перезапущена.</OCity_SessionCC_InitConnectedIntro_Text>
+	<OCity_SessionCC_FilesUpdated>Файлы непрошедшие проверку на хеш были обновлены. Перезапустите игру, если этого не произошло автоматически.</OCity_SessionCC_FilesUpdated>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
-	<OCity_Dialog_Exchenge_Close>Close</OCity_Dialog_Exchenge_Close>
-	<OCity_Dialog_Exchenge_Edit>Edit</OCity_Dialog_Exchenge_Edit>
-	<OCity_Dialog_Exchenge_Trade_Orders>Trade orders</OCity_Dialog_Exchenge_Trade_Orders>
-	<OCity_Dialog_Exchenge_Viewing_Orders>Viewing order</OCity_Dialog_Exchenge_Viewing_Orders>
-	<OCity_Dialog_Exchenge_Deal_Open_Everyone>The deal is available to everyone.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
-	<OCity_Dialog_Exchenge_Deal_Open_Specific>The deal is only available for: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
-	<OCity_Dialog_Exchenge_Seller>Seller</OCity_Dialog_Exchenge_Seller>
-	<OCity_Dialog_Exchenge_BeenOnline>has been online</OCity_Dialog_Exchenge_BeenOnline>
-	<OCity_Dialog_Exchenge_Location>Location</OCity_Dialog_Exchenge_Location>
-	<OCity_Dialog_Exchenge_Days> days </OCity_Dialog_Exchenge_Days>
-	<OCity_Dialog_Exchenge_In> in </OCity_Dialog_Exchenge_In>
-	<OCity_Dialog_Exchenge_Location_Goods>Location of goods:</OCity_Dialog_Exchenge_Location_Goods>
-	<OCity_Dialog_Exchenge_Number>Number</OCity_Dialog_Exchenge_Number>
-	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>Maximum repetition of the transaction:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
-	<OCity_Dialog_Exchenge_Acquire>Acquire</OCity_Dialog_Exchenge_Acquire>
-	<OCity_Dialog_Exchenge_GiveTo>Give it to</OCity_Dialog_Exchenge_GiveTo>
-	<OCity_Dialog_Exchenge_No_Warrants>No warrants</OCity_Dialog_Exchenge_No_Warrants>
-	<OCity_Dialog_Exchenge_Active_Orders>Active orders {0}</OCity_Dialog_Exchenge_Active_Orders>
-	<OCity_Dialog_Exchenge_Update>Update</OCity_Dialog_Exchenge_Update>
-	<OCity_Dialog_Exchenge_Select_For_Sale>Selection for sale from {0} </OCity_Dialog_Exchenge_Select_For_Sale>
-	<OCity_Dialog_Exchenge_Choose>Choose</OCity_Dialog_Exchenge_Choose>
-	<OCity_Dialog_Exchenge_Order_Create>Create new order</OCity_Dialog_Exchenge_Order_Create>
-	<OCity_Dialog_Exchenge_Save>Save</OCity_Dialog_Exchenge_Save>
-	<OCity_Dialog_Exchenge_Create>Create</OCity_Dialog_Exchenge_Create>
-	<OCity_Dialog_Exchenge_Trade>Trade</OCity_Dialog_Exchenge_Trade>
-	<OCity_Dialog_Exchenge_Counterproposal>Counterproposal</OCity_Dialog_Exchenge_Counterproposal>
-	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>Action not carried out</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
-	<OCity_Dialog_Exchenge_Delete>Delete</OCity_Dialog_Exchenge_Delete>
-	<OCity_Dialog_Exchenge_Order_New>New order</OCity_Dialog_Exchenge_Order_New>
-	<OCity_Dialog_Exchenge_No_Exchanges>No such exchanges:</OCity_Dialog_Exchenge_No_Exchanges>
-	<OCity_Dialog_Exchenge_No_Available_Exchange>Nothing else is available for exchange.</OCity_Dialog_Exchenge_No_Available_Exchange>
-	<OCity_Dialog_Exchenge_Done_Once>It`s done once:</OCity_Dialog_Exchenge_Done_Once>
-	<OCity_Dialog_Exchenge_We_Give>We give</OCity_Dialog_Exchenge_We_Give>
-	<OCity_Dialog_Exchenge_We_Give2>We give {0} :</OCity_Dialog_Exchenge_We_Give2>
-	<OCity_Dialog_Exchenge_We_Get>We get</OCity_Dialog_Exchenge_We_Get>
-	<OCity_Dialog_Exchenge_No_User_Restrictions>There are no user restrictions.</OCity_Dialog_Exchenge_No_User_Restrictions>
-	<OCity_Dialog_Exchenge_User_Restrictions>Deal available only to users:</OCity_Dialog_Exchenge_User_Restrictions>
-	<OCity_Dialog_Exchenge_Add_User>+ add user</OCity_Dialog_Exchenge_Add_User>
-	<OCity_Dialog_Exchenge_Specific_Facility_Assigned>A specific facility has been assigned</OCity_Dialog_Exchenge_Specific_Facility_Assigned>
-	<OCity_Dialog_Exchenge_Add>+ add</OCity_Dialog_Exchenge_Add>
-	<OCity_Dialog_Exchenge_Whole_On>A whole on {0} of {1} ({2}%).</OCity_Dialog_Exchenge_Whole_On>
-	<OCity_Dialog_Exchenge_Quality>Quality</OCity_Dialog_Exchenge_Quality>
-	<OCity_Dialog_Exchenge_Whole_Less_Than>whole no less than</OCity_Dialog_Exchenge_Whole_Less_Than>
-	<OCity_Dialog_Exchenge_QualityNo_Less_Than>The quality is no less than</OCity_Dialog_Exchenge_QualityNo_Less_Than>
-	<OCity_Dialog_Exchenge_All>all</OCity_Dialog_Exchenge_All>
-	<OCity_Dialog_Exchenge_FromCorpse>Taken from a corpse</OCity_Dialog_Exchenge_FromCorpse>
-	<OCity_Dialog_Exchenge_FromCorpseD>It is permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromCorpseD>
-	<OCity_Dialog_Exchenge_FromNotCorpse>NOT from a corpse</OCity_Dialog_Exchenge_FromNotCorpse>
-	<OCity_Dialog_Exchenge_FromNotCorpseD>It is NOT permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromNotCorpseD>
+	<OCity_Dialog_Exchenge_Close>Закрыть</OCity_Dialog_Exchenge_Close>
+	<OCity_Dialog_Exchenge_Edit>Редактировать</OCity_Dialog_Exchenge_Edit>
+	<OCity_Dialog_Exchenge_Trade_Orders>Торговые ордера</OCity_Dialog_Exchenge_Trade_Orders>
+	<OCity_Dialog_Exchenge_Trade_OrdersLoad>Загрузка торговых ордеров</OCity_Dialog_Exchenge_Trade_OrdersLoad>
+	<OCity_Dialog_Exchenge_Trade_FilterDistance>Фильтры: Расстояние</OCity_Dialog_Exchenge_Trade_FilterDistance>
+	<OCity_Dialog_Exchenge_Trade_FilterSell>Продажа</OCity_Dialog_Exchenge_Trade_FilterSell>
+	<OCity_Dialog_Exchenge_Trade_FilterBuy>Покупка</OCity_Dialog_Exchenge_Trade_FilterBuy>
+	<OCity_Dialog_Exchenge_TradeCount>Сколько</OCity_Dialog_Exchenge_TradeCount>
+	<OCity_Dialog_Exchenge_Max>максимум</OCity_Dialog_Exchenge_Max>
+	<OCity_Dialog_Exchenge_No_Available_ExchangenInfo>Этот параметр отражает количество доступных сделок на указанных условиях в данный момент. 
+Чтобы узнать, сколько наших вещей хранится на складе, умножьте этот параметр на поле "мы отдаем". 
+Уменьшая параметр - возвращаем ресурсы, увеличивая - резервируем дополнительные.</OCity_Dialog_Exchenge_No_Available_ExchangenInfo>
+	<OCity_Dialog_Exchenge_You>Вы</OCity_Dialog_Exchenge_You>
+	<OCity_Dialog_Exchenge_Tile>клеток</OCity_Dialog_Exchenge_Tile>
+	<OCity_Dialog_Exchenge_Viewing_Orders>Просмотр ордера</OCity_Dialog_Exchenge_Viewing_Orders>
+	<OCity_Dialog_Exchenge_Deal_Open_Everyone>Сделка доступна всем.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
+	<OCity_Dialog_Exchenge_Deal_Open_Specific>Сделка доступна только: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
+	<OCity_Dialog_Exchenge_Seller>Продавец</OCity_Dialog_Exchenge_Seller>
+	<OCity_Dialog_Exchenge_BeenOnline>был в сети </OCity_Dialog_Exchenge_BeenOnline>
+	<OCity_Dialog_Exchenge_Location>Место</OCity_Dialog_Exchenge_Location>
+	<OCity_Dialog_Exchenge_Days> дней </OCity_Dialog_Exchenge_Days>
+	<OCity_Dialog_Exchenge_To>до</OCity_Dialog_Exchenge_To>
+	<OCity_Dialog_Exchenge_Location_Goods>Месторасположение товара:</OCity_Dialog_Exchenge_Location_Goods>
+	<OCity_Dialog_Exchenge_Number>Кол-во</OCity_Dialog_Exchenge_Number>
+	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>Максимум повторов реализации сделки:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
+	<OCity_Dialog_Exchenge_Acquire>Приобрести</OCity_Dialog_Exchenge_Acquire>
+	<OCity_Dialog_Exchenge_GiveTo>Отдать</OCity_Dialog_Exchenge_GiveTo>
+	<OCity_Dialog_Exchenge_No_Warrants>Ордеров нет</OCity_Dialog_Exchenge_No_Warrants>
+	<OCity_Dialog_Exchenge_Active_Orders>Активных ордеров {0}</OCity_Dialog_Exchenge_Active_Orders>
+	<OCity_Dialog_Exchenge_Update>Обновить</OCity_Dialog_Exchenge_Update>
+	<OCity_Dialog_Exchenge_Select_For_Sale>Выбор на продажу из {0} </OCity_Dialog_Exchenge_Select_For_Sale>
+	<OCity_Dialog_Exchenge_Choose>Выбрать</OCity_Dialog_Exchenge_Choose>
+	<OCity_Dialog_Exchenge_Move>Переместить</OCity_Dialog_Exchenge_Move>
+	<OCity_Dialog_Exchenge_Order_Create>Создать новый ордер</OCity_Dialog_Exchenge_Order_Create>
+	<OCity_Dialog_Exchenge_Save>Сохранить</OCity_Dialog_Exchenge_Save>
+	<OCity_Dialog_Exchenge_Create>Создать</OCity_Dialog_Exchenge_Create>
+	<OCity_Dialog_Exchenge_Trade>Торговать</OCity_Dialog_Exchenge_Trade>
+	<OCity_Dialog_Exchenge_Counterproposal>Встречное предложение</OCity_Dialog_Exchenge_Counterproposal>
+	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>Не выполнено</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
+	<OCity_Dialog_Exchenge_Action_CarriedOut>Выполнено</OCity_Dialog_Exchenge_Action_CarriedOut>
+	<OCity_Dialog_Exchenge_Delete>Удалить</OCity_Dialog_Exchenge_Delete>
+	<OCity_Dialog_Exchenge_Order_New>Новый ордер</OCity_Dialog_Exchenge_Order_New>
+	<OCity_Dialog_Exchenge_No_Exchanges>Задать в ордере кол-во повторов:</OCity_Dialog_Exchenge_No_Exchanges>
+	<OCity_Dialog_Exchenge_No_Available_Exchange>Сейчас доступно повторов:</OCity_Dialog_Exchenge_No_Available_Exchange>
+	<OCity_Dialog_Exchenge_Done_Once>Совершено раз:</OCity_Dialog_Exchenge_Done_Once>
+	<OCity_Dialog_Exchenge_We_Give>Мы отдаем</OCity_Dialog_Exchenge_We_Give>
+	<OCity_Dialog_Exchenge_We_Give2>Мы отдаем {0} :</OCity_Dialog_Exchenge_We_Give2>
+	<OCity_Dialog_Exchenge_We_Get>Мы получаем</OCity_Dialog_Exchenge_We_Get>
+	<OCity_Dialog_Exchenge_No_User_Restrictions>Ограничений по пользователям нет.</OCity_Dialog_Exchenge_No_User_Restrictions>
+	<OCity_Dialog_Exchenge_User_Restrictions>Сделка доступна только пользователям:</OCity_Dialog_Exchenge_User_Restrictions>
+	<OCity_Dialog_Exchenge_Add_User>+ добавить пользователя</OCity_Dialog_Exchenge_Add_User>
+	<OCity_Dialog_Exchenge_Specific_Facility_Assigned>Задан конкретный объект</OCity_Dialog_Exchenge_Specific_Facility_Assigned>
+	<OCity_Dialog_Exchenge_Add>+ добавить</OCity_Dialog_Exchenge_Add>
+	<OCity_Dialog_Exchenge_Whole_On>Прочность {0} из {1} ({2}%).</OCity_Dialog_Exchenge_Whole_On>
+	<OCity_Dialog_Exchenge_Quality>Качество </OCity_Dialog_Exchenge_Quality>
+	<OCity_Dialog_Exchenge_Whole_Less_Than>Прочность не меньше чем </OCity_Dialog_Exchenge_Whole_Less_Than>
+	<OCity_Dialog_Exchenge_QualityNo_Less_Than>Качество не меньше чем</OCity_Dialog_Exchenge_QualityNo_Less_Than>
+	<OCity_Dialog_Exchenge_All>все</OCity_Dialog_Exchenge_All>
+	<OCity_Dialog_Exchenge_FromCorpse>Снято с трупа</OCity_Dialog_Exchenge_FromCorpse>
+	<OCity_Dialog_Exchenge_FromCorpseD>Для одежды допустимо быть снятой с трупа</OCity_Dialog_Exchenge_FromCorpseD>
+	<OCity_Dialog_Exchenge_FromNotCorpse>НЕ с трупа</OCity_Dialog_Exchenge_FromNotCorpse>
+	<OCity_Dialog_Exchenge_FromNotCorpseD>Для одежды НЕ допустимо быть снятой с трупа</OCity_Dialog_Exchenge_FromNotCorpseD>
+	<OC_ExchengeOperator_tradeSold0>Ваша сделка сработала</OC_ExchengeOperator_tradeSold0>
+	<OC_ExchengeOperator_tradeSold1>раз,</OC_ExchengeOperator_tradeSold1>
+	<OC_ExchengeOperator_tradeSold2>Вы получаете:</OC_ExchengeOperator_tradeSold2>
+	<OC_ExchengeOperator_tradeBought0>Вы приобрели по сделке</OC_ExchengeOperator_tradeBought0>
+	<OC_ExchengeOperator_tradeBought1>раз. Вы получаете:</OC_ExchengeOperator_tradeBought1>
+	<OC_ExchengeOperator_Closed>она закрылась</OC_ExchengeOperator_Closed>
+	<OC_ExchengeOperator_left>осталось </OC_ExchengeOperator_left>
+	<OC_ExchengeOperator_OrderClosedBetter>Сделка реализована более выгодно, чем была задана. Ваши вещи возвращены:</OC_ExchengeOperator_OrderClosedBetter>
+	<OC_ExchengeOperator_OrderDone>Ваша сделка сработала</OC_ExchengeOperator_OrderDone>
+	<OC_ExchengeOperator_YouBought>Вы купили по сделке</OC_ExchengeOperator_YouBought>
+	<OC_ExchangeEdit_err1>Ошибка. Ордер другого игрока</OC_ExchangeEdit_err1>
+	<OC_ExchangeEdit_err2>Ошибка. Указан несуществующий игрок</OC_ExchangeEdit_err2>
+	<OC_ExchangeEdit_err4>Невозможно создать ордер: недостаточно вещей</OC_ExchangeEdit_err4>
+	<OC_ExchangeEdit_err3>Ошибка. Ордер не найден</OC_ExchangeEdit_err3>
+	<OC_ExchangeEdit_OrderPlaced>Ордер выставлен</OC_ExchangeEdit_OrderPlaced>
+	<OC_ExchangeEdit_YouSell>Вы отдадите:</OC_ExchangeEdit_YouSell>
+	<OC_ExchangeEdit_YouBuy>Вы получите:</OC_ExchangeEdit_YouBuy>
+	<OC_ExchangeEdit_Laps>Повторов</OC_ExchangeEdit_Laps>
+	<OC_ExchangeEdit_ForAll>Этот ордер общий</OC_ExchangeEdit_ForAll>
+	<OC_ExchangeEdit_PrivateOrder>Только для игроков: </OC_ExchangeEdit_PrivateOrder>
+	<OC_ExchangeEdit_OrderRedacted>Ордер отредактирован</OC_ExchangeEdit_OrderRedacted>
+	<OC_ExchangeEdit_OrderDeleted>Ордер отменен</OC_ExchangeEdit_OrderDeleted>
+	<OC_SessionCC_Info>Вы подключены к серверу {0}. Логин {1}</OC_SessionCC_Info>
+	<OC_SessionCC_Balance>Сумма на безналичном счету: </OC_SessionCC_Balance>
+	<OC_SessionCC_MinSave>Минут с сохранения</OC_SessionCC_MinSave>
+	<OCity_Coordinates>Координаты</OCity_Coordinates>
+	<OCity_SetAvatar>Поменять аватар</OCity_SetAvatar>
+	<OCity_Successfully>Успешно</OCity_Successfully>
+	<OCity_Error>Ошибка</OCity_Error>
+	<OC_TradeThingsOnline_Storage>Торговый склад</OC_TradeThingsOnline_Storage>
+	<OC_TradeThingsOnline_ThingTypes>Здесь видов вещей: {0}</OC_TradeThingsOnline_ThingTypes>
+	<OC_TradeThingsOnline_Info>Это ваши вещи. Вы можете их забрать, переместив в поселение или караван на этой же клетке через окно торговли</OC_TradeThingsOnline_Info>
+	<OC_TradeOrdersOnline_Orders>Торговые предложения</OC_TradeOrdersOnline_Orders>
+	<OC_TradeOrdersOnline_OpenForInfo>Откройте торговые предложения для подробностей</OC_TradeOrdersOnline_OpenForInfo>
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
-	<OCity_ThingTrade_Quality_Strength>Quality {0}. Strength {1} of {2}</OCity_ThingTrade_Quality_Strength>
-	<OCity_ThingTrade_Cut_Body_Off>Cut off the body.</OCity_ThingTrade_Cut_Body_Off>
-	<OCity_ThingTrade_QualityBetter_StrengthMore>Quality {0} and better. Strength {1}% and more</OCity_ThingTrade_QualityBetter_StrengthMore>
-	<OCity_ThingTrade_CouldTake_OffCorpse>Could be taken off a corpse.</OCity_ThingTrade_CouldTake_OffCorpse>
+	<OCity_ThingTrade_Quality_Strength>Качество {0}. Прочность {1} из {2}</OCity_ThingTrade_Quality_Strength>
+	<OCity_ThingTrade_Cut_Body_Off>Снято с трупа.</OCity_ThingTrade_Cut_Body_Off>
+	<OCity_ThingTrade_QualityBetter_StrengthMore>Качество {0} и лучше. Прочность {1}% и больше</OCity_ThingTrade_QualityBetter_StrengthMore>
+	<OCity_ThingTrade_CouldTake_OffCorpse>Может быть снято с трупа.</OCity_ThingTrade_CouldTake_OffCorpse>
 
 	<!-- UpdateWorldController.cs -->
 	<OCity_UpdateWorld_Trade>Передача</OCity_UpdateWorld_Trade>
@@ -224,83 +287,82 @@
 	<OCity_PlayerClient_caravanCount>Караванів: {4}</OCity_PlayerClient_caravanCount>
 	<OCity_PlayerClient_marketValue>Цінність речей: {5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>Цінність людей та тварин: {6}</OCity_PlayerClient_marketValuePawn>
+	<OCity_PlayerClient_marketValueTrading>Ценность от биржи: {7}</OCity_PlayerClient_marketValueTrading>
 	<OCity_PlayerClient_LastSaveTimeNon>не участвовал</OCity_PlayerClient_LastSaveTimeNon>
 	<OCity_PlayerClient_InvolvedInPVP>Involved in PVP</OCity_PlayerClient_InvolvedInPVP>
-	<OCity_PlayerClient_NotInvolvedInPVP>Not involved in PVP</OCity_PlayerClient_NotInvolvedInPVP>
+	<OCity_PlayerClient_NotInvolvedInPVP>Не участвует в PVP</OCity_PlayerClient_NotInvolvedInPVP>
 	<OCity_PlayerClient_Discord>Discord: </OCity_PlayerClient_Discord>
 	<OCity_PlayerClient_Email>Email: </OCity_PlayerClient_Email>
-	<OCity_PlayerClient_AboutMyself>About myself:</OCity_PlayerClient_AboutMyself>
-	<OCity_PlayerClient_Settings>Settings</OCity_PlayerClient_Settings>
-	<OCity_PlayerClient_Save>Save</OCity_PlayerClient_Save>
-	<OCity_PlayerClient_CanChange>(can change {0})</OCity_PlayerClient_CanChange>
-	<OCity_PlayerClient_CanChangeNow>(can change now)</OCity_PlayerClient_CanChangeNow>
-	<OCity_PlayerClient_SaveInterval>Save interval in minutes (at least 5, default 15):</OCity_PlayerClient_SaveInterval>
+	<OCity_PlayerClient_AboutMyself>О себе: </OCity_PlayerClient_AboutMyself>
+	<OCity_PlayerClient_Settings>Настройки</OCity_PlayerClient_Settings>
+	<OCity_PlayerClient_Save>Сохранить</OCity_PlayerClient_Save>
+	<OCity_PlayerClient_CanChange>(можно изменить {0})</OCity_PlayerClient_CanChange>
+	<OCity_PlayerClient_CanChangeNow>(можно изменить сейчас)</OCity_PlayerClient_CanChangeNow>
+	<OCity_PlayerClient_SaveInterval>Интервал сохранений в минутах (не меньше 5, по умолчанию 15):</OCity_PlayerClient_SaveInterval>
 
 	<!-- Kor -->
 	<!-- GameUtils.cs -->
-	<OCity_GameUtils_From> from </OCity_GameUtils_From>
+	<OCity_GameUtils_From> из </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>
 
 	<!-- Kor -->
 	<!-- GameAttacker.cs -->
-	<OCity_GameAttacker_Dialog_ErrorMessage>Error attack</OCity_GameAttacker_Dialog_ErrorMessage>
-	<OCity_GameAttacker_Dialog_Settlement_Attack>You are attacking the settlement</OCity_GameAttacker_Dialog_Settlement_Attack>
-	<OCity_GameAttacker_Withdraw>Withdraw</OCity_GameAttacker_Withdraw>
-	<OCity_GameAttacker_Main_Dialog>
-	In this mode, the pause must be permanently activated. In spite of this the game continues and things change.
-	If you want to finish attack, then take those you can to any edge of the map and in the main menu press withdraw.
-	</OCity_GameAttacker_Main_Dialog>
-	<OCity_GameAttacker_Main_Preparation_Dialog>Preparation is complete. You have one minute to look around the map and the attack will begin.</OCity_GameAttacker_Main_Preparation_Dialog>
-	<Ocity_GameAttacker_TrainingFight_Won>You won this training fight! :) </Ocity_GameAttacker_TrainingFight_Won>
-	<Ocity_GameAttacker_TrainingFight_Caravan_Restore>The caravan will now be restored, you'll need to log in.</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
-	<Ocity_GameAttacker_TrainingFight_Lost>You have been defeated in this training attack. :(</Ocity_GameAttacker_TrainingFight_Lost>
-	<OCity_GameAttacker_Done>Done</OCity_GameAttacker_Done>
-	<OCity_GameAttacker_Settlement_TakenOver>You have taken over this settlement! :)</OCity_GameAttacker_Settlement_TakenOver>
-	<OCity_GameAttacker_Defeated>You have been defeated :( </OCity_GameAttacker_Defeated>
-	<OCity_GameAttacker_Colonist_Return>The remaining colonists who are able to move and who have retreated to the edges of the map will return.</OCity_GameAttacker_Colonist_Return>
+	<OCity_GameAttacker_Dialog_ErrorMessage>Ошибка нападения</OCity_GameAttacker_Dialog_ErrorMessage>
+	<OCity_GameAttacker_Dialog_Settlement_Attack>Вы атакуете поселение</OCity_GameAttacker_Dialog_Settlement_Attack>
+	<OCity_GameAttacker_Withdraw>Отступить</OCity_GameAttacker_Withdraw>
+	<OCity_GameAttacker_Main_Dialog>В этом режиме игра должна быть на паузе. Несмотря на это бой будет идти и ситуация меняться. Если вы хотите завершить нападение, отведите всех, кого сможете, к любому краю карты и в главном меню нажмите </OCity_GameAttacker_Main_Dialog>
+	<OCity_GameAttacker_Main_Preparation_Dialog>Подготовка завершена. Вы можете осмотреть на карте в течение минуты, после чего начнется бой.</OCity_GameAttacker_Main_Preparation_Dialog>
+	<Ocity_GameAttacker_TrainingFight_Won>Вы выиграли этот тренировочный бой! :)</Ocity_GameAttacker_TrainingFight_Won>
+	<Ocity_GameAttacker_TrainingFight_Caravan_Restore>Сейчас караван будет восстановлен, вам нужно будет выполнить вход.</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
+	<Ocity_GameAttacker_TrainingFight_Lost>Вы потерпели поражение в этой тренировочной атаке. :(</Ocity_GameAttacker_TrainingFight_Lost>
+	<OCity_GameAttacker_Done>Готово</OCity_GameAttacker_Done>
+	<OCity_GameAttacker_Settlement_TakenOver>Вы захватили это поселение! :) </OCity_GameAttacker_Settlement_TakenOver>
+	<OCity_GameAttacker_Defeated>Вы потерпели поражение :(</OCity_GameAttacker_Defeated>
+	<OCity_GameAttacker_Colonist_Return>Способные передвигаться колонисты, отступившие к краям карты, возвращаются.</OCity_GameAttacker_Colonist_Return>
 
 	<!-- Kor -->
 	<!-- GameAttackHost.cs -->
-	<OCity_GameAttack_Host_Test_Attack>{0} is conducting a test attack on your settlement</OCity_GameAttack_Host_Test_Attack>
-	<OCity_GameAttack_Host_Settlement_Attacking>Your settlement is attacking {0}</OCity_GameAttack_Host_Settlement_Attacking>
-	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>Wait until the attacker is ready. After that, the speed will automatically turn on the x1 and it will not change.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog>
-	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>If you want to finish and give up the settlement, click in the main menu.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
-	<OCity_GameAttack_Host_Cancel_Action> If you want to finish and cancel the action, click on the main menu.</OCity_GameAttack_Host_Cancel_Action>
-	<OCity_GameAttack_Host_Surrender>Surrender</OCity_GameAttack_Host_Surrender>
-	<OCity_GameAttack_Host_Error_Message_Attack>Error attack</OCity_GameAttack_Host_Error_Message_Attack>
-	<OCity_GameAttack_Host_Card_Restored>The card will now be restored, you will need to login.</OCity_GameAttack_Host_Card_Restored>
-	<OCity_GameAttack_Host_Training_Attack_Repulsed>You repulsed this training attack! :)</OCity_GameAttack_Host_Training_Attack_Repulsed>
-	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>You have been defeated and the settlement passes to the new owner :(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
-	<OCity_GameAttack_Host_Atack_Repulsed>You repulsed that attack! :)</OCity_GameAttack_Host_Atack_Repulsed>
-	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>The enemies who couldn't get away will stay on the map, but they've lost touch with their commander.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
+	<OCity_GameAttack_Host_Test_Attack>{0} проводит тестовую атаку на Ваше поселение</OCity_GameAttack_Host_Test_Attack>
+	<OCity_GameAttack_Host_Settlement_Attacking>Ваше поселение атакует {0}</OCity_GameAttack_Host_Settlement_Attacking>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog>Дождитесь когда атакующий будет готов. После этого скорость автоматически включиться на х1 и её нельзя будет менять.</OCity_GameAttack_Host_GameSpeed_Lock_Dialog>
+	<OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>Если вы хотите сдаться и потерять поселение, то нажмите в главном меню</OCity_GameAttack_Host_GameSpeed_Lock_Dialog2>
+	<OCity_GameAttack_Host_Cancel_Action> Если вы хотите закончить и отменить тренировку, то нажмите в главном меню </OCity_GameAttack_Host_Cancel_Action>
+	<OCity_GameAttack_Host_Surrender>Сдаться</OCity_GameAttack_Host_Surrender>
+	<OCity_GameAttack_Host_Error_Message_Attack>Ошибка нападения</OCity_GameAttack_Host_Error_Message_Attack>
+	<OCity_GameAttack_Host_Card_Restored>Сейчас карта будет восстановлена, вам нужно будет выполнить вход.</OCity_GameAttack_Host_Card_Restored>
+	<OCity_GameAttack_Host_Training_Attack_Repulsed>Вы отбили эту тренировочную атаку! :)</OCity_GameAttack_Host_Training_Attack_Repulsed>
+	<OCity_GameAttack_Host_Caravan_TransferToNewOwner>Вы потерпели поражение и поселение переходит к новому владельцу :(</OCity_GameAttack_Host_Caravan_TransferToNewOwner>
+	<OCity_GameAttack_Host_Atack_Repulsed>Вы отбили эту атаку! :) </OCity_GameAttack_Host_Atack_Repulsed>
+	<OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>Враги, которые не сумели уйти, останутся на карте, но потеряют связь со своим командиром.</OCity_GameAttack_Host_Stranded_EnemiesLostCommander_Touch>
 
 	<!-- OCMessadge -->
 	<OC_IncdidentMessadge_ArgErr>Необходимы 3 аргументы: имя, заголовок, текст</OC_IncdidentMessadge_ArgErr>
 	<OC_IncdidentMessadge_targetErr>Вы не можете указать себя</OC_IncdidentMessadge_targetErr>
 	<OC_IncdidentMessadge_typeErr>Ошибка типа сообщения</OC_IncdidentMessadge_typeErr>
-
+	
 	<!-- OCIncidents -->
-	<OC_Incidents_CallIncidents_Err1>Укажите тип инциндента и игрока, для некоторых действий возможны дополнительные параметры</OC_Incidents_CallIncidents_Err1>
-	<OC_Incidents_CallIncidents_TypeErr>Укажите допустимый тип инциндента</OC_Incidents_CallIncidents_TypeErr>
-	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Достигнуто максимальное количество инциндентов для этого игрока за час</OC_Incidents_CallIncidents_MaxIncidentsInHour>
-	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Достигнуто максимальное количество инциндентов для этого игрока</OC_Incidents_CallIncidents_MaxIncidentsCnt>
-	<OC_Incidents_CallIncidents_NotShooted>Ваш прошлый инциндент для этого игрока ещё не сработал</OC_Incidents_CallIncidents_NotShooted>
-	<OC_Incidents_IncidentsTurnedOFF>Инцинденты отключены на этом сервере</OC_Incidents_IncidentsTurnedOFF>
+	<OC_Incidents_CallIncidents_Err1>Укажите тип инцидента и игрока, для некоторых действий возможны дополнительные параметры</OC_Incidents_CallIncidents_Err1>
+	<OC_Incidents_CallIncidents_TypeErr>Укажите допустимый тип инцидента</OC_Incidents_CallIncidents_TypeErr>
+	<OC_Incidents_CallIncidents_MaxIncidentsInHour>Достигнуто максимальное количество инцидентов для этого игрока за час</OC_Incidents_CallIncidents_MaxIncidentsInHour>
+	<OC_Incidents_CallIncidents_MaxIncidentsCnt>Достигнуто максимальное количество инцидентов для этого игрока</OC_Incidents_CallIncidents_MaxIncidentsCnt>
+	<OC_Incidents_CallIncidents_NotShooted>Ваш предыдущий инцидент для этого игрока ещё не завершился</OC_Incidents_CallIncidents_NotShooted>
+	<OC_Incidents_IncidentsTurnedOFF>Инциденты отключены на этом сервере</OC_Incidents_IncidentsTurnedOFF>
 	<OC_Incidents_CallIncidebts_selfErr>Нельзя указывать самого себя</OC_Incidents_CallIncidebts_selfErr>
-	<OC_Incidents_CallIncidebts_YearErr1>Нападать можно после 2х лет своего развития</OC_Incidents_CallIncidebts_YearErr1>
-	<OC_Incidents_CallIncidebts_YearErr2>Нападать можно после 2х лет развития цели нападения</OC_Incidents_CallIncidebts_YearErr2>
+	<OC_Incidents_CallIncidebts_YearErr1>Нападать можно спустя два года своего развития</OC_Incidents_CallIncidebts_YearErr1>
+	<OC_Incidents_CallIncidebts_YearErr2>Нападать можно спустя два года развития целевого игрока</OC_Incidents_CallIncidebts_YearErr2>
 	<OC_Incidents_CallIncidebts_CostErr1>У вас слишком маленькая стоимость поселения</OC_Incidents_CallIncidebts_CostErr1>
 	<OC_Incidents_CallIncidebts_CostErr2>У цели нападения слишком маленькая стоимость поселения</OC_Incidents_CallIncidebts_CostErr2>
 	<OC_Incidents_OCIncident_WrongArg>Неверно заданы аргументы</OC_Incidents_OCIncident_WrongArg>
 	<OC_Incidents_OCIncident_WealthErr>Ошибка определения стоимости</OC_Incidents_OCIncident_WealthErr>
 	<OC_Incidents_OCIncident_GoldErr>Недостаточно золота {0} из {1}, нехватает {2}</OC_Incidents_OCIncident_GoldErr>
 	<OC_Incidents_OCIncident_NotEnoughGold>Необходимого золота {0} достаточно</OC_Incidents_OCIncident_NotEnoughGold>
-	<OC_Incidents_OCIncident_GoldPay>Необходимое золото {0} заплатили наёмникам</OC_Incidents_OCIncident_GoldPay>
+	<OC_Incidents_OCIncident_GoldPay>Заказ принят. {0} золота отправлено наёмникам</OC_Incidents_OCIncident_GoldPay>
 	<OC_Incident_Atacker>За этим стоит:</OC_Incident_Atacker>
 
 	<OC_Incidents_Raid_Warning_label>Серьёзная угроза!</OC_Incidents_Raid_Warning_label>
-	<OC_Incidents_Raid_Warning_Text_human>Ваши колонисты взволнованы! Замечено приближение огромного количества вооруженных людей от другого игрока! Они прибудут через 10-14 часов. Возможно следует обратиться к союзникам за помощью или готовиться к эвакуации</OC_Incidents_Raid_Warning_Text_human>
-	<OC_Incidents_Raid_Warning_Text_mech>Ваши колонисты в ужасе! Замечено приближение большой группы мехов от другого игрока! Они прибудут через 10-14 часов. Шансы на выживание крайне низкие, необходима поддержка союзников. Эвакуация поселения тоже выход</OC_Incidents_Raid_Warning_Text_mech>
+	<OC_Incidents_Raid_Warning_Text_human>Ваши колонисты взволнованы! Замечено приближение огромного количества вооруженных людей, направленных другим игроком! Они прибудут через несколько часов. Возможно, следует обратиться за помощью к союзникам или готовиться к эвакуации</OC_Incidents_Raid_Warning_Text_human>
+	<OC_Incidents_Raid_Warning_Text_mech>Ваши колонисты в ужасе! Замечено приближение большой группы мехов от другого игрока! Они прибудут через несколько часов. Шансы на выживание крайне низкие, необходима поддержка союзников. Эвакуация поселения тоже выход</OC_Incidents_Raid_Warning_Text_mech>
+	<OC_Incidents_Inf_Warning_Text_inf>Земля дрожит под ногами! Ваши специалисты утверждают что это не землятресение, а что-то в гигантских объёмах целенаправленно движущееся к вам из-под земли! Ожидаемое время прибытия - через 10-14 часов</OC_Incidents_Inf_Warning_Text_inf>
 	<OC_Incidents_Raid_Label>Охотники за головами!</OC_Incidents_Raid_Label>
 	<OC_Incidents_Raid_Text>К вашему поселению подходят наёмники</OC_Incidents_Raid_Text>
 	<OC_Incidents_Acid_Label>Хим атака!</OC_Incidents_Acid_Label>
@@ -313,15 +375,21 @@
 	<OC_Incidents_Eclipse_Text>Над вашим поселением вывели специальный спутник, поглощающий солнечный свет</OC_Incidents_Eclipse_Text>
 	<OC_Incidents_Pack_Label>Боевые звери!</OC_Incidents_Pack_Label>
 	<OC_Incidents_Pack_Text>На ваше поселение спустили стаю животных, доведённых до безумия</OC_Incidents_Pack_Text>
+	<OC_Incidents_Plague_Label>Эпидемия!</OC_Incidents_Plague_Label>
+	<OC_Incidents_Plague_text>Неподалёку от вашего поселения был выпущен опасный вирус, часть колонистов заражены</OC_Incidents_Plague_text>
 
 	<!-- OCIncidents UI-->
 	<OC_Incidents_Hire_label>Нанять рейд</OC_Incidents_Hire_label>
 	<OC_Incidents_Impact_label>Воздействие на область</OC_Incidents_Impact_label>
-	<OC_Incidents_Impact_text>Вы нашли учёных, которые могут изменять погодные условия. Пока они готовы сделать только кислотный дождь. За разумную плату</OC_Incidents_Impact_text>
-	<OC_Incidents_Hire_text>Пираты и воинственные аборигены с радостью согласятся поработать за награду. Возможно даже связаться c умельцами из продвинутых поселений, которые могут с помощью особых радиосигналов привлечь рой жуков или механоидов. Чем богаче атакуемое поселение, тем больше денег потребуют наёмники.</OC_Incidents_Hire_text>
-	<OC_Incidents_Inf_Warning_Text_inf>Земля дрожжит под ногами! Ваши специалисты утверждают что это не землятресение, а что-то в гигнатских объёмах целенаправленно движется к вам из-под земли! Ожидаемое время прибытия 10-14 часов</OC_Incidents_Inf_Warning_Text_inf>
+	<OC_Incidents_Impact_text>Вы нашли учёных, которые могут изменять погодные условия и оказывать различные воздействия на область. За разумную плату</OC_Incidents_Impact_text>
+	<OC_Incidents_Hire_text>Пираты и воинственные аборигены с радостью согласятся поработать за награду. Возможно, даже связаться c умельцами из продвинутых поселений, которые могут с помощью особых радиосигналов привлечь рой жуков или механоидов. Чем богаче атакуемое поселение, тем больше денег потребуют наёмники.</OC_Incidents_Hire_text>
 	<OC_Incidents_Execute>Сделать!</OC_Incidents_Execute>
 	<OC_Acid_Rain>Кислотный дождь</OC_Acid_Rain>
+	<OC_Storm>Шторм</OC_Storm>
+	<OC_Eclipse>Поглотитель света</OC_Eclipse>
+	<OC_EMP>Э.М.И.</OC_EMP>
+	<OC_Plague>Эпидемия</OC_Plague> 
+	<OC_duration>Длительность: {0}</OC_duration>
 	<OC_What_To_DO>Что делать</OC_What_To_DO>
 	<OC_Raid>Рейд</OC_Raid>
 	<OC_Bugs>Гигантские жуки</OC_Bugs>
@@ -329,6 +397,7 @@
 	<OC_Tribe>Племя</OC_Tribe>
 	<OC_Pirate>Пираты</OC_Pirate>
 	<OC_Mech>Механоиды</OC_Mech>
+	<OC_TrustRandy>Доверюсь Рэнди</OC_TrustRandy>
 	<OC_Arrive>Способ прибытия</OC_Arrive>
 	<OC_Arrive_EdgeWalk>Пешком</OC_Arrive_EdgeWalk>
 	<OC_Arrive_DropCenter>Десант в центр</OC_Arrive_DropCenter>
@@ -341,21 +410,20 @@
 	<!-- OC_World_Map-->
 	<OC_Base_Interact>Взаимодействие с {0}</OC_Base_Interact>
 	<OC_Base_InteractWith>Взаимодействие с поселением {0} игрока {1}</OC_Base_InteractWith>
-	
+
 	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Помилка з'еднання.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>З'еднання перервано</OCity_SCC_DisconnectedShow> -->
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<!-- Kor -->
-	<OCity_Dialog_Exchenge_Chat>Chat</OCity_Dialog_Exchenge_Chat>
-	<OCity_Dialog_Exchenge_Gamers>gamers</OCity_Dialog_Exchenge_Gamers>
-	<OCity_Dialog_Exchenge_What_Point>What's the point</OCity_Dialog_Exchenge_What_Point>
+	<OCity_Dialog_Exchenge_Chat>в чате</OCity_Dialog_Exchenge_Chat>
+	<OCity_Dialog_Exchenge_Gamers>игроки</OCity_Dialog_Exchenge_Gamers>
+	<OCity_Dialog_Exchenge_What_Point>Что к чему</OCity_Dialog_Exchenge_What_Point>
 
 	<OCity_InfoTabText></OCity_InfoTabText>
-	<OCity_AboutTabText> Автор Василь Іванов aka Aant.</OCity_AboutTabText>
-	<OCity_AboutGeneralText>
-		Greetings, colonizer!
+	<OCity_AboutTabText>Автор Василий Иванов aka Aant.</OCity_AboutTabText>
+	<OCity_AboutGeneralText>Приветствую тебя, Колонизатор!
 
 OnlineCity - представляет из себя модуль сетевой игры для симулятора выживания RimWorld. Он позволяет нескольким игрокам играть на одной планете в режиме онлайн.
 
@@ -374,7 +442,7 @@ OnlineCity - представляет из себя модуль сетевой 
 
 # 1. Общее описание
 
-Данный мод почти не меняет гемплей. Все события, поселения НПЦ и игровые механики у каждого игрока свои и не связаны друг с другом. Благодаря этому не нарушается баланс игры, который был задуман разработчиками. Что именно меняется? 
+Данный мод почти не меняет геймплей. Все события, поселения НПЦ и игровые механики у каждого игрока свои и не связаны друг с другом. Благодаря этому не нарушается баланс игры, который был задуман разработчиками. Что именно меняется? 
 
 Сохранение вашей игры происходит исключительно на сервер и попасть в сетевую игру можно только нажав на кнопку Сетевая игра и введя логин и пароль. Автосохранения происходят каждые 15 минут (можно поменять в настройках) и при выходе из игры. Важно! Не закрывайте игру по Alt-F4 или средствами операционной системы, в этом случае сохранение при выходе не сработает и прогресс откатится на момент последнего успешного сохранения. Для выхода пользуйтесь меню. Если по тем или иным причинам вы захотите поиграть в эту партию офлайн, то это можно сделать загрузив файл onlineCityTempLoad, но ваш прогресс нельзя будет перенести на сервер, можно лишь доиграть в офлайн. Если вы начинаете игру любым способом кроме как по кнопке Сетевая игра, то мод полностью отключается и не работает.
 
@@ -404,7 +472,7 @@ OnlineCity - представляет из себя модуль сетевой 
 
 # 3. Другое взаимодействие
 
-Пираты и воинственные аборигены с радостью согласятся поработать за награду. Помимо этого, заплатив нужное количество золота можно вызвать кислотные осадки, натравить жуков, механоидов и прочее. Чтобы вызвать разные события найдите поселение другого игрока на палнете, выделите его, и нажмите на кнопку Взаимодействие.
+Пираты и воинственные аборигены с радостью согласятся поработать за награду. Помимо этого, заплатив нужное количество золота можно вызвать кислотные осадки, натравить жуков, механоидов и прочее. Чтобы вызвать разные события найдите поселение другого игрока на планете, выделите его, и нажмите на кнопку Взаимодействие.
 
 Некоторые события могут иметь силу воздействия, например такие как рейды и жуки. Можно удвоить, утроить и т.д. их количество, относительно того, что игра сама генерирует для поселения. Как правило *10 очень сложно пережить даже игрокам со стажем. Цена вызова с увеличением уровня растет нелинейно. Вот общая формула цены за вызов:
 
@@ -412,7 +480,7 @@ OnlineCity - представляет из себя модуль сетевой 
 
 Дополнительно множитель *3, если это вызов жуков. Множитель *2 за вызов пиратов индустриального уровня. Множитель *5 за вызов механоидов.
 
-Такде рейд можно вызвать не только пешком с краю карты, но и десантом в центр (цена *1.4), или рассеяным десантом (цена *1.5), при этом стоимость капсул игра также вычтет из общей стоимости рейда.
+Также рейд можно вызвать не только пешком с краю карты, но и десантом в центр (цена *1.4), или рассеянным десантом (цена *1.5), при этом стоимость капсул игра также вычтет из общей стоимости рейда.
 
 Данные расчеты могут со временем поменяться, в ходе настройки баланса. Помимо этого на сервере можно задавать общий коэффициент цены и конечной стоимости атакующего рейда. Также можно изменить максимальный коэффициент силы воздействия (по умолчанию *10).
 
@@ -678,7 +746,7 @@ ExchengeEnable - функционал пока не готов, следует �
 
 Блокировка злоумышленников.
 В папке World можно создать два файла для бана подключений.
-blockip.txt - IP адреса которые нужно заблокровать. Одна строка один IP, последнее значение можно писать через дробь 1.2.3.0/2 добавит три IP закачивающиеся на .0, .1 и .2
+blockip.txt - IP адреса которые нужно заблокировать. Одна строка один IP, последнее значение можно писать через дробь 1.2.3.0/2 добавит три IP закачивающиеся на .0, .1 и .2
 
 blockkey.txt - это бан по ключам. каждый игрок имеет уникальные ключи. Узнать их можно из логов по поиску "key=", найдется примерно такая строка:
 Checked loginName key=hlw57jjSV5HacQbb9iiB@@@51b36et2ZBvBUkUztF+N
@@ -688,14 +756,14 @@ Checked loginName key=hlw57jjSV5HacQbb9iiB@@@51b36et2ZBvBUkUztF+N
 В оба этих файла можно писать комментарии, которые должны идти после ключа или IP через пробел
 
 
-Можно получить общие данные по всем игрокам в консоле, нажав букву S. Будет создан файл Players_дата.csv со списком игроков, временем последнего входа и некоторой игровой информацией. Вот описание некоторых столбцов:
+Можно получить общие данные по всем игрокам в консоли, нажав букву S. Будет создан файл Players_дата.csv со списком игроков, временем последнего входа и некоторой игровой информацией. Вот описание некоторых столбцов:
 LastOnlineDay - сколько реальных дней назад игрок был онлайн
 BaseCount - текущее количество поселений
 CaravanCount - текущее количество караванов
 MarketValue - текущая стоимость поселения
 MarketValuePawn - текущая стоимость пешек
-AttacksWonCount - сколько на игрока направили инциндентов
-AttacksInitiatorCount - сколько игрок сделал инциндентов на других игроков
+AttacksWonCount - сколько на игрока направили инцидентов
+AttacksInitiatorCount - сколько игрок сделал инцидентов на других игроков
 ColonistsCount - cколько всего колонистов
 ColonistsDownCount - сколько из колонистов не на ногах
 ColonistsBleedCount - сколько из колонистов имеют кровопотерю
@@ -703,7 +771,7 @@ PawnMaxSkill - cколько колонистов имеют 8 из 12 навы�
 KillsHumanlikes - сколько колонисты игрока убили других людей
 KillsMechanoids - сколько колонисты игрока убили механоидов
 KillsBestPawnHN - какой колонист убил наибольшее количество других людей
-KillsBestPawnH - колько именно
+KillsBestPawnH - сколько именно
 KillsBestPawnMN - какой колонист убил наибольшее количество механоидов
 KillsBestPawnM - колько именно
 Grants - права на сервере, "UsualUser" - обычный пользователь, "SuperAdmin. Moderator" - создатель мира (первый зарегистрировавшийся)
@@ -762,7 +830,7 @@ delayAfterMail - это сколько дней задержки было рас
 
 /call {событие} {'имя игрока'} {sId поселения цели} {мощность}* {способ прибытия}* {фракция}*
 *опционально для некоторых событий
-имя игрока обязательно в одинарных ковычках, например: /call raid 'babur'
+имя игрока обязательно в одинарных кавычках, например: /call raid 'babur'
 Список доступных событий:
 	raid - вызов рейда на игрока. Доступен выбор мощности, целое число от 1 до 10. Также доступен способ прибытия и выбор фракции.
 	inf - вызов жуков на карте игрока. Доступен выбор мощности
@@ -796,7 +864,7 @@ delayAfterMail - это сколько дней задержки было рас
 
 Если вы уже заходили и играли на сервер с синхронизацией модов, то если после перезагрузки игры нажать в главном меню Моды, то при следующем заходе на сервер игра скорее всего будет перезапущена. Фактически ничего не менялось, но игра после открытия списка модов перезаписывает ModsConfig.xml и он может немного измениться. Это нормальное поведение, просто реже нажимайте кнопку Моды :)
 
-Есть баг, который сложно поймать. Иногда после передачи поселенца другому игроку его копия (пешка с тем же именем, професией и навыками) может появиться в каком-нибудь событии или попросить присоединиться к поселению. Не соглашайтесь, очивидцы говорят, что это призрак который крашит игру! :)
+Есть баг, который сложно поймать. Иногда после передачи поселенца другому игроку его копия (пешка с тем же именем, професией и навыками) может появиться в каком-нибудь событии или попросить присоединиться к поселению. Не соглашайтесь, очевидцы говорят, что это призрак который крашит игру! :)
 
 # 10. Другие часто задаваемые вопросы
 
@@ -836,7 +904,7 @@ delayAfterMail - это сколько дней задержки было рас
 Discord:  https://discord.gg/5DzWrnR
 Оф. группа мода ВК:  https://vk.com/rimworldonline
 Trello:  https://trello.com/b/gXtWtDjy/onlinecity-mod-rimworld
-GitHub:  https://github.com/AantCoder/OnlineCity
+GitHub:  https://github.com/AantCoder/OnlineCity//github.com/AantCoder/OnlineCity
 	</OCity_AboutGeneralText>
 
 </LanguageData>

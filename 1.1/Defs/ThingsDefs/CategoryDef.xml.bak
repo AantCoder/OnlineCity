@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+    <ThingCategoryDef>
+      <defName>OC_Items</defName>
+      <label>OC</label>
+      <parent>Root</parent>
+      <resourceReadoutRoot>true</resourceReadoutRoot>
+      <iconPath>Resource/OC_Coin</iconPath>
+    </ThingCategoryDef>
+</Defs>

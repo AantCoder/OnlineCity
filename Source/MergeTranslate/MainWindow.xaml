@@ -1,0 +1,21 @@
+﻿<Window x:Class="MergeTranslate.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MergeTranslate"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="446" Width="583">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="39*"/>
+            <RowDefinition Height="391*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="Выбрать файл" Height="31" VerticalAlignment="Center" HorizontalAlignment="Right" Width="112" Margin="461,0,0,0" Click="Button_Click"/>
+        <DataGrid Height="390" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="DataGrid_SelectionChanged" Grid.Row="1" Margin="0,0,0,0"/>
+        <Label Content="Выбрать файл" HorizontalAlignment="Left" Height="31" VerticalAlignment="Center" Width="105"/>
+    </Grid>
+</Window>

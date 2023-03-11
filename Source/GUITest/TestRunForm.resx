@@ -1,0 +1,349 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="textBoxHelp.Text" xml:space="preserve">
+    <value>Скрипт начнет выполнятся после начала загрузки игры.
+Скрипт на языке C#. Вот пример конструкций:
+
+var i = 0; //С помощью var объявляем переменную
+while (i &lt; 5) //цикл пока условие верно, выполниться 5 раз
+{
+	Log("Цикл " + i.ToString()); //Записать в результат строку
+	i++; //то же что и i = i + 1;
+}
+
+if (5 * 5 == 25)
+{
+	Log("25"); //если условие выше истинно, то команды в операторных скобках выполняются
+}
+else
+	Log("???"); //вместо {...} можно сразу написать команду, если она одна
+
+	
+Thread.Sleep(1000); //задержка в 1 сек
+
+//цикл ожидания указанное время, например 60 секунд:
+var ok = game.Wait(60000, () =&gt;
+{
+	Log("Повторяем любые команды");
+	//Но в блоке нужно вызвать одно из:
+	return false; //возврат с ложью, для продолжения пока не кончится время
+	return true; //возврат с истиной, если нужно досрочно завершить и записать врезультат (тут это ok) значение истины
+});
+if (!ok) Log("Мы так и не дождались return истины"); // ! перед выражением работает как НЕ
+
+
+//Берем изображение из игры для анализа, пока не вызовем повторно изображение не изменится
+game.Graphics.UpdateScreenshot();
+
+//Находим кнопку Сетевая игра (имя файла "ButtonOnlineCity.png")
+var pos = game.Graphics.Find("ButtonOnlineCity");
+
+//в переменной pos координаты, если кнопка найдена
+if (pos.IsNull()) return LogText + "Нет кнопки :(("; //если не найдена, прерываем тест выводя текущий лог и фразу с ошибкой
+
+//можно искать в цикле пока кнопка не появится, максимум, например 60 секунд:
+pos = game.Graphics.FindWait("ButtonOnlineCity", 60000); // (pos уже был объявлен, поэтому только устанавливаем значение)
+//выражение pos.IsNull() будет истино, если время истекло, а изображение не было найдено
+
+
+//можно объявить набор изображений
+var imgs = game.Graphics.ImageList("ButtonOnlineCity", "DebugLog");
+var pos = game.Graphics.FindWait(imgs, 60000);
+
+//координаты можно использовать, чтобы передвинуть на них мышку
+game.Mouse.Move(pos);
+//можно сместить координаты на нужное количество пикселей относительно координат
+game.Mouse.Move(pos.Add(75, 30));
+
+
+var pp = new Point(10, 5); //можно создать координаты указав вручную
+Log(pp.ToString()); //вывести в текст результата, или так:
+Log("(" + pp.X.ToString() + ", " + pp.Y.ToString() + ")");
+
+//вот так можно задать прямоугольную область и искать в ней:
+var rect = new Rectangle(0, 0, game.Width, game.Height / 2); //это верхняя половина экрана
+var pos = game.Graphics.Find("WinXClose", rect: rect);
+
+
+game.Mouse.Move(0, 0); //переместить мышку в верхний левый угол окна
+game.Mouse.Move(game.Width / 2, game.Height / 2).Click(); //потом переметить в центр окна и кликнуть
+game.Mouse.Click(doubleClick: true); //двойной клик в текущей позиции
+game.Mouse.Click(leftButton: false); //кликнуть правой кнопкой (по умолчанию с true левой)
+game.Mouse.Click(down: true); //down: true -нажать и удерживать, пока не будет команда с down: false
+game.Mouse.Click(leftButton: false, doubleClick: true); //подобные параметры можно коминировать
+game.Mouse.Scroll(3); //крутить колесико мышки 3 раза
+
+
+game.Keybord.Send("q"); //эмуляция нажатия кнопки q, не ввод текста, а именно как будто нажали на эту кнопку (с текущей раскладкой клавиатуры)
+//Можно комбинировать добавляя перед кнопкой символы: SHIFT +, CTRL ^, ALT %
+//Некоторые спец кнопки указываются в {}, например {ENTER} (Enter это также ~)
+game.Keybord.Send("^A127.0.0.1{tab}"); //будет выделен весь текст Ctrl+A введено 127.0.0.1 и нажата табуляция
+//Регистр не имеет значения. Эмуляция работает почти также как в функции SendKeys.Send https://msdn.microsoft.com/ru-ru/library/system.windows.forms.sendkeys.send(v=vs.110).aspx
+
+
+//Функция полученая данных с логов: GetLogNewText()
+//Она получает новую часть логов которая накопилась с момента последнего вызова функции
+//Функция может быть вызвана у трёх источников:
+var logMod = clientModLog.GetLogNewText(); //лог с папки %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity
+var logConsole = game.GetLogNewText(); //файл %appdata%\..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Player.log
+var logServer = server.GetLogNewText(); //файл логов с папки сервера, место зависит от настроек, не заполняется при запуске через присоединение
+
+if (logServer.Contains("Exception")) Log("Ошибка: Какое-то исключение на сервере!"); //Выводит сообщение, если в тексте встречается подстрока
+//Результат логов можно обработать, чтобы сравнить с образцом, или для поиска в определенных строках:
+var log = clientModLog.PrepareCheckLog(logMod); //функция удаляет из каждой строки часть до третьего | (т.е. дату, мс и номер потока, которые могут менятся)
+//вторым аргументом можно указать подстроку, тогда будут выведены только строки в которых есть эта подстрока, регистр не имеет значения
+if (!clientModLog.PrepareCheckLog(logMod, "Debug").Contains("Штаны из синткани")) Log("Ошибка: нет штанов!"); //Contains проверяет, нахождение подстроки в тексте (в строках с "Debug"), а символ ! производит отрицание - условие срабатывает когда подстроки нет
+
+
+//Вот так можно объявить процедуру и потом вызывать её:
+Action proc = () =&gt;
+{
+	Log("Вызов");
+};
+proc();
+proc();
+
+
+//Ниже до конца идет пример скрипта входа на локальный сервер под логином 111, паролем 111
+//Скрипт ждет все загрузки и закрывает консоль с ошибками после старта игры, если она будет
+//После загрузки игры, открывает-закрывает окно Онлайн и выходит из игры через меню
+
+//ждем пока не появиться кнопка Сетевая игра или консоль ошибок
+var imgs = game.Graphics.ImageList("ButtonOnlineCity", "DebugLog");
+var pos = game.Graphics.FindWait(imgs, 60000);
+if (pos.IsNull()) return LogText + "Ошибка: кнопка Сетевая игра не появилась";
+
+//если это консоль ошибок
+Action CloseDebugLog = () =&gt;
+{
+	var posDebugLog = game.Graphics.Find("DebugLog");
+	if (!posDebugLog.IsNull())
+	{
+		//то ищем крестик, который относится к этому окну и закрываем консоль ошибок
+		//для этого ищем в узкой области правее найденной надписи
+		var rect = new Rectangle(posDebugLog.X, posDebugLog.Y - 17, game.Width - posDebugLog.X, 25);
+		posDebugLog = game.Graphics.Find("WinXClose", rect: rect);
+		if (posDebugLog.IsNull()) Log("Ошибка: не получается закрыть консоль ошибок");
+		else
+		{
+			//закрываем окно по кремтику и анализируем после закрытия
+			game.Mouse.Move(posDebugLog).Click();
+		}
+		Thread.Sleep(500);
+		game.Graphics.UpdateScreenshot();
+	}
+};
+CloseDebugLog();
+
+//Находим кнопку Сетевая игра
+var posButtonOnlineCity = game.Graphics.Find("ButtonOnlineCity");
+if (posButtonOnlineCity.IsNull()) return LogText + "Ошибка: нет кнопки Сетевая игра";
+
+//К этому моменту должен создаться новый файл логов клиента (мода), устанавливаем его для сохранения
+clientModLog.SetLogFileFromFolder();
+
+//Цикл одижания минуту, завершается при return true;
+var ok = game.Wait(60000, () =&gt;
+{
+	//жмем кнопку Сетевая игра, обновляем экран
+	game.Mouse.Move(posButtonOnlineCity).Click();
+	game.Graphics.UpdateScreenshot();
+
+	//если в заголовке текста с "..." нет, то это не окно загрузки модов
+	pos = game.Graphics.Find("TitleWithDots");
+	if (pos.IsNull()) return true;
+
+	//жмем закрыть окно по крестику
+	pos = game.Graphics.Find("WinXClose");
+	game.Mouse.Move(pos).Click();
+
+	//дополнительно ждем секунду, чтобы не нажимать слишком часто
+	Thread.Sleep(1000);
+	return false;
+});
+if (!ok) return LogText + "Ошибка: не дождались окончания хеширования";
+
+//открываем окно и ищем опорную точку с иконкой диалога
+game.Mouse.Move(posButtonOnlineCity).Click();
+game.Graphics.UpdateScreenshot();
+var posLoginForm = game.Graphics.Find("IconBalloon");
+if (posLoginForm.IsNull()) return LogText + "Ошибка: нет опорной иконки с облачком диалога в окне входа";
+
+//жмем по полю с адресом сервера
+game.Mouse.Move(posLoginForm.Add(255, 88)).Click();
+//выделяем всё (чтобы удалилось) и вводим данные
+game.Keybord.Send("^A127.0.0.1");//localhost  
+
+//жмем по полю с логином
+game.Mouse.Move(posLoginForm.Add(255, 134)).Click();
+game.Keybord.Send("^A111");
+
+//жмем по полю с паролем
+game.Mouse.Move(posLoginForm.Add(255, 179)).Click();
+game.Keybord.Send("^A111");
+
+//жмем кнопку Вход
+game.Mouse.Move(posLoginForm.Add(100, 275)).Click();
+
+//ждем загрузку игры - появится меню в углу
+var posMenuInGame = game.Graphics.FindWait("MenuInGame", 60000);
+if (posMenuInGame.IsNull()) return LogText + "Ошибка: не дождались загрузки сейва на сервере (нет иконки меню в игре)";
+
+//должна быть кнопка Онлайн, кликаем
+pos = game.Graphics.Find("ButtonOnlineInGame");
+if (pos.IsNull()) return LogText + "Ошибка: после загрузки нет кнопки Онлайн";
+game.Mouse.Move(pos).Click();
+
+//обновляем экран, и закрываем окно с логом ошибок, если оно есть
+Thread.Sleep(500);
+game.Graphics.UpdateScreenshot();
+CloseDebugLog();
+
+//загружаем логи от мода с момента старта, чтобы игнорировать их
+clientModLog.GetLogNewText();
+
+pos = game.Graphics.Find("OnlineChat");
+if (pos.IsNull()) return LogText + "Ошибка: не найдена строка с чатом";
+game.Mouse.Move(pos.Add(-50, 0)).Click();
+game.Keybord.SetClipboard("/debug"); //копируем текст в буфер, чтобы не заморачиваться с раскладкой
+game.Keybord.Send("^A^V"); //выделить всё, вставить
+game.Mouse.Move(pos.Add(5, 0)).Click();
+
+//получаем логи мода с момента последнего вызова clientModLog.GetLogNewText
+var logMod = clientModLog.GetLogNewText();
+//преобразуем к рабочему виду и убираем все строки не содержащие Debug, в конце убираем и само слово Debug
+logMod = clientModLog.PrepareCheckLog(logMod, "Debug").Replace("Debug ", "");
+//Выводим результат
+Log("Все вещи колонии:");
+Log(logMod);
+
+//нажимаем на кнопку меню
+game.Mouse.Move(posMenuInGame).Click();
+
+//нажимаем кнопку выйти из игры
+//game.Mouse.Move(posMenuInGame.Add(-313, -213)).Click();</value>
+  </data>
+  <metadata name="timer1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>54</value>
+  </metadata>
+</root>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <SteamFolder>c:\Program Files (x86)\Steam\steamapps\</SteamFolder>
+    <SteamFolder>C:\Program Files (x86)\Steam\steamapps\</SteamFolder>
     <!--<RimWorldFolder>..\..\..\..\</RimWorldFolder>-->
     <RimWorldFolder>$(SteamFolder)common\RimWorld\</RimWorldFolder>
+    <RimWorldModFolder>$(RimWorldFolder)Mods</RimWorldModFolder>
     <RimWorldFolderBin>$(RimWorldFolder)RimWorldWin64_Data\Managed\</RimWorldFolderBin>
     <SteamWorkShopFolder>$(SteamFolder)workshop\content\294100\</SteamWorkShopFolder>
     <RimWorldDlls>$(RimWorldFolderBin)*.*</RimWorldDlls>

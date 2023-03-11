@@ -358,3 +358,6 @@ MigrationBackup/
 
 # ignore local user settings
 launchSettings.json
+
+
+.svn/

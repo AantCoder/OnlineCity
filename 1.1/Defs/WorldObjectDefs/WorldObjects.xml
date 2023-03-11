@@ -13,7 +13,7 @@
 	<saved>false</saved> 
   </WorldObjectDef>
   
-- <WorldObjectDef>
+  <WorldObjectDef>
     <defName>BaseOnline</defName> 
     <label>other player's base</label> 
     <description>Other online player's base</description> 
@@ -21,6 +21,26 @@
     <expandingIcon>true</expandingIcon> 
     <expandingIconPriority>11</expandingIconPriority> 
 	<saved>false</saved> 
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>TradeOrdersOnline</defName>
+    <label>Place of trade</label>
+    <description>The place where the trade takes place</description>
+    <worldObjectClass>RimWorldOnlineCity.TradeOrdersOnline</worldObjectClass>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconPriority>96</expandingIconPriority>
+	<saved>false</saved>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>TradeThingsOnline</defName>
+    <label>Your items after purchase</label>
+    <description>The place where the trade takes place. Your things that can be picked up by the caravan</description>
+    <worldObjectClass>RimWorldOnlineCity.TradeThingsOnline</worldObjectClass>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconPriority>96</expandingIconPriority>
+	<saved>false</saved>
   </WorldObjectDef>
   
 </Defs>

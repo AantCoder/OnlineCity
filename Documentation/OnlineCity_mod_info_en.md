@@ -254,6 +254,8 @@ IncidentCostPrecent - Percentage hiring cost modifier
 
 IncidentPowerPrecent - Percentage raid strength modifier
 
+ExchengePrecentWealthForIncident - How much the cost of things on the exchange, in orders and on the account will affect game incidents (how much silver per 1000 silver of the cost of things. For example, 1200 is 120%, 20% more influence on the raid from things moved to the server)
+
 StartGameYear - Assign the starting year in the game instead of 5500
 
 IgnoredLocalConfigFiles - The names of the configuration files to ignore. The rest will be synchronized with the server folder specified in ModsConfigsDirectoryPath if IsModsWhitelisted is true.

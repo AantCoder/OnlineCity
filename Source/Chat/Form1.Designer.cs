@@ -1,4 +1,4 @@
-﻿namespace OC.Chat
+namespace OC.Chat
 {
     partial class Form1
     {

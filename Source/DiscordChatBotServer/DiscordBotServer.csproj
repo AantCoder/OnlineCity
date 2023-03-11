@@ -8,9 +8,20 @@
     <RootNamespace>OC.DiscordBotServer</RootNamespace>
     <AssemblyName>DiscordBotServer</AssemblyName>
     <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <Platforms>x64</Platforms>
+    <Configurations>Debug;Release</Configurations>
     <Description />
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutputPath>..\BuildOutput\DiscordBotServer\Debug</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutputPath>..\BuildOutput\DiscordBotServer\Release</OutputPath>
+  </PropertyGroup> 
+  
+  
   <ItemGroup>
     <PackageReference Include="Discord.Net">
       <Version>2.3.0</Version>
@@ -46,7 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RimWorldOnlineCity\UnionDll\UnionDll.csproj" />
+    <ProjectReference Include="..\Client\UnionDll\UnionDll.csproj" />
   </ItemGroup>
   <!--
   <Target Name="BeforeBuild">

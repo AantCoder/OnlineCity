@@ -21,7 +21,8 @@
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} Spieler {1}</OCity_Caravan_Player>
 	<OCity_Caravan_Other>Wert der Gegenstände: {2}
-Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
+Wert von Menschen und Tieren: {3}
+Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_Caravan_PlayerAttackCost>The maximum price of attackers: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>Restladekapazität: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Warenaustausch mit {0}</OCity_Caravan_Trade>
@@ -44,6 +45,7 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<!-- OnlineCity_ClientData.cs -->
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
 	<OCity_ClientData_Chat>Chat </OCity_ClientData_Chat>
+	<OC_OK>ОК</OC_OK>
 
 	<!-- OnlineCity_Hash_Checker -->
 	<OC_Hash_CalculateLocalFiles>Calculate hash for local files</OC_Hash_CalculateLocalFiles>
@@ -53,8 +55,16 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OC_Hash_Complete>Complete:</OC_Hash_Complete>
 	<OC_Hash_Downloading>Downloading mods update...</OC_Hash_Downloading>
 	<OC_Hash_Downloading_Finish>Downloaded </OC_Hash_Downloading_Finish>
-	<OC_Mods_Wait>Wait before playing online...</OC_Mods_Wait>
+	<OC_Mods_Wait>Wait before play online...</OC_Mods_Wait>
 	<OC_Mods_Complete>Complete:</OC_Mods_Complete>
+	<OC_HashCheckerResult_VersionErr>The game version is different. You use {0}, but you need {1}</OC_HashCheckerResult_VersionErr>
+	<OC_HashCheckerResult_NeedMods>Necessary mods not included:</OC_HashCheckerResult_NeedMods>
+	<OC_HashCheckerResult_ExcessMods>Excess mods included:</OC_HashCheckerResult_ExcessMods>
+	<OC_HashCheckerResult_UnexpectedDiff>Unexpected difference ModsConfig.xml</OC_HashCheckerResult_UnexpectedDiff>
+	<OC_HashCheckerResult_DiffFiles>Game files are different, try reinstalling the game and DLC of the required version</OC_HashCheckerResult_DiffFiles>
+	<OC_HashCheckerResult_ChangedFiles>The following files has been changed:</OC_HashCheckerResult_ChangedFiles>
+	<OC_HashCheckerResult_ChangedDir>Changed files in these mod folders:</OC_HashCheckerResult_ChangedDir>
+	<OC_HashCheckerResult_CriticalDiff>The non-updatable files different:</OC_HashCheckerResult_CriticalDiff>
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
@@ -63,8 +73,8 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_Dialog_ListAbout>Modinfo</OCity_Dialog_ListAbout>
 	<OCity_Dialog_Settings>Settings</OCity_Dialog_Settings>
 	<OCity_Dialog_Connecting>Verbinde ...</OCity_Dialog_Connecting>
-	<OCity_Dialog_Login>Einloggen:</OCity_Dialog_Login>
-	<OCity_Dialog_Players>Spieler:</OCity_Dialog_Players>
+	<OCity_Dialog_Login>Einloggen: </OCity_Dialog_Login>
+	<OCity_Dialog_Players>Spieler: </OCity_Dialog_Players>
 	<OCity_Dialog_ChennelOwn> Kanalersteller</OCity_Dialog_ChennelOwn>
 	<OCity_Dialog_ChennelUser> Teilnehmer</OCity_Dialog_ChennelUser>
 	<OCity_Dialog_ChennelCreate>Erstelle einen Kanal</OCity_Dialog_ChennelCreate>
@@ -97,11 +107,16 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_Dialog_CreateWorld_Err2>Ungültige Parameter</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>Abbrechen</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>Seed</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_ScenarioErr>Please select a Scenario</OCity_Dialog_CreateWorld_ScenarioErr>
 	<OCity_Dialog_CreateWorld_Scenario>Select Scenario</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Storyteller>Storyteller</OCity_Dialog_CreateWorld_Storyteller>
 	<OCity_Dialog_CreateWorld_Difficulty>Select Difficulty</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>Die Größe der Karte (200 - klein, 400 - riesig)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>Prozentsatz der Generation der Planetenoberfläche (ab 5 bis zu 100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
+
+	<!-- OnlineCity_Dialog_Scenario.cs -->
+	<OCity_Dialog_Choose_Scenario>Choose scenario</OCity_Dialog_Choose_Scenario>
+	<OCity_Dialog_CreateScen_Err>Error</OCity_Dialog_CreateScen_Err>
+	<OCity_Dialog_CreateScen_Err2>Scenario is not choosed</OCity_Dialog_CreateScen_Err2>
 
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>Anmelden</OCity_LoginForm_BtnEnter>
@@ -109,6 +124,7 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_LoginForm_Close>Schließen</OCity_LoginForm_Close>
 	<OCity_LoginForm_LabelEnter>Anmelden</OCity_LoginForm_LabelEnter>
 	<OCity_LoginForm_Server>Server:</OCity_LoginForm_Server>
+	<OCity_Dialog_Choose_server>Choose server</OCity_Dialog_Choose_server>
 	<OCity_LoginForm_Login>Benutzername:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>Passwort:</OCity_LoginForm_Pass>
 	<OCity_LoginForm_Err1>Password and confirmation are different</OCity_LoginForm_Err1>
@@ -131,43 +147,56 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_SessionCC_Scenario_Classic>Classic</OCity_SessionCC_Scenario_Classic>
 	<OCity_SessionCC_Client_UpdateNeeded>Upgrade the client! Version for this server: </OCity_SessionCC_Client_UpdateNeeded>
 	<OCity_SessionCC_InitConnectedIntro_Title>Attention</OCity_SessionCC_InitConnectedIntro_Title>
-	<OCity_SessionCC_InitConnectedIntro_Text>If the exact match of the mods is set on the server, and they have not yet been installed, now they will be downloaded. If there is important information in the Mods game subfolder, click Cancel and make a backup copy! The mod synchronization process may take several minutes, after which the game will restart.</OCity_SessionCC_InitConnectedIntro_Text>
-	<OCity_SessionCC_FilesUpdated>Not all files are resolve hash check, they was been updated, Close and Open Game</OCity_SessionCC_FilesUpdated>
+	<OCity_SessionCC_InitConnectedIntro_Text>If your mod list does not match the mod list of the server, they will now be synchronized. It is recommended that you cancel and backup your current mod list if you have not done so already. The mod synchronization process may take several minutes, after which the game will restart.</OCity_SessionCC_InitConnectedIntro_Text>
+	<OCity_SessionCC_FilesUpdated>Not all files had resolved hash checks, so they have been updated. Please restart the game.</OCity_SessionCC_FilesUpdated>
 
 	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
 	<OCity_Dialog_Exchenge_Close>Close</OCity_Dialog_Exchenge_Close>
 	<OCity_Dialog_Exchenge_Edit>Edit</OCity_Dialog_Exchenge_Edit>
 	<OCity_Dialog_Exchenge_Trade_Orders>Trade orders</OCity_Dialog_Exchenge_Trade_Orders>
+	<OCity_Dialog_Exchenge_Trade_OrdersLoad>Loading trade orders</OCity_Dialog_Exchenge_Trade_OrdersLoad>
+	<OCity_Dialog_Exchenge_Trade_FilterDistance>Filters: Distance</OCity_Dialog_Exchenge_Trade_FilterDistance>
+	<OCity_Dialog_Exchenge_Trade_FilterSell>Sale</OCity_Dialog_Exchenge_Trade_FilterSell>
+	<OCity_Dialog_Exchenge_Trade_FilterBuy>Buy</OCity_Dialog_Exchenge_Trade_FilterBuy>
+	<OCity_Dialog_Exchenge_TradeCount>How many</OCity_Dialog_Exchenge_TradeCount>
+	<OCity_Dialog_Exchenge_Max>maximum</OCity_Dialog_Exchenge_Max>
+	<OCity_Dialog_Exchenge_No_Available_ExchangenInfo>This parameter shows the number of available transactions on the specified conditions at the moment.
+To find out how many of our things are stored in the warehouse, multiply this parameter by the "we give" field.
+Decreasing the parameter - we return the resources, increasing - we reserve additional ones.</OCity_Dialog_Exchenge_No_Available_ExchangenInfo>
+	<OCity_Dialog_Exchenge_You>You</OCity_Dialog_Exchenge_You>
+	<OCity_Dialog_Exchenge_Tile>tile</OCity_Dialog_Exchenge_Tile>
 	<OCity_Dialog_Exchenge_Viewing_Orders>Viewing order</OCity_Dialog_Exchenge_Viewing_Orders>
-	<OCity_Dialog_Exchenge_Deal_Open_Everyone>The deal is available to everyone.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
-	<OCity_Dialog_Exchenge_Deal_Open_Specific>The deal is only available for: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
+	<OCity_Dialog_Exchenge_Deal_Open_Everyone>This deal is available to everyone.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
+	<OCity_Dialog_Exchenge_Deal_Open_Specific>This deal is only available for: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
 	<OCity_Dialog_Exchenge_Seller>Seller</OCity_Dialog_Exchenge_Seller>
 	<OCity_Dialog_Exchenge_BeenOnline>has been online</OCity_Dialog_Exchenge_BeenOnline>
 	<OCity_Dialog_Exchenge_Location>Location</OCity_Dialog_Exchenge_Location>
 	<OCity_Dialog_Exchenge_Days> days </OCity_Dialog_Exchenge_Days>
-	<OCity_Dialog_Exchenge_In> in </OCity_Dialog_Exchenge_In>
+	<OCity_Dialog_Exchenge_To>To</OCity_Dialog_Exchenge_To>
 	<OCity_Dialog_Exchenge_Location_Goods>Location of goods:</OCity_Dialog_Exchenge_Location_Goods>
 	<OCity_Dialog_Exchenge_Number>Number</OCity_Dialog_Exchenge_Number>
 	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>Maximum repetition of the transaction:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
 	<OCity_Dialog_Exchenge_Acquire>Acquire</OCity_Dialog_Exchenge_Acquire>
-	<OCity_Dialog_Exchenge_GiveTo>Give it to</OCity_Dialog_Exchenge_GiveTo>
+	<OCity_Dialog_Exchenge_GiveTo>Give to</OCity_Dialog_Exchenge_GiveTo>
 	<OCity_Dialog_Exchenge_No_Warrants>No warrants</OCity_Dialog_Exchenge_No_Warrants>
 	<OCity_Dialog_Exchenge_Active_Orders>Active orders {0}</OCity_Dialog_Exchenge_Active_Orders>
 	<OCity_Dialog_Exchenge_Update>Update</OCity_Dialog_Exchenge_Update>
 	<OCity_Dialog_Exchenge_Select_For_Sale>Selection for sale from {0} </OCity_Dialog_Exchenge_Select_For_Sale>
 	<OCity_Dialog_Exchenge_Choose>Choose</OCity_Dialog_Exchenge_Choose>
+	<OCity_Dialog_Exchenge_Move>Move</OCity_Dialog_Exchenge_Move>
 	<OCity_Dialog_Exchenge_Order_Create>Create new order</OCity_Dialog_Exchenge_Order_Create>
 	<OCity_Dialog_Exchenge_Save>Save</OCity_Dialog_Exchenge_Save>
 	<OCity_Dialog_Exchenge_Create>Create</OCity_Dialog_Exchenge_Create>
 	<OCity_Dialog_Exchenge_Trade>Trade</OCity_Dialog_Exchenge_Trade>
 	<OCity_Dialog_Exchenge_Counterproposal>Counterproposal</OCity_Dialog_Exchenge_Counterproposal>
-	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>Action not carried out</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
+	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>Not performed</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
+	<OCity_Dialog_Exchenge_Action_CarriedOut>Done</OCity_Dialog_Exchenge_Action_CarriedOut>
 	<OCity_Dialog_Exchenge_Delete>Delete</OCity_Dialog_Exchenge_Delete>
 	<OCity_Dialog_Exchenge_Order_New>New order</OCity_Dialog_Exchenge_Order_New>
-	<OCity_Dialog_Exchenge_No_Exchanges>No such exchanges:</OCity_Dialog_Exchenge_No_Exchanges>
-	<OCity_Dialog_Exchenge_No_Available_Exchange>Nothing else is available for exchange.</OCity_Dialog_Exchenge_No_Available_Exchange>
-	<OCity_Dialog_Exchenge_Done_Once>It`s done once:</OCity_Dialog_Exchenge_Done_Once>
+	<OCity_Dialog_Exchenge_No_Exchanges>Set the number of repetitions in the order:</OCity_Dialog_Exchenge_No_Exchanges>
+	<OCity_Dialog_Exchenge_No_Available_Exchange>Replays available now:</OCity_Dialog_Exchenge_No_Available_Exchange>
+	<OCity_Dialog_Exchenge_Done_Once>It's done once:</OCity_Dialog_Exchenge_Done_Once>
 	<OCity_Dialog_Exchenge_We_Give>We give</OCity_Dialog_Exchenge_We_Give>
 	<OCity_Dialog_Exchenge_We_Give2>We give {0} :</OCity_Dialog_Exchenge_We_Give2>
 	<OCity_Dialog_Exchenge_We_Get>We get</OCity_Dialog_Exchenge_We_Get>
@@ -185,6 +214,40 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_Dialog_Exchenge_FromCorpseD>It is permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromCorpseD>
 	<OCity_Dialog_Exchenge_FromNotCorpse>NOT from a corpse</OCity_Dialog_Exchenge_FromNotCorpse>
 	<OCity_Dialog_Exchenge_FromNotCorpseD>It is NOT permissible for clothing to be removed from a corpse</OCity_Dialog_Exchenge_FromNotCorpseD>
+	<OC_ExchengeOperator_tradeSold0>Your order has been accepted</OC_ExchengeOperator_tradeSold0>
+	<OC_ExchengeOperator_tradeSold1>times,</OC_ExchengeOperator_tradeSold1>
+	<OC_ExchengeOperator_tradeSold2>You get:</OC_ExchengeOperator_tradeSold2>
+	<OC_ExchengeOperator_tradeBought0>You got by the deal</OC_ExchengeOperator_tradeBought0>
+	<OC_ExchengeOperator_tradeBought1>times. You get:</OC_ExchengeOperator_tradeBought1>
+	<OC_ExchengeOperator_Closed>it's closed</OC_ExchengeOperator_Closed>
+	<OC_ExchengeOperator_left>left </OC_ExchengeOperator_left>
+	<OC_ExchengeOperator_OrderClosedBetter>The deal was done more profitably than it was asked for. Your items are being returned:</OC_ExchengeOperator_OrderClosedBetter>
+	<OC_ExchengeOperator_OrderDone>Your deal done</OC_ExchengeOperator_OrderDone>
+	<OC_ExchengeOperator_YouBought>You bought with a order</OC_ExchengeOperator_YouBought>
+	<OC_ExchangeEdit_err1>Error. Order from another player</OC_ExchangeEdit_err1>
+	<OC_ExchangeEdit_err2>Error. Player not found</OC_ExchangeEdit_err2>
+	<OC_ExchangeEdit_err4>Unable to create order: not enough items</OC_ExchangeEdit_err4>
+	<OC_ExchangeEdit_err3>Error. Order not found</OC_ExchangeEdit_err3>
+	<OC_ExchangeEdit_OrderPlaced>Order Placed</OC_ExchangeEdit_OrderPlaced>
+	<OC_ExchangeEdit_YouSell>You will sell:</OC_ExchangeEdit_YouSell>
+	<OC_ExchangeEdit_YouBuy>You will recieve:</OC_ExchangeEdit_YouBuy>
+	<OC_ExchangeEdit_Laps>repeats</OC_ExchangeEdit_Laps>
+	<OC_ExchangeEdit_ForAll>Order for all</OC_ExchangeEdit_ForAll>
+	<OC_ExchangeEdit_PrivateOrder>Order only for players: </OC_ExchangeEdit_PrivateOrder>
+	<OC_ExchangeEdit_OrderRedacted>Order redacted</OC_ExchangeEdit_OrderRedacted>
+	<OC_ExchangeEdit_OrderDeleted>Order canceled</OC_ExchangeEdit_OrderDeleted>
+	<OC_SessionCC_Info>You are connected to server {0}. Login {1}</OC_SessionCC_Info>
+	<OC_SessionCC_Balance>Amount on a non-cash account:</OC_SessionCC_Balance>
+	<OC_SessionCC_MinSave>Minutes since saving</OC_SessionCC_MinSave>
+	<OCity_Coordinates>Coordinates</OCity_Coordinates>
+	<OCity_SetAvatar>Change avatar</OCity_SetAvatar>
+	<OCity_Successfully>Successfully</OCity_Successfully>
+	<OCity_Error>Error</OCity_Error>
+	<OC_TradeThingsOnline_Storage>Trade warehouse</OC_TradeThingsOnline_Storage>
+	<OC_TradeThingsOnline_ThingTypes>Here are the kinds of things: {0}</OC_TradeThingsOnline_ThingTypes>
+	<OC_TradeThingsOnline_Info>These are your things, you can pick them up by moving them to a settlement or caravan on the same cell. Open the trade window, choose what you need and click</OC_TradeThingsOnline_Info>
+	<OC_TradeOrdersOnline_Orders>Trade orders</OC_TradeOrdersOnline_Orders>
+	<OC_TradeOrdersOnline_OpenForInfo>Open trade orders for more info</OC_TradeOrdersOnline_OpenForInfo>
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
@@ -224,6 +287,7 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_PlayerClient_caravanCount>Karawanen: {4}</OCity_PlayerClient_caravanCount>
 	<OCity_PlayerClient_marketValue>Wert der Sachen: {5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>Wert von Menschen und Tieren: {6}</OCity_PlayerClient_marketValuePawn>
+	<OCity_PlayerClient_marketValueTrading>Wealh of exchange: {7}</OCity_PlayerClient_marketValueTrading>
 	<OCity_PlayerClient_LastSaveTimeNon>nicht gespeichert</OCity_PlayerClient_LastSaveTimeNon>
 	<OCity_PlayerClient_InvolvedInPVP>Involved in PVP</OCity_PlayerClient_InvolvedInPVP>
 	<OCity_PlayerClient_NotInvolvedInPVP>Not involved in PVP</OCity_PlayerClient_NotInvolvedInPVP>
@@ -246,10 +310,7 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OCity_GameAttacker_Dialog_ErrorMessage>Error attack</OCity_GameAttacker_Dialog_ErrorMessage>
 	<OCity_GameAttacker_Dialog_Settlement_Attack>You are attacking the settlement</OCity_GameAttacker_Dialog_Settlement_Attack>
 	<OCity_GameAttacker_Withdraw>Withdraw</OCity_GameAttacker_Withdraw>
-	<OCity_GameAttacker_Main_Dialog>
-	In this mode, the pause must be permanently activated. In spite of this the game continues and things change.
-	If you want to finish attack, then take those you can to any edge of the map and in the main menu press withdraw.
-	</OCity_GameAttacker_Main_Dialog>
+	<OCity_GameAttacker_Main_Dialog>In this mode, the pause must be permanently activated. In spite of this the game continues and things change. If you want to finish attack, then take those you can to any edge of the map and in the main menu press withdraw.</OCity_GameAttacker_Main_Dialog>
 	<OCity_GameAttacker_Main_Preparation_Dialog>Preparation is complete. You have one minute to look around the map and the attack will begin.</OCity_GameAttacker_Main_Preparation_Dialog>
 	<Ocity_GameAttacker_TrainingFight_Won>You won this training fight! :) </Ocity_GameAttacker_TrainingFight_Won>
 	<Ocity_GameAttacker_TrainingFight_Caravan_Restore>The caravan will now be restored, you'll need to log in.</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
@@ -314,6 +375,8 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OC_Incidents_Eclipse_Text>A special satellite was launched over your settlement, which absorbing sunlight</OC_Incidents_Eclipse_Text>
 	<OC_Incidents_Pack_Label>Battle beasts!</OC_Incidents_Pack_Label>
 	<OC_Incidents_Pack_Text>A pack of animals driven to madness has been sent to your settlement</OC_Incidents_Pack_Text>
+	<OC_Incidents_Plague_Label>Epidemic!</OC_Incidents_Plague_Label>
+	<OC_Incidents_Plague_text>A dangerous virus was spreaded near your settlement, some of the colonists are infected</OC_Incidents_Plague_text>
 
 	<!-- OCIncidents UI-->
 	<OC_Incidents_Hire_label>Hire raid</OC_Incidents_Hire_label>
@@ -322,6 +385,11 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OC_Incidents_Hire_text>Pirates and warlike tribes will gladly agree to do dirty work for a reward. It is even possible to contact scientists from high tech settlements who can lure a the swarm of beetles or mechanoids using special radio signals.</OC_Incidents_Hire_text>
 	<OC_Incidents_Execute>Execute!</OC_Incidents_Execute>
 	<OC_Acid_Rain>Acid rain</OC_Acid_Rain>
+	<OC_Storm>Storm</OC_Storm>
+	<OC_Eclipse>Sunlight absorber</OC_Eclipse>
+	<OC_EMP>E.M.P.</OC_EMP>
+	<OC_Plague>Virus</OC_Plague> 
+	<OC_duration>Duration: {0}</OC_duration>
 	<OC_What_To_DO>What to do</OC_What_To_DO>
 	<OC_Raid>Raid</OC_Raid>
 	<OC_Bugs>Giant bugs</OC_Bugs>
@@ -329,6 +397,7 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 	<OC_Tribe>Tribe</OC_Tribe>
 	<OC_Pirate>Pirates</OC_Pirate>
 	<OC_Mech>Mechanoids</OC_Mech>
+	<OC_TrustRandy>I'm trust Randy</OC_TrustRandy>
 	<OC_Arrive>Arrival mode</OC_Arrive>
 	<OC_Arrive_EdgeWalk>Edge walk</OC_Arrive_EdgeWalk>
 	<OC_Arrive_DropCenter>Drop to the center</OC_Arrive_DropCenter>
@@ -354,8 +423,7 @@ Wert von Menschen und Tieren: {3}</OCity_Caravan_Other>
 
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> Autor Vasily Ivanov alias Aant.</OCity_AboutTabText>
-	<OCity_AboutGeneralText>
-		Greetings, colonizer!
+	<OCity_AboutGeneralText>Greetings, colonizer!
 
 OnlineCity - is a network game module for the RimWorld survival simulator. It allows multiple players to play on the same planet online.
 

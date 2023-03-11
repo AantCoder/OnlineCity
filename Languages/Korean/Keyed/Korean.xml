@@ -20,7 +20,9 @@
 
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} 플레이어: {1}</OCity_Caravan_Player>
-	<OCity_Caravan_Other>물건들의 가치: {2} 사람과 동물의 가치: {3}</OCity_Caravan_Other>
+	<OCity_Caravan_Other>물건들의 가치: {2} 
+사람과 동물의 가치: {3}
+Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_Caravan_PlayerAttackCost>공격자의 최대 가격: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>남은 용량: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>{0}이랑 거래하기.</OCity_Caravan_Trade>
@@ -43,6 +45,7 @@
 	<!-- OnlineCity_ClientData.cs -->
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
 	<OCity_ClientData_Chat>채팅 </OCity_ClientData_Chat>
+	<OC_OK>ОК</OC_OK>
 	
 	<!-- OnlineCity_Hash_Checker -->
 	<OC_Hash_CalculateLocalFiles>Calculate hash for local files</OC_Hash_CalculateLocalFiles>
@@ -52,8 +55,16 @@
 	<OC_Hash_Complete>Complete:</OC_Hash_Complete>
 	<OC_Hash_Downloading>Downloading mods update...</OC_Hash_Downloading>
 	<OC_Hash_Downloading_Finish>Downloaded </OC_Hash_Downloading_Finish>
-	<OC_Mods_Wait>Wait before playing online...</OC_Mods_Wait>
+	<OC_Mods_Wait>Wait before play online...</OC_Mods_Wait>
 	<OC_Mods_Complete>Complete:</OC_Mods_Complete>
+	<OC_HashCheckerResult_VersionErr>The game version is different. You use {0}, but you need {1}</OC_HashCheckerResult_VersionErr>
+	<OC_HashCheckerResult_NeedMods>Necessary mods not included:</OC_HashCheckerResult_NeedMods>
+	<OC_HashCheckerResult_ExcessMods>Excess mods included:</OC_HashCheckerResult_ExcessMods>
+	<OC_HashCheckerResult_UnexpectedDiff>Unexpected difference ModsConfig.xml</OC_HashCheckerResult_UnexpectedDiff>
+	<OC_HashCheckerResult_DiffFiles>Game files are different, try reinstalling the game and DLC of the required version</OC_HashCheckerResult_DiffFiles>
+	<OC_HashCheckerResult_ChangedFiles>The following files has been changed:</OC_HashCheckerResult_ChangedFiles>
+	<OC_HashCheckerResult_ChangedDir>Changed files in these mod folders:</OC_HashCheckerResult_ChangedDir>
+	<OC_HashCheckerResult_CriticalDiff>The non-updatable files different:</OC_HashCheckerResult_CriticalDiff>
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
@@ -61,7 +72,7 @@
 	<OCity_Dialog_ListInfo>도움말</OCity_Dialog_ListInfo>
 	<OCity_Dialog_ListAbout>모드에 대해</OCity_Dialog_ListAbout>
 	<OCity_Dialog_Settings>Settings</OCity_Dialog_Settings>
-	<OCity_Dialog_Connecting>접속중..</OCity_Dialog_Connecting>
+	<OCity_Dialog_Connecting>접속중...</OCity_Dialog_Connecting>
 	<OCity_Dialog_Login>로그인 ID: </OCity_Dialog_Login>
 	<OCity_Dialog_Players>유저수: </OCity_Dialog_Players>
 	<OCity_Dialog_ChennelOwn> 채널 재작기</OCity_Dialog_ChennelOwn>
@@ -96,11 +107,16 @@
 	<OCity_Dialog_CreateWorld_Err2>잘못된 매개 변수</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>취소</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>시드</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_ScenarioErr>Please select a Scenario</OCity_Dialog_CreateWorld_ScenarioErr>
 	<OCity_Dialog_CreateWorld_Scenario>Select Scenario</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Storyteller>Storyteller</OCity_Dialog_CreateWorld_Storyteller>
 	<OCity_Dialog_CreateWorld_Difficulty>Select Difficulty</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>맵 크기 입력 200~400</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>지구 표면 생성 비율 (5~100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
+
+	<!-- OnlineCity_Dialog_Scenario.cs -->
+	<OCity_Dialog_Choose_Scenario>Choose scenario</OCity_Dialog_Choose_Scenario>
+	<OCity_Dialog_CreateScen_Err>Error</OCity_Dialog_CreateScen_Err>
+	<OCity_Dialog_CreateScen_Err2>Scenario is not choosed</OCity_Dialog_CreateScen_Err2>
 
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>로그인</OCity_LoginForm_BtnEnter>
@@ -108,6 +124,7 @@
 	<OCity_LoginForm_Close>닫기</OCity_LoginForm_Close>
 	<OCity_LoginForm_LabelEnter>로그인</OCity_LoginForm_LabelEnter>
 	<OCity_LoginForm_Server>서버:</OCity_LoginForm_Server>
+	<OCity_Dialog_Choose_server>Choose server</OCity_Dialog_Choose_server>
 	<OCity_LoginForm_Login>로그인 ID:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>비밀번호:</OCity_LoginForm_Pass>
 	<OCity_LoginForm_Err1>Password and confirmation are different</OCity_LoginForm_Err1>
@@ -138,6 +155,17 @@
 	<OCity_Dialog_Exchenge_Close>닫기</OCity_Dialog_Exchenge_Close>
 	<OCity_Dialog_Exchenge_Edit>편집</OCity_Dialog_Exchenge_Edit>
 	<OCity_Dialog_Exchenge_Trade_Orders>다른 것들과 거래</OCity_Dialog_Exchenge_Trade_Orders>
+	<OCity_Dialog_Exchenge_Trade_OrdersLoad>Loading trade orders</OCity_Dialog_Exchenge_Trade_OrdersLoad>
+	<OCity_Dialog_Exchenge_Trade_FilterDistance>Filters: Distance</OCity_Dialog_Exchenge_Trade_FilterDistance>
+	<OCity_Dialog_Exchenge_Trade_FilterSell>Sale</OCity_Dialog_Exchenge_Trade_FilterSell>
+	<OCity_Dialog_Exchenge_Trade_FilterBuy>Buy</OCity_Dialog_Exchenge_Trade_FilterBuy>
+	<OCity_Dialog_Exchenge_TradeCount>How many</OCity_Dialog_Exchenge_TradeCount>
+	<OCity_Dialog_Exchenge_Max>maximum</OCity_Dialog_Exchenge_Max>
+	<OCity_Dialog_Exchenge_No_Available_ExchangenInfo>This parameter shows the number of available transactions on the specified conditions at the moment.
+To find out how many of our things are stored in the warehouse, multiply this parameter by the "we give" field.
+Decreasing the parameter - we return the resources, increasing - we reserve additional ones.</OCity_Dialog_Exchenge_No_Available_ExchangenInfo>
+	<OCity_Dialog_Exchenge_You>You</OCity_Dialog_Exchenge_You>
+	<OCity_Dialog_Exchenge_Tile>tile</OCity_Dialog_Exchenge_Tile>
 	<OCity_Dialog_Exchenge_Viewing_Orders>다른것들을 보는중</OCity_Dialog_Exchenge_Viewing_Orders>
 	<OCity_Dialog_Exchenge_Deal_Open_Everyone>이 요청은 아무나 수행 가능합니다.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
 	<OCity_Dialog_Exchenge_Deal_Open_Specific>이 요청은 {0}님만 수행 가능합니다.</OCity_Dialog_Exchenge_Deal_Open_Specific>
@@ -145,7 +173,7 @@
 	<OCity_Dialog_Exchenge_BeenOnline>님이 온라인 상태가 되었습니다</OCity_Dialog_Exchenge_BeenOnline>
 	<OCity_Dialog_Exchenge_Location>위치</OCity_Dialog_Exchenge_Location>
 	<OCity_Dialog_Exchenge_Days> 날짜 </OCity_Dialog_Exchenge_Days>
-	<OCity_Dialog_Exchenge_In> 안 </OCity_Dialog_Exchenge_In>
+	<OCity_Dialog_Exchenge_To>To</OCity_Dialog_Exchenge_To>
 	<OCity_Dialog_Exchenge_Location_Goods>상품의 위치:</OCity_Dialog_Exchenge_Location_Goods>
 	<OCity_Dialog_Exchenge_Number>숫자</OCity_Dialog_Exchenge_Number>
 	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>거래의 최대 횟수 :</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
@@ -156,12 +184,14 @@
 	<OCity_Dialog_Exchenge_Update>업데이트</OCity_Dialog_Exchenge_Update>
 	<OCity_Dialog_Exchenge_Select_For_Sale>{0}에서 판매 선택 </OCity_Dialog_Exchenge_Select_For_Sale>
 	<OCity_Dialog_Exchenge_Choose>확인</OCity_Dialog_Exchenge_Choose>
+	<OCity_Dialog_Exchenge_Move>Move</OCity_Dialog_Exchenge_Move>
 	<OCity_Dialog_Exchenge_Order_Create>새로운 오더 생성</OCity_Dialog_Exchenge_Order_Create>
 	<OCity_Dialog_Exchenge_Save>저장</OCity_Dialog_Exchenge_Save>
 	<OCity_Dialog_Exchenge_Create>생성</OCity_Dialog_Exchenge_Create>
 	<OCity_Dialog_Exchenge_Trade>거래</OCity_Dialog_Exchenge_Trade>
 	<OCity_Dialog_Exchenge_Counterproposal>대안</OCity_Dialog_Exchenge_Counterproposal>
 	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>수행되지 않은 조치</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
+	<OCity_Dialog_Exchenge_Action_CarriedOut>Done</OCity_Dialog_Exchenge_Action_CarriedOut>
 	<OCity_Dialog_Exchenge_Delete>삭제</OCity_Dialog_Exchenge_Delete>
 	<OCity_Dialog_Exchenge_Order_New>새로운 요청</OCity_Dialog_Exchenge_Order_New>
 	<OCity_Dialog_Exchenge_No_Exchanges>그런 교환은 없습니다 :</OCity_Dialog_Exchenge_No_Exchanges>
@@ -184,6 +214,40 @@
 	<OCity_Dialog_Exchenge_FromCorpseD>시체에서 옷을 벗기는 것은 허용됩니다</OCity_Dialog_Exchenge_FromCorpseD>
 	<OCity_Dialog_Exchenge_FromNotCorpse>시체가 아닌 것은 제외됩니다.</OCity_Dialog_Exchenge_FromNotCorpse>
 	<OCity_Dialog_Exchenge_FromNotCorpseD>시체에서 옷을 벗기는 것은 허용되지 않습니다</OCity_Dialog_Exchenge_FromNotCorpseD>
+	<OC_ExchengeOperator_tradeSold0>Your order has been accepted</OC_ExchengeOperator_tradeSold0>
+	<OC_ExchengeOperator_tradeSold1>times,</OC_ExchengeOperator_tradeSold1>
+	<OC_ExchengeOperator_tradeSold2>You get:</OC_ExchengeOperator_tradeSold2>
+	<OC_ExchengeOperator_tradeBought0>You got by the deal</OC_ExchengeOperator_tradeBought0>
+	<OC_ExchengeOperator_tradeBought1>times. You get:</OC_ExchengeOperator_tradeBought1>
+	<OC_ExchengeOperator_Closed>it's closed</OC_ExchengeOperator_Closed>
+	<OC_ExchengeOperator_left>left </OC_ExchengeOperator_left>
+	<OC_ExchengeOperator_OrderClosedBetter>The deal was done more profitably than it was asked for. Your items are being returned:</OC_ExchengeOperator_OrderClosedBetter>
+	<OC_ExchengeOperator_OrderDone>Your deal done</OC_ExchengeOperator_OrderDone>
+	<OC_ExchengeOperator_YouBought>You bought with a order</OC_ExchengeOperator_YouBought>
+	<OC_ExchangeEdit_err1>Error. Order from another player</OC_ExchangeEdit_err1>
+	<OC_ExchangeEdit_err2>Error. Player not found</OC_ExchangeEdit_err2>
+	<OC_ExchangeEdit_err4>Unable to create order: not enough items</OC_ExchangeEdit_err4>
+	<OC_ExchangeEdit_err3>Error. Order not found</OC_ExchangeEdit_err3>
+	<OC_ExchangeEdit_OrderPlaced>Order Placed</OC_ExchangeEdit_OrderPlaced>
+	<OC_ExchangeEdit_YouSell>You will sell:</OC_ExchangeEdit_YouSell>
+	<OC_ExchangeEdit_YouBuy>You will recieve:</OC_ExchangeEdit_YouBuy>
+	<OC_ExchangeEdit_Laps>repeats</OC_ExchangeEdit_Laps>
+	<OC_ExchangeEdit_ForAll>Order for all</OC_ExchangeEdit_ForAll>
+	<OC_ExchangeEdit_PrivateOrder>Order only for players: </OC_ExchangeEdit_PrivateOrder>
+	<OC_ExchangeEdit_OrderRedacted>Order redacted</OC_ExchangeEdit_OrderRedacted>
+	<OC_ExchangeEdit_OrderDeleted>Order canceled</OC_ExchangeEdit_OrderDeleted>
+	<OC_SessionCC_Info>You are connected to server {0}. Login {1}</OC_SessionCC_Info>
+	<OC_SessionCC_Balance>Amount on a non-cash account:</OC_SessionCC_Balance>
+	<OC_SessionCC_MinSave>Minutes since saving</OC_SessionCC_MinSave>
+	<OCity_Coordinates>Coordinates</OCity_Coordinates>
+	<OCity_SetAvatar>Change avatar</OCity_SetAvatar>
+	<OCity_Successfully>Successfully</OCity_Successfully>
+	<OCity_Error>Error</OCity_Error>
+	<OC_TradeThingsOnline_Storage>Trade warehouse</OC_TradeThingsOnline_Storage>
+	<OC_TradeThingsOnline_ThingTypes>Here are the kinds of things: {0}</OC_TradeThingsOnline_ThingTypes>
+	<OC_TradeThingsOnline_Info>These are your things, you can pick them up by moving them to a settlement or caravan on the same cell. Open the trade window, choose what you need and click</OC_TradeThingsOnline_Info>
+	<OC_TradeOrdersOnline_Orders>Trade orders</OC_TradeOrdersOnline_Orders>
+	<OC_TradeOrdersOnline_OpenForInfo>Open trade orders for more info</OC_TradeOrdersOnline_OpenForInfo>
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
@@ -223,6 +287,7 @@
 	<OCity_PlayerClient_caravanCount>카라반 개수: {4}</OCity_PlayerClient_caravanCount>
 	<OCity_PlayerClient_marketValue>물건들의 가치: {5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>사람과 동물의 가치: {6}</OCity_PlayerClient_marketValuePawn>
+	<OCity_PlayerClient_marketValueTrading>Wealh of exchange: {7}</OCity_PlayerClient_marketValueTrading>
 	<OCity_PlayerClient_LastSaveTimeNon>did not participate</OCity_PlayerClient_LastSaveTimeNon>
 	<OCity_PlayerClient_InvolvedInPVP>Involved in PVP</OCity_PlayerClient_InvolvedInPVP>
 	<OCity_PlayerClient_NotInvolvedInPVP>Not involved in PVP</OCity_PlayerClient_NotInvolvedInPVP>
@@ -245,10 +310,7 @@
 	<OCity_GameAttacker_Dialog_ErrorMessage>공격중에 에러 발생</OCity_GameAttacker_Dialog_ErrorMessage>
 	<OCity_GameAttacker_Dialog_Settlement_Attack>당신은 정착지를 공격 중입니다.</OCity_GameAttacker_Dialog_Settlement_Attack>
 	<OCity_GameAttacker_Withdraw>철수</OCity_GameAttacker_Withdraw>
-	<OCity_GameAttacker_Main_Dialog>
-	이 모드에서는 일시 정지가 영구적으로 활성화되어야합니다.게임은 계속되고 상황이 바뀝니다.
-	당신이 공격을 끝내려면, 당신은 지도의 가장자리로 가지고 갈겄을 가지고 가지고 메인 메뉴에서 철수를 누릅니다.
-	</OCity_GameAttacker_Main_Dialog>
+	<OCity_GameAttacker_Main_Dialog>이 모드에서는 일시 정지가 영구적으로 활성화되어야합니다.게임은 계속되고 상황이 바뀝니다. 당신이 공격을 끝내려면, 당신은 지도의 가장자리로 가지고 갈겄을 가지고 가지고 메인 메뉴에서 철수를 누릅니다.</OCity_GameAttacker_Main_Dialog>
 	<OCity_GameAttacker_Main_Preparation_Dialog>준비가 끝났습니다. 1분동안 맵을 둘러볼 시간을 가집니다.</OCity_GameAttacker_Main_Preparation_Dialog>
 	<Ocity_GameAttacker_TrainingFight_Won>트레이닝 파이트를 이겼습니다! :) </Ocity_GameAttacker_TrainingFight_Won>
 	<Ocity_GameAttacker_TrainingFight_Caravan_Restore>캐러밴이 이제 복원됩니다. 로그인 하세요.</Ocity_GameAttacker_TrainingFight_Caravan_Restore>
@@ -313,6 +375,8 @@
 	<OC_Incidents_Eclipse_Text>A special satellite was launched over your settlement, which absorbing sunlight</OC_Incidents_Eclipse_Text>
 	<OC_Incidents_Pack_Label>Battle beasts!</OC_Incidents_Pack_Label>
 	<OC_Incidents_Pack_Text>A pack of animals driven to madness has been sent to your settlement</OC_Incidents_Pack_Text>
+	<OC_Incidents_Plague_Label>Epidemic!</OC_Incidents_Plague_Label>
+	<OC_Incidents_Plague_text>A dangerous virus was spreaded near your settlement, some of the colonists are infected</OC_Incidents_Plague_text>
 
 	<!-- OCIncidents UI-->
 	<OC_Incidents_Hire_label>Hire raid</OC_Incidents_Hire_label>
@@ -321,6 +385,11 @@
 	<OC_Incidents_Hire_text>Pirates and warlike tribes will gladly agree to do dirty work for a reward. It is even possible to contact scientists from high tech settlements who can lure a the swarm of beetles or mechanoids using special radio signals.</OC_Incidents_Hire_text>
 	<OC_Incidents_Execute>Execute!</OC_Incidents_Execute>
 	<OC_Acid_Rain>Acid rain</OC_Acid_Rain>
+	<OC_Storm>Storm</OC_Storm>
+	<OC_Eclipse>Sunlight absorber</OC_Eclipse>
+	<OC_EMP>E.M.P.</OC_EMP>
+	<OC_Plague>Virus</OC_Plague> 
+	<OC_duration>Duration: {0}</OC_duration>
 	<OC_What_To_DO>What to do</OC_What_To_DO>
 	<OC_Raid>Raid</OC_Raid>
 	<OC_Bugs>Giant bugs</OC_Bugs>
@@ -328,6 +397,7 @@
 	<OC_Tribe>Tribe</OC_Tribe>
 	<OC_Pirate>Pirates</OC_Pirate>
 	<OC_Mech>Mechanoids</OC_Mech>
+	<OC_TrustRandy>I'm trust Randy</OC_TrustRandy>
 	<OC_Arrive>Arrival mode</OC_Arrive>
 	<OC_Arrive_EdgeWalk>Edge walk</OC_Arrive_EdgeWalk>
 	<OC_Arrive_DropCenter>Drop to the center</OC_Arrive_DropCenter>
@@ -353,8 +423,7 @@
 
 	<OCity_InfoTabText>도움말</OCity_InfoTabText>
 	<OCity_AboutTabText>모드제작자: Vasily Ivanov 일명 Aant</OCity_AboutTabText>
-	<OCity_AboutGeneralText>
-		Greetings, colonizer!
+	<OCity_AboutGeneralText>Greetings, colonizer!
 
 OnlineCity - is a network game module for the RimWorld survival simulator. It allows multiple players to play on the same planet online.
 

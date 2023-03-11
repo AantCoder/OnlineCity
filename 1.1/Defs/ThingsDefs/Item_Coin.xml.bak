@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+<ThingDef ParentName="ResourceBase">
+	<defName>OC_Coin</defName>
+	<label>OC Coin</label>
+	<description>A special illegal currency used by pirates and smugglers of border worlds</description>
+	<graphicData>
+		<texPath>Resource/OC_Coin</texPath>
+		<graphicClass>Graphic_StackCount</graphicClass>
+	</graphicData>
+	<soundInteract>Silver_Drop</soundInteract>
+	<soundDrop>Silver_Drop</soundDrop>
+	<useHitPoints>false</useHitPoints>
+	<healthAffectsPrice>false</healthAffectsPrice>
+	<statBases>
+		<MarketValue>15</MarketValue>
+		<Mass>0.004</Mass>
+		<RoyalFavorValue>0.015</RoyalFavorValue>
+		<Beauty>0</Beauty>
+	</statBases>
+	<thingCategories>
+		<li>OC_Items</li>
+	</thingCategories>
+	<stackLimit>2500</stackLimit>
+	<smallVolume>true</smallVolume>
+	<deepCommonality>0.5</deepCommonality>
+	<deepCountPerPortion>8</deepCountPerPortion>
+	<deepLumpSizeRange>1~4</deepLumpSizeRange>
+	<burnableByRecipe>false</burnableByRecipe>
+	<smeltable>false</smeltable>
+	<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+</ThingDef>
+</Defs>

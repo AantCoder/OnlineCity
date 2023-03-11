@@ -7,10 +7,7 @@ namespace OC.UnitTest
     {
         static void Main(string[] args)
         {            
-            // return; 
-            // Просто убери комментарий выше, если тесты сейчас не нужны
-            // для запуска: надо поставить Multiply startup project  и выбрать последним этот проект 
-            // если есть идеи как запустить автоматически, я только за
+            // Для запуска тестов из консоли для отладки или на сервере
             var t = new BotRepositoryTests();
             var methods = t.GetType().GetMethods();
             foreach (var m in methods.Where(x => x.IsPublic && x.CustomAttributes.Any(y => y.AttributeType == typeof(TestMethodAttribute))))

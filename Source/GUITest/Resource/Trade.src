@@ -1,0 +1,237 @@
+
+//если активна консоль ошибок, то закрываем
+Action CloseDebugLog = () =>
+{
+	var posDebugLog = game.Graphics.Find("DebugLog");
+	if (!posDebugLog.IsNull())
+	{
+		//то ищем крестик, который относится к этому окну и закрываем консоль ошибок
+		//для этого ищем в узкой области правее найденной надписи
+		var rect = new Rectangle(posDebugLog.X, posDebugLog.Y - 17, game.Width - posDebugLog.X, 25);
+		posDebugLog = game.Graphics.Find("WinXClose", rect: rect);
+		if (posDebugLog.IsNull()) Log("Ошибка: не получается закрыть консоль ошибок");
+		else
+		{
+			//закрываем окно по кремтику и анализируем после закрытия
+			game.Mouse.Move(posDebugLog).Click();
+		}
+		//game.Mouse.Move(posDebugLog.Add(-200, 0)); //отводим курсор в сторону, чтобы не загораживало
+		Thread.Sleep(300);
+		game.Graphics.UpdateScreenshot();
+	}
+};
+
+//заходим на сервер
+Func<string, string, string> LoginInServer = (login, pass) =>
+{
+
+	//ждем пока не появиться кнопка Сетевая игра или консоль ошибок
+	var lsimgs = game.Graphics.ImageList("ButtonOnlineCity", "DebugLog");
+	var lspos = game.Graphics.FindWait(lsimgs, 60000);
+	if (lspos.IsNull()) return LogText + "Ошибка: кнопка Сетевая игра не появилась";
+
+	CloseDebugLog();
+
+	//Находим кнопку Сетевая игра
+	var lsposButtonOnlineCity = game.Graphics.Find("ButtonOnlineCity");
+	if (lsposButtonOnlineCity.IsNull()) return LogText + "Ошибка: нет кнопки Сетевая игра";
+	
+	//К этому моменту должен создаться новый файл логов клиента (мода), устанавливаем его для сохранения
+	clientModLog.SetLogFileFromFolder();
+	
+	//Цикл одижания минуту, завершается при return true;
+	var lsok = game.Wait(60000, () =>
+	{
+		//жмем кнопку Сетевая игра, обновляем экран
+		game.Mouse.Move(lsposButtonOnlineCity).Click();
+		game.Graphics.UpdateScreenshot();
+	
+		//если в заголовке текста с "..." нет, то это не окно загрузки модов
+		lspos = game.Graphics.Find("TitleWithDots");
+		if (lspos.IsNull()) return true;
+	
+		//жмем закрыть окно по крестику
+		lspos = game.Graphics.Find("WinXClose");
+		game.Mouse.Move(lspos).Click();
+	
+		//дополнительно ждем секунду, чтобы не нажимать слишком часто
+		Thread.Sleep(1000);
+		return false;
+	});
+	if (!lsok) return LogText + "Ошибка: не дождались окончания хеширования";
+	
+	//открываем окно и ищем опорную точку с иконкой диалога
+	game.Mouse.Move(lsposButtonOnlineCity).Click();
+	game.Graphics.UpdateScreenshot();
+	var lsposLoginForm = game.Graphics.Find("IconBalloon");
+	if (lsposLoginForm.IsNull()) return LogText + "Ошибка: нет опорной иконки с облачком диалога в окне входа";
+	
+	//жмем по полю с адресом сервера
+	game.Mouse.Move(lsposLoginForm.Add(255, 88)).Click();
+	//выделяем всё (чтобы удалилось) и вводим данные
+	game.Keybord.Send("^A127.0.0.1");//localhost  
+	
+	//проверка раскладки
+	game.Keybord.Send("^A^C"); //выделить всё и копируем текст в буфер
+	if (game.Keybord.GetClipboard() != "127.0.0.1")  return LogText + "Ошибка: проверьте, что активна английская раскладка клавиатуры!";
+	
+	//жмем по полю с логином
+	game.Mouse.Move(lsposLoginForm.Add(255, 134)).Click();
+	game.Keybord.Send("^A" + login);
+	
+	//жмем по полю с паролем
+	game.Mouse.Move(lsposLoginForm.Add(255, 179)).Click();
+	game.Keybord.Send("^A" + pass);
+	
+	//жмем кнопку Вход
+	game.Mouse.Move(lsposLoginForm.Add(100, 275)).Click();
+	
+	Thread.Sleep(500);
+	game.Graphics.UpdateScreenshot();
+	
+	//ждем загрузку игры - появится меню в углу
+	var lsposMenuInGame = game.Graphics.FindWait("MenuInGame", 60000);
+	if (lsposMenuInGame.IsNull()) return LogText + "Ошибка: не дождались загрузки сейва на сервере (нет иконки меню в игре)";
+	
+	Thread.Sleep(1500);
+	game.Graphics.UpdateScreenshot();
+	
+	//загружаем логи от мода с момента старта, чтобы игнорировать их
+	clientModLog.GetLogNewText();
+	game.GetLogNewText();
+	server.GetLogNewText();
+	
+	return null;
+};
+
+
+Func<string, string> SendInChatOnline = (msg) =>
+{
+	//должна быть кнопка Онлайн, кликаем
+	var ooposButton = game.Graphics.Find("ButtonOnlineInGame");
+	if (ooposButton.IsNull()) return LogText + "Ошибка: после загрузки нет кнопки Онлайн";
+	game.Mouse.Move(ooposButton).Click();
+	
+	//обновляем экран, и закрываем окно с логом ошибок, если оно есть
+	Thread.Sleep(500);
+	game.Graphics.UpdateScreenshot();
+	CloseDebugLog();
+	
+	var ooppos = game.Graphics.Find("OnlineChat");
+	if (ooppos.IsNull()) return LogText + "Ошибка: не найдена строка с чатом";
+	game.Mouse.Move(ooppos.Add(-50, 0)).Click();
+	game.Keybord.SetClipboard(msg); //копируем текст в буфер, чтобы не заморачиваться с раскладкой
+	game.Keybord.Send("^A^V"); //выделить всё, вставить
+	game.Mouse.Move(ooppos.Add(5, 0)).Click();
+	
+	game.Mouse.Move(ooposButton).Click();
+	
+	return null;
+};
+
+var err = LoginInServer("111", "111");
+if (err != null) return err;
+
+var posMenuInGame = game.Graphics.Find("MenuInGame");
+
+///////
+//Сохраняем все вещи
+
+err = SendInChatOnline("/debug save");
+if (err != null) return err;
+
+///////
+//Передаем посылку
+
+//нажимаем на колониста в караване
+game.Mouse.Move(game.Width / 2, 76).Click();
+//ждем прогрузки планеты
+Thread.Sleep(500);
+//центрируем карту на караване двойным кликом
+game.Mouse.Click(doubleClick: true);
+//центру экрана ( 30 - это высота заголовка)
+var center = new Point(game.Width / 2, (game.Height - 30) / 2 + 30);
+//жмем по центру экрана правой кнопкой  681, 486
+game.Mouse.Move(center).Click(leftButton: false);
+//выбираем первый пункт меню
+game.Mouse.Move(center.X + 15, center.Y + 15).Click();
+
+//выбираем всех пешек, для этого нажимаем на все крестики пока они не кончатся
+
+while (true) //выполнять бесконечно, пока не будет вызван break;
+{
+	game.Graphics.UpdateScreenshot();
+	var wpos = game.Graphics.Find("CheckCross");
+	
+	if (wpos.IsNull()) break;
+	
+	game.Mouse.Move(wpos).Click();
+	
+	//game.Mouse.Move(wpos.X + 100, wpos.Y); //отводим, чтобы мышь не загораживала соседник крестики
+	
+	Thread.Sleep(100);
+}
+
+game.Graphics.UpdateScreenshot();
+var ppos = game.Graphics.Find("ButtonApply");
+
+game.Mouse.Move(ppos).Click();
+
+Thread.Sleep(500);
+game.Graphics.UpdateScreenshot();
+
+///////
+//Смотрим изменение вещей
+
+clientModLog.GetLogNewText();
+err = SendInChatOnline("/debug old");
+if (err != null) return err;
+
+//получаем логи мода с момента последнего вызова clientModLog.GetLogNewText
+var logMod = clientModLog.GetLogNewText();
+//преобразуем к рабочему виду и убираем все строки не содержащие Debug, в конце убираем и само слово Debug
+logMod = clientModLog.PrepareCheckLog(logMod, "Debug").Replace("Debug ", "");
+//Выводим результат
+Log("Передача осуществлена:");
+Log(logMod);
+Log("");
+
+
+Thread.Sleep(2000);
+
+//нажимаем на кнопку меню
+game.Mouse.Move(posMenuInGame).Click();
+
+//нажимаем кнопку выйти в главное меню
+game.Mouse.Move(posMenuInGame.Add(-315, -264)).Click();
+
+
+//////////////////////////////
+//Входим за 222
+
+err = LoginInServer("222", "222");
+if (err != null) return err;
+
+//отводим вниз
+game.Mouse.Move(game.Width / 2, game.Height);
+game.Graphics.UpdateScreenshot();
+
+ppos = game.Graphics.Find("ButtonTextOK");
+if (ppos.IsNull()) return LogText + "Нет сообщения о принимаемой передаче!";
+
+game.Mouse.Move(ppos).Click();
+
+game.Graphics.UpdateScreenshot();
+
+err = SendInChatOnline("/debug");
+if (err != null) return err;
+
+//получаем логи мода с момента последнего вызова clientModLog.GetLogNewText
+logMod = clientModLog.GetLogNewText();
+//преобразуем к рабочему виду и убираем все строки не содержащие Debug, в конце убираем и само слово Debug
+logMod = clientModLog.PrepareCheckLog(logMod, "Debug").Replace("Debug ", "");
+//Выводим результат
+Log("Все вещи колонии:");
+Log(logMod);
+
+

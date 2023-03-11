@@ -1,4 +1,4 @@
-﻿using Discord.Commands;
+using Discord.Commands;
 using Discord.WebSocket;
 using OC.DiscordBotServer.Common;
 using OC.DiscordBotServer.Languages;

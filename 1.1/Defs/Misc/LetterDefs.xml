@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<LetterDef>
+		<defName>GoldenLetter</defName>
+		<color>(252,214,64)</color>
+		<flashColor>(252,238,185)</flashColor>
+		<flashInterval>90</flashInterval>
+		<arriveSound>LetterArrive_Good</arriveSound>
+	</LetterDef>
+
+	<LetterDef>
+		<defName>GreyGoldenLetter</defName>
+		<color>(247,249,194)</color>
+		<flashColor>(252,253, 239)</flashColor>
+		<flashInterval>90</flashInterval>
+		<arriveSound>LetterArrive_Good</arriveSound>
+	</LetterDef>
+
+	<LetterDef>
+		<defName>PurpleLetter</defName>
+		<color>(200,102,203)</color>
+		<flashColor>(200,132, 205)</flashColor>
+		<flashInterval>90</flashInterval>
+		<arriveSound>LetterArrive_Good</arriveSound>
+	</LetterDef>
+
+	<LetterDef>
+		<defName>ToxicLetter</defName>
+		<color>(75,235,51)</color>
+		<flashColor>(125,243, 107)</flashColor>
+		<flashInterval>90</flashInterval>
+		<arriveSound>LetterArrive_Good</arriveSound>
+	</LetterDef>
+
+	<LetterDef>
+		<defName>BlueLetter</defName>
+		<color>(39,32,252)</color>
+		<flashColor>(119,115, 252)</flashColor>
+		<flashInterval>90</flashInterval>
+		<arriveSound>LetterArrive_Good</arriveSound>
+	</LetterDef>
+
+	<LetterDef>
+		<defName>OrangeLetter</defName>
+		<color>(246,160,48)</color>
+		<flashColor>(232,155, 54)</flashColor>
+		<flashInterval>90</flashInterval>
+		<arriveSound>LetterArrive_Good</arriveSound>
+	</LetterDef>
+
+	<LetterDef>
+		<defName>BrownLetter</defName>
+		<color>(138,89,25)</color>
+		<flashColor>(152,126,92)</flashColor>
+		<flashInterval>90</flashInterval>
+		<arriveSound>LetterArrive_Good</arriveSound>
+	</LetterDef>
+
+	<LetterDef>
+		<defName>PinkLetter</defName>
+		<color>(255,148,149)</color>
+		<flashColor>(252,179,247)</flashColor>
+		<flashInterval>90</flashInterval>
+		<arriveSound>LetterArrive_Good</arriveSound>
+	</LetterDef>
+</Defs>

@@ -18,6 +18,7 @@ namespace OC.Chat
                     , @"..\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\OnlineCity");
                 Directory.CreateDirectory(workPath);
                 Loger.PathLog = workPath;
+                Loger.Enable = true;
             }
             catch { }
 

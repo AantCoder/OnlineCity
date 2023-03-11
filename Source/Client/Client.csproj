@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProjectGuid>{871528EA-8B2C-439D-AD2B-702863331980}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RimWorldOnlineCity</RootNamespace>
+    <AssemblyName>RimWorldOnlineCity</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutputPath>..\BuildOutput\Client\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\BuildOutput\Client\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <!--
+       This is section for buildBot. 
+   -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'buildDebug|x64'">
+    <OutputPath>..\BuildOutput\Client\BBDebug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'buildRelease|x64'">
+    <OutputPath>..\BuildOutput\Client\BBRelease</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <!--
+      End section for buildBot. 
+  -->
+  <ItemGroup>
+    <Reference Include="%24HugsLibChecker, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UnlimitedHugs.Rimworld.HugsLibChecker.1.0.0\lib\net35\$HugsLibChecker.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="0Harmony, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.0.4\lib\net472\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HugsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UnlimitedHugs.Rimworld.HugsLib.8.0.0\lib\net472\HugsLib.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <!--Reference Include="HugsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\UnlimitedHugs.Rimworld.HugsLib.6.2.0\lib\net472\HugsLib.dll</HintPath>
+    </Reference-->
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AncillaryUtil.cs" />
+    <Compile Include="ChatController.cs" />
+    <Compile Include="ClientHashCheck\ClientFileCheckerFactory.cs" />
+    <Compile Include="ClientHashCheck\ClientFileChecker.cs" />
+    <Compile Include="CommunicationConsole.cs" />
+    <Compile Include="GameClasses\DebugSettingsDefault.cs" />
+    <Compile Include="GameClasses\Harmony\GameInterface.cs" />
+    <Compile Include="GameClasses\Harmony\GameLog.cs" />
+    <Compile Include="GameClasses\Harmony\GamePresetFiles.cs" />
+    <Compile Include="GameClasses\Harmony\GameSaveLoadInMem.cs" />
+    <Compile Include="GameClasses\Incident\IncidentAcid.cs" />
+    <Compile Include="GameClasses\Incident\IncidentAcid_NEW.cs" />
+    <Compile Include="GameClasses\Incident\IncidentBombing.cs" />
+    <Compile Include="GameClasses\Incident\IncidentByDef.cs" />
+    <Compile Include="GameClasses\Incident\IncidentEclipse.cs" />
+    <Compile Include="GameClasses\Incident\IncidentInfistation.cs" />
+    <Compile Include="GameClasses\Incident\IncidentCaravan.cs" />
+    <Compile Include="GameClasses\Incident\IncidentChunkDrop.cs" />
+    <Compile Include="GameClasses\Incident\IncidentPack.cs" />
+    <Compile Include="GameClasses\Incident\IncidentPlague.cs" />
+    <Compile Include="GameClasses\Incident\IncidentPsychoDrone.cs" />
+    <Compile Include="GameClasses\Incident\IncidentQuest.cs" />
+    <Compile Include="GameClasses\Incident\IncidentRaid.cs" />
+    <Compile Include="GameClasses\Incident\IncidentsEMP.cs" />
+    <Compile Include="GameClasses\Incident\IncidentStorm.cs" />
+    <Compile Include="GameClasses\Incident\OCIncident.cs" />
+    <Compile Include="GameClasses\MainTabTestButton.cs" />
+    <Compile Include="GameClasses\Incident\Incidents.cs" />
+    <Compile Include="ExchengeUtils.cs" />
+    <Compile Include="GameAttackHost.cs" />
+    <Compile Include="GameClasses\BaseOnline.cs" />
+    <Compile Include="GameClasses\CaravanArrivalAction_VisitOnline.cs" />
+    <Compile Include="GameClasses\CaravanOnline.cs" />
+    <Compile Include="CommonUtils.cs" />
+    <Compile Include="GameClasses\Harmony\GameFix.cs" />
+    <Compile Include="GameClasses\Harmony\GamePatch.cs" />
+    <Compile Include="GameClasses\OCFactionManager.cs" />
+    <Compile Include="GameClasses\OC_LetterDefOf.cs" />
+    <Compile Include="GameClasses\WorldLayer_Color.cs" />
+    <Compile Include="GameClasses\TradeOrdersOnline.cs" />
+    <Compile Include="GameClasses\TradeThingsOnline.cs" />
+    <Compile Include="GameClasses\WorldObjectBaseOnline.cs" />
+        <Compile Include="MailController.cs" />
+    <Compile Include="Model\ClientHashCheckerResult.cs" />
+    <Compile Include="Services\AnyLoad.cs" />
+    <Compile Include="Services\ClientHashChecker.cs" />
+    <Compile Include="Services\IOnlineCityClientService.cs" />
+    <Compile Include="Services\SetPlayerInfo.cs" />
+    <Compile Include="SessionClient.cs" />
+    <Compile Include="UI\DevelopTest.cs" />
+    <Compile Include="GameAttacker.cs" />
+    <Compile Include="GameClasses\Harmony\GameAttackTrigger.cs" />
+    <Compile Include="GameClasses\Harmony\GameExit.cs" />
+    <Compile Include="GameClasses\Harmony\GameLoader.cs" />
+    <Compile Include="GameClasses\Harmony\GameStarter.cs" />
+    <Compile Include="GameStarterSelectPawns.cs" />
+    <Compile Include="GameUtils.cs" />
+    <Compile Include="GameClasses\Harmony\MainMenu.cs" />
+    <Compile Include="GameClasses\ModDefOf.cs" />
+    <Compile Include="GameClasses\StartPoint.cs" />
+    <Compile Include="UI\Dialog_BaseOnlineButton.cs" />
+    <Compile Include="UI\Dialog_Exchenge.cs" />
+    <Compile Include="UI\Dialog_InfoPlayer.cs" />
+    <Compile Include="UI\Dialog_InputImage.cs" />
+    <Compile Include="UI\Dialog_Scenario.cs" />
+    <Compile Include="UI\Dialog_TextOut.cs" />
+    <Compile Include="UI\Dialog_SelectThingDef.cs" />
+    <Compile Include="Model\ClientData.cs" />
+    <Compile Include="Model\PlayerClient.cs" />
+    <Compile Include="UI\DialogControlBase.cs" />
+    <Compile Include="UI\Dialog_CreateWorld.cs" />
+    <Compile Include="UI\Dialog_Input.cs" />
+    <Compile Include="UI\Dialog_LoginForm.cs" />
+    <Compile Include="UI\Dialog_MainOnlineCity.cs" />
+    <Compile Include="UI\Dialog_Registration.cs" />
+    <Compile Include="UI\GeneralTexture.cs" />
+    <Compile Include="UI\GeneralTextureCatalogEmoji.cs" />
+    <Compile Include="UI\PanelChat.cs" />
+    <Compile Include="UI\PanelInfoPlayer.cs" />
+    <Compile Include="UI\PanelProfilePlayer.cs" />
+    <Compile Include="UI\PanelText.cs" />
+    <Compile Include="UI\TagBtn.cs" />
+    <Compile Include="UI\ScrollPanel.cs" />
+    <Compile Include="UI\TextFieldNumericBox.cs" />
+    <Compile Include="UI\TextImageBox.cs" />
+    <Compile Include="UI\TextBox.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SessionClientController.cs" />
+    <Compile Include="GameClasses\ModBaseData.cs" />
+    <Compile Include="UI\Dialog_TradeOnline.cs" />
+    <Compile Include="UI\GridBox.cs" />
+    <Compile Include="UI\ListBox.cs" />
+    <Compile Include="UI\UpdateModsWindow.cs" />
+    <Compile Include="UpdateWorldController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Lib\%24HugsLibChecker.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="UnionDll\UnionDll.csproj">
+      <Project>{9513586e-b487-4bee-a3fb-0d277d4e5b5c}</Project>
+      <Name>UnionDll</Name>
+      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--
+      This is section for debug build. 
+  -->
+  <Target Name="BeforeDebugBuild" Condition=" '$(Configuration)' == 'Debug' " BeforeTargets="Build">
+    <Message Importance="high" Text="------------Target Debug------------" />
+    <Message Importance="high" Text="-----------Starting client build-----------" />
+  </Target>
+  <Target Name="deploySourcesToDebug" Condition=" '$(Configuration)' == 'Debug' " AfterTargets="Build">
+    <Message Importance="high" Text="-----------Build debug client complete-----------" />
+    <Message Importance="high" Text="--Starting deploy sources project files--" />
+    <!--
+    Copy Source files 
+    -->
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\1.1\&quot;            &quot;$(RimWorldModFolder)\OnlineCity\1.1\&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\About\&quot;          &quot;$(RimWorldModFolder)\OnlineCity\About\&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)Assets\About.xml&quot;      &quot;$(RimWorldModFolder)\OnlineCity\About\&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\Documentation\&quot;  &quot;$(RimWorldModFolder)\OnlineCity\Documentation\&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\Languages\&quot;      &quot;$(RimWorldModFolder)\OnlineCity\Languages\&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\Textures\&quot;       &quot;$(RimWorldModFolder)\OnlineCity\Textures\&quot;" />
+    <Message Importance="high" Text="--Done deploy sources project files--" />
+    <!--
+    Copy Comilled files 
+    -->
+    <Message Importance="high" Text="--Starting deploy compilled project files--" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\BuildOutput\Client\Debug\ISharpZipLib.dll&quot;            &quot;$(RimWorldModFolder)\OnlineCity\1.1\Assemblies&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\BuildOutput\Client\Debug\OCUnion.pdb&quot;                 &quot;$(RimWorldModFolder)\OnlineCity\1.1\Assemblies&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\BuildOutput\Client\Debug\OCUnion.dll&quot;                 &quot;$(RimWorldModFolder)\OnlineCity\1.1\Assemblies&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\BuildOutput\Client\Debug\RimWorldOnlineCity.dll&quot;      &quot;$(RimWorldModFolder)\OnlineCity\1.1\Assemblies&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\BuildOutput\Client\Debug\RimWorldOnlineCity.pdb&quot;      &quot;$(RimWorldModFolder)\OnlineCity\1.1\Assemblies&quot;" />
+    <Message Importance="high" Text="--Done deploy compilled project files--" />
+    <Message Importance="high" Text="DONE!" />
+  </Target>
+  <!--
+      This is section for Release build. 
+  -->
+  <Target Name="BeforeReleaseBuild" Condition=" '$(Configuration)' == 'Release' " BeforeTargets="Build">
+    <Message Importance="high" Text="------------Target Release------------" />
+    <Warning Text="This build not for Release! All code from RimWorldOnlineCity.dll and Union.dll will not obfuscating !" />
+  </Target>
+  <Target Name="deploySourcesToBuild" Condition=" '$(Configuration)' == 'Release' " AfterTargets="Build">
+    <Message Importance="high" Text="-----------Build release client complete-----------" />
+    <Message Importance="high" Text="--Starting deploy sources project files--" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\1.1\&quot;            &quot;$(RimWorldModFolder)\OnlineCity\1.1\&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\About\&quot;          &quot;$(RimWorldModFolder)\OnlineCity\About\&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\Documentation\&quot;  &quot;$(RimWorldModFolder)\OnlineCity\Documentation\&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\Languages\&quot;      &quot;$(RimWorldModFolder)\OnlineCity\Languages\&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\..\Textures\&quot;       &quot;$(RimWorldModFolder)\OnlineCity\Textures\&quot;" />
+    <!--
+    Copy Comilled files 
+    -->
+    <Message Importance="high" Text="--Starting deploy compilled project files--" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\BuildOutput\Client\Release\ISharpZipLib.dll&quot;            &quot;$(RimWorldModFolder)\OnlineCity\1.1\Assemblies&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\BuildOutput\Client\Release\OCUnion.dll&quot;                 &quot;$(RimWorldModFolder)\OnlineCity\1.1\Assemblies&quot;" />
+    <Exec Command="xcopy /ey &quot;$(ProjectDir)..\BuildOutput\Client\Release\RimWorldOnlineCity.dll&quot;      &quot;$(RimWorldModFolder)\OnlineCity\1.1\Assemblies&quot;" />
+    <Message Importance="high" Text="--Done deploy compilled project files--" />
+    <Message Importance="high" Text="DONE!" />
+  </Target>
+</Project>

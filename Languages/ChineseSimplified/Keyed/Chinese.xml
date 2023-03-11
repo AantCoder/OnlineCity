@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
 	<!-- MainMenu.cs -->
@@ -20,9 +20,10 @@
 
 	<!-- OnlineCity_CaravanOnline.cs -->
 	<OCity_Caravan_Player>{0} 属于玩家 {1}</OCity_Caravan_Player>
-	<OCity_Caravan_Other>总财富值：{2}
-人和动物的价值：{3}</OCity_Caravan_Other>
-	<OCity_Caravan_PlayerAttackCost>进攻军队的最高财富值：{0}</OCity_Caravan_PlayerAttackCost>
+	<OCity_Caravan_Other>总财富值： {2}
+人和动物的价值： {3}
+Wealh of exchange: {4}</OCity_Caravan_Other>
+	<OCity_Caravan_PlayerAttackCost>进攻军队的最高财富值： {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>剩余载货能力： </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>与{0}交易</OCity_Caravan_Trade>
 	<OCity_Caravan_Abort>你玩了不到一年，或者你的财富值小于</OCity_Caravan_Abort>
@@ -44,6 +45,7 @@
 	<!-- OnlineCity_ClientData.cs -->
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
 	<OCity_ClientData_Chat>聊天o(*￣▽￣*)o </OCity_ClientData_Chat>
+	<OC_OK>OK</OC_OK>
 
 	<!-- OnlineCity_Hash_Checker -->
 	<OC_Hash_CalculateLocalFiles>验证本地文件</OC_Hash_CalculateLocalFiles>
@@ -55,6 +57,14 @@
 	<OC_Hash_Downloading_Finish>下载 </OC_Hash_Downloading_Finish>
 	<OC_Mods_Wait>还不能在线玩，请稍等...</OC_Mods_Wait>
 	<OC_Mods_Complete>完成:</OC_Mods_Complete>
+	<OC_HashCheckerResult_VersionErr>The game version is different. You use {0}, but you need {1}</OC_HashCheckerResult_VersionErr>
+	<OC_HashCheckerResult_NeedMods>Necessary mods not included:</OC_HashCheckerResult_NeedMods>
+	<OC_HashCheckerResult_ExcessMods>Excess mods included:</OC_HashCheckerResult_ExcessMods>
+	<OC_HashCheckerResult_UnexpectedDiff>Unexpected difference ModsConfig.xml</OC_HashCheckerResult_UnexpectedDiff>
+	<OC_HashCheckerResult_DiffFiles>Game files are different, try reinstalling the game and DLC of the required version</OC_HashCheckerResult_DiffFiles>
+	<OC_HashCheckerResult_ChangedFiles>The following files has been changed:</OC_HashCheckerResult_ChangedFiles>
+	<OC_HashCheckerResult_ChangedDir>Changed files in these mod folders:</OC_HashCheckerResult_ChangedDir>
+	<OC_HashCheckerResult_CriticalDiff>The non-updatable files different:</OC_HashCheckerResult_CriticalDiff>
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<OCity_Dialog_HelloLAN></OCity_Dialog_HelloLAN>
@@ -97,18 +107,24 @@
 	<OCity_Dialog_CreateWorld_Err2>设置不正确</OCity_Dialog_CreateWorld_Err2>
 	<OCity_Dialog_CreateWorld_BtnCancel>取消</OCity_Dialog_CreateWorld_BtnCancel>
 	<OCity_Dialog_CreateWorld_Seed>种子</OCity_Dialog_CreateWorld_Seed>
-	<OCity_Dialog_CreateWorld_ScenarioErr>请选择一个剧本</OCity_Dialog_CreateWorld_ScenarioErr>
 	<OCity_Dialog_CreateWorld_Scenario>选择剧本</OCity_Dialog_CreateWorld_Scenario>
+	<OCity_Dialog_CreateWorld_Storyteller>Storyteller</OCity_Dialog_CreateWorld_Storyteller>
 	<OCity_Dialog_CreateWorld_Difficulty>选择难度</OCity_Dialog_CreateWorld_Difficulty>
 	<OCity_Dialog_CreateWorld_MapSize>当地地图的大小(200--小，400--大)</OCity_Dialog_CreateWorld_MapSize>
 	<OCity_Dialog_CreateWorld_PercentWorld>占地球表面生成量的百分比(开发者模式从5到100，普通模式30到100): {0}</OCity_Dialog_CreateWorld_PercentWorld>
 
+	<!-- OnlineCity_Dialog_Scenario.cs -->
+	<OCity_Dialog_Choose_Scenario>Choose scenario</OCity_Dialog_Choose_Scenario>
+	<OCity_Dialog_CreateScen_Err>Error</OCity_Dialog_CreateScen_Err>
+	<OCity_Dialog_CreateScen_Err2>Scenario is not choosed</OCity_Dialog_CreateScen_Err2>
+	
 	<!-- Dialog_LoginForm.cs -->
 	<OCity_LoginForm_BtnEnter>登录</OCity_LoginForm_BtnEnter>
 	<OCity_LoginForm_Register>注册</OCity_LoginForm_Register>
 	<OCity_LoginForm_Close>关闭</OCity_LoginForm_Close>
 	<OCity_LoginForm_LabelEnter>登录</OCity_LoginForm_LabelEnter>
 	<OCity_LoginForm_Server>服务器:</OCity_LoginForm_Server>
+	<OCity_Dialog_Choose_server>Choose server</OCity_Dialog_Choose_server>
 	<OCity_LoginForm_Login>账号:</OCity_LoginForm_Login>
 	<OCity_LoginForm_Pass>密码:</OCity_LoginForm_Pass>
 	<OCity_LoginForm_Err1>两次密码输入不一致</OCity_LoginForm_Err1>
@@ -139,6 +155,17 @@
 	<OCity_Dialog_Exchenge_Close>关闭</OCity_Dialog_Exchenge_Close>
 	<OCity_Dialog_Exchenge_Edit>编辑</OCity_Dialog_Exchenge_Edit>
 	<OCity_Dialog_Exchenge_Trade_Orders>贸易订单</OCity_Dialog_Exchenge_Trade_Orders>
+	<OCity_Dialog_Exchenge_Trade_OrdersLoad>Loading trade orders</OCity_Dialog_Exchenge_Trade_OrdersLoad>
+	<OCity_Dialog_Exchenge_Trade_FilterDistance>Filters: Distance</OCity_Dialog_Exchenge_Trade_FilterDistance>
+	<OCity_Dialog_Exchenge_Trade_FilterSell>Sale</OCity_Dialog_Exchenge_Trade_FilterSell>
+	<OCity_Dialog_Exchenge_Trade_FilterBuy>Buy</OCity_Dialog_Exchenge_Trade_FilterBuy>
+	<OCity_Dialog_Exchenge_TradeCount>How many</OCity_Dialog_Exchenge_TradeCount>
+	<OCity_Dialog_Exchenge_Max>maximum</OCity_Dialog_Exchenge_Max>
+	<OCity_Dialog_Exchenge_No_Available_ExchangenInfo>This parameter shows the number of available transactions on the specified conditions at the moment.
+To find out how many of our things are stored in the warehouse, multiply this parameter by the "we give" field.
+Decreasing the parameter - we return the resources, increasing - we reserve additional ones.</OCity_Dialog_Exchenge_No_Available_ExchangenInfo>
+	<OCity_Dialog_Exchenge_You>You</OCity_Dialog_Exchenge_You>
+	<OCity_Dialog_Exchenge_Tile>tile</OCity_Dialog_Exchenge_Tile>	
 	<OCity_Dialog_Exchenge_Viewing_Orders>查看订单</OCity_Dialog_Exchenge_Viewing_Orders>
 	<OCity_Dialog_Exchenge_Deal_Open_Everyone>这个交易对每个人来说都是可以参加的.</OCity_Dialog_Exchenge_Deal_Open_Everyone>
 	<OCity_Dialog_Exchenge_Deal_Open_Specific>此交易仅提供: {0}</OCity_Dialog_Exchenge_Deal_Open_Specific>
@@ -146,7 +173,7 @@
 	<OCity_Dialog_Exchenge_BeenOnline>已上线 </OCity_Dialog_Exchenge_BeenOnline>
 	<OCity_Dialog_Exchenge_Location>位置</OCity_Dialog_Exchenge_Location>
 	<OCity_Dialog_Exchenge_Days> 天数 </OCity_Dialog_Exchenge_Days>
-	<OCity_Dialog_Exchenge_In> 在(in) </OCity_Dialog_Exchenge_In>
+	<OCity_Dialog_Exchenge_To>To</OCity_Dialog_Exchenge_To>
 	<OCity_Dialog_Exchenge_Location_Goods>货物的位置:</OCity_Dialog_Exchenge_Location_Goods>
 	<OCity_Dialog_Exchenge_Number>数量</OCity_Dialog_Exchenge_Number>
 	<OCity_Dialog_Exchenge_Max_Repetition_Transaction>交易的最大重复次数:</OCity_Dialog_Exchenge_Max_Repetition_Transaction>
@@ -157,12 +184,14 @@
 	<OCity_Dialog_Exchenge_Update>更新</OCity_Dialog_Exchenge_Update>
 	<OCity_Dialog_Exchenge_Select_For_Sale>从{0}中选择出售</OCity_Dialog_Exchenge_Select_For_Sale>
 	<OCity_Dialog_Exchenge_Choose>选择</OCity_Dialog_Exchenge_Choose>
+	<OCity_Dialog_Exchenge_Move>Move</OCity_Dialog_Exchenge_Move>
 	<OCity_Dialog_Exchenge_Order_Create>创建新订单</OCity_Dialog_Exchenge_Order_Create>
 	<OCity_Dialog_Exchenge_Save>保存</OCity_Dialog_Exchenge_Save>
 	<OCity_Dialog_Exchenge_Create>创建</OCity_Dialog_Exchenge_Create>
 	<OCity_Dialog_Exchenge_Trade>贸易</OCity_Dialog_Exchenge_Trade>
 	<OCity_Dialog_Exchenge_Counterproposal>反建议</OCity_Dialog_Exchenge_Counterproposal>
 	<OCity_Dialog_Exchenge_Action_Not_CarriedOut>未执行的行动</OCity_Dialog_Exchenge_Action_Not_CarriedOut>
+	<OCity_Dialog_Exchenge_Action_CarriedOut>Done</OCity_Dialog_Exchenge_Action_CarriedOut>
 	<OCity_Dialog_Exchenge_Delete>删除</OCity_Dialog_Exchenge_Delete>
 	<OCity_Dialog_Exchenge_Order_New>新订单</OCity_Dialog_Exchenge_Order_New>
 	<OCity_Dialog_Exchenge_No_Exchanges>没有这种交换:</OCity_Dialog_Exchenge_No_Exchanges>
@@ -185,6 +214,40 @@
 	<OCity_Dialog_Exchenge_FromCorpseD>允许从尸体上脱掉衣服是可以的。</OCity_Dialog_Exchenge_FromCorpseD>
 	<OCity_Dialog_Exchenge_FromNotCorpse>不是尸体上的</OCity_Dialog_Exchenge_FromNotCorpse>
 	<OCity_Dialog_Exchenge_FromNotCorpseD>不允许从尸体上脱掉衣服。</OCity_Dialog_Exchenge_FromNotCorpseD>
+	<OC_ExchengeOperator_tradeSold0>Your order has been accepted</OC_ExchengeOperator_tradeSold0>
+	<OC_ExchengeOperator_tradeSold1>times,</OC_ExchengeOperator_tradeSold1>
+	<OC_ExchengeOperator_tradeSold2>You get:</OC_ExchengeOperator_tradeSold2>
+	<OC_ExchengeOperator_tradeBought0>You got by the deal</OC_ExchengeOperator_tradeBought0>
+	<OC_ExchengeOperator_tradeBought1>times. You get:</OC_ExchengeOperator_tradeBought1>
+	<OC_ExchengeOperator_Closed>it's closed</OC_ExchengeOperator_Closed>
+	<OC_ExchengeOperator_left>left </OC_ExchengeOperator_left>
+	<OC_ExchengeOperator_OrderClosedBetter>The deal was done more profitably than it was asked for. Your items are being returned:</OC_ExchengeOperator_OrderClosedBetter>
+	<OC_ExchengeOperator_OrderDone>Your deal done</OC_ExchengeOperator_OrderDone>
+	<OC_ExchengeOperator_YouBought>You bought with a order</OC_ExchengeOperator_YouBought>
+	<OC_ExchangeEdit_err1>Error. Order from another player</OC_ExchangeEdit_err1>
+	<OC_ExchangeEdit_err2>Error. Player not found</OC_ExchangeEdit_err2>
+	<OC_ExchangeEdit_err4>Unable to create order: not enough items</OC_ExchangeEdit_err4>
+	<OC_ExchangeEdit_err3>Error. Order not found</OC_ExchangeEdit_err3>
+	<OC_ExchangeEdit_OrderPlaced>Order Placed</OC_ExchangeEdit_OrderPlaced>
+	<OC_ExchangeEdit_YouSell>You will sell:</OC_ExchangeEdit_YouSell>
+	<OC_ExchangeEdit_YouBuy>You will recieve:</OC_ExchangeEdit_YouBuy>
+	<OC_ExchangeEdit_Laps>repeats</OC_ExchangeEdit_Laps>
+	<OC_ExchangeEdit_ForAll>Order for all</OC_ExchangeEdit_ForAll>
+	<OC_ExchangeEdit_PrivateOrder>Order only for players: </OC_ExchangeEdit_PrivateOrder>
+	<OC_ExchangeEdit_OrderRedacted>Order redacted</OC_ExchangeEdit_OrderRedacted>
+	<OC_ExchangeEdit_OrderDeleted>Order canceled</OC_ExchangeEdit_OrderDeleted>
+	<OC_SessionCC_Info>You are connected to server {0}. Login {1}</OC_SessionCC_Info>
+	<OC_SessionCC_Balance>Amount on a non-cash account:</OC_SessionCC_Balance>
+	<OC_SessionCC_MinSave>Minutes since saving</OC_SessionCC_MinSave>
+	<OCity_Coordinates>Coordinates</OCity_Coordinates>
+	<OCity_SetAvatar>Change avatar</OCity_SetAvatar>
+	<OCity_Successfully>Successfully</OCity_Successfully>
+	<OCity_Error>Error</OCity_Error>
+	<OC_TradeThingsOnline_Storage>Trade warehouse</OC_TradeThingsOnline_Storage>
+	<OC_TradeThingsOnline_ThingTypes>Here are the kinds of things: {0}</OC_TradeThingsOnline_ThingTypes>
+	<OC_TradeThingsOnline_Info>These are your things, you can pick them up by moving them to a settlement or caravan on the same cell. Open the trade window, choose what you need and click</OC_TradeThingsOnline_Info>
+	<OC_TradeOrdersOnline_Orders>Trade orders</OC_TradeOrdersOnline_Orders>
+	<OC_TradeOrdersOnline_OpenForInfo>Open trade orders for more info</OC_TradeOrdersOnline_OpenForInfo>
 
 	<!-- Kor -->
 	<!-- ThingTrade.cs -->
@@ -224,6 +287,7 @@
 	<OCity_PlayerClient_caravanCount>商队：{4}</OCity_PlayerClient_caravanCount>
 	<OCity_PlayerClient_marketValue>物品财富：{5}</OCity_PlayerClient_marketValue>
 	<OCity_PlayerClient_marketValuePawn>人和动物的价值：{6}</OCity_PlayerClient_marketValuePawn>
+	<OCity_PlayerClient_marketValueTrading>Wealh of exchange: {7}</OCity_PlayerClient_marketValueTrading>
 	<OCity_PlayerClient_LastSaveTimeNon>未参与</OCity_PlayerClient_LastSaveTimeNon>
 	<OCity_PlayerClient_InvolvedInPVP>参加VP</OCity_PlayerClient_InvolvedInPVP>
 	<OCity_PlayerClient_NotInvolvedInPVP>不参与PVP</OCity_PlayerClient_NotInvolvedInPVP>
@@ -311,6 +375,8 @@
 	<OC_Incidents_Eclipse_Text>一个特制的卫星被发射到你的据点上方，吸收你的阳光。</OC_Incidents_Eclipse_Text>
 	<OC_Incidents_Pack_Label>野兽战斗!</OC_Incidents_Pack_Label>
 	<OC_Incidents_Pack_Text>一群动物被搞疯了，然后送向了你的据点。</OC_Incidents_Pack_Text>
+	<OC_Incidents_Plague_Label>Epidemic!</OC_Incidents_Plague_Label>
+	<OC_Incidents_Plague_text>A dangerous virus was spreaded near your settlement, some of the colonists are infected</OC_Incidents_Plague_text>
 
 	<!-- OCIncidents UI-->
 	<OC_Incidents_Hire_label>雇佣袭击</OC_Incidents_Hire_label>
@@ -319,6 +385,11 @@
 	<OC_Incidents_Hire_text>海盗和部落野蛮人会接受报酬并替你做一些肮脏的活。你甚至可以联系高科技据点的科学家们，用特殊无线电吸引一群虫子或机械族。</OC_Incidents_Hire_text>
 	<OC_Incidents_Execute>执行！</OC_Incidents_Execute>
 	<OC_Acid_Rain>酸雨</OC_Acid_Rain>
+	<OC_Storm>Storm</OC_Storm>
+	<OC_Eclipse>Sunlight absorber</OC_Eclipse>
+	<OC_EMP>E.M.P.</OC_EMP>
+	<OC_Plague>Virus</OC_Plague> 
+	<OC_duration>Duration: {0}</OC_duration>
 	<OC_What_To_DO>要做什么</OC_What_To_DO>
 	<OC_Raid>袭击</OC_Raid>
 	<OC_Bugs>巨型昆虫</OC_Bugs>
@@ -326,6 +397,7 @@
 	<OC_Tribe>部落</OC_Tribe>
 	<OC_Pirate>海盗</OC_Pirate>
 	<OC_Mech>机械族</OC_Mech>
+	<OC_TrustRandy>I'm trust Randy</OC_TrustRandy>
 	<OC_Arrive>到达方式</OC_Arrive>
 	<OC_Arrive_EdgeWalk>从地图边缘步行进入</OC_Arrive_EdgeWalk>
 	<OC_Arrive_DropCenter>空投到中心</OC_Arrive_DropCenter>
@@ -340,8 +412,8 @@
 	<OC_Base_InteractWith>与据点 {0} 玩家 {1} 的“互动”</OC_Base_InteractWith>
 	
 	<!-- SCC.cs -->
-	<!-- <OCity_SCC_Disconnected>Ошибка соединения.</OCity_SCC_Disconnected>
-	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
+	<!-- <OCity_SCC_Disconnected>Disconnected.</OCity_SCC_Disconnected>
+	<OCity_SCC_DisconnectedShow>Сonnection aborted</OCity_SCC_DisconnectedShow> -->
 
 	<!-- Dialog_MainOnlineCity.cs -->
 	<!-- Kor -->
@@ -351,8 +423,7 @@
 
 	<OCity_InfoTabText></OCity_InfoTabText>
 	<OCity_AboutTabText> 作者AantCoder.</OCity_AboutTabText>
-	<OCity_AboutGeneralText>
-		Greetings, colonizer!
+	<OCity_AboutGeneralText>Greetings, colonizer!
 		
 OnlineCity - is a network game module for the RimWorld survival simulator. It allows multiple players to play on the same planet online.
 
