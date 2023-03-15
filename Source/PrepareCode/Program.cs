@@ -37,6 +37,7 @@ namespace PrepareCode
 
         static int Main(string[] args)
         {
+            //return NormNewline.Run(Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]));
             try
             {
                 var dir = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);

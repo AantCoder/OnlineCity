@@ -85,7 +85,7 @@ namespace ServerOnlineCity.Services
                             }
                             else
                             {
-                                HelperMailMessadge.Send( //todo Локализация
+                                HelperMailMessadge.Send( //todo Локализация, проверить
                                     Repository.GetData.PlayerSystem
                                     , context.Player
                                     , "OC_ExchangeEdit_OrderPlaced"
@@ -159,7 +159,7 @@ namespace ServerOnlineCity.Services
                                 }
                                 else
                                 {
-                                    HelperMailMessadge.Send( //todo Локализация
+                                    HelperMailMessadge.Send( //todo Локализация, проверить
                                         Repository.GetData.PlayerSystem
                                         , context.Player
                                         , "OC_ExchangeEdit_OrderRedacted"
@@ -182,7 +182,7 @@ namespace ServerOnlineCity.Services
 
                                 data.OrderOperator.OrderRemove(dataOrder);
 
-                                HelperMailMessadge.Send( //todo Локализация
+                                HelperMailMessadge.Send( //todo Локализация, проверить
                                     Repository.GetData.PlayerSystem
                                     , context.Player
                                     , "OC_ExchangeEdit_OrderDeleted"

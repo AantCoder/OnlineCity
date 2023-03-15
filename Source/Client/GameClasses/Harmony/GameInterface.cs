@@ -22,7 +22,7 @@ namespace RimWorldOnlineCity.GameClasses
         {
             var iconCopy = new Rect(rect.width - 32f, 18f, 32f, 32f);
             
-            var txt = "Вставить в чат".NeedTranslate();
+            var txt = "OCity_GameInterface_InsertIntoChat".Translate();
             var font = Text.Font;
             Text.Font = GameFont.Small;
             var anchor = Text.Anchor;

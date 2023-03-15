@@ -107,7 +107,7 @@ namespace ServerOnlineCity.Services
             context.Player = player;
 
             context.Logined();
-            Loger.Log($"$Player {packet.Login} was logged in to the server.", Loger.LogLevel.LOGIN);
+            Loger.Log($"Player {packet.Login} was logged in to the server.", Loger.LogLevel.LOGIN);
             return new ModelStatus()
             {
                 Status = 0,

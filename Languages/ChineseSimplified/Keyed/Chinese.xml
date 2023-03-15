@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<TransportPodsContentsWillBeLost>To the Trading warehouse on the server</TransportPodsContentsWillBeLost>
 
 	<!-- MainMenu.cs -->
 	<OCity_LAN_btn>多人网络游戏</OCity_LAN_btn>
-	<!-- Kor -->
 	<OCity_MainMenu_Online>在线</OCity_MainMenu_Online>
 	<OCity_MainMenu_Withdraw>撤回</OCity_MainMenu_Withdraw>
 	<OCity_MainMenu_Surrender>投降</OCity_MainMenu_Surrender>
+	<OCity_MainMenu_Saved>Saved</OCity_MainMenu_Saved>
 
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
 	<OCity_Caravan_GoTrade>我们要和 {0} 来交换货物哦(￣▽￣)"。</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
 	<OCity_Caravan_LOGNoData>服务器上没有关于此交易对象的数据(* ￣︿￣)</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>商队交换：选择全部商队</OCity_Caravan_LOGSwap>
-	<!-- Kor -->
 	<OCity_Caravan_Go_Attack_Target>攻击╰（‵□′）╯</OCity_Caravan_Go_Attack_Target>
 	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>要玩真的攻打这个定居点吗？（训练战不会造成损失哦）</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
 	<OCity_Caravan_Practive>不，只是训练战呢。</OCity_Caravan_Practive>
@@ -27,7 +27,6 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_Caravan_FreeWeight>剩余载货能力： </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>与{0}交易</OCity_Caravan_Trade>
 	<OCity_Caravan_Abort>你玩了不到一年，或者你的财富值小于</OCity_Caravan_Abort>
-	<!-- Kor -->
 	<OCity_Caravan_Attack>攻击 {0}</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
@@ -141,7 +140,8 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_SessionCC_MsgCreatingServer>创建服务器</OCity_SessionCC_MsgCreatingServer>
 	<OCity_SessionCC_Disconnected>连接错误.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>断开连接</OCity_SessionCC_Disconnect>
-	<!-- Kor -->
+	<OCity_SessionCC_Synchronization>Pause</OCity_SessionCC_Synchronization>
+	<OCity_SessionCC_SynchronizationText>Game pause mode, syncing...</OCity_SessionCC_SynchronizationText>
 	<OCity_SessionCC_Shutdown_Command_ProgressSaved>服务器即将关闭或重启，即将断开连接。游戏进度已经保存。请在服务器重启后重新登录。</OCity_SessionCC_Shutdown_Command_ProgressSaved>
 	<OCity_SessionCC_Shutdown_Command>服务器收到关闭命令.</OCity_SessionCC_Shutdown_Command>
 	<OCity_SessionCC_Scenario_Classic>经典</OCity_SessionCC_Scenario_Classic>
@@ -150,7 +150,6 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_SessionCC_InitConnectedIntro_Text>如果你的模组跟服务器不一样，现在就会同步和下载。如果模组文件夹里有重要信息，请点击取消并进行备份! 模组同步的过程可能需要几分钟的时间，之后游戏将重新启动。</OCity_SessionCC_InitConnectedIntro_Text>
 	<OCity_SessionCC_FilesUpdated>文件验证和更新完成，需要重启游戏。</OCity_SessionCC_FilesUpdated>
 
-	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
 	<OCity_Dialog_Exchenge_Close>关闭</OCity_Dialog_Exchenge_Close>
 	<OCity_Dialog_Exchenge_Edit>编辑</OCity_Dialog_Exchenge_Edit>
@@ -248,8 +247,31 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OC_TradeThingsOnline_Info>These are your things, you can pick them up by moving them to a settlement or caravan on the same cell. Open the trade window, choose what you need and click</OC_TradeThingsOnline_Info>
 	<OC_TradeOrdersOnline_Orders>Trade orders</OC_TradeOrdersOnline_Orders>
 	<OC_TradeOrdersOnline_OpenForInfo>Open trade orders for more info</OC_TradeOrdersOnline_OpenForInfo>
+	<OCity_DialogExchenge_Things>Things</OCity_DialogExchenge_Things>
+	<OCity_DialogExchenge_Deal>Deal</OCity_DialogExchenge_Deal>
+	<OCity_DialogExchenge_Sell>Sell</OCity_DialogExchenge_Sell>
+	<OCity_DialogExchenge_OnExchange>On exchange</OCity_DialogExchenge_OnExchange>
+	<OCity_DialogExchenge_Move>Move</OCity_DialogExchenge_Move>
+	<OCity_DialogExchenge_InThisPosition>In this position</OCity_DialogExchenge_InThisPosition>
+	<OCity_DialogExchenge_Delivery>Delivery</OCity_DialogExchenge_Delivery>
+	<OCity_DialogExchenge_ToARemotePoint>To a remote point</OCity_DialogExchenge_ToARemotePoint>
+	<OCity_DialogExchenge_Destroy>Destroy</OCity_DialogExchenge_Destroy>
+	<OCity_DialogExchenge_ForTenPercentThePrice>(For 10% the price)</OCity_DialogExchenge_ForTenPercentThePrice>
+	
+	<!--ExchengeUtils-->
+	<OCity_ExchengeUtils_Distance>Distance</OCity_ExchengeUtils_Distance>
+	<OCity_ExchengeUtils_Cost>Cost</OCity_ExchengeUtils_Cost>
+	
+	<!--GameInterface-->
+	<OCity_GameInterface_InsertIntoChat>Insert into chat</OCity_GameInterface_InsertIntoChat>
+	
+	<!--GamePatch-->
+	<OCity_GamePatch_DisableModOptions>Editing settings is disabled, after clicking Network Game. To edit, restart the game</OCity_GamePatch_DisableModOptions>
+	
+	<!--GamePresetFiles-->
+	<OCity_GamePresetFiles_IdeologyNotCreatedDuringANetworkGame>Ideology  not created while playing on this server</OCity_GamePresetFiles_IdeologyNotCreatedDuringANetworkGame>
+	<OCity_GamePresetFiles_XenotypeNotCreatedDuringANetworkGame>Xenotype  not created while playing on this server</OCity_GamePresetFiles_XenotypeNotCreatedDuringANetworkGame>
 
-	<!-- Kor -->
 	<!-- ThingTrade.cs -->
 	<OCity_ThingTrade_Quality_Strength>质量{0}。强度{1}的{2}。</OCity_ThingTrade_Quality_Strength>
 	<OCity_ThingTrade_Cut_Body_Off>切掉身体。</OCity_ThingTrade_Cut_Body_Off>
@@ -300,12 +322,10 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_PlayerClient_CanChangeNow>(现在可以改了)</OCity_PlayerClient_CanChangeNow>
 	<OCity_PlayerClient_SaveInterval>保存时间，间隔为分钟（至少5，默认为15）。</OCity_PlayerClient_SaveInterval>
 
-	<!-- Kor -->
 	<!-- GameUtils.cs -->
 	<OCity_GameUtils_From> 从 </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>
 
-	<!-- Kor -->
 	<!-- GameAttacker.cs -->
 	<OCity_GameAttacker_Dialog_ErrorMessage>错误攻击</OCity_GameAttacker_Dialog_ErrorMessage>
 	<OCity_GameAttacker_Dialog_Settlement_Attack>你在攻击定居点</OCity_GameAttacker_Dialog_Settlement_Attack>
@@ -320,7 +340,6 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_GameAttacker_Defeated>你已经被打败了：(</OCity_GameAttacker_Defeated>
 	<OCity_GameAttacker_Colonist_Return>剩余的殖民者，有能力移动的，退到地图边缘的殖民者们，纷纷返回：</OCity_GameAttacker_Colonist_Return>
 
-	<!-- Kor -->
 	<!-- GameAttackHost.cs -->
 	<OCity_GameAttack_Host_Test_Attack>{0}正在对你的定居点进行测试攻击</OCity_GameAttack_Host_Test_Attack>
 	<OCity_GameAttack_Host_Settlement_Attacking>你的定居点正在攻击{0}</OCity_GameAttack_Host_Settlement_Attacking>
@@ -358,6 +377,7 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OC_Incidents_OCIncident_NotEnoughGold>需要的黄金数量{0}已经足够</OC_Incidents_OCIncident_NotEnoughGold>
 	<OC_Incidents_OCIncident_GoldPay>需要的黄金数量{0}已经支付给了雇佣兵</OC_Incidents_OCIncident_GoldPay>
 	<OC_Incident_Atacker>客户:</OC_Incident_Atacker>
+	<OCity_OCIncident_NotEnoughThingsOnMap>There are not enough things on the map. In stock</OCity_OCIncident_NotEnoughThingsOnMap>
 
 	<OC_Incidents_Raid_Warning_label>严重威胁!</OC_Incidents_Raid_Warning_label>
 	<OC_Incidents_Raid_Warning_Text_human>一大群其他玩家的武装分子正在接近！他们会在10到14小时后到达。请做好充足准备！</OC_Incidents_Raid_Warning_Text_human>
@@ -416,7 +436,6 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_SCC_DisconnectedShow>Сonnection aborted</OCity_SCC_DisconnectedShow> -->
 
 	<!-- Dialog_MainOnlineCity.cs -->
-	<!-- Kor -->
 	<OCity_Dialog_Exchenge_Chat>聊天</OCity_Dialog_Exchenge_Chat>
 	<OCity_Dialog_Exchenge_Gamers>游戏玩家</OCity_Dialog_Exchenge_Gamers>
 	<OCity_Dialog_Exchenge_What_Point>关于</OCity_Dialog_Exchenge_What_Point>

@@ -113,18 +113,10 @@ namespace RimWorldOnlineCity
             FloatMenuOption fmoTrade;
             try
             {
-                // Передача товара
-                bool disTrade = GameUtils.IsProtectingNovice();
-                fmoTrade = new FloatMenuOption("OCity_Caravan_Trade".Translate(OnlinePlayerLogin + " " + OnlineName)
-                    + (disTrade ? "OCity_Caravan_Abort".Translate().ToString() + " " + MainHelper.MinCostForTrade.ToString() : "") // "Вам нет года или стоимость меньше" You are under a year old or cost less than
-                    , delegate
-                    {
-                        caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
-                    }, MenuOptionPriority.Default, null, null, 0f, null, this);
-                if (disTrade)
+                fmoTrade = ExchengeUtils.ExchangeOfGoods_GetFloatMenu(this, () =>
                 {
-                    fmoTrade.Disabled = true;
-                }
+                    caravan.pather.StartPath(this.Tile, new CaravanArrivalAction_VisitOnline(this, "exchangeOfGoods"), true);
+                });
             }
             catch (Exception ex)
             {

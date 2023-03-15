@@ -216,7 +216,7 @@ namespace RimWorldOnlineCity
                 Loger.Log($"IncidentLod OCIncident.GetCostOnGameByCommand 3. {countToServer} {thingSelect.Count}");
                 if (inGame < countToServer || thingSelect.Count == 0)
                 {
-                    error = "Не хватает вещей на карте. В наличии".NeedTranslate() + " " + inGame + ". " + "Требуется".NeedTranslate() + " " + countToServer;
+                    error = "OCity_OCIncident_NotEnoughThingsOnMap".Translate() + " " + inGame + ". " + "Требуется".NeedTranslate() + " " + countToServer;
                     Loger.Log($"IncidentLod OCIncident.GetCostOnGameByCommand error send to server: need {inGame}/{countToServer}");
                     return null;
                 }

@@ -42,6 +42,8 @@ namespace RimWorldOnlineCity.UI
 
         private List<WorldObject> WorldObjectsTile;
 
+        private List<CaravanOnline> WorldObjectCaravanOnlinesTile;
+
         /// <summary>
         /// Список вещей которые можно предложить для торговли
         /// </summary>
@@ -283,6 +285,10 @@ namespace RimWorldOnlineCity.UI
                     .Where(o => o is TradeThingsOnline
                         || (o.Faction?.IsPlayer ?? false) && (o is Settlement || o is Caravan))
                     .ToList();
+                WorldObjectCaravanOnlinesTile = ExchengeUtils.WorldObjectsByTile(wo.Tile)
+                    .Where(o => o is CaravanOnline)
+                    .Cast<CaravanOnline>()
+                    .ToList();
 
                 if (wo is TradeThingsOnline)
                     WorldObjectStorageCurrentTile = wo;
@@ -470,8 +476,8 @@ namespace RimWorldOnlineCity.UI
                 var tabRect = new Rect(regionRectOut.x, regionRectOut.y + 31f, regionRectOut.width, regionRectOut.height - 31f);
 
                 List<TabRecord> list = new List<TabRecord>();
-                list.Add(new TabRecord("Вещи".NeedTranslate(), () => { TabIndex = 0; }, TabIndex == 0));
-                list.Add(new TabRecord("Сделка".NeedTranslate(), () => { TabIndex = 1; }, TabIndex == 1));
+                list.Add(new TabRecord("OCity_DialogExchenge_Things".Translate(), () => { TabIndex = 0; }, TabIndex == 0));
+                list.Add(new TabRecord("OCity_DialogExchenge_Deal".Translate(), () => { TabIndex = 1; }, TabIndex == 1));
 
                 Widgets.DrawMenuSection(tabRect);
                 if (TabIndex == 0) // на 1 вкладке рисуем вертикальную черту
@@ -946,10 +952,10 @@ namespace RimWorldOnlineCity.UI
             rectText.y += rect.height;
             Text.Anchor = TextAnchor.MiddleCenter;
             if (ActiveElementBlock || !AddThingListOK || EditOrder?.SellThings?.Count >= 6) GUI.color = Color.red;
-            Widgets.Label(rectText, "Продать".NeedTranslate());
+            Widgets.Label(rectText, "OCity_DialogExchenge_Sell".Translate());
             rect.y += rectText.height;
             rectText.y += rectText.height;
-            Widgets.Label(rectText, "на бирже".NeedTranslate());
+            Widgets.Label(rectText, "OCity_DialogExchenge_OnExchange".Translate());
             GUI.color = Color.white;
             rect.y += rectText.height;
             rectText.y += rectText.height;
@@ -965,21 +971,21 @@ namespace RimWorldOnlineCity.UI
                 GUI.color = Color.white;
                 if (ActiveElementBlock) return;
                 SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
-                FloatMenuPlaceSelect(true, (wo) =>
+                FloatMenuPlaceSelect((wo) =>
                 {
                     //Перемещаем выделенные вещи из WorldObjectCurrent в wo
                     ActiveElementBlock = true;
                     MoveSelectThings(wo);
-                });
+                }, true, true);
                 return;
             }
             rect.y += rect.height;
             rectText.y += rect.height;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rectText, "Переместить".NeedTranslate());
+            Widgets.Label(rectText, "OCity_DialogExchenge_Move".Translate());
             rect.y += rectText.height;
             rectText.y += rectText.height;
-            Widgets.Label(rectText, "на месте".NeedTranslate());
+            Widgets.Label(rectText, "OCity_DialogExchenge_InThisPosition".Translate());
             rect.y += rectText.height;
             rectText.y += rectText.height;
             rect.y += 10;
@@ -1003,10 +1009,10 @@ namespace RimWorldOnlineCity.UI
                 rect.y += rect.height;
                 rectText.y += rect.height;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(rectText, "Доставка".NeedTranslate());
+                Widgets.Label(rectText, "OCity_DialogExchenge_Delivery".Translate());
                 rect.y += rectText.height;
                 rectText.y += rectText.height;
-                Widgets.Label(rectText, "в удаленную точку".NeedTranslate());
+                Widgets.Label(rectText, "OCity_DialogExchenge_ToARemotePoint".Translate());
                 rect.y += rectText.height;
                 rectText.y += rectText.height;
                 rect.y += 10;
@@ -1031,10 +1037,10 @@ namespace RimWorldOnlineCity.UI
                 rect.y += rect.height;
                 rectText.y += rect.height;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(rectText, "Выбросить".NeedTranslate());
+                Widgets.Label(rectText, "OCity_DialogExchenge_Destroy".Translate());
                 rect.y += rectText.height;
                 rectText.y += rectText.height;
-                Widgets.Label(rectText, "(за 10% цены)".NeedTranslate());
+                Widgets.Label(rectText, "OCity_DialogExchenge_ForTenPercentThePrice".Translate());
                 rect.y += rectText.height;
                 rectText.y += rectText.height;
                 rect.y += 10;
@@ -1073,7 +1079,7 @@ namespace RimWorldOnlineCity.UI
             }
         }
 
-        private void FloatMenuPlaceSelect(bool insertTradeThingsOnline, Action<WorldObject> action)
+        private void FloatMenuPlaceSelect(Action<WorldObject> action, bool insertTradeThingsOnline, bool insertCaravanOnlinesOnTile = false)
         {
             var editOrder = EditOrder;
             var listWO = WorldObjectsTile
@@ -1085,8 +1091,20 @@ namespace RimWorldOnlineCity.UI
             {
                 listWO.Add(WorldObjectStorageCurrentTile);
             }
+            if (insertCaravanOnlinesOnTile)
+            {
+                listWO.AddRange(WorldObjectCaravanOnlinesTile);
+            }
+
             var listFO = listWO
-                .Select(wo => new FloatMenuOption(wo.LabelCap, () =>
+                .Select(wo => 
+                    wo is CaravanOnline
+                    ? ExchengeUtils.ExchangeOfGoods_GetFloatMenu(wo as CaravanOnline, () =>
+                    {
+                        SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
+                        action(wo);
+                    })
+                    : new FloatMenuOption(wo.LabelCap, () =>
                     {
                         SoundDefOf.Tick_High.PlayOneShotOnCamera(null);
                         action(wo);

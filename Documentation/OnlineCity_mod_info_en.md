@@ -176,6 +176,8 @@ Potentially, OnlineCity is compatible with any other mods, but, of course, you n
 
 # 7. Server
 
+!The information in this section is outdated, it is being updated in the process!
+
 Unzip the archive with the server to any folder. After that, you need to create a subfolder of World, which will store all the game data.
 
 Create a Settings.json file in the World folder (it can be opened with a simple notepad). Here is an example of its contents:

@@ -78,7 +78,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
                     var ll = new HashSet<string>(list.Split('|'));
                     if (ll.Contains(key)) return true;
 
-                    var msg = "Идеология была создана не во время игры на данном сервере".NeedTranslate(); //В сетевой игре можно загружать только сохраненные при создании сетевой игры на этом же сервере
+                    var msg = "OCity_GamePresetFiles_IdeologyNotCreatedDuringANetworkGame".Translate(); //В сетевой игре можно загружать только сохраненные при создании сетевой игры на этом же сервере
                     Find.WindowStack.Add(new Dialog_Input("OCity_Dialog_CreateWorld_BtnCancel".Translate(), msg, true));
                     return false;
                 }
@@ -137,7 +137,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
                     var ll = new HashSet<string>(list.Split('|'));
                     if (ll.Contains(key)) return true;
 
-                    var msg = "Ксенотип был создан не во время игры на данном сервере".NeedTranslate();
+                    var msg = "OCity_GamePresetFiles_XenotypeNotCreatedDuringANetworkGame".Translate();
                     Find.WindowStack.Add(new Dialog_Input("OCity_Dialog_CreateWorld_BtnCancel".Translate(), msg, true));
                     return false;
                 }

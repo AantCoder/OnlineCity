@@ -1,2 +1,2 @@
-"c:\Program Files\Unity\Hub\Editor\2019.4.17f1\Editor\Data\MonoBleedingEdge\lib\mono\4.6.2-api\System.Drawing.dll"
+﻿"c:\Program Files\Unity\Hub\Editor\2019.4.17f1\Editor\Data\MonoBleedingEdge\lib\mono\4.6.2-api\System.Drawing.dll"
 "c:\Program Files\Unity\Hub\Editor\2019.4.17f1\Editor\Data\MonoBleedingEdge\lib\mono\4.6.2-api\System.Windows.Forms.dll"

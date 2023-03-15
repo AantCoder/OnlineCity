@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+	<TransportPodsContentsWillBeLost>To the Trading warehouse on the server</TransportPodsContentsWillBeLost>
 
 	<!-- MainMenu.cs -->
 	<OCity_LAN_btn>멀티플레이어</OCity_LAN_btn>
-	<!-- Kor -->
 	<OCity_MainMenu_Online>온라인</OCity_MainMenu_Online>
 	<OCity_MainMenu_Withdraw>철수</OCity_MainMenu_Withdraw>
 	<OCity_MainMenu_Surrender>항복</OCity_MainMenu_Surrender>
+	<OCity_MainMenu_Saved>Saved</OCity_MainMenu_Saved>
 
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
 	<OCity_Caravan_GoTrade>우리는 {0}와 거래를 할것입니다.</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
 	<OCity_Caravan_LOGNoData>거래 내용에 대한 서버 데이터가 없습니다.</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>캐러밴 교환: 모든 카라반 선택</OCity_Caravan_LOGSwap>
-	<!-- Kor -->
 	<OCity_Caravan_Go_Attack_Target>공격</OCity_Caravan_Go_Attack_Target>
 	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>이 기지를 정말로 공격하고 싶습니까? 결과없이 훈련 전투를 할 수 있습니다</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
 	<OCity_Caravan_Practive>훈련</OCity_Caravan_Practive>
@@ -27,7 +27,6 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_Caravan_FreeWeight>남은 용량: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>{0}이랑 거래하기.</OCity_Caravan_Trade>
 	<OCity_Caravan_Abort>You are under a year old or the wealth is less than</OCity_Caravan_Abort>
-	<!-- Kor -->
 	<OCity_Caravan_Attack>{0} 공격하기</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
@@ -141,7 +140,8 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_SessionCC_MsgCreatingServer>서버를 만드는 중..</OCity_SessionCC_MsgCreatingServer>
 	<OCity_SessionCC_Disconnected>접속을 종료하였습니다.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>접속 종료</OCity_SessionCC_Disconnect>
-	<!-- Kor -->
+	<OCity_SessionCC_Synchronization>Pause</OCity_SessionCC_Synchronization>
+	<OCity_SessionCC_SynchronizationText>Game pause mode, syncing...</OCity_SessionCC_SynchronizationText>
 	<OCity_SessionCC_Shutdown_Command_ProgressSaved>서버가 닫혔습니다. 진행사항은 저장됩니다.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
 	<OCity_SessionCC_Shutdown_Command>서버가 닫혔습니다.</OCity_SessionCC_Shutdown_Command>
 	<OCity_SessionCC_Scenario_Classic>클래식</OCity_SessionCC_Scenario_Classic>
@@ -150,7 +150,6 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_SessionCC_InitConnectedIntro_Text>서버랑 모드가 같지 않을경우, 자동으로 다운로드 됩니다. 중요한 파일은 다른 곳에 복사해 두세요.</OCity_SessionCC_InitConnectedIntro_Text>
 	<OCity_SessionCC_FilesUpdated>모드가 불일치 해서 모드를 업데이트 했습니다. 껏다 켜주세요.</OCity_SessionCC_FilesUpdated>
 
-	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
 	<OCity_Dialog_Exchenge_Close>닫기</OCity_Dialog_Exchenge_Close>
 	<OCity_Dialog_Exchenge_Edit>편집</OCity_Dialog_Exchenge_Edit>
@@ -248,8 +247,31 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OC_TradeThingsOnline_Info>These are your things, you can pick them up by moving them to a settlement or caravan on the same cell. Open the trade window, choose what you need and click</OC_TradeThingsOnline_Info>
 	<OC_TradeOrdersOnline_Orders>Trade orders</OC_TradeOrdersOnline_Orders>
 	<OC_TradeOrdersOnline_OpenForInfo>Open trade orders for more info</OC_TradeOrdersOnline_OpenForInfo>
+	<OCity_DialogExchenge_Things>Things</OCity_DialogExchenge_Things>
+	<OCity_DialogExchenge_Deal>Deal</OCity_DialogExchenge_Deal>
+	<OCity_DialogExchenge_Sell>Sell</OCity_DialogExchenge_Sell>
+	<OCity_DialogExchenge_OnExchange>On exchange</OCity_DialogExchenge_OnExchange>
+	<OCity_DialogExchenge_Move>Move</OCity_DialogExchenge_Move>
+	<OCity_DialogExchenge_InThisPosition>In this position</OCity_DialogExchenge_InThisPosition>
+	<OCity_DialogExchenge_Delivery>Delivery</OCity_DialogExchenge_Delivery>
+	<OCity_DialogExchenge_ToARemotePoint>To a remote point</OCity_DialogExchenge_ToARemotePoint>
+	<OCity_DialogExchenge_Destroy>Destroy</OCity_DialogExchenge_Destroy>
+	<OCity_DialogExchenge_ForTenPercentThePrice>(For 10% the price)</OCity_DialogExchenge_ForTenPercentThePrice>
+	
+	<!--ExchengeUtils-->
+	<OCity_ExchengeUtils_Distance>Distance</OCity_ExchengeUtils_Distance>
+	<OCity_ExchengeUtils_Cost>Cost</OCity_ExchengeUtils_Cost>
+	
+	<!--GameInterface-->
+	<OCity_GameInterface_InsertIntoChat>Insert into chat</OCity_GameInterface_InsertIntoChat>
+	
+	<!--GamePatch-->
+	<OCity_GamePatch_DisableModOptions>Editing settings is disabled, after clicking Network Game. To edit, restart the game</OCity_GamePatch_DisableModOptions>
+	
+	<!--GamePresetFiles-->
+	<OCity_GamePresetFiles_IdeologyNotCreatedDuringANetworkGame>Ideology  not created while playing on this server</OCity_GamePresetFiles_IdeologyNotCreatedDuringANetworkGame>
+	<OCity_GamePresetFiles_XenotypeNotCreatedDuringANetworkGame>Xenotype  not created while playing on this server</OCity_GamePresetFiles_XenotypeNotCreatedDuringANetworkGame>
 
-	<!-- Kor -->
 	<!-- ThingTrade.cs -->
 	<OCity_ThingTrade_Quality_Strength>품질 {0}. 내구도 {1} 최대 {2}</OCity_ThingTrade_Quality_Strength>
 	<OCity_ThingTrade_Cut_Body_Off>몸 자르기.</OCity_ThingTrade_Cut_Body_Off>
@@ -300,12 +322,10 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_PlayerClient_CanChangeNow>(이제 바꿀수 있음)</OCity_PlayerClient_CanChangeNow>
 	<OCity_PlayerClient_SaveInterval>저장 간격 (분) (최소 5, 기본값 15):</OCity_PlayerClient_SaveInterval>
 
-	<!-- Kor -->
 	<!-- GameUtils.cs -->
 	<OCity_GameUtils_From> 에서 </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>
 
-	<!-- Kor -->
 	<!-- GameAttacker.cs -->
 	<OCity_GameAttacker_Dialog_ErrorMessage>공격중에 에러 발생</OCity_GameAttacker_Dialog_ErrorMessage>
 	<OCity_GameAttacker_Dialog_Settlement_Attack>당신은 정착지를 공격 중입니다.</OCity_GameAttacker_Dialog_Settlement_Attack>
@@ -320,7 +340,6 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_GameAttacker_Defeated>정착지를 점령하는데 실패하였습니다. :( </OCity_GameAttacker_Defeated>
 	<OCity_GameAttacker_Colonist_Return>움직일 수 있고 가장자리에 있는 정착민들이 돌아옵니다.</OCity_GameAttacker_Colonist_Return>
 
-	<!-- Kor -->
 	<!-- GameAttackHost.cs -->
 	<OCity_GameAttack_Host_Test_Attack>{0}는 당신의 정착지에 테스트 공격을 수행중입니다.</OCity_GameAttack_Host_Test_Attack>
 	<OCity_GameAttack_Host_Settlement_Attacking>당신의 정착지는 {0}에게 공격하고 있습니다.</OCity_GameAttack_Host_Settlement_Attacking>
@@ -358,6 +377,7 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OC_Incidents_OCIncident_NotEnoughGold>Required gold {0} is enough</OC_Incidents_OCIncident_NotEnoughGold>
 	<OC_Incidents_OCIncident_GoldPay>The required gold {0} has been paid to the mercenaries</OC_Incidents_OCIncident_GoldPay>
 	<OC_Incident_Atacker>The customer:</OC_Incident_Atacker>
+	<OCity_OCIncident_NotEnoughThingsOnMap>There are not enough things on the map. In stock</OCity_OCIncident_NotEnoughThingsOnMap>
 
 	<OC_Incidents_Raid_Warning_label>Serious threat!</OC_Incidents_Raid_Warning_label>
 	<OC_Incidents_Raid_Warning_Text_human>Your colonists are thrilled! A huge number of armed men are seen approaching from another player! They will arrive in 10-14 hours. Perhaps you should ask your allies for help or prepare for settlement evacuation</OC_Incidents_Raid_Warning_Text_human>
@@ -416,7 +436,6 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_SCC_DisconnectedShow>연결이 중단되었습니다</OCity_SCC_DisconnectedShow> -->
 
 	<!-- Dialog_MainOnlineCity.cs -->
-	<!-- Kor -->
 	<OCity_Dialog_Exchenge_Chat>채팅</OCity_Dialog_Exchenge_Chat>
 	<OCity_Dialog_Exchenge_Gamers>게이머</OCity_Dialog_Exchenge_Gamers>
 	<OCity_Dialog_Exchenge_What_Point>도움말</OCity_Dialog_Exchenge_What_Point>

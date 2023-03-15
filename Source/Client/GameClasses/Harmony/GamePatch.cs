@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 using Verse;
+using RimWorldOnlineCity;
 
 namespace RimWorldOnlineCity.GameClasses.Harmony
 {
@@ -50,7 +51,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
             {
                 listing.Gap();
                 var rect2 = listing.GetRect(50f);
-                Widgets.Label(rect2, "Редактирпование отключено после нажатия Сетевая игра. Для редактирования перезапустите игру".NeedTranslate());
+                Widgets.Label(rect2, "OCity_GamePatch_DisableModOptions".Translate());
                 return false;
             }
 
@@ -610,5 +611,66 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
         }
     }
+
+    /// ////////////////////////////////////////////////////////////
+    /// 
+    //Передача в торговый склад из капсулы, когда она приземляется, а товар теряется
+    [HarmonyPatch(typeof(TravelingTransportPods))]
+    [HarmonyPatch("DoArrivalAction")]
+    internal class TravelingTransportPods_DoArrivalAction_Patch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(TravelingTransportPods __instance)
+        {
+            if (Current.Game == null) return true;
+            if (!SessionClient.Get.IsLogined) return true;
+
+            if (__instance.arrivalAction != null) return true;
+            if (__instance.destinationTile < 0) return true;
+
+            Loger.Log($"Client TravelingTransportPods SaveGame and ExchengeStorage 1", Loger.LogLevel.EXCHANGE);
+
+            var that = Traverse.Create(__instance);
+            var pods = that.Field("pods").GetValue<List<ActiveDropPodInfo>>();
+
+            var toTargetThing = new List<Thing>();
+            for (int j = 0; j < pods.Count; j++)
+            {
+                for (int k = 0; k < pods[j].innerContainer.Count; k++)
+                {
+                    var thing = pods[j].innerContainer[k];
+                    toTargetThing.Add(thing);
+                }
+            }
+
+            //ниже блок передачи в яблоко на основе ExchengeUtils.MoveSelectThings
+
+            //оставляем только то, что можно передать
+            toTargetThing = toTargetThing.FilterBeforeSendServer().ToList();
+
+            //var toTargetEntry = ExchengeUtils.CreateTradeAndDestroy(toTargetThing); //на основе этого, не без удаления, т.к. объекты удаляться в игровой функции после Prefix
+            var toTargetEntry = toTargetThing.Select(t => ThingTrade.CreateTrade(t, t.stackCount)).ToList();
+
+            Loger.Log($"Client TravelingTransportPods SaveGame and ExchengeStorage 2", Loger.LogLevel.EXCHANGE);
+            //отправляем вещи toTargetEntry в красное яблоко
+            //После передачи сохраняем, чтобы нельзя было обузить
+            SessionClientController.SaveGameNowSingleAndCommandSafely(
+                (connect) =>
+                {
+                    Loger.Log($"Client TravelingTransportPods SaveGame and ExchengeStorage 3", Loger.LogLevel.EXCHANGE);
+                    return connect.ExchengeStorage(toTargetEntry, null, __instance.destinationTile);
+                },
+                () =>
+                {
+                    var msg = "Вещи переданы в Торговый склад".NeedTranslate();
+                    Find.WindowStack.Add(new Dialog_Input("OCity_Dialog_Exchenge_Action_CarriedOut".Translate(), msg, true)); //"Выполнено"
+                },
+                null,
+                false); //если не удалось отправить письмо, то жопа так как сейв уже прошел
+
+            return true;
+        }
+    }    
+
     /// ////////////////////////////////////////////////////////////
 }

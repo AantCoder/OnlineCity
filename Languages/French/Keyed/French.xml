@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<TransportPodsContentsWillBeLost>To the Trading warehouse on the server</TransportPodsContentsWillBeLost>
 
 	<!-- MainMenu.cs -->
 	<OCity_LAN_btn>Multijoueur</OCity_LAN_btn>
-	<!-- Kor -->
 	<OCity_MainMenu_Online>Multijoueur</OCity_MainMenu_Online>
 	<OCity_MainMenu_Withdraw>Egalité</OCity_MainMenu_Withdraw>
 	<OCity_MainMenu_Surrender>Se Rendre</OCity_MainMenu_Surrender>
+	<OCity_MainMenu_Saved>Saved</OCity_MainMenu_Saved>
 
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
 	<OCity_Caravan_GoTrade>Nous allons échanger des biens avec {0}</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
 	<OCity_Caravan_LOGNoData>Aucune information serveur sur l'objet de l'échange</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>Echange de caravane: selectAllCaravan</OCity_Caravan_LOGSwap>
-	<!-- Kor -->
 	<OCity_Caravan_Go_Attack_Target>Attaquer</OCity_Caravan_Go_Attack_Target>
 	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Voulez-vous vraiment attaquer cette colonie ? Il est possible d'avoir une bataille d'entrainement sans aucune conséquence</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
 	<OCity_Caravan_Practive>Non, juste un entrainement.</OCity_Caravan_Practive>
@@ -27,7 +27,6 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_Caravan_FreeWeight>Capacité de transport restante: </OCity_Caravan_FreeWeight>
 	<OCity_Caravan_Trade>Echanger avec {0}</OCity_Caravan_Trade>
 	<OCity_Caravan_Abort>You are under a year old or the wealth is less than</OCity_Caravan_Abort>
-	<!-- Kor -->
 	<OCity_Caravan_Attack>Attaquer {0}</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
@@ -141,7 +140,8 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_SessionCC_MsgCreatingServer>Création d'un serveur</OCity_SessionCC_MsgCreatingServer>
 	<OCity_SessionCC_Disconnected>Déconnecté.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Déconnexion</OCity_SessionCC_Disconnect>
-	<!-- Kor -->
+	<OCity_SessionCC_Synchronization>Pause</OCity_SessionCC_Synchronization>
+	<OCity_SessionCC_SynchronizationText>Game pause mode, syncing...</OCity_SessionCC_SynchronizationText>
 	<OCity_SessionCC_Shutdown_Command_ProgressSaved>Nous avons reçu une commande d'extinction venant du serveur. La progression a été sauvegardée.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
 	<OCity_SessionCC_Shutdown_Command>Le serveur a reçu une commande d'extinction</OCity_SessionCC_Shutdown_Command>
 	<OCity_SessionCC_Scenario_Classic>Classique</OCity_SessionCC_Scenario_Classic>
@@ -150,7 +150,6 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_SessionCC_InitConnectedIntro_Text>Si la syncronisation exacte des mods est mise sur ce serveur, et ils n'ont pas été installé, ils vont être téléchargés maintenant. Si il y a des informations importantes dans le dossier des mods, cliquez Annuler et faites-en une sauvegarde à part! Le processus de syncronisation des mods peut prendre plusieurs minutes, après quoi le jeu va redémarrer.</OCity_SessionCC_InitConnectedIntro_Text>
 	<OCity_SessionCC_FilesUpdated>Not all files had resolved hash checks, so they have been updated. Please restart the game.</OCity_SessionCC_FilesUpdated>
 
-	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
 	<OCity_Dialog_Exchenge_Close>Fermer</OCity_Dialog_Exchenge_Close>
 	<OCity_Dialog_Exchenge_Edit>Editer</OCity_Dialog_Exchenge_Edit>
@@ -248,8 +247,31 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OC_TradeThingsOnline_Info>These are your things, you can pick them up by moving them to a settlement or caravan on the same cell. Open the trade window, choose what you need and click</OC_TradeThingsOnline_Info>
 	<OC_TradeOrdersOnline_Orders>Trade orders</OC_TradeOrdersOnline_Orders>
 	<OC_TradeOrdersOnline_OpenForInfo>Open trade orders for more info</OC_TradeOrdersOnline_OpenForInfo>
+	<OCity_DialogExchenge_Things>Things</OCity_DialogExchenge_Things>
+	<OCity_DialogExchenge_Deal>Deal</OCity_DialogExchenge_Deal>
+	<OCity_DialogExchenge_Sell>Sell</OCity_DialogExchenge_Sell>
+	<OCity_DialogExchenge_OnExchange>On exchange</OCity_DialogExchenge_OnExchange>
+	<OCity_DialogExchenge_Move>Move</OCity_DialogExchenge_Move>
+	<OCity_DialogExchenge_InThisPosition>In this position</OCity_DialogExchenge_InThisPosition>
+	<OCity_DialogExchenge_Delivery>Delivery</OCity_DialogExchenge_Delivery>
+	<OCity_DialogExchenge_ToARemotePoint>To a remote point</OCity_DialogExchenge_ToARemotePoint>
+	<OCity_DialogExchenge_Destroy>Destroy</OCity_DialogExchenge_Destroy>
+	<OCity_DialogExchenge_ForTenPercentThePrice>(For 10% the price)</OCity_DialogExchenge_ForTenPercentThePrice>
+	
+	<!--ExchengeUtils-->
+	<OCity_ExchengeUtils_Distance>Distance</OCity_ExchengeUtils_Distance>
+	<OCity_ExchengeUtils_Cost>Cost</OCity_ExchengeUtils_Cost>
+	
+	<!--GameInterface-->
+	<OCity_GameInterface_InsertIntoChat>Insert into chat</OCity_GameInterface_InsertIntoChat>
+	
+	<!--GamePatch-->
+	<OCity_GamePatch_DisableModOptions>Editing settings is disabled, after clicking Network Game. To edit, restart the game</OCity_GamePatch_DisableModOptions>
+	
+	<!--GamePresetFiles-->
+	<OCity_GamePresetFiles_IdeologyNotCreatedDuringANetworkGame>Ideology  not created while playing on this server</OCity_GamePresetFiles_IdeologyNotCreatedDuringANetworkGame>
+	<OCity_GamePresetFiles_XenotypeNotCreatedDuringANetworkGame>Xenotype  not created while playing on this server</OCity_GamePresetFiles_XenotypeNotCreatedDuringANetworkGame>
 
-	<!-- Kor -->
 	<!-- ThingTrade.cs -->
 	<OCity_ThingTrade_Quality_Strength>Qualité {0}. Etat {1} de {2}</OCity_ThingTrade_Quality_Strength>
 	<OCity_ThingTrade_Cut_Body_Off>Découper le corps.</OCity_ThingTrade_Cut_Body_Off>
@@ -300,12 +322,10 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_PlayerClient_CanChangeNow>(peut changer maintenant)</OCity_PlayerClient_CanChangeNow>
 	<OCity_PlayerClient_SaveInterval>Intervalle de sauvegarde (au moins 5 minutes, par défaut 15 minutes):</OCity_PlayerClient_SaveInterval>
 
-	<!-- Kor -->
 	<!-- GameUtils.cs -->
 	<OCity_GameUtils_From> de </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>
 
-	<!-- Kor -->
 	<!-- GameAttacker.cs -->
 	<OCity_GameAttacker_Dialog_ErrorMessage>Erreur attaque</OCity_GameAttacker_Dialog_ErrorMessage>
 	<OCity_GameAttacker_Dialog_Settlement_Attack>Vous êtes en train d'attaquer la colonie</OCity_GameAttacker_Dialog_Settlement_Attack>
@@ -320,7 +340,6 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_GameAttacker_Defeated>Vous avez été défait :( </OCity_GameAttacker_Defeated>
 	<OCity_GameAttacker_Colonist_Return>Les colons restants pouvant encore se déplacer et s'étant repliés aux bords de la carte vont revenir.</OCity_GameAttacker_Colonist_Return>
 
-	<!-- Kor -->
 	<!-- GameAttackHost.cs -->
 	<OCity_GameAttack_Host_Test_Attack>{0} effectue un combat d'entrainement sur votre colonie</OCity_GameAttack_Host_Test_Attack>
 	<OCity_GameAttack_Host_Settlement_Attacking>Votre colonie est attaquée par {0}</OCity_GameAttack_Host_Settlement_Attacking>
@@ -358,6 +377,7 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OC_Incidents_OCIncident_NotEnoughGold>Required gold {0} is enough</OC_Incidents_OCIncident_NotEnoughGold>
 	<OC_Incidents_OCIncident_GoldPay>The required gold {0} has been paid to the mercenaries</OC_Incidents_OCIncident_GoldPay>
 	<OC_Incident_Atacker>The customer:</OC_Incident_Atacker>
+	<OCity_OCIncident_NotEnoughThingsOnMap>There are not enough things on the map. In stock</OCity_OCIncident_NotEnoughThingsOnMap>
 
 	<OC_Incidents_Raid_Warning_label>Serious threat!</OC_Incidents_Raid_Warning_label>
 	<OC_Incidents_Raid_Warning_Text_human>Your colonists are thrilled! A huge number of armed men are seen approaching from another player! They will arrive in 10-14 hours. Perhaps you should ask your allies for help or prepare for settlement evacuation</OC_Incidents_Raid_Warning_Text_human>
@@ -416,7 +436,6 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_SCC_DisconnectedShow>Connexion interrompue</OCity_SCC_DisconnectedShow> -->
 
 	<!-- Dialog_MainOnlineCity.cs -->
-	<!-- Kor -->
 	<OCity_Dialog_Exchenge_Chat>Chat</OCity_Dialog_Exchenge_Chat>
 	<OCity_Dialog_Exchenge_Gamers>joueurs</OCity_Dialog_Exchenge_Gamers>
 	<OCity_Dialog_Exchenge_What_Point>Quel est l'interêt</OCity_Dialog_Exchenge_What_Point>

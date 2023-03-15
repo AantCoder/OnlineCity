@@ -48,9 +48,9 @@ namespace RimWorldOnlineCity
             dist = GameUtils.DistanceBetweenTile(fromWorldObject.Tile, toWorldObject.Tile);
             cost = (int)(things.Sum(t => t.GameCost * t.Count) * SessionClientController.Data.GeneralSettings.ExchengeCostCargoDelivery / 1000f * dist / 100f);
             if (dist > 0 && cost <= 0) cost = 1;
-            return $"{fromWorldObject.LabelShortCap} -> {toWorldObject?.LabelShortCap} " 
-                + "расстояние".NeedTranslate() + " " + dist + ", " 
-                + "цена".NeedTranslate() + " " + cost;
+            return $"{fromWorldObject.LabelShortCap} -> {toWorldObject?.LabelShortCap} "
+                + "OCity_ExchengeUtils_Distance".Translate() + " " + dist + ", "
+                + "OCity_ExchengeUtils_Cost".Translate() + " " + cost;
         }
 
         public static bool CargoDelivery(WorldObject fromWorldObject, WorldObject toWorldObject, List<ThingTrade> things, Action finish = null)
@@ -127,7 +127,9 @@ namespace RimWorldOnlineCity
                     toTargetThing = fromWorldObject is Caravan ? ExchengeUtils.DeSpawnCaravan(select, fromWorldObject as Caravan) : ExchengeUtils.DeSpawnMap(select);
 
                     //Вещи нужно отправить на сервер (нужен список ThingEntry)
-                    if (toWorldObject == null || toWorldObject is TradeThingsOnline) toTargetEntry = ExchengeUtils.CreateTradeAndDestroy(toTargetThing);
+                    if (toWorldObject == null
+                        || toWorldObject is TradeThingsOnline
+                        || toWorldObject is CaravanOnline) toTargetEntry = ExchengeUtils.CreateTradeAndDestroy(toTargetThing);
                 }
 
                 //Помещаем вещи в назначение toWorldObject, если это игровой объект
@@ -140,9 +142,14 @@ namespace RimWorldOnlineCity
                         ExchengeUtils.SpawnThings(toTargetThing, (toWorldObject as Settlement).Map);
                 }
 
+                //В этой позиции мы отредактировали данные игры и ниже посылаем изменения на сервер
+
                 //Если один из объектов красное яблоко TradeThingsOnline, то посылаем изменения на сервер
+                //А также если назначение другой игрок (toWorldObject is CaravanOnline), то дополнительно отправляем письмо (ExchengeUtils.SendThingsAndSave)
                 if (toWorldObject is TradeThingsOnline)
                 {
+                    //1 вариант завершения MoveSelectThings: передача в торговый склад
+
                     Loger.Log($"Client ExchengeEdit MoveSelectThings SaveGame and ExchengeStorage", Loger.LogLevel.EXCHANGE);
                     //отправляем вещи toTargetEntry в красное яблоко
                     //После передачи сохраняем, чтобы нельзя было обузить
@@ -161,6 +168,8 @@ namespace RimWorldOnlineCity
                 }
                 else if (fromWorldObject is TradeThingsOnline)
                 {
+                    //2 вариант завершения MoveSelectThings: передача из торгового склада
+
                     Loger.Log($"Client ExchengeEdit MoveSelectThings ExchengeStorage", Loger.LogLevel.EXCHANGE);
 
                     //удаляем вещи toTargetEntry в красном яблоке (в игре уже их разместили)
@@ -168,7 +177,22 @@ namespace RimWorldOnlineCity
                     {
                         return connect.ExchengeStorage(null, toTargetEntry, fromWorldObject.Tile);
                     });
-                    if (toWorldObject == null)
+
+                    if (toWorldObject is CaravanOnline)
+                    {
+                        //дополнительно передаем игроку
+                        if (errorMessage == null)
+                        {
+                            //передача другому игроку 
+                            ExchengeUtils.SendThingsAndSave(toTargetEntry.Cast<ThingEntry>().ToList(),
+                                toWorldObject as CaravanOnline,
+                                () => { if (finish != null) finish(); },
+                                () => { SessionClientController.Disconnected("OCity_SessionCC_Disconnected".TranslateCache()); }
+                                );
+                            return true;
+                        }
+                    }
+                    else if (toWorldObject == null)
                     {
                         if (finish != null) finish();
                         return true;
@@ -185,8 +209,22 @@ namespace RimWorldOnlineCity
                             });
                     }
                 }
+                else if (toWorldObject is CaravanOnline)
+                {
+                    //3 вариант завершения MoveSelectThings: передача из игры другому игроку
+
+                    //передача другому игроку 
+                    ExchengeUtils.SendThingsAndSave(toTargetEntry.Cast<ThingEntry>().ToList(),
+                        toWorldObject as CaravanOnline,
+                        () => { if (finish != null) finish(); },
+                        () => { SessionClientController.Disconnected("OCity_SessionCC_Disconnected".TranslateCache()); }
+                        );
+                    return true;
+                }
                 else
                 {
+                    //4 вариант завершения MoveSelectThings: из игры в игру, или просто удалить из игры, при toWorldObject = null
+
                     Loger.Log($"Client ExchengeEdit MoveSelectThings noob", Loger.LogLevel.EXCHANGE);
                     if (finish != null) finish();
                 }
@@ -528,16 +566,38 @@ namespace RimWorldOnlineCity
             }
         }
 
+        public static void SendThingsAndSave(List<ThingEntry> sendThings, 
+            CaravanOnline destination,
+            Action finishGood = null,
+            Action finishBad = null)
+        {
+            if ((sendThings?.Count ?? 0) == 0)
+            {
+                Loger.Log("Client SendThings Not SendThings");
+                return;
+            }
+
+            //После передачи сохраняем, чтобы нельзя было обузить, после чего передаем вещи
+            SessionClientController.SaveGameNowSingleAndCommandSafely(
+                (connect) =>
+                {
+                    return connect.SendThings(sendThings
+                        , SessionClientController.My.Login
+                        , destination.OnlinePlayerLogin
+                        , destination.OnlineWObject.PlaceServerId
+                        , destination.Tile);
+                },
+                finishGood,
+                finishBad); //если не удалось отправить письмо, то жопа так как сейв уже прошел
+        }
         public static void SendThingsWithDestroy(Dictionary<Thing, int> select
             , Caravan caravan //отправить null, если отправка с карты, а не с каравана
-            , string targetPlayerLogin
-            , long targetPlaceServerId
-            , int targetTile)
+            , CaravanOnline destination)
         {
             if (!SessionClientController.Data.BackgroundSaveGameOff)
             {
                 List<ThingEntry> sendThings;
-                using(var gameError = new CatchGameError())
+                using (var gameError = new CatchGameError())
                 {
                     var freeThing = caravan == null ? DeSpawnMap(select) : DeSpawnCaravan(select, caravan);
 
@@ -550,26 +610,74 @@ namespace RimWorldOnlineCity
                     if (gameError.GameError != null) Loger.Log("Client SendThingsWithDestroy GameError CreateEntryAndDestroy");
                 }
 
-                if ((sendThings?.Count ?? 0) == 0)
-                {
-                    Loger.Log("Client SendThingsWithDestroy Not SendThings");
-                    return;
-                }
-
-                //После передачи сохраняем, чтобы нельзя было обузить, после чего передаем вещи
-                SessionClientController.SaveGameNowSingleAndCommandSafely(
-                    (connect) =>
-                    {
-                        return connect.SendThings(sendThings
-                                , SessionClientController.My.Login
-                                , targetPlayerLogin
-                                , targetPlaceServerId
-                                , targetTile
-                                );
-                    },
-                    null,
-                    null); //если не удалось отправить письмо, то жопа так как сейв уже прошел
+                SendThingsAndSave(sendThings, destination);
             }
         }
+
+        /// <summary>
+        /// Пункт меню передачи товаров в CaravanOnline that (караван или поселение другого игрока). Откуда не важно.
+        /// </summary>
+        public static FloatMenuOption ExchangeOfGoods_GetFloatMenu(CaravanOnline that, Action actionFloatMenu)
+        {
+            FloatMenuOption fmoTrade;
+            // Передача товара
+            bool disTrade = GameUtils.IsProtectingNovice();
+            fmoTrade = new FloatMenuOption("OCity_Caravan_Trade".Translate(that.OnlinePlayerLogin + " " + that.OnlineName)
+                + (disTrade ? "OCity_Caravan_Abort".Translate().ToString() + " " + MainHelper.MinCostForTrade.ToString() : "") // "Вам нет года или стоимость меньше" You are under a year old or cost less than
+                , actionFloatMenu, MenuOptionPriority.Default, null, null, 0f, null, that);
+            if (disTrade)
+            {
+                fmoTrade.Disabled = true;
+            }
+            return fmoTrade;
+        }
+
+        /// <summary>
+        /// Совершение действия передачи товаров другому игроку
+        /// </summary>
+        public static void ExchangeOfGoods_DoAction(CaravanOnline destination, Caravan source)
+        {
+            Dialog_TradeOnline form = null;
+            if (destination.OnlineWObject == null)
+            {
+                Log.Error("OCity_Caravan_LOGNoData".Translate());
+                return;
+            }
+
+            var goods = GameUtils.GetAllThings(source);
+
+            form = new Dialog_TradeOnline(goods
+                , destination.OnlinePlayerLogin
+                , destination.OnlineWObject.FreeWeight
+                , () =>
+                {
+                    ExchangeOfGoods_DoAction(destination, source, form.GetSelect());
+                });
+            Find.WindowStack.Add(form);
+        }
+
+        /// <summary>
+        /// Совершение действия передачи товаров другому игроку 
+        /// </summary>
+        /// <param name="source">Отправить null если не караван</param>
+        public static void ExchangeOfGoods_DoAction(CaravanOnline destination, Caravan source, List<TransferableOneWay> goods) =>
+            ExchangeOfGoods_DoAction(destination, source, goods.TransferableOneWaysToDictionary());
+
+        /// <summary>
+        /// Совершение действия передачи товаров другому игроку 
+        /// </summary>
+        /// <param name="source">Отправить null если не караван</param>
+        public static void ExchangeOfGoods_DoAction(CaravanOnline destination, Caravan source, Dictionary<Thing, int> goods)
+        {
+            if (destination.OnlineWObject == null)
+            {
+                Log.Error("OCity_Caravan_LOGNoData".Translate());
+                return;
+            }
+            ExchengeUtils.SendThingsWithDestroy(goods
+                , source
+                , destination);
+        }
+
     }
 }

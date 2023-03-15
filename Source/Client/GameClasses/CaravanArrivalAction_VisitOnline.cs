@@ -55,7 +55,7 @@ namespace RimWorldOnlineCity
         {
             if (mode == "exchangeOfGoods")
             {
-                exchangeOfGoods(caravan);
+                ExchengeUtils.ExchangeOfGoods_DoAction(сaravanOnline, caravan);
             }
             else if (mode == "attack")
             {
@@ -83,33 +83,6 @@ namespace RimWorldOnlineCity
                 , () => att(true)
             );
         }
-
-        private void exchangeOfGoods(Caravan caravan)
-        {
-            //Pawn bestNegotiator = CaravanVisitUtility.BestNegotiator(caravan);
-            Dialog_TradeOnline form = null;
-            if (сaravanOnline.OnlineWObject == null)
-            {
-                Log.Error("OCity_Caravan_LOGNoData".Translate());
-                return;
-            }
-
-            var goods = GameUtils.GetAllThings(caravan);
-
-            form = new Dialog_TradeOnline(goods
-                , сaravanOnline.OnlinePlayerLogin
-                , сaravanOnline.OnlineWObject.FreeWeight
-                , () =>
-            {
-                ExchengeUtils.SendThingsWithDestroy(form.GetSelect()
-                    , caravan
-                    , сaravanOnline.OnlinePlayerLogin
-                    , сaravanOnline.OnlineWObject.PlaceServerId
-                    , сaravanOnline.Tile);
-            });
-            Find.WindowStack.Add(form);
-        }
-
 
     }
 }

@@ -1,4 +1,4 @@
-using Discord.Commands;
+﻿using Discord.Commands;
 using OC.DiscordBotServer.Commands;
 using OC.DiscordBotServer.Helpers;
 using System;

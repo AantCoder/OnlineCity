@@ -536,7 +536,7 @@ namespace RimWorldOnlineCity
             
         }
 
-        private static IEnumerable<Thing> FilterBeforeSendServer(this IEnumerable<Thing> list)
+        internal static IEnumerable<Thing> FilterBeforeSendServer(this IEnumerable<Thing> list)
         {
             //для идеалогии запрещаем передачу пешек, которые имеют идеологическую роль лидер или проповедника
             var rolesListForReading = Find.FactionManager.OfPlayer.ideos.PrimaryIdeo.RolesListForReading

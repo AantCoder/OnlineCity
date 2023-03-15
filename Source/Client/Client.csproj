@@ -96,6 +96,10 @@
       <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="0System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\0System.Drawing.dll</HintPath>
+    </Reference>
     <!--Reference Include="HugsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\UnlimitedHugs.Rimworld.HugsLib.6.2.0\lib\net472\HugsLib.dll</HintPath>
     </Reference-->
@@ -162,6 +166,7 @@
     <Compile Include="Services\IOnlineCityClientService.cs" />
     <Compile Include="Services\SetPlayerInfo.cs" />
     <Compile Include="SessionClient.cs" />
+    <Compile Include="SnapshotColony.cs" />
     <Compile Include="UI\DevelopTest.cs" />
     <Compile Include="GameAttacker.cs" />
     <Compile Include="GameClasses\Harmony\GameAttackTrigger.cs" />

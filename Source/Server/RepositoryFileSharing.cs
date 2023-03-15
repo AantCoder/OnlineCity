@@ -330,7 +330,7 @@ namespace ServerOnlineCity
                 {
                     Loger.Log($"Server FileSharing Save ColonyScreen {player.Public.Login} size={info.Data?.Length}b name={info.Name}");
                     //больше 2 мб исходник не пропускаем
-                    if (info.Data == null || info.Data.Length == 0 || info.Data.Length > 2 * 1024 * 1024) return null;
+                    if (info.Data == null || info.Data.Length == 0 || info.Data.Length > 4 * 1024 * 1024) return null; 
 
                     string name = info.Name;
                     var namePart = name.Split('@');
@@ -343,7 +343,7 @@ namespace ServerOnlineCity
                     //проверяем, что этот id принадлежит игроку
                     var data = Repository.GetData;
                     var wo = data.WorldObjects.FirstOrDefault(w => w.PlaceServerId == serverId);
-                    if (wo == null || wo.LoginOwner != player.Public.Login) return null;
+                    //if (wo == null || wo.LoginOwner != player.Public.Login) return null; //todo!
 
                     return login + "_" + serverId.ToString() + "_" + tick.ToString() + ".png";
                 }

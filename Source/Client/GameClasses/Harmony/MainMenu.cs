@@ -94,6 +94,15 @@ namespace RimWorldOnlineCity
                         }, null);
                         optList.Add(item);
 
+                        /* //t odo! test {{{
+                        item = new ListableOption("Test", delegate
+                        {
+                            Loger.Log("Client MainMenu Test");
+                            new SnapshotColony().Exec();
+                        }, null);
+                        optList.Add(item);
+                        // }}} */
+
                         item = new ListableOption("Save".Translate(), delegate
                         {
                             Loger.Log("Client MainMenu Save");

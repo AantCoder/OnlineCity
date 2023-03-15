@@ -1,20 +1,19 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<TransportPodsContentsWillBeLost>В Торговый склад на сервер</TransportPodsContentsWillBeLost>
 
 	<!-- MainMenu.cs -->
 	<OCity_LAN_btn>Сетевая игра</OCity_LAN_btn>
-	<!-- Kor -->
 	<OCity_MainMenu_Online>Онлайн</OCity_MainMenu_Online>
 	<OCity_MainMenu_Withdraw>Отступить</OCity_MainMenu_Withdraw>
 	<OCity_MainMenu_Surrender>Сдаться</OCity_MainMenu_Surrender>
 	<OCity_MainMenu_Saved>Сохранено</OCity_MainMenu_Saved>
 
 	<!-- CaravanArrivalAction_VisitOnline.cs -->
-	<OCity_Caravan_GoTrade>Обмен товарами c {0}</OCity_Caravan_GoTrade>
+	<OCity_Caravan_GoTrade>Отдать игроку {0}</OCity_Caravan_GoTrade>
 	<OCity_Caravan_GoTrade2>{0}</OCity_Caravan_GoTrade2>
 	<OCity_Caravan_LOGNoData>Нет данных сервера об объекте торговли</OCity_Caravan_LOGNoData>
 	<OCity_Caravan_LOGSwap>Караван обмен: выбран весь караван</OCity_Caravan_LOGSwap>
-	<!-- Kor -->
 	<OCity_Caravan_Go_Attack_Target>Атака</OCity_Caravan_Go_Attack_Target>
 	<OCity_Caravan_Confirm_Attack_TestBattle_Possible>Вы действительно хотите напасть на это поселение? Можно провести тренировочный бой, не имеющий последствий</OCity_Caravan_Confirm_Attack_TestBattle_Possible>
 	<OCity_Caravan_Practive>Нет, только тренировка.</OCity_Caravan_Practive>
@@ -26,9 +25,8 @@
 Ценность от биржи: {4}</OCity_Caravan_Other>
 	<OCity_Caravan_PlayerAttackCost>Максимальная ценность атакующих: {0}</OCity_Caravan_PlayerAttackCost>
 	<OCity_Caravan_FreeWeight>Оставшаяся грузоподъемность: </OCity_Caravan_FreeWeight>
-	<OCity_Caravan_Trade>Обмен товарами c {0}</OCity_Caravan_Trade>
+	<OCity_Caravan_Trade>Отдать игроку {0}</OCity_Caravan_Trade>
 	<OCity_Caravan_Abort>Вам нет года или стоимость меньше</OCity_Caravan_Abort>
-	<!-- Kor -->
 	<OCity_Caravan_Attack>Атаковать {0}</OCity_Caravan_Attack>
 
 	<!-- DevelopTest.cs -->
@@ -142,9 +140,8 @@
 	<OCity_SessionCC_MsgCreatingServer>Создание сервера</OCity_SessionCC_MsgCreatingServer>
 	<OCity_SessionCC_Disconnected>Ошибка соединения.</OCity_SessionCC_Disconnected>
 	<OCity_SessionCC_Disconnect>Игра прервана</OCity_SessionCC_Disconnect>
-	<OCity_SessionCC_Synchronization>Пауза</OCity_SessionCC_Synchronization>*
-	<OCity_SessionCC_SynchronizationText>Режим игровой паузы, идет синхронизация...</OCity_SessionCC_SynchronizationText>*
-	<!-- Kor -->
+	<OCity_SessionCC_Synchronization>Пауза</OCity_SessionCC_Synchronization>
+	<OCity_SessionCC_SynchronizationText>Режим игровой паузы, идет синхронизация...</OCity_SessionCC_SynchronizationText>
 	<OCity_SessionCC_Shutdown_Command_ProgressSaved>От сервера получена команда на отключение. Прогресс был сохранен.</OCity_SessionCC_Shutdown_Command_ProgressSaved>
 	<OCity_SessionCC_Shutdown_Command>От сервера получена команда на отключение.</OCity_SessionCC_Shutdown_Command>
 	<OCity_SessionCC_Scenario_Classic>Классика</OCity_SessionCC_Scenario_Classic>
@@ -153,7 +150,6 @@
 	<OCity_SessionCC_InitConnectedIntro_Text>Если сервер требует точное соответствие модов, сейчас будут скачаны недостающие у вас. Подпапка игры Mods будет обновлена. При необходимости нажмите "Отмена" и сделайте резервную копию! Процесс синхронизации модов может занять несколько минут, после чего игра будет перезапущена.</OCity_SessionCC_InitConnectedIntro_Text>
 	<OCity_SessionCC_FilesUpdated>Файлы непрошедшие проверку на хеш были обновлены. Перезапустите игру, если этого не произошло автоматически.</OCity_SessionCC_FilesUpdated>
 
-	<!-- Kor -->
 	<!-- Dialog_Exchenge.cs -->
 	<OCity_Dialog_Exchenge_Close>Закрыть</OCity_Dialog_Exchenge_Close>
 	<OCity_Dialog_Exchenge_Edit>Редактировать</OCity_Dialog_Exchenge_Edit>
@@ -251,8 +247,31 @@
 	<OC_TradeThingsOnline_Info>Это ваши вещи. Вы можете их забрать, переместив в поселение или караван на этой же клетке через окно торговли</OC_TradeThingsOnline_Info>
 	<OC_TradeOrdersOnline_Orders>Торговые предложения</OC_TradeOrdersOnline_Orders>
 	<OC_TradeOrdersOnline_OpenForInfo>Откройте торговые предложения для подробностей</OC_TradeOrdersOnline_OpenForInfo>
+	<OCity_DialogExchenge_Things>Вещи</OCity_DialogExchenge_Things>
+	<OCity_DialogExchenge_Deal>Сделка</OCity_DialogExchenge_Deal>
+	<OCity_DialogExchenge_Sell>Продать</OCity_DialogExchenge_Sell>
+	<OCity_DialogExchenge_OnExchange>На бирже</OCity_DialogExchenge_OnExchange>
+	<OCity_DialogExchenge_Move>Переместить</OCity_DialogExchenge_Move>
+	<OCity_DialogExchenge_InThisPosition>На месте</OCity_DialogExchenge_InThisPosition>
+	<OCity_DialogExchenge_Delivery>Доставка</OCity_DialogExchenge_Delivery>
+	<OCity_DialogExchenge_ToARemotePoint>В удалённую точку</OCity_DialogExchenge_ToARemotePoint>
+	<OCity_DialogExchenge_Destroy>Уничтожить</OCity_DialogExchenge_Destroy>
+	<OCity_DialogExchenge_ForTenPercentThePrice>(за 10% от цены)</OCity_DialogExchenge_ForTenPercentThePrice>
+	
+	<!--ExchengeUtils-->
+	<OCity_ExchengeUtils_Distance>Расстояние</OCity_ExchengeUtils_Distance>
+	<OCity_ExchengeUtils_Cost>Цена</OCity_ExchengeUtils_Cost>
+	
+	<!--GameInterface-->
+	<OCity_GameInterface_InsertIntoChat>Вставить в чат</OCity_GameInterface_InsertIntoChat>
+	
+	<!--GamePatch-->
+	<OCity_GamePatch_DisableModOptions>Редактирпование отключено после нажатия Сетевая игра. Для редактирования перезапустите игру</OCity_GamePatch_DisableModOptions>
+	
+	<!--GamePresetFiles-->
+	<OCity_GamePresetFiles_IdeologyNotCreatedDuringANetworkGame>Идеология была создана не во время игры на данном сервере</OCity_GamePresetFiles_IdeologyNotCreatedDuringANetworkGame>
+	<OCity_GamePresetFiles_XenotypeNotCreatedDuringANetworkGame>Ксенотип был создан не во время игры на данном сервере</OCity_GamePresetFiles_XenotypeNotCreatedDuringANetworkGame>
 
-	<!-- Kor -->
 	<!-- ThingTrade.cs -->
 	<OCity_ThingTrade_Quality_Strength>Качество {0}. Прочность {1} из {2}</OCity_ThingTrade_Quality_Strength>
 	<OCity_ThingTrade_Cut_Body_Off>Снято с трупа.</OCity_ThingTrade_Cut_Body_Off>
@@ -303,12 +322,10 @@
 	<OCity_PlayerClient_CanChangeNow>(можно изменить сейчас)</OCity_PlayerClient_CanChangeNow>
 	<OCity_PlayerClient_SaveInterval>Интервал сохранений в минутах (не меньше 5, по умолчанию 15):</OCity_PlayerClient_SaveInterval>
 
-	<!-- Kor -->
 	<!-- GameUtils.cs -->
 	<OCity_GameUtils_From> из </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>
 
-	<!-- Kor -->
 	<!-- GameAttacker.cs -->
 	<OCity_GameAttacker_Dialog_ErrorMessage>Ошибка нападения</OCity_GameAttacker_Dialog_ErrorMessage>
 	<OCity_GameAttacker_Dialog_Settlement_Attack>Вы атакуете поселение</OCity_GameAttacker_Dialog_Settlement_Attack>
@@ -323,7 +340,6 @@
 	<OCity_GameAttacker_Defeated>Вы потерпели поражение :(</OCity_GameAttacker_Defeated>
 	<OCity_GameAttacker_Colonist_Return>Способные передвигаться колонисты, отступившие к краям карты, возвращаются.</OCity_GameAttacker_Colonist_Return>
 
-	<!-- Kor -->
 	<!-- GameAttackHost.cs -->
 	<OCity_GameAttack_Host_Test_Attack>{0} проводит тестовую атаку на Ваше поселение</OCity_GameAttack_Host_Test_Attack>
 	<OCity_GameAttack_Host_Settlement_Attacking>Ваше поселение атакует {0}</OCity_GameAttack_Host_Settlement_Attacking>
@@ -361,6 +377,7 @@
 	<OC_Incidents_OCIncident_NotEnoughGold>Необходимого золота {0} достаточно</OC_Incidents_OCIncident_NotEnoughGold>
 	<OC_Incidents_OCIncident_GoldPay>Заказ принят. {0} золота отправлено наёмникам</OC_Incidents_OCIncident_GoldPay>
 	<OC_Incident_Atacker>За этим стоит:</OC_Incident_Atacker>
+	<OCity_OCIncident_NotEnoughThingsOnMap>Не хватает вещей на карте. В наличии</OCity_OCIncident_NotEnoughThingsOnMap>
 
 	<OC_Incidents_Raid_Warning_label>Серьёзная угроза!</OC_Incidents_Raid_Warning_label>
 	<OC_Incidents_Raid_Warning_Text_human>Ваши колонисты взволнованы! Замечено приближение огромного количества вооруженных людей, направленных другим игроком! Они прибудут через несколько часов. Возможно, следует обратиться за помощью к союзникам или готовиться к эвакуации</OC_Incidents_Raid_Warning_Text_human>
@@ -414,12 +431,11 @@
 	<OC_Base_Interact>Взаимодействие с {0}</OC_Base_Interact>
 	<OC_Base_InteractWith>Взаимодействие с поселением {0} игрока {1}</OC_Base_InteractWith>
 
-		<!-- SCC.cs -->
+	<!-- SCC.cs -->
 	<!-- <OCity_SCC_Disconnected>Ошибка соединения.</OCity_SCC_Disconnected>
 	<OCity_SCC_DisconnectedShow>Соединение прервано</OCity_SCC_DisconnectedShow> -->
 
 	<!-- Dialog_MainOnlineCity.cs -->
-	<!-- Kor -->
 	<OCity_Dialog_Exchenge_Chat>в чате</OCity_Dialog_Exchenge_Chat>
 	<OCity_Dialog_Exchenge_Gamers>игроки</OCity_Dialog_Exchenge_Gamers>
 	<OCity_Dialog_Exchenge_What_Point>Что к чему</OCity_Dialog_Exchenge_What_Point>
