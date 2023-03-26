@@ -694,11 +694,11 @@ KillsMechanoids - сколько колонисты игрока убили ме
 
 KillsBestPawnHN - какой колонист убил наибольшее количество других людей
 
-KillsBestPawnH - колько именно
+KillsBestPawnH - сколько именно
 
 KillsBestPawnMN - какой колонист убил наибольшее количество механоидов
 
-KillsBestPawnM - колько именно
+KillsBestPawnM - сколько именно
 
 Grants - права на сервере, "UsualUser" - обычный пользователь, "SuperAdmin. Moderator" - создатель мира (первый зарегистрировавшийся)
 
