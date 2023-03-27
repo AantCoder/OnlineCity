@@ -523,7 +523,8 @@ Using ALT + F4, you can roll back your colony to the last save.
 
 > What should I do if I forget my password?
 
-Unfortunately, there is no password recovery system. Try to remember and if access cannot be restored in any way, then ask the administrator to delete your colony in order to free up space on the planet and register a new user.
+You can ask the admin to change your password using the command /Change Password {UserLogin} {NewPassword}
+Admins – do not blindly believe in the words of the players, ask them for data that only they can know.
 
 > Is developer mode available to other players?
 
