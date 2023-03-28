@@ -413,6 +413,12 @@ delayAfterMail is how many days of delay were calculated (at the time of calcula
 
 Special commands are written in the chat (usually in any channel), and they will not be displayed in it. All such commands begin with a /
 
+/grants add {UserLogin} Moderator - add user right.
+
+/grants revoke {UserLogin} Moderator - revoke the user right.
+
+/grants type {UserLogin} - view current user rights.
+
 /killmyallplease - removes the save from the server, and all settlements and caravans from the map. Registration remains. At the next call, it will be proposed to create a new settlement. The function can also be called from the About tab by clicking the Start again button.
 
 /killhimplease {UserLogin} - (admin only) is similar to /killmyallplease, but the specified player.
