@@ -61,6 +61,7 @@ namespace OCUnion.Common
             {
                 if (computeHash.ReadFile != null) computeHash.ReadFile.Wait();
 
+                fileName = filename.Replace("\\", "" + Path.DirectorySeparatorChar);
                 computeHash.ReadFile = Task.Run(() =>
                 {
                     try
@@ -117,7 +118,7 @@ namespace OCUnion.Common
                 //запрет на синхронизацию, только сравнить
                 if (!serverFile.NeedReplace) continue;
 
-                var fullName = Path.Combine(modsDir, serverFile.FileName);
+                var fullName = Path.Combine(modsDir, serverFile.FileName.Replace("\\", "" + Path.DirectorySeparatorChar));
                 // Имя присутствует в списке, файл необходимо будет удалить ( или заменить)
                 if (File.Exists(fullName))
                 {
@@ -259,13 +260,13 @@ namespace OCUnion.Common
                 if (IsIgnoreFolder(folder, ignoreFolder)) continue;
                 onStartUpdateFolder?.Invoke(folder, i);
 #if DEBUG
-                var di = new DirectoryInfo(folder);
+                var di = new DirectoryInfo(folder.Replace("\\", "" + Path.DirectorySeparatorChar));
                 if ("OnlineCity".Equals(di.Name))
                     continue;
 #endif
 
                 var checkFolder = Path.IsPathRooted(rootFolder) ? Path.Combine(rootFolder, folder) : folder;
-                if (Directory.Exists(checkFolder))
+                if (Directory.Exists(checkFolder.Replace("\\", "" + Path.DirectorySeparatorChar)))
                 {
                     generateHashFiles(result, ref rootFolder, checkFolder, ignoreFolder);
                 }
@@ -288,10 +289,10 @@ namespace OCUnion.Common
             foreach (var folder in foldersTree.SubDirs)
             {
                 var dirName = Path.Combine(modsDir, folder.directoryName);
-                if (!Directory.Exists(dirName))
+                if (!Directory.Exists(dirName.Replace("\\", "" + Path.DirectorySeparatorChar)))
                 {
                     Loger.Log($"Create directory: {dirName}");
-                    Directory.CreateDirectory(dirName);
+                    Directory.CreateDirectory(dirName.Replace("\\", "" + Path.DirectorySeparatorChar));
                 }
 
                 // check and create subdirs 
@@ -309,7 +310,7 @@ namespace OCUnion.Common
         {
             if (!level0)
             {
-                var dirs = Directory.GetDirectories(folder);
+                var dirs = Directory.GetDirectories(folder.Replace("\\", "" + Path.DirectorySeparatorChar));
                 foreach (var subDir in dirs)
                 {
                     if (IsIgnoreFolder(subDir, ignoreFolder)) continue;
@@ -317,7 +318,7 @@ namespace OCUnion.Common
                 }
             }
 
-            var files = Directory.GetFiles(folder);
+            var files = Directory.GetFiles(folder.Replace("\\", "" + Path.DirectorySeparatorChar));
             int fileNamePos = rootFolder.Length + 1;
             var computeHash = new FastComputeHash();
             foreach (var file in files.Where(x => ApproveExt(x)))
