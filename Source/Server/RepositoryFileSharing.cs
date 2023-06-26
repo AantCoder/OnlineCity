@@ -131,7 +131,7 @@ namespace ServerOnlineCity
             {
                 if (!File.Exists(fileName)) return null;
 
-                var data = File.ReadAllBytes(fileName);
+                var data = File.ReadAllBytes(fileName.Replace("\\", "" + Path.DirectorySeparatorChar));
 
                 return new ModelFileSharing()
                 {

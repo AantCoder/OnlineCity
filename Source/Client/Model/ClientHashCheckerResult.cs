@@ -29,7 +29,7 @@ namespace RimWorldOnlineCity.Model
 
         public ClientHashCheckerResult()
         {
-            if (MarkExist = File.Exists(MarkFileName)) File.Delete(MarkFileName);
+            if (MarkExist = File.Exists(MarkFileName.Replace("\\", "" + Path.DirectorySeparatorChar))) File.Delete(MarkFileName.Replace("\\", "" + Path.DirectorySeparatorChar));
             ModsConfigByStart = GetModsConfigContent();
         }
 

@@ -39,19 +39,19 @@ namespace ServerOnlineCity
 
             var fileName = GetFileNameBase(login) + numberSave.ToString();
 
-            var info = new FileInfo(fileName);
+            var info = new FileInfo(fileName.Replace("\\", "" + Path.DirectorySeparatorChar));
             if (!info.Exists || info.Length < 10) return null;
 
             //читаем содержимое
             bool readAsXml;
-            using (var file = File.OpenRead(fileName))
+            using (var file = File.OpenRead(fileName.Replace("\\", "" + Path.DirectorySeparatorChar)))
             {
                 var buff = new byte[10];
                 file.Read(buff, 0, 10);
                 readAsXml = Encoding.ASCII.GetString(buff, 0, 10).Contains("<?xml");
             }
             //считываем текст как xml сейва или как сжатого zip'а
-            var saveFileData = File.ReadAllBytes(fileName);
+            var saveFileData = File.ReadAllBytes(fileName.Replace("\\", "" + Path.DirectorySeparatorChar));
             if (readAsXml)
             {
                 return saveFileData;

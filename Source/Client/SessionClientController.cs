@@ -385,7 +385,7 @@ namespace RimWorldOnlineCity
             {
                 ScribeSaver_InitSaving_Patch.Enable = true;
                 GameDataSaveLoader.SaveGame(SaveName);
-                //content = File.ReadAllBytes(SaveFullName);
+                //content = File.ReadAllBytes(SaveFullName.Replace("\\", "" + Path.DirectorySeparatorChar));
                 content = ScribeSaver_InitSaving_Patch.SaveData.ToArray();
             }
             finally

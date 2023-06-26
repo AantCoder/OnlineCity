@@ -218,9 +218,9 @@ namespace OCUnion.Common
 
         public static ModelFileInfo GenerateHashXML(string XMLFileName, List<string> ignoreTag)
         {
-            if (!File.Exists(XMLFileName)) return null;
+            if (!File.Exists(XMLFileName.Replace("\\", "" + Path.DirectorySeparatorChar))) return null;
 
-            var XML = File.ReadAllText(XMLFileName, Encoding.UTF8);
+            var XML = File.ReadAllText(XMLFileName.Replace("\\", "" + Path.DirectorySeparatorChar), Encoding.UTF8);
 
             return GenerateHashXMLString(XML, ignoreTag);
         }

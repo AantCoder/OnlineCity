@@ -41,7 +41,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
                 if (!SessionClient.Get.IsLogined) return;
                 try
                 {
-                    var key = PrepareKey(File.ReadAllBytes(absFilePath));
+                    var key = PrepareKey(File.ReadAllBytes(absFilePath.Replace("\\", "" + Path.DirectorySeparatorChar)));
                     Loger.Log("PresetSaveIdeo: " + absFilePath + " " + (ModBaseData.GlobalData?.LastIP?.Value ?? "##") + " " + key);
 
                     var list = ModBaseData.GlobalData?.LastCash?.Value ?? "";
@@ -71,7 +71,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
                 try
                 {
-                    var key = PrepareKey(File.ReadAllBytes(absPath));
+                    var key = PrepareKey(File.ReadAllBytes(absPath.Replace("\\", "" + Path.DirectorySeparatorChar)));
                     Loger.Log("PresetLoadIdeo: " + absPath + " " + (ModBaseData.GlobalData?.LastIP?.Value ?? "##") + " " + key);
 
                     var list = ModBaseData.GlobalData?.LastCash?.Value ?? "";
@@ -100,7 +100,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
                 if (!SessionClient.Get.IsLogined) return;
                 try
                 {
-                    var key = PrepareKey(File.ReadAllBytes(absFilePath));
+                    var key = PrepareKey(File.ReadAllBytes(absFilePath.Replace("\\", "" + Path.DirectorySeparatorChar)));
                     Loger.Log("PresetSaveXenotype: " + absFilePath + " " + (ModBaseData.GlobalData?.LastIP?.Value ?? "##") + " " + key);
 
                     var list = ModBaseData.GlobalData?.LastCash?.Value ?? "";
@@ -130,7 +130,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
                 try
                 {
-                    var key = PrepareKey(File.ReadAllBytes(absPath));
+                    var key = PrepareKey(File.ReadAllBytes(absPath.Replace("\\", "" + Path.DirectorySeparatorChar)));
                     Loger.Log("PresetLoadXenotype: " + absPath + " " + (ModBaseData.GlobalData?.LastIP?.Value ?? "##") + " " + key);
 
                     var list = ModBaseData.GlobalData?.LastCash?.Value ?? "";

@@ -61,7 +61,7 @@ namespace ClientAncillary
                 var list = Clipboard.ContainsFileDropList() ? Clipboard.GetFileDropList() : null;
                 if (list != null && list.Count > 0)
                 {
-                    data = File.ReadAllBytes(list[0]);
+                    data = File.ReadAllBytes(list[0].Replace("\\", "" + Path.DirectorySeparatorChar));
 #if DEBUG
                     Console.WriteLine("file " + list[0]);
 #endif
