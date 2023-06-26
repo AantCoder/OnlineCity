@@ -61,7 +61,7 @@ namespace OCUnion.Common
             {
                 if (computeHash.ReadFile != null) computeHash.ReadFile.Wait();
 
-                fileName = filename.Replace("\\", "" + Path.DirectorySeparatorChar);
+                fileName = fileName.Replace("\\", "" + Path.DirectorySeparatorChar);
                 computeHash.ReadFile = Task.Run(() =>
                 {
                     try
