@@ -120,9 +120,9 @@ namespace OCUnion.Common
 
                 var fullName = Path.Combine(modsDir, serverFile.FileName.Replace("\\", "" + Path.DirectorySeparatorChar));
                 // Имя присутствует в списке, файл необходимо будет удалить ( или заменить)
-                if (File.Exists(fullName))
+                if (File.Exists(fullName.Replace("\\", "" + Path.DirectorySeparatorChar)))
                 {
-                    File.Delete(fullName);
+                    File.Delete(fullName.Replace("\\", "" + Path.DirectorySeparatorChar));
                 }
 
                 if (serverFile.Hash == null)
@@ -132,7 +132,7 @@ namespace OCUnion.Common
 
 
                 // Create the file, or overwrite if the file must exist.
-                using (FileStream fs = File.Create(fullName))
+                using (FileStream fs = File.Create(fullName.Replace("\\", "" + Path.DirectorySeparatorChar)))
                 {
                     Loger.Log("Restore: " + fullName);
 
