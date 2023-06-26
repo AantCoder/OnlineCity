@@ -722,14 +722,15 @@ namespace RimWorldOnlineCity
 
             ConnectAddr = addr;
 
-            var logMsg = "Login: " + login;
-            Loger.Log("Client " + logMsg);
+            var saffix = GetSaffix();
+            var logMsg = "Registration. Login: " + login + ", Saffix: " + saffix;
+            Loger.Log("Client " + logMsg + ", Saffix: " + saffix);
             Log.Warning(logMsg);
             My = null;
             var pass = new CryptoProvider().GetHash(password);
 
             var connect = SessionClient.Get;
-            if (!connect.Login(login, pass, GetSaffix()))
+            if (!connect.Login(login, pass, saffix))
             {
                 logMsg = "Login fail: " + connect.ErrorMessage?.ServerTranslate();
                 Loger.Log("Client " + logMsg);
@@ -762,14 +763,15 @@ namespace RimWorldOnlineCity
 
             ConnectAddr = addr;
 
-            var logMsg = "Registration. Login: " + login;
-            Loger.Log("Client " + logMsg);
+            var saffix = GetSaffix();
+            var logMsg = "Registration. Login: " + login + ", Saffix: " + saffix + ", Email: " + email;
+            Loger.Log("Client " + logMsg + ", Saffix: " + saffix);
             Log.Warning(logMsg);
             My = null;
             var pass = new CryptoProvider().GetHash(password);
 
             var connect = SessionClient.Get;
-            if (!connect.Registration(login, pass, email + GetSaffix()))
+            if (!connect.Registration(login, pass, email + saffix))
             {
                 logMsg = "Registration fail: " + connect.ErrorMessage?.ServerTranslate();
                 Loger.Log("Client " + logMsg);
@@ -1026,7 +1028,7 @@ namespace RimWorldOnlineCity
                         entranceWarning = Data.GeneralSettings.EntranceWarning;
                     }
 
-                    var form = new Dialog_Input(serverInfo.ServerName + " (" + (ModBaseData.GlobalData?.LastIP?.Value ?? "") + ")", entranceWarning, false);
+                    var form = new Dialog_Input((string)serverInfo.ServerName + " (" + (ModBaseData.GlobalData?.LastIP?.Value ?? "") + ")", entranceWarning, false);
                     Find.WindowStack.Add(form);
                     form.PostCloseAction = () =>
                     {
