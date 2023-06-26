@@ -165,7 +165,7 @@ namespace ServerOnlineCity.Services
             var newFile = new ModelFileInfo() { FileName = fileName, NeedReplace = needReplace };
             if (needReplace)
             {
-                var fullname = Path.Combine(rootDir, fileName);
+                var fullname = Path.Combine(rootDir, fileName.Replace("\\", "" + Path.DirectorySeparatorChar));
                 newFile.Hash = File.ReadAllBytes(fullname);
                 newFile.Size = newFile.Hash.Length;
             }
