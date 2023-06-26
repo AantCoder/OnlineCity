@@ -37,9 +37,9 @@ namespace OCUnion.Transfer
             {
                 // создаем под директорию 
                 var fullNameSubDir = Path.Combine(rootFolder, subFolder.directoryName);
-                if (!Directory.Exists(fullNameSubDir))
+                if (!Directory.Exists(fullNameSubDir.Replace("\\", "" + Path.DirectorySeparatorChar)))
                 {
-                    Directory.CreateDirectory(fullNameSubDir);
+                    Directory.CreateDirectory(fullNameSubDir.Replace("\\", "" + Path.DirectorySeparatorChar));
                 }
 
                 // для каждой созданной диретории создаем её поддиреторию 
