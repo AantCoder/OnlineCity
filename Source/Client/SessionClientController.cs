@@ -236,6 +236,7 @@ namespace RimWorldOnlineCity
 
                         //сохраняем время актуальности данных
                         Data.UpdateTime = fromServ.UpdateTime;
+                        Data.UpdateTimeLocalTime = DateTime.UtcNow;
 
                         if (!string.IsNullOrEmpty(fromServ.KeyReconnect)) Data.KeyReconnect = fromServ.KeyReconnect;
 
@@ -656,6 +657,7 @@ namespace RimWorldOnlineCity
                         }
                     }
                     //to do Сделать сброс крутяшки после обновления чата (см. Dialog_MainOnlineCity)
+                    UpdateColonyScreen();
                 }
                 catch (Exception ex)
                 {
@@ -667,6 +669,59 @@ namespace RimWorldOnlineCity
                     UpdateGlobalTooltip();
                 }
             });
+        }
+
+        private static Dictionary<long, long> UpdateColonyScreenLastTickBySettlementID;
+        private static void UpdateColonyScreen()
+        {
+            if (!SessionClientController.Data.GeneralSettings.ColonyScreenEnable) return;
+
+            //обновляем только между запросами обновлений
+            if (Data.UpdateTimeLocalTime == DateTime.MinValue) return;
+            var msUpdate = (int)((DateTime.UtcNow - Data.UpdateTimeLocalTime).TotalMilliseconds);
+            if (msUpdate < 2000 || msUpdate > 3000) return;
+
+            //делаем скрины колонии днем, учитывая их игровой часовои пояс
+            var ticksGame = GenTicks.TicksAbs;// особые тики, не общие (long)Find.TickManager.TicksGame;
+            var settlements = ExchengeUtils.WorldObjectsPlayer()
+                .Where(o => o is Settlement)
+                .ToList();
+            foreach (Settlement settlement in settlements)
+            {
+                var vector = Find.WorldGrid.LongLatOf(settlement.Tile);
+                var settlementTick = ticksGame + GenDate.LocalTicksOffsetFromLongitude(vector.x);
+                
+                long lastTick;
+                if (!UpdateColonyScreenLastTickBySettlementID.TryGetValue(settlement.ID, out lastTick)) lastTick = 0;
+                UpdateColonyScreenLastTickBySettlementID[settlement.ID] = settlementTick;
+
+                if (lastTick == 0) continue;
+
+                //Loger.Log($"UpdateColonyScreen diff={GenDate.LocalTicksOffsetFromLongitude(vector.x)} last={lastTick} {lastTick / 60000} {lastTick % 60000} settlementTick={settlementTick} {settlementTick / 60000} {settlementTick % 60000} ");
+                if (CalcUtils.OnMidday(lastTick, settlementTick) //после полудня
+                    || lastTick / 60000 < settlementTick / 60000 //или как-то прошли уже сутки без скрина и сейчас светлое время суток после полудня
+                        && settlementTick % 60000 > 60000 / 2
+                        && settlementTick % 60000 < 60000 * 3 / 4)
+                {
+                    lock (UpdatingWorld)
+                    {
+                        //делаем скрин и отправляем
+                        try
+                        {
+                            Loger.Log($"UpdateColonyScreen Screen {settlement.Name} (localID={settlement.ID})");
+                            var sc = new SnapshotColony();
+                            sc.Background = true;
+                            sc.HighQuality = SessionClientController.Data.GeneralSettings.ColonyScreenHighQuality;
+                            sc.Exec(settlement);
+                            Loger.Log($"UpdateColonyScreen Screen OK");
+                        }
+                        catch (Exception ex)
+                        {
+                            Loger.Log(ex.ToString());
+                        }
+                    }
+                }
+            }
         }
 
         public static string Connect(string addr)
@@ -715,7 +770,7 @@ namespace RimWorldOnlineCity
         /// Подключаемся.
         /// </summary>
         /// <returns>null, или текст произошедшей ошибки</returns>
-        public static string Login(string addr, string login, string password, Func<bool> LoginOK)
+        public static string Login(string addr, string login, string password, Func<bool, bool> LoginOK)
         {
             var msgError = Connect(addr);
             if (msgError != null) return msgError;
@@ -731,6 +786,13 @@ namespace RimWorldOnlineCity
             var connect = SessionClient.Get;
             if (!connect.Login(login, pass, GetSaffix()))
             {
+                if (connect.ErrorMessage == "User not approve")
+                {
+                    Loger.Log("Client Login: User not approve");
+                    LoginOK(true);
+                    return "";
+                }
+
                 logMsg = "Login fail: " + connect.ErrorMessage?.ServerTranslate();
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
@@ -742,7 +804,7 @@ namespace RimWorldOnlineCity
                 logMsg = "Login OK";
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
-                if (LoginOK())
+                if (LoginOK(false))
                     InitConnectedIntro();
                 else
                     return "";
@@ -755,7 +817,7 @@ namespace RimWorldOnlineCity
         /// Регистрация
         /// </summary>
         /// <returns>null, или текст произошедшей ошибки</returns>
-        public static string Registration(string addr, string login, string password, string email, Action LoginOK)
+        public static string Registration(string addr, string login, string password, string email, string discord, Action LoginOK)
         {
             var msgError = Connect(addr);
             if (msgError != null) return msgError;
@@ -769,8 +831,15 @@ namespace RimWorldOnlineCity
             var pass = new CryptoProvider().GetHash(password);
 
             var connect = SessionClient.Get;
-            if (!connect.Registration(login, pass, email + GetSaffix()))
+            if (!connect.Registration(login, pass, email + GetSaffix(), discord))
             {
+                if (connect.ErrorMessage == "User not approve")
+                {
+                    Loger.Log("Client Registration: User not approve");
+                    Find.WindowStack.Add(new Dialog_LoginForm(true));
+                    return null;
+                }
+
                 logMsg = "Registration fail: " + connect.ErrorMessage?.ServerTranslate();
                 Loger.Log("Client " + logMsg);
                 Log.Warning(logMsg);
@@ -855,6 +924,9 @@ namespace RimWorldOnlineCity
             }
         }
 
+        /// <summary>
+        /// Проверяет подключение и немедленно вызывает netAct
+        /// </summary>
         public static void Command(Action<SessionClient> netAct)
         {
             int time = 0;
@@ -870,6 +942,35 @@ namespace RimWorldOnlineCity
             }
             var connect = SessionClient.Get;
             netAct(connect);
+        }
+
+        private static Thread SingleCommandThread = null;
+
+        public static bool SingleCommandIsBusy => SingleCommandThread != null;
+        /// <summary>
+        /// Проверяет подключение и вызывает netAct в потоке, если оне не занят, иначе возвращает false
+        /// </summary>
+        public static bool SingleCommand(Action<SessionClient> netAct)
+        {
+            if (SingleCommandIsBusy) return false;
+            SingleCommandThread = new Thread(() =>
+            {
+                try
+                {
+                    Command(netAct);
+                }
+                catch (Exception ext)
+                {
+                    Loger.Log("Exception SingleCommand: " + ext.ToString());
+                }
+                finally
+                { 
+                    SingleCommandThread = null; 
+                }
+            });
+            SingleCommandThread.IsBackground = true;
+            SingleCommandThread.Start();
+            return true;
         }
 
         private static void TimersStop()
@@ -1610,6 +1711,8 @@ namespace RimWorldOnlineCity
                 Loger.Log("Client InitGame MainThread check end");
 
                 GeneralTexture.Init();
+
+                UpdateColonyScreenLastTickBySettlementID = new Dictionary<long, long>();
 
                 //сбрасываем с мышки выбранный инструмент DevMode
                 DebugTools.curTool = null;

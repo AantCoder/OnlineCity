@@ -41,6 +41,7 @@ namespace ServerOnlineCity
         /// </summary>
         public bool SaveFileSharing(PlayerServer player, ModelFileSharing fileSharing)
         {
+            Loger.Log($"SaveFileSharing {player.Public.Login} {fileSharing.Category} {fileSharing.Name} {fileSharing.Data?.Length ?? 0}");
             var worker = GetWorker(fileSharing.Category);
             var fileName = worker.CheckAndGetFileNameUpload(player, fileSharing);
             if (string.IsNullOrEmpty(fileName)) return false;
@@ -330,7 +331,7 @@ namespace ServerOnlineCity
                 {
                     Loger.Log($"Server FileSharing Save ColonyScreen {player.Public.Login} size={info.Data?.Length}b name={info.Name}");
                     //больше 2 мб исходник не пропускаем
-                    if (info.Data == null || info.Data.Length == 0 || info.Data.Length > 4 * 1024 * 1024) return null; 
+                    if (info.Data == null || info.Data.Length == 0 || info.Data.Length > 15 * 1024 * 1024) return null; 
 
                     string name = info.Name;
                     var namePart = name.Split('@');
@@ -362,7 +363,7 @@ namespace ServerOnlineCity
 
                 var files = fileNames.Select(fn => new FileInfo(fn)).ToList();
                 var needClear = files.Sum(f => f.Length) - ServerManager.ServerSettings.ColonyScreenFolderMaxMb * 1024 * 1024;
-                if (needClear > 0) return;
+                if (needClear <= 0) return;
 
                 var list = files.Select(fi =>
                     {

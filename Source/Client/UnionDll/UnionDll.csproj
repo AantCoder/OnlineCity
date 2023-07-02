@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="AttackUtils.cs" />
     <Compile Include="ClientData.cs" />
+    <Compile Include="Common\CalcUtils.cs" />
     <Compile Include="Common\ChatUtils.cs" />
     <Compile Include="Common\FileChecker.cs" />
     <Compile Include="Common\Grants.cs" />

@@ -77,10 +77,12 @@ namespace ServerOnlineCity
             return new ModelContainer() { TypePacket = 0 };
         }
 
-        public static string GetPackageJson(string inputPackage)
+        public static object GetPackageJson(string inputPackage, Dictionary<string, byte[]> data)
         {
             var package = JsonConvert.DeserializeObject<APIRequest>(inputPackage);
+            if (data != null && data.Count > 0) package.Data = data.Values.First();
             var ret = API.GetPackage(package);
+            if (ret is APIResponseRawData) return (ret as APIResponseRawData).Data;
             return JsonConvert.SerializeObject(ret);
 
             //var package = JsonSerializer.Deserialize<APIRequest>(inputPackage);

@@ -52,8 +52,11 @@ namespace ServerOnlineCity.Services
                     pGet.IntersectWith(pSee);
 
                     toClient.PlayersInfo = pGet
-                        .Where(l => Repository.GetData.PlayersAllDic.ContainsKey(l))
-                        .Select(l => Repository.GetData.PlayersAllDic[l].Public)
+                        .Select(l => Repository.GetPlayerByLogin(l))
+                        .Where(p => p != null)
+                        .Select(p => p.Public)
+                        //.Where(l => Repository.GetData.PlayersAllDic.ContainsKey(l))
+                        //.Select(l => Repository.GetData.PlayersAllDic[l].Public)
                         .ToList();
                 }
                 if (packet.SaveFileData != null && packet.SaveFileData.Length > 0)

@@ -533,7 +533,6 @@ namespace RimWorldOnlineCity
             
             var costAll = SessionClientController.Data.MyEx.CostAllWorldObjects();
             return SessionClientController.My.LastTick < 3600000 / 2 || costAll.MarketValueTotal < MainHelper.MinCostForTrade;
-            
         }
 
         internal static IEnumerable<Thing> FilterBeforeSendServer(this IEnumerable<Thing> list)
@@ -545,8 +544,13 @@ namespace RimWorldOnlineCity
             if (MainHelper.DebugMode) foreach (var r in Find.FactionManager.OfPlayer.ideos.PrimaryIdeo.RolesListForReading) Loger.Log(" Role " + r.def.defName + " " + r.TipLabel);
 
             var res = list.Where(thing => !(thing is Pawn) || !rolesListForReading.Any(r => r.IsAssigned(thing as Pawn)))
+                //Запрет на передачу трупов
+                .Where(thing => !(thing is Corpse))
                 //Запрет на передачу мешков с отходами Wastepack
-                .Where(thing => thing.def.defName != "Wastepack");
+                .Where(thing => thing.def.defName != "Wastepack")
+                //Запрещенные настройкой
+                .Where(thing => !SessionClientController.Data.GeneralSettings.ExchengeForbiddenDefNamesList.Contains(thing.def.defName));
+            
             if (IsProtectingNovice()) res = res.Where(thing => thing.def.stackLimit > 1);
             return res;
         }
@@ -555,18 +559,19 @@ namespace RimWorldOnlineCity
         {
             IEnumerable<Thing> pawns = caravan.PawnsListForReading;
             if (withTransferFilter) pawns = pawns.FilterBeforeSendServer();
+            IEnumerable<Thing> goods;
             if (thingOnPawn)
             {
-                var goods = GetThingOnPawn(pawns).ToList()
+                goods = GetThingOnPawn(pawns).ToList()
                     .Concat(pawns);
-                return goods.ToList();
             }
             else
             {
-                var goods = CaravanInventoryUtility.AllInventoryItems(caravan).ToList()
+                goods = CaravanInventoryUtility.AllInventoryItems(caravan).ToList()
                     .Concat(pawns);
-                return goods.ToList();
             }
+            if (withTransferFilter) goods = goods.FilterBeforeSendServer();
+            return goods.ToList();
         }
 
         public static List<Thing> GetAllThings(Map map, bool thingOnPawn = false, bool withTransferFilter = true)

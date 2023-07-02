@@ -20,11 +20,12 @@ namespace RimWorldOnlineCity
         private string InputPassword = "";
         private string InputPassword2 = "";
         private string InputEmail = "";
+        private string InputDiscord = "";
         private bool NeedFockus = true;
 
         public override Vector2 InitialSize
         {
-            get { return new Vector2(400f, 400f); }
+            get { return new Vector2(400f, 500f); }
         }
 
         public Dialog_Registration()
@@ -86,7 +87,7 @@ namespace RimWorldOnlineCity
                 }
                 else
                 {
-                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword, InputEmail
+                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword, InputEmail, InputDiscord
                         , () => 
                         { 
                             SessionClientController.LoginInNewServerIP = ModBaseData.GlobalData?.LastIP?.Value != InputAddr;
@@ -161,6 +162,12 @@ namespace RimWorldOnlineCity
                 (sub, rect) =>
                 {
                     InputEmail = GUI.TextField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputEmail, 100);
+                });
+
+            TextInput(mainListing, "OCity_LoginForm_Discord".Translate(),
+                (sub, rect) =>
+                {
+                    InputDiscord = GUI.TextField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputDiscord, 100);
                 });
 
             if (NeedFockus)

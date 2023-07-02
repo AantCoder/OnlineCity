@@ -15,7 +15,7 @@ namespace ServerOnlineCity.Common
         public static List<string> PartyLoginSee(PlayerServer player)
         {
             var ps = player.IsAdmin
-                ? Repository.GetData.PlayersAll.Select(p => p.Public.Login)
+                ? Repository.GetData.GetPlayersAll.Select(p => p.Public.Login)
                 : ChatManager.Instance.PublicChat.PartyLogin;
             return ps.ToList();
         }

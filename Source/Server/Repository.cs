@@ -37,7 +37,7 @@ namespace ServerOnlineCity
 
         private RepositoryFileSharing RepFileSharing;
 
-        public static PlayerServer GetPlayerByLogin(string login)
+        public static PlayerServer GetPlayerByLogin(string login, bool withNotApprove = false)
         {
             if (string.IsNullOrEmpty(login))
             {
@@ -45,6 +45,7 @@ namespace ServerOnlineCity
             }
 
             Repository.GetData.PlayersAllDic.TryGetValue(login, out var res);
+            if (!withNotApprove && !res.Approve) return null;
             return res;
         }
 
@@ -158,6 +159,7 @@ namespace ServerOnlineCity
         }
         public static void AddIntruder(List<string> keys, string comment)
         {
+            if (Blockkey == null) CheckIsIntruder("");
             var add = "";
             foreach (var key in keys)
             { 
@@ -334,8 +336,8 @@ namespace ServerOnlineCity
 
                     Data.PostLoad();
 
-                    Loger.Log("Server Load done. Users " + Data.PlayersAll.Count.ToString() + ": "
-                        + Data.PlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
+                    Loger.Log("Server Load done. Users " + Data.GetPlayersAll.Count().ToString() + ": "
+                        + Data.GetPlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
                         );
 
                     ChatManager.Instance.NewChatManager(Data.MaxIdChat, Data.PlayerSystem.Chats.Keys.First());

@@ -51,7 +51,7 @@ namespace RimWorldOnlineCity
 			return true;
         }
 
-		private bool TryFindCell(out IntVec3 cell, Map map) //todo: новый алгоритм поиска цели. Этот из ванильного падения метеорита
+		private bool TryFindCell(out IntVec3 cell, Map map) //todo? новый алгоритм поиска цели. Этот из ванильного падения метеорита
 		{
 			int maxMineables = 1;
 			//CellFinder.TryFindRandomCellInRegion();

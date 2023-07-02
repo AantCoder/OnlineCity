@@ -9,10 +9,95 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.Steam;
 
 namespace RimWorldOnlineCity.GameClasses
 {
+    /*
+    [HarmonyPatch(typeof(WorldInspectPane))]
+    [HarmonyPatch("DoWindowContents")]
+    internal class WorldInspectPane_DoWindowContents_Patch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(WorldInspectPane __instance, ref Rect rect)
+        {
+			WorldObject worldObject = Find.WorldSelector.SingleSelectedObject;
+            if (worldObject != null)
+            {
+                //если есть иконка выводим её слева смещая панель вправо (расширяя её)
+                //var OCWO = worldObject as CaravanOnline;
+                //if (OCWO == null || OCWO.OnlinePlayerLogin == null) return true;
+                var iconImage = GeneralTexture.Waypoint; //GeneralTexture.Get.ByName("pl_" + OCWO.OnlinePlayerLogin);
+                if (iconImage != GeneralTexture.Null)
+                {
+                    var size = rect.height;
+                    var iconArea = new Rect(rect.x, rect.y, size, size);
+                    GUI.DrawTexture(iconArea, iconImage);
+                    rect.xMin += size;
 
+                    if (__instance.windowRect.width == __instance.InitialSize.x)
+                    {
+                        __instance.windowRect.width += size;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+    */
+
+    /*
+    [HarmonyPatch(typeof(GizmoGridDrawer))]
+    [HarmonyPatch("DrawGizmoGrid")]
+    internal class GizmoGridDrawer_DrawGizmoGrid_Patch
+    {
+        //Выжимка из кода игры
+        private static Rect GizmoGridButtonDrawStart(float startX)
+        {
+            float num2 = (float)(Verse.UI.screenHeight - 35) - GizmoGridDrawer.GizmoSpacing.y - 75f;
+            if (SteamDeck.IsSteamDeck && SteamDeck.KeyboardShowing && Find.MainTabsRoot.OpenTab == MainButtonDefOf.Architect && ((MainTabWindow_Architect)MainButtonDefOf.Architect.TabWindow).QuickSearchWidgetFocused)
+            {
+                num2 -= 335f;
+            }
+            Vector2 vector = new Vector2(startX, num2);
+            return new Rect(vector.x, vector.y, 75f, 75f);
+        }
+
+        [HarmonyPrefix]
+        public static bool Prefix(ref float startX)
+        {
+            Pawn pawn = Find.Selector.SingleSelectedThing as Pawn; //  WorldSelector.SingleSelectedObject;
+            if (pawn != null)
+            {
+                var rect = GizmoGridButtonDrawStart(startX);
+                rect.y -= rect.width + GizmoGridDrawer.GizmoSpacing.x;
+                rect.width += rect.width + GizmoGridDrawer.GizmoSpacing.x;
+                rect.height = rect.width;
+
+                //var OCWO = worldObject as CaravanOnline;
+                //if (OCWO == null || OCWO.OnlinePlayerLogin == null) return true;
+                var iconImage = GeneralTexture.Waypoint; //GeneralTexture.Get.ByName("pl_" + OCWO.OnlinePlayerLogin);
+                if (iconImage != GeneralTexture.Null)
+                {
+                    var size = rect.height;
+                    var iconArea = new Rect(rect.x, rect.y, size, size);
+                    if (Widgets.ButtonInvisible(iconArea))
+                    {
+                        //Find.WindowStack.Add(new Dialog_MessageBox("Работает!"));
+                    }
+                    GUI.DrawTexture(iconArea, Command.BGTexShrunk); //BGTex); // текстура неактивной кнопки
+                    iconArea = iconArea.ContractedBy(2);
+                    GUI.DrawTexture(iconArea, iconImage);
+                    GenUI.AbsorbClicksInRect(iconArea);
+
+                    startX += GizmoGridDrawer.GizmoSpacing.x + rect.width;
+                }
+            }
+            return true;
+        }
+    }
+    */
+    // Эти данные отображаются в полноэкранном окне информации "i" Dialog_InfoCard
     [HarmonyPatch(typeof(StatsReportUtility))]
     [HarmonyPatch("DrawStatsWorker")]
     internal class StatsReportUtility_DrawStatsWorker_Patch
@@ -66,7 +151,7 @@ namespace RimWorldOnlineCity.GameClasses
             GUI.DrawTexture(iconArea, iconImage);
 
             //rect.width -= iconArea.width;
-
+            
             return true;
         }
     }

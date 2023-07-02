@@ -85,6 +85,28 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
         }
     }
 
+    //Пишем в лог на сервер если на экране есть элементы режима разработчика
+    [HarmonyPatch(typeof(DebugTool))]
+    [HarmonyPatch("DebugToolOnGUI")]
+    internal class DebugTool_DebugToolOnGUI_Patch
+    {
+        private static DateTime LastCheck = DateTime.MinValue;
+
+        [HarmonyPrefix]
+        public static bool Prefix()
+        {
+            if ((DateTime.UtcNow - LastCheck).TotalSeconds < 5) return true;
+            LastCheck = DateTime.UtcNow;
+
+            if (Current.Game == null) return true;
+            if (!SessionClient.Get.IsLogined) return true;
+
+            if (!SessionClientController.Data.DisableDevMode) return true;
+
+            Loger.TransLog("ShowDevMode");
+            return true;
+        }
+    }
 
     /// ////////////////////////////////////////////////////////////
 
@@ -303,6 +325,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
     /// ////////////////////////////////////////////////////////////
 
+    /* Фикс убран, т.к. после длительной игры стало фризить, понадеемся, что за это время баг исправили
     //Фикс проблемы многопоточности, решение https://github.com/AantCoder/OnlineCity/issues/82
     [HarmonyPatch(typeof(PawnCapacitiesHandler))]
     [HarmonyPatch("GetLevel")]
@@ -321,6 +344,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
             Monitor.Exit(__instance);
         }
     }
+    */
 
     /// ////////////////////////////////////////////////////////////
 
@@ -662,7 +686,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
                 },
                 () =>
                 {
-                    var msg = "Вещи переданы в Торговый склад".NeedTranslate();
+                    var msg = "OCity_DialogExchenge_ToStorage".Translate(); // Вещи переданы в Торговый склад
                     Find.WindowStack.Add(new Dialog_Input("OCity_Dialog_Exchenge_Action_CarriedOut".Translate(), msg, true)); //"Выполнено"
                 },
                 null,

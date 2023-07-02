@@ -25,16 +25,19 @@ namespace ServerOnlineCity
 {
     public class ServerManager
     {
-        public int MaxActiveClientCount = 10000; //to do провверить корректность дисконнекта
+        public int MaxActiveClientCount = 10000;
         public static ServerSettings ServerSettings = new ServerSettings();
 
         public static FileHashChecker FileHashChecker;
-       
+
+        private static ServerManager That;
+
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
 
         public ServerManager()
         {
+            That = this;
             AppDomain.CurrentDomain.AssemblyResolve += Missing_AssemblyResolver;
         }
 
@@ -51,6 +54,29 @@ namespace ServerOnlineCity
         public int ActiveClientCount
         {
             get { return _ActiveClientCount; }
+        }
+
+        public string SendKeyCommandHelp = @"Available console commands: 
+  Q - quit (shutdown)
+  R - restart (shutdown and start)
+  L - command to save players for shutdown (EverybodyLogoff)
+  S - save player statistics file
+  D - save debug info file
+  С - run command from file command.txt";
+
+        public static bool SendConsoleCommand(char key) => That.SendKeyCommand(key);
+        public static void SendRunCommand(string text) => That.RunCommand(text);
+
+        public bool SendKeyCommand(char key)
+        {
+            if (char.ToLower(key) == 'q') SaveAndQuit();
+            if (char.ToLower(key) == 'r') SaveAndRestart();
+            else if (char.ToLower(key) == 'l') EverybodyLogoff();
+            else if (char.ToLower(key) == 's') SavePlayerStatisticsFile();
+            else if (char.ToLower(key) == 'd') SaveDebugInfo();
+            else if (char.ToLower(key) == 'c') RunCommandFile();
+            else return false;
+            return true;
         }
 
         public static bool SaveSettings(string storytaller, string difficulty)
@@ -189,6 +215,7 @@ namespace ServerOnlineCity
             {
                 Pass = new CryptoProvider().GetHash(guid.ToString()),
                 DiscordToken = guid,
+                Approve = true,
             };
 
             player.Public.Grants = Grants.GameMaster | Grants.SuperAdmin | Grants.UsualUser | Grants.Moderator;
@@ -214,10 +241,10 @@ namespace ServerOnlineCity
 
             ///Обновляем кто кого видит
 
-            foreach (var player in Repository.GetData.PlayersAll)
+            foreach (var player in Repository.GetData.GetPlayersAll)
             {
                 var pl = ChatManager.Instance.PublicChat.PartyLogin;
-                if (pl.Count == Repository.GetData.PlayersAll.Count) continue;
+                if (pl.Count == Repository.GetData.GetPlayersAll.Count()) continue;
 
                 changeInPlayers = true;
 
@@ -225,7 +252,7 @@ namespace ServerOnlineCity
                     || true //to do переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
                     )
                 {
-                    if (allLogins == null) allLogins = new HashSet<string>(Repository.GetData.PlayersAll.Select(p => p.Public.Login));
+                    if (allLogins == null) allLogins = new HashSet<string>(Repository.GetData.GetPlayersAll.Select(p => p.Public.Login));
                     lock (player)
                     {
                         ///админы видят всех: добавляем кого не хватает
@@ -239,7 +266,7 @@ namespace ServerOnlineCity
                 {
                     ///определяем кого видят остальные 
                     //админов
-                    var plNeed = Repository.GetData.PlayersAll
+                    var plNeed = Repository.GetData.GetPlayersAll
                         .Where(p => p.IsAdmin)
                         .Select(p => p.Public.Login)
                         .ToList();
@@ -269,14 +296,14 @@ namespace ServerOnlineCity
             {
                 if (ServerManager.ServerSettings.DeleteAbandonedSettlements)
                 {
-                    foreach (var player in Repository.GetData.PlayersAll)
+                    foreach (var player in Repository.GetData.GetPlayersAll)
                     {
                         if (player.Public.LastSaveTime == DateTime.MinValue) continue;
-                        if (player.Public.LastTick > 3600000 / 2) continue;
+                        if (player.Public.LastTick > 3600000) continue;
 
-                        if ((DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays < 7) continue;
-                        if ((DateTime.UtcNow - player.LastUpdateTime).TotalDays < 7) continue;
-                        if ((DateTime.UtcNow - player.Public.LastSaveTime).TotalDays < 7) continue;
+                        if ((DateTime.UtcNow - player.Public.LastOnlineTime).TotalDays < 14) continue;
+                        if ((DateTime.UtcNow - player.LastUpdateTime).TotalDays < 14) continue;
+                        if ((DateTime.UtcNow - player.Public.LastSaveTime).TotalDays < 14) continue;
 
                         if (player.IsAdmin) continue;
 
@@ -429,11 +456,31 @@ namespace ServerOnlineCity
                     Loger.Log("Command RunCommandFile not file " + fileName);
                     return;
                 }
-                var commands = File.ReadAllLines(fileName);
+                var textCommands = File.ReadAllText(fileName);
 
                 var fileNameReady = Path.Combine(Path.GetDirectoryName(Repository.Get.SaveFileName), "commandReady.txt");
                 if (File.Exists(fileNameReady)) File.Delete(fileNameReady);
                 File.Move(fileName, fileNameReady);
+
+                RunCommand(textCommands);
+            }
+            catch (Exception e)
+            {
+                Loger.Log("Command Exception " + e.ToString());
+            }
+        }
+
+        public void RunCommand(string text)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(text))
+                {
+                    Loger.Log("Command RunCommandFile not commands");
+                    return;
+                }
+
+                var commands = text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (commands.Length == 0)
                 {
@@ -452,7 +499,8 @@ namespace ServerOnlineCity
                 {
                     AddrIP = "localhost",
                     PossiblyIntruder = false,
-                    Player = data.PlayersAll[2]
+                    Player = data.PlayersAll[2],
+                    AllSessionAction = SessionsAction
                 };
                 if (Service.ServiceDictionary.TryGetValue((int)PackageType.Request19PostingChat, out IGenerateResponseContainer generateResponseContainer))
                 {
@@ -474,7 +522,6 @@ namespace ServerOnlineCity
                         Loger.Log("Server RunCommandFile " + i + " result: " + (result?.Message ?? "None"));
                     }
                 }
-
             }
             catch (Exception e)
             {
@@ -558,7 +605,8 @@ namespace ServerOnlineCity
             finally
             {
                 Interlocked.Decrement(ref _ActiveClientCount);
-                Loger.Log($"Close connect {addrIP}{(session == null ? "" : " " + session?.GetNameWhoConnect())} (connects: {ActiveClientCount})");
+                if (session == null || !session.IsAPI)
+                    Loger.Log($"Close connect {addrIP}{(session == null ? "" : " " + session?.GetNameWhoConnect())} (connects: {ActiveClientCount})");
                 try
                 {
                     if (session != null)

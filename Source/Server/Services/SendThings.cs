@@ -30,7 +30,7 @@ namespace ServerOnlineCity.Services
             {
                 var data = Repository.GetData;
 
-                toPlayer = data.PlayersAll.FirstOrDefault(p => p.Public.Login == packet.To.Login);
+                toPlayer = data.GetPlayersAll.FirstOrDefault(p => p.Public.Login == packet.To.Login);
                 if (toPlayer == null)
                 {
                     return new ModelStatus()
@@ -40,7 +40,7 @@ namespace ServerOnlineCity.Services
                     };
                 }
 
-                packet.From = data.PlayersAll.Select(p => p.Public).FirstOrDefault(p => p.Login == packet.From.Login);
+                packet.From = data.GetPlayersAll.Select(p => p.Public).FirstOrDefault(p => p.Login == packet.From.Login);
                 packet.To = toPlayer.Public;
                 packet.Created = DateTime.UtcNow;
                 packet.NeedSaveGame = true;

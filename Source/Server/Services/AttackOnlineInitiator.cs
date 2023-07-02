@@ -40,7 +40,7 @@ namespace ServerOnlineCity.Services
                         res.ErrorText = "There is an active attack";
                         return res;
                     }
-                    var hostPlayer = data.PlayersAll.FirstOrDefault(p => p.Public.Login == fromClient.StartHostPlayer);
+                    var hostPlayer = data.GetPlayersAll.FirstOrDefault(p => p.Public.Login == fromClient.StartHostPlayer);
 
                     if (hostPlayer == null)
                     {

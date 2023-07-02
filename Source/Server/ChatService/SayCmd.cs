@@ -125,7 +125,7 @@ namespace ServerOnlineCity.ChatService
             if (online)
             {
                 reciever = "online";
-                foreach(PlayerServer pl in Repository.GetData.PlayersAll)
+                foreach(PlayerServer pl in Repository.GetData.GetPlayersAll)
                 {
                     if (pl.Online)
                     {
@@ -149,7 +149,7 @@ namespace ServerOnlineCity.ChatService
             else if (all)
             {
                 reciever = "all:";
-                foreach (PlayerServer pl in Repository.GetData.PlayersAll)
+                foreach (PlayerServer pl in Repository.GetData.GetPlayersAll)
                 {
                     if (pl == player) continue;
                     reciever += " " + pl.Public.Login;

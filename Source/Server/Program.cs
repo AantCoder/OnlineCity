@@ -35,26 +35,15 @@ namespace ServerOnlineCity
         private static void CommandInput()
         {
             Thread.Sleep(500);
-            Console.WriteLine(@"Available console commands: 
-  Q - quit (shutdown)
-  R - restart (shutdown and start)
-  L - command to save players for shutdown (EverybodyLogoff)
-  S - save player statistics file
-  D - save debug info file
-  С - run command from file command.txt");
+            Console.WriteLine(Manager.SendKeyCommandHelp);
 
             writeDiscordTokenToConsole();
             while (true)
             {
                 Thread.Sleep(500);
                 var key = Console.ReadKey(true);
-                if (char.ToLower(key.KeyChar) == 'q') Manager.SaveAndQuit();
-                if (char.ToLower(key.KeyChar) == 'r') Manager.SaveAndRestart();
-                else if (char.ToLower(key.KeyChar) == 'l') Manager.EverybodyLogoff();
-                else if (char.ToLower(key.KeyChar) == 's') Manager.SavePlayerStatisticsFile();
-                else if (char.ToLower(key.KeyChar) == 'd') Manager.SaveDebugInfo();
-                else if (char.ToLower(key.KeyChar) == 'c') Manager.RunCommandFile();
-                else Console.WriteLine($"Unknow command: {char.ToUpper(key.KeyChar)}");
+
+                if (!Manager.SendKeyCommand(key.KeyChar)) Console.WriteLine($"Unknow command: {char.ToUpper(key.KeyChar)}");
             }
         }
 

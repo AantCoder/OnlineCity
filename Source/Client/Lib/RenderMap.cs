@@ -49,9 +49,10 @@ namespace MapRenderer
         // NOTE: unity is not calling the constructor, so we manually call it
         public RenderMap() { }
 
-        public void Initialize()
+        public void Initialize(Map bymap)
         {
-            map = Find.CurrentMap;
+            if (bymap == null) bymap = Find.CurrentMap;
+            map = bymap;
             viewWidth = map.Size.x * SettingsPixelOnCell;
             viewHeight = map.Size.z * SettingsPixelOnCell;
         }

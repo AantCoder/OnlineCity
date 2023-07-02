@@ -1,2 +1,0 @@
-copy /y Client\Release\OCUnion.dll "c:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\OnlineCity\1.1\Assemblies" 
-copy /y Client\Release\RimWorldOnlineCity.dll "c:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\OnlineCity\1.1\Assemblies" 

@@ -74,6 +74,10 @@
       <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="com.rlabrecque.steamworks.net">
+      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HugsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UnlimitedHugs.Rimworld.HugsLib.8.0.0\lib\net472\HugsLib.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -167,6 +171,7 @@
     <Compile Include="Services\SetPlayerInfo.cs" />
     <Compile Include="SessionClient.cs" />
     <Compile Include="SnapshotColony.cs" />
+    <Compile Include="TestClass.cs" />
     <Compile Include="UI\DevelopTest.cs" />
     <Compile Include="GameAttacker.cs" />
     <Compile Include="GameClasses\Harmony\GameAttackTrigger.cs" />
@@ -193,6 +198,7 @@
     <Compile Include="UI\Dialog_LoginForm.cs" />
     <Compile Include="UI\Dialog_MainOnlineCity.cs" />
     <Compile Include="UI\Dialog_Registration.cs" />
+    <Compile Include="UI\Dialog_ViewImage.cs" />
     <Compile Include="UI\GeneralTexture.cs" />
     <Compile Include="UI\GeneralTextureCatalogEmoji.cs" />
     <Compile Include="UI\PanelChat.cs" />

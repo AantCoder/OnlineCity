@@ -29,6 +29,8 @@ namespace ServerOnlineCity.Model
 
         public bool IsAdmin { get => (Public.Grants & (Grants.SuperAdmin | Grants.Moderator)) > Grants.NoPermissions; }
 
+        public bool Approve { get; set; }
+
         public Guid DiscordToken;
 
         public float CashlessBalance;
@@ -253,7 +255,10 @@ namespace ServerOnlineCity.Model
                 values.MarketValueBalance += data.WorldObjects[i].MarketValueBalance;
                 values.MarketValueStorage += data.WorldObjects[i].MarketValueStorage;
                 if (data.WorldObjects[i].Type == WorldObjectEntryType.Base)
+                {
                     values.BaseCount++;
+                    values.BaseServerIds = (values.BaseServerIds == null ? "" : values.BaseServerIds + ",") + data.WorldObjects[i].PlaceServerId;
+                }
                 else
                     values.CaravanCount++;
             }
@@ -334,6 +339,16 @@ namespace ServerOnlineCity.Model
 
             Repository.GetSaveData.DeletePlayerData(Public.Login);
             Public.LastSaveTime = DateTime.MinValue;
+            Repository.Get.ChangeData = true;
+        }
+
+        /// <summary>
+        /// Удаляет только не подтвержденных игроков, т.к. не удаляет игровые данные, данные чата и прочее
+        /// </summary>
+        public void Delete()
+        {
+            Repository.GetData.PlayersAll.Remove(this);
+            Repository.GetData.UpdatePlayersAllDic();
             Repository.Get.ChangeData = true;
         }
     }

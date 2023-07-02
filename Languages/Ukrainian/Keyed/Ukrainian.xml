@@ -45,6 +45,13 @@
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
 	<OCity_ClientData_Chat>Чат </OCity_ClientData_Chat>
 	<OC_OK>Ок</OC_OK>
+	<OC_Loading>Загрузка</OC_Loading>
+	<OC_DataNotAvailable>Данные не доступны</OC_DataNotAvailable>
+	<OC_Seconds>секунд</OC_Seconds>
+	<OC_ImageBase1>Откройте изображение базы игрока</OC_ImageBase1>
+	<OC_ImageBase2>Нажмите для загрузки изображения базы игрока</OC_ImageBase2>
+	<OC_ImageBase4>И проверить наличие обновлений</OC_ImageBase4>
+	<OC_ImageBase6>Проверка обновлений доступна через</OC_ImageBase6>
 
 	<!-- OnlineCity_Hash_Checker -->
 	<OC_Hash_CalculateLocalFiles>Вычисление хэша локальных данных</OC_Hash_CalculateLocalFiles>
@@ -129,6 +136,9 @@
 	<OCity_LoginForm_Err1>Пароль и подтверждение отличаются</OCity_LoginForm_Err1>
 	<OCity_LoginForm_Err2>Адрес, логин и пароль должны быть длинной не менее двух символов</OCity_LoginForm_Err2>
 	<OCity_LoginForm_Mail>Почта (не обязательно)</OCity_LoginForm_Mail>
+	<OCity_LoginForm_NeedApproveText0>На данном сервере необходимо подтверждение в дискорде. Подтвердите регистрацию в дискорде в ответе на запрос от бота.</OCity_LoginForm_NeedApproveText0>
+	<OC_LoginForm_NeedApproveText1>На данном сервере необходимо подтверждение в дискорде. Укажите своё имя в дискорде, зарегистрируйтесь здесь, а затем подтвердите регистрацию в дискорде в ответе на запрос от бота.</OC_LoginForm_NeedApproveText1>
+	<OCity_LoginForm_Discord>Discord логин</OCity_LoginForm_Discord>
 
 	<!-- SessionClientController.cs -->
 	<OCity_SessionCC_ConnectionFailTitle>З'еднання не встановлено</OCity_SessionCC_ConnectionFailTitle>
@@ -257,6 +267,8 @@
 	<OCity_DialogExchenge_ToARemotePoint>В удалённую точку</OCity_DialogExchenge_ToARemotePoint>
 	<OCity_DialogExchenge_Destroy>Уничтожить</OCity_DialogExchenge_Destroy>
 	<OCity_DialogExchenge_ForTenPercentThePrice>(за 10% от цены)</OCity_DialogExchenge_ForTenPercentThePrice>
+	<OCity_DialogExchenge_NegativeBalance>Невозможно с отрицательным балансом</OCity_DialogExchenge_NegativeBalance>
+	<OCity_DialogExchenge_ToStorage>Вещи переданы в Торговый склад</OCity_DialogExchenge_ToStorage>
 	
 	<!--ExchengeUtils-->
 	<OCity_ExchengeUtils_Distance>Расстояние</OCity_ExchengeUtils_Distance>
@@ -378,6 +390,7 @@
 	<OC_Incidents_OCIncident_GoldPay>Заказ принят. {0} золота отправлено наёмникам</OC_Incidents_OCIncident_GoldPay>
 	<OC_Incident_Atacker>За этим стоит:</OC_Incident_Atacker>
 	<OCity_OCIncident_NotEnoughThingsOnMap>Не хватает вещей на карте. В наличии</OCity_OCIncident_NotEnoughThingsOnMap>
+	<OCity_OCIncident_Required>Требуется</OCity_OCIncident_Required>
 
 	<OC_Incidents_Raid_Warning_label>Серьёзная угроза!</OC_Incidents_Raid_Warning_label>
 	<OC_Incidents_Raid_Warning_Text_human>Ваши колонисты взволнованы! Замечено приближение огромного количества вооруженных людей, направленных другим игроком! Они прибудут через несколько часов. Возможно, следует обратиться за помощью к союзникам или готовиться к эвакуации</OC_Incidents_Raid_Warning_Text_human>
