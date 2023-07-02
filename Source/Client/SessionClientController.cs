@@ -863,12 +863,12 @@ namespace RimWorldOnlineCity
                         foreach (var deletion in changeSet.DeletePaths)
                         {
                             status.Status = string.Format("Removing {0} / {1}", counter, changeSet.DeletePaths.Count);
-                            Loger.Log("rm " + changeSet.SourceDescription + ": " + deletion);
+                            Loger.Log("rm " + changeSet.SourceDescription + ": " + Path.Combine(changeSet.RemoveRoot, deletion));
                             var path = Path.Combine(changeSet.RemoveRoot, deletion);
                             if (File.Exists(path))
-                                File.Delete(deletion);
+                                File.Delete(path);
                         }
-                        var pathsToDownload = changeSet.DownloadPaths.ToHashSet();
+                        var pathsToDownload = changeSet.DownloadPaths.ToDictionary(t => t.Item1, t => t.Item2);
                         while (pathsToDownload.Count > 0)
                         {
                             status.Status = string.Format("Downloading {0} / {1}", changeSet.DownloadPaths.Count - pathsToDownload.Count, changeSet.DownloadPaths.Count);
@@ -877,7 +877,7 @@ namespace RimWorldOnlineCity
                             var request = new ModelModsFilesRequest()
                             {
                                 Type = ModelModsFilesRequest.RequestType.FileData,
-                                FileQueries = pathsToDownload.Take(maxDownloads).Select(p => new ModelModsFilesRequest.FileQuery() { ModId = changeSet.ModId, SourceDirectory = changeSet.FolderType, RelativePath = p }).ToList(),
+                                FileQueries = pathsToDownload.Keys.Take(maxDownloads).Select(p => new ModelModsFilesRequest.FileQuery() { ModId = changeSet.ModId, SourceDirectory = changeSet.FolderType, RelativePath = p }).ToList(),
                             };
                             var response = await SessionClient.Get.TransAsync<ModelModsFilesRequest, ModelModsFilesResponse>(request);
                             if (response.Contents?.Entries == null)
@@ -885,25 +885,27 @@ namespace RimWorldOnlineCity
                                 status.Status = "Server did not send a valid response.";
                                 throw new Exception("Server did not send a valid response.");
                             }
+                            List<string> pathsToRemove = new List<string>();
                             foreach (var file in response.Contents.Entries)
                             {
-                                if (file.ModId != changeSet.ModId || file.SourceDirectory != changeSet.FolderType || !pathsToDownload.Contains(file.RelativePath))
+                                if (file.ModId != changeSet.ModId || file.SourceDirectory != changeSet.FolderType || !pathsToDownload.ContainsKey(file.RelativePath))
                                 {
                                     status.Status = "Server did not send a valid response.";
                                     throw new Exception("Server did not send a valid response.");
                                 }
-                                pathsToDownload.Remove(file.RelativePath);
+                                pathsToRemove.Add(file.RelativePath);
                             }
 
                             status.Status = string.Format("Writing {0} / {1}", changeSet.DownloadPaths.Count - pathsToDownload.Count, changeSet.DownloadPaths.Count);
                             var writes = response.Contents.Entries.Select((e) =>
                             {
+                                var localPath = pathsToDownload[e.RelativePath];
                                 return Task.Factory.StartNew(() =>
                                 {
                                     var stream = new MemoryStream(e.GZippedData);
                                     var gzip = new GZipStream(stream, CompressionMode.Decompress);
 
-                                    var path = Path.Combine(changeSet.DownloadRoot, e.RelativePath);
+                                    var path = Path.Combine(changeSet.DownloadRoot, localPath);
                                     var parentDirectory = Path.GetDirectoryName(path);
                                     if (!Directory.Exists(parentDirectory))
                                         Directory.CreateDirectory(parentDirectory);
@@ -916,6 +918,8 @@ namespace RimWorldOnlineCity
                                 });
                             });
                             await Task.WhenAll(writes);
+                            foreach (var path in pathsToRemove)
+                                pathsToDownload.Remove(path);
                         }
                     }
 
