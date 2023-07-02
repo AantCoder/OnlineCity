@@ -1176,7 +1176,7 @@ namespace RimWorldOnlineCity
             foreach (ScenarioDef allDef in DefDatabase<ScenarioDef>.AllDefs)
             {
                 //Loger.Log($"AllowedScenarios {allDef.defName}={allDef.LabelCap}={allDef.fileName}=Name:{allDef.modContentPack.Name}=RootDir:{allDef.modContentPack.RootDir}");
-                if (allDef.modContentPack.Name != "OnlineCity") continue;
+                if (allDef.modContentPack.Name != "OnlineCity" && allDef.modContentPack.Name != "OnlineCity_Debug") continue;
                 //// старое перечисление всех ванильных
                 //if (allDef.defName == "Crashlanded"
                 //    || allDef.defName == "Tutorial"

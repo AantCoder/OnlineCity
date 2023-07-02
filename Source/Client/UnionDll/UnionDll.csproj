@@ -104,6 +104,7 @@
     <Compile Include="Transfer\Model\FactionOnline.cs" />
     <Compile Include="Transfer\Model\IModelPlace.cs" />
     <Compile Include="Transfer\Model\IPlayerEx.cs" />
+    <Compile Include="Transfer\Model\ISendable.cs" />
     <Compile Include="Transfer\Model\ModelAnyLoad.cs" />
     <Compile Include="Transfer\Model\ModelExchengeInfo.cs" />
     <Compile Include="Transfer\Model\ModelExchengeStorage.cs" />

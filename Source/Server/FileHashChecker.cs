@@ -8,117 +8,97 @@ using OCUnion.Common;
 using OCUnion.Transfer;
 using OCUnion.Transfer.Types;
 using OCUnion;
+using System.Threading.Tasks;
 
 namespace ServerOnlineCity
 {
-
+    
     public class FileHashChecker
     {
-        public class CheckedDirAndFile
+        private FolderCheck GameFolderInfo;
+        public FileChecker.FolderSummary GameFolderSummary { get; private set; }
+        public FolderCheck ConfigFolderInfo { get; private set; }
+        public FileChecker.FolderSummary ConfigFolderSummary { get; private set; }
+        public Dictionary<ulong, Tuple<FolderCheck, string, FileChecker.FolderSummary>> ModSummaries { get; private set; }
+
+        public IEnumerable<ModelFileInfo> Files
         {
-            public FolderCheck Settings { get; set; }
-            public FoldersTree FolderTree { get; set; }
-            public IReadOnlyDictionary<string, ModelFileInfo> HashFiles { get; set; }
-            public List<string> IgnoredFiles { get; set; }
-            public List<string> IgnoredFolder { get; set; }
+            get
+            {
+                if (GameFolderSummary != null)
+                    foreach (var f in GameFolderSummary.Files)
+                        yield return f;
+                if (ConfigFolderSummary != null)
+                    foreach (var f in ConfigFolderSummary.Files)
+                        yield return f;
+
+                if (ModSummaries != null)
+                {
+                    foreach (var modid in ModSummaries.Keys)
+                        foreach (var f in ModSummaries[modid].Item3.Files)
+                            yield return f;
+                }
+            }
         }
 
-        /// <summary>
-        /// key int: CodeRequest => (int)FolderType * 1000 + NumberFileRequest;
-        /// </summary>
-        public IReadOnlyDictionary<int, CheckedDirAndFile> CheckedDirAndFiles { get; private set; }
-        public IReadOnlyDictionary<FolderType, List<CheckedDirAndFile>> CheckedXMLByFolderType { get; private set; }
+        public IEnumerable<IgnorePattern> ExtensionIgnores { get; private set; }
+        public IEnumerable<IgnorePattern> FolderIgnores { get; private set; }
 
-        public FileHashChecker(ServerSettings serverSettings)
+        public static async Task<FileHashChecker> FromServerSettings(ServerSettings serverSettings)
         {
-            if (!serverSettings.IsModsWhitelisted)
+            var result = new FileHashChecker();
+            var extensionIgnores = new List<IgnorePattern>();
+            var folderIgnores = new List<IgnorePattern>();
+
+            if (serverSettings.EqualFiles.Any((f) => f.FolderType == FolderType.GamePath))
             {
-                return;
+                if (serverSettings.EqualFiles.Where((f) => f.FolderType == FolderType.GamePath).Count() > 1)
+                    throw new Exception("No support for having multiple GamePath folders.");
+
+                var folderInfo = serverSettings.EqualFiles.Where((f) => f.FolderType == FolderType.GamePath).First();
+                result.GameFolderInfo = folderInfo;
+                result.GameFolderSummary = await FileChecker.FolderSummary.FromFolder(folderInfo.ServerPath.Replace("\\", "" + Path.DirectorySeparatorChar), FolderType.GamePath, 0, folderInfo.IgnoreFolder ?? Enumerable.Empty<string>(), folderInfo.IgnoreFile ?? Enumerable.Empty<string>());
+
+                folderIgnores.AddRange((folderInfo.IgnoreFolder ?? Enumerable.Empty<string>()).Select((t) => new IgnorePattern() { FolderType = FolderType.GamePath, Pattern = t }));
+                extensionIgnores.AddRange((folderInfo.IgnoreFile ?? Enumerable.Empty<string>()).Select((t) => new IgnorePattern() { FolderType = FolderType.GamePath, Pattern = t }));
+            }
+            if (serverSettings.EqualFiles.Any((f) => f.FolderType == FolderType.ModsConfigPath))
+            {
+                if (serverSettings.EqualFiles.Where((f) => f.FolderType == FolderType.ModsConfigPath).Count() > 1)
+                    throw new Exception("No support for having multiple ModsConfigPath folders.");
+
+                var folderInfo = serverSettings.EqualFiles.Where((f) => f.FolderType == FolderType.ModsConfigPath).First();
+                result.ConfigFolderInfo = folderInfo;
+                result.ConfigFolderSummary = await FileChecker.FolderSummary.FromFolder(folderInfo.ServerPath.Replace("\\", "" + Path.DirectorySeparatorChar), FolderType.ModsConfigPath, 0, folderInfo.IgnoreFolder ?? Enumerable.Empty<string>(), folderInfo.IgnoreFile ?? Enumerable.Empty<string>());
+
+                folderIgnores.AddRange((folderInfo.IgnoreFolder ?? Enumerable.Empty<string>()).Select((t) => new IgnorePattern() { FolderType = FolderType.ModsConfigPath, Pattern = t }));
+                extensionIgnores.AddRange((folderInfo.IgnoreFile ?? Enumerable.Empty<string>()).Select((t) => new IgnorePattern() { FolderType = FolderType.ModsConfigPath, Pattern = t }));
             }
 
-            var result = new Dictionary<int, CheckedDirAndFile>();
-            var resultXML = new Dictionary<FolderType, List<CheckedDirAndFile>>();
-
-            foreach (var setting in serverSettings.EqualFiles)
+            if (serverSettings.EqualFiles.Any((f) => f.FolderType == FolderType.ModsFolder))
             {
-                var folderTree = FoldersTree.GenerateTree(setting.ServerPath);
+                result.ModSummaries = new Dictionary<ulong, Tuple<FolderCheck, string, FileChecker.FolderSummary>>();
+                var modFolders = serverSettings.EqualFiles.Where((f) => f.FolderType == FolderType.ModsFolder);
+                foreach (var modFolder in modFolders)
+                {
 
-                if (setting.IgnoreTag != null && setting.IgnoreTag.Count > 0)
-                {
-                    continue;
-                }
-                else
-                {
-                    result.Add((int)setting.FolderType * 1000, new CheckedDirAndFile()
+                    var modTasks = FileChecker.FolderSummary.HashModFolder(modFolder.ServerPath.Replace("\\", "" + Path.DirectorySeparatorChar), modFolder.IgnoreFolder ?? Enumerable.Empty<string>(), modFolder.IgnoreFile ?? Enumerable.Empty<string>());
+                    foreach (var t in modTasks)
                     {
-                        Settings = setting,
-                        FolderTree = folderTree,
-                        HashFiles = getFiles(setting.ServerPath, setting.IgnoreFile, setting.IgnoreFolder),
-                        IgnoredFiles = setting.IgnoreFile,
-                        IgnoredFolder = setting.IgnoreFolder,
-                    });
-                }
-            }
+                        Console.WriteLine("Hashing: {0}\\{1}", modFolder.ServerPath, t.Item1);
+                        var summary = await t.Item2;
 
-            foreach (var setting in serverSettings.EqualFiles)
-            {
-                if (setting.IgnoreTag != null && setting.IgnoreTag.Count > 0)
-                {
-                    //Это не дериктория, а один XML файл
-                    var ni = new CheckedDirAndFile()
-                    {
-                        Settings = setting,
-                        //больше ничего не устанавилвается, т.к. брем отдельно из настроек
-                    };
-                    if (!resultXML.ContainsKey(setting.FolderType)) resultXML.Add(setting.FolderType, new List<CheckedDirAndFile>());
-                    resultXML[setting.FolderType].Add(ni);
-                    result.Add((int)setting.FolderType * 1000 + resultXML[setting.FolderType].Count, ni);
-                    //убираем файл из списка стандартной синхронизации
-                    if (result.ContainsKey((int)setting.FolderType * 1000))
-                    {
-                        result[(int)setting.FolderType * 1000].IgnoredFiles.Add(setting.XMLFileName);
+                        result.ModSummaries[summary.ModId] = new Tuple<FolderCheck, string, FileChecker.FolderSummary>(modFolder, Path.Combine(modFolder.ServerPath.Replace("\\", "" + Path.DirectorySeparatorChar), t.Item1), summary);
                     }
-                }
-                else
-                {
-                    continue;
-                }
-            }
-            CheckedDirAndFiles = result;
-            CheckedXMLByFolderType = resultXML;
-        }
 
-        private void writeFolderNameToServerLog(string folderName, int folderindex)
-        {
-            Loger.Log($"Check {folderName}");
-        }
-
-        private IReadOnlyDictionary<string, ModelFileInfo> getFiles(string directory, List<string> ignores, List<string> ignoreFolder)
-        {
-            var checkedFiles = FileChecker.GenerateHashFiles(directory, writeFolderNameToServerLog, ignoreFolder);
-            var files = checkedFiles
-                .Where(x => !FileNameContainsIgnored(new FileInfo(x.FileName).Name, ignores, ignoreFolder));
-
-            var res = files.ToDictionary(f => f.FileName.ToLower());
-            Loger.Log($"Hashed {res.Count} files from ModsDirectory={directory}");
-            return res;
-        }
-
-        public static bool FileNameContainsIgnored(string fileName, List<string> ignored, List<string> ignoreFolder)
-        {
-            if (FileChecker.IsIgnoreFolder(fileName, ignoreFolder))
-            {
-                return true;
-            }
-            foreach (var ignoredFName in ignored)
-            {
-                if (fileName.ToLower().EndsWith(ignoredFName.ToLower()))
-                {
-                    return true;
+                    folderIgnores.AddRange((modFolder.IgnoreFolder ?? Enumerable.Empty<string>()).Select((t) => new IgnorePattern() { FolderType = FolderType.ModsFolder, Pattern = t }));
+                    extensionIgnores.AddRange((modFolder.IgnoreFile ?? Enumerable.Empty<string>()).Select((t) => new IgnorePattern() { FolderType = FolderType.ModsFolder, Pattern = t }));
                 }
             }
+            result.ExtensionIgnores = extensionIgnores;
+            result.FolderIgnores = folderIgnores;
 
-            return false;
+            return result;
         }
 
     }

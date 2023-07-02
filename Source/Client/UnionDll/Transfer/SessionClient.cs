@@ -8,6 +8,8 @@ using Util;
 using Model;
 using OCUnion.Transfer.Model;
 using OCUnion.Transfer;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Transfer
 {
@@ -52,10 +54,9 @@ namespace Transfer
             Client = null;
         }
 
-        public bool Connect(string addr, int port = 0)
+        public void Connect(string addr, int port)
         {
             ErrorMessage = null;
-            if (port == 0) port = DefaultPort;
             try
             {
                 IsLogined = false;
@@ -101,15 +102,13 @@ namespace Transfer
                         cl.ReceiveBytes();
                     }
                 });
-
-                return true;
             }
             catch (Exception e)
             {
                 ErrorMessage = e.Message
                     + (e.InnerException == null ? "" : " -> " + e.InnerException.Message);
                 ExceptionUtil.ExceptionLog(e, "Client");
-                return false;
+                throw;
             }
         }
 
@@ -172,32 +171,35 @@ namespace Transfer
         /// </summary>
         private ModelContainer Trans(ModelContainer sendObj)
         {
+            if (Client == null)
+                throw new ApplicationException("Session is not connected.");
+
             lock (LockObj)
             {
                 ErrorMessage = null;
 
                 var time1 = DateTime.UtcNow;
-
+                
                 var ob = GZip.ZipObjByte(sendObj); //Serialize
                 var send = CryptoProvider.SymmetricEncrypt(ob, Key);
-
+                
                 if (send.Length > 1024 * 512) Loger.Log($"Client Network toS {send.Length} unzip {GZip.LastSizeObj} ");
                 var time2 = DateTime.UtcNow;
-
+                
                 Client.SendMessage(send);
-
+                
                 var time3 = DateTime.UtcNow;
-
+                
                 var rec = Client.ReceiveBytes();
-
+                
                 var time4 = DateTime.UtcNow;
-
+                
                 var rec2 = CryptoProvider.SymmetricDecrypt(rec, Key);
-
+                
                 var time5 = DateTime.UtcNow;
-
+                
                 var res = (ModelContainer)GZip.UnzipObjByte(rec2); //Deserialize
-
+                
                 var time6 = DateTime.UtcNow;
                 if (rec.Length > 1024 * 512) Loger.Log($"Client Network fromS {rec.Length} unzip {GZip.LastSizeObj} ");
 
@@ -241,7 +243,7 @@ namespace Transfer
                 ErrorMessage = e.Message
                     + (e.InnerException == null ? "" : " -> " + e.InnerException.Message);
                 ExceptionUtil.ExceptionLog(e, "Client");
-                return null;
+                throw;
             }
         }
 
@@ -249,6 +251,12 @@ namespace Transfer
             where T : class
         {
             return TransObject<T>(objOut, (int)typeOut, (int)typeIn);
+        }
+
+        public Task<R> TransAsync<T, R>(T objOut) where T : ISendable where R : class, ISendable, new()
+        {
+            var inCode = new R().PackageType;
+            return Task.Factory.StartNew(() => TransObject2<R>(objOut, objOut.PackageType, inCode), new CancellationTokenSource().Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         /// <summary>
@@ -266,41 +274,40 @@ namespace Transfer
             }
             return stat != null;
         }
+        private async Task TransStatusAsync(object objOut, PackageType typeOut, PackageType typeIn)
+        {
+            var stat = await Task.Factory.StartNew(() => TransObject<ModelStatus>(objOut, (int)typeOut, (int)typeIn), new CancellationTokenSource().Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            if (stat == null)
+                throw new ApplicationException("Server did not send a response.");
+            if (stat.Status != 0)
+                throw new ApplicationException(stat.Message);
+        }
         #endregion
 
-        public bool Registration(string login, string pass, string email)
+        public async Task Registration(string login, string pass, string email)
         {
             var packet = new ModelLogin() { Login = login, Pass = pass, Email = email, Version = MainHelper.VersionNum };
-            var good = TransStatus(packet, (int)PackageType.Request1Register, (int)PackageType.Response2Register);
+            await TransStatusAsync(packet, PackageType.Request1Register, PackageType.Response2Register);
 
-            if (good)
-            {
-                IsLogined = true;
-                LoginTime = DateTime.UtcNow;
-            }
-            return good;
+            IsLogined = true;
+            LoginTime = DateTime.UtcNow;
         }
 
-        public bool Login(string login, string pass, string email)
+        public async Task Login(string login, string pass, string email)
         {
             var packet = new ModelLogin() { Login = login, Pass = pass, Email = email, Version = MainHelper.VersionNum };
-            var good = TransStatus(packet, (int)PackageType.Request3Login, (int)PackageType.Response4Login);
-
-            if (good)
-            {
-                IsLogined = true;
-                LoginTime = DateTime.UtcNow;
-            }
-            return good;
+            await TransStatusAsync(packet, PackageType.Request3Login, PackageType.Response4Login);
+            
+            IsLogined = true;
+            LoginTime = DateTime.UtcNow;
         }
 
-        public bool Reconnect(string login, string key, string email)
+        public async Task Reconnect(string login, string key, string email)
         {
             var packet = new ModelLogin() { Login = login, KeyReconnect = key, Email = email };
-            var good = TransStatus(packet, (int)PackageType.Request3Login, (int)PackageType.Response4Login);
+            await TransStatusAsync(packet, PackageType.Request3Login, PackageType.Response4Login);
 
-            if (good) IsLogined = true;
-            return good;
+            IsLogined = true;
         }
 
         public ModelInfo GetInfo(ServerInfoType serverInfoType)

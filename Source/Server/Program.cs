@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ServerOnlineCity
 {
@@ -11,7 +12,7 @@ namespace ServerOnlineCity
     {
         private static ServerManager Manager;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); // fix error encoding 1252 from encoding with netcore framework
 
@@ -23,7 +24,7 @@ namespace ServerOnlineCity
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
             Manager = new ServerManager();
-            if (!Manager.StartPrepare(workPath)) return;
+            if (!await Manager.StartPrepare(workPath)) return;
 
             var th = new Thread(CommandInput);
             th.IsBackground = true;

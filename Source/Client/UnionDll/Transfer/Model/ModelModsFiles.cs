@@ -1,54 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 
 namespace OCUnion.Transfer.Model
 {
     [Serializable]
-    public class ModelModsFilesRequest
+    public class ModelModsFilesRequest : ISendable
     {
-        /// <summary>
-        /// Дерево каталогов которое требуется восстановить
-        /// </summary>
-        public FolderType FolderType { get; set; }
+        [Serializable]
+        public class FileQuery
+        {
+            public FolderType SourceDirectory { get; set; }
+            public ulong ModId { get; set; }
+            public string RelativePath { get; set; }
 
-        /// <summary>
-        /// После основного запроса на файлы из дериктории с 0, идут запросы на синхронизацию XML файлов
-        /// </summary>
-        public int NumberFileRequest { get; set; }
+        }
+        public enum RequestType
+        {
+            HashInfo = 0,
+            FileData,
+        }
+        public PackageType PackageType => PackageType.Request35ListFiles;
 
-        public int CodeRequest => (int)FolderType * 1000 + NumberFileRequest;
-
-        /// <summary>
-        /// Файлы которые находятся в этих директориях
-        /// </summary>
-        public List<ModelFileInfo> Files { get; set; }
+        public RequestType Type { get; set; }
+        public List<FileQuery> FileQueries { get; set; }
     }
 
     [Serializable]
-    public class ModelModsFilesResponse
+    public class ModelModsFilesResponse : ISendable
     {
-        public FolderCheck Folder { get; set; }
+        [Serializable]
+        public class HashInfo
+        {
+            /// <summary>
+            /// Файлы которые находятся в этих директориях
+            /// </summary>
+            public List<ModelFileInfo> Files { get; set; }
 
-        /// <summary>
-        /// Дерево каталогов которое требуется восстановить
-        /// </summary>
-        public FoldersTree FoldersTree { get; set; }
+            public List<IgnorePattern> FolderIgnores { get; set; }
+            public List<IgnorePattern> ExtensionIgnores { get; set; }
+        }
 
-        /// <summary>
-        /// Файлы которые находятся в этих директориях
-        /// </summary>
-        public List<ModelFileInfo> Files { get; set; }
+        [Serializable]
+        public class FileEntry
+        {
+            public FolderType SourceDirectory { get; set; }
+            public ulong ModId { get; set; }
+            public string RelativePath { get; set; }
+            public byte[] GZippedData { get; set; }
+        }
 
-        /// <summary>
-        /// Какой объем остался к отправке, без текущего пакета
-        /// </summary>
-        public long TotalSize { get; set; }
+        [Serializable]
+        public class FileData
+        {
+            public List<FileEntry> Entries { get; set; }
+        }
 
-        /// <summary>
-        /// Если задано, то в Path путь к XML файлу, у которого содержимое заданых тэгов не сравнивается
-        /// </summary>
-        public List<string> IgnoreTag { get; set; }
+        public PackageType PackageType => PackageType.Response36ListFiles;
+
+        public HashInfo Hashes { get; set; }
+        public FileData Contents { get; set; }
+    }
+
+    [Serializable]
+    public class IgnorePattern
+    {
+        public FolderType FolderType { get; set; }
+        public string Pattern { get; set; }
     }
 
 

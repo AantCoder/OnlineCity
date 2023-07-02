@@ -22,6 +22,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\BuildOutput\Client\Release</OutputPath>
@@ -119,7 +120,6 @@
   <ItemGroup>
     <Compile Include="AncillaryUtil.cs" />
     <Compile Include="ChatController.cs" />
-    <Compile Include="ClientHashCheck\ClientFileCheckerFactory.cs" />
     <Compile Include="ClientHashCheck\ClientFileChecker.cs" />
     <Compile Include="CommunicationConsole.cs" />
     <Compile Include="GameClasses\DebugSettingsDefault.cs" />
@@ -161,13 +161,12 @@
     <Compile Include="GameClasses\WorldObjectBaseOnline.cs" />
     <Compile Include="Lib\RenderMap.cs" />
     <Compile Include="MailController.cs" />
-    <Compile Include="Model\ClientHashCheckerResult.cs" />
     <Compile Include="Services\AnyLoad.cs" />
-    <Compile Include="Services\ClientHashChecker.cs" />
     <Compile Include="Services\IOnlineCityClientService.cs" />
     <Compile Include="Services\SetPlayerInfo.cs" />
     <Compile Include="SessionClient.cs" />
     <Compile Include="SnapshotColony.cs" />
+    <Compile Include="UI\AsyncDialog.cs" />
     <Compile Include="UI\DevelopTest.cs" />
     <Compile Include="GameAttacker.cs" />
     <Compile Include="GameClasses\Harmony\GameAttackTrigger.cs" />
@@ -182,7 +181,9 @@
     <Compile Include="UI\Dialog_BaseOnlineButton.cs" />
     <Compile Include="UI\Dialog_Exchenge.cs" />
     <Compile Include="UI\Dialog_InfoPlayer.cs" />
+    <Compile Include="UI\AsyncDialog_Input.cs" />
     <Compile Include="UI\Dialog_InputImage.cs" />
+    <Compile Include="UI\Dialog_LoginForm.cs" />
     <Compile Include="UI\Dialog_Scenario.cs" />
     <Compile Include="UI\Dialog_TextOut.cs" />
     <Compile Include="UI\Dialog_SelectThingDef.cs" />
@@ -191,7 +192,6 @@
     <Compile Include="UI\DialogControlBase.cs" />
     <Compile Include="UI\Dialog_CreateWorld.cs" />
     <Compile Include="UI\Dialog_Input.cs" />
-    <Compile Include="UI\Dialog_LoginForm.cs" />
     <Compile Include="UI\Dialog_MainOnlineCity.cs" />
     <Compile Include="UI\Dialog_Registration.cs" />
     <Compile Include="UI\GeneralTexture.cs" />
@@ -200,6 +200,7 @@
     <Compile Include="UI\PanelInfoPlayer.cs" />
     <Compile Include="UI\PanelProfilePlayer.cs" />
     <Compile Include="UI\PanelText.cs" />
+    <Compile Include="UI\StatusWindow.cs" />
     <Compile Include="UI\TagBtn.cs" />
     <Compile Include="UI\ScrollPanel.cs" />
     <Compile Include="UI\TextFieldNumericBox.cs" />

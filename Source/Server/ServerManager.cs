@@ -20,6 +20,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace ServerOnlineCity
 {
@@ -28,8 +30,8 @@ namespace ServerOnlineCity
         public int MaxActiveClientCount = 10000; //to do провверить корректность дисконнекта
         public static ServerSettings ServerSettings = new ServerSettings();
 
-        public static FileHashChecker FileHashChecker;
-       
+        public static FileHashChecker HashChecker;
+
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
 
@@ -82,7 +84,7 @@ namespace ServerOnlineCity
             return Path.Combine(path, "World.dat");
         }
 
-        public bool StartPrepare(string path)
+        public async Task<bool> StartPrepare(string path)
         {
             var jsonFile = GetSettingsFileName(path);
             if (!File.Exists(jsonFile))
@@ -143,7 +145,7 @@ namespace ServerOnlineCity
             rep.SaveFileName = GetWorldFileName(path);
             rep.Load();
             CheckDiscrordUser();
-            FileHashChecker = new FileHashChecker(ServerSettings);
+            HashChecker = await FileHashChecker.FromServerSettings(ServerSettings);
 
             return true;
         }

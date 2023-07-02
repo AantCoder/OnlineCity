@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using OCUnion;
 using OCUnion.Transfer;
 using OCUnion.Transfer.Model;
@@ -22,164 +25,107 @@ namespace ServerOnlineCity.Services
         {
             if (context.Player == null) return null;
             var result = new ModelContainer() { TypePacket = ResponseTypePackage };
-            result.Packet = checkFiles((ModelModsFilesRequest)request.Packet, context);
+            result.Packet = checkFiles((ModelModsFilesRequest)request.Packet, context).Result;
             return result;
         }
 
-        private ModelModsFilesResponse checkFiles(ModelModsFilesRequest packet, ServiceContext context)
+        private async Task<ModelModsFilesResponse> checkFiles(ModelModsFilesRequest packet, ServiceContext context)
         {
-            if (!ServerManager.FileHashChecker.CheckedDirAndFiles.TryGetValue(
-                packet.CodeRequest,
-                out var checkedDirAndFile))
+            // Hash fetch
+            if (packet.Type == ModelModsFilesRequest.RequestType.HashInfo)
             {
-                //отвечаем всё ок ничего не нужно синхронить
                 return new ModelModsFilesResponse()
                 {
-                    Folder = new FolderCheck() { FolderType = packet.FolderType },
-                    Files = new List<ModelFileInfo>(),
-                    FoldersTree = new FoldersTree(),
-                    TotalSize = 0
+                    Hashes = new ModelModsFilesResponse.HashInfo()
+                    {
+                        Files = ServerManager.HashChecker.Files.ToList(),
+                        ExtensionIgnores = ServerManager.HashChecker.ExtensionIgnores.ToList(),
+                        FolderIgnores = ServerManager.HashChecker.FolderIgnores.ToList(),
+                    },
                 };
             }
+            if (packet.FileQueries == null)
+                return new ModelModsFilesResponse();
 
-            var result = new List<ModelFileInfo>();
-
-            if (packet.CodeRequest % 1000 == 0)
+            // Client wants downloads
+            long sizeLeft = MaxPacketSize;
+            var response = new ModelModsFilesResponse()
             {
-                var allServerFiles = new HashSet<string>(checkedDirAndFile.HashFiles.Keys);
-                var packetFiles = packet.Files != null ? packet.Files : new List<ModelFileInfo>(0);
-                long packetSize = 0;
-                long totalSize = 0;
+                Contents = new ModelModsFilesResponse.FileData(),
+            };
+            var configRequests = packet.FileQueries.Where((q) => q.SourceDirectory != FolderType.ModsFolder);
+            var modRequests = packet.FileQueries.Where((q) => q.SourceDirectory == FolderType.ModsFolder);
+            var toSend = new List<ModelFileInfo>();
 
-                foreach (var modelFile in packetFiles)
+            foreach (var configRequest in configRequests)
+            {
+                var hash = ServerManager.HashChecker.ConfigFolderSummary.Files.FirstOrDefault((f) => f.SourceFolder == configRequest.SourceDirectory && f.RelativePath == configRequest.RelativePath);
+                if (hash == null)
+                    return new ModelModsFilesResponse();
+
+                if (hash.Size > sizeLeft && toSend.Count != 0)
+                    continue;
+
+                sizeLeft -= hash.Size;
+                toSend.Add(hash);
+            }
+            foreach (var modRequest in modRequests)
+            {
+                if (!ServerManager.HashChecker.ModSummaries.ContainsKey(modRequest.ModId))
+                    return new ModelModsFilesResponse();
+
+                var modSummary = ServerManager.HashChecker.ModSummaries[modRequest.ModId];
+                var hash = modSummary.Item3.Files.FirstOrDefault(f => f.RelativePath == modRequest.RelativePath);
+                if (hash == null)
+                    return new ModelModsFilesResponse();
+
+                if (hash.Size > sizeLeft && toSend.Count != 0)
+                    continue;
+
+                sizeLeft -= hash.Size;
+                toSend.Add(hash);
+            }
+
+            // Read and compress files for sending
+            var reads = toSend.Select((todo) =>
+            {
+                string path = null;
+                if (todo.SourceFolder == FolderType.ModsConfigPath)
+                    path = Path.Combine(ServerManager.HashChecker.ConfigFolderInfo.ServerPath.Replace("\\", "" + Path.DirectorySeparatorChar), todo.RelativePath);
+                else if (todo.SourceFolder == FolderType.ModsFolder)
                 {
-                    var modelFileFileName = modelFile.FileName.ToLower();
-                    if (FileHashChecker.FileNameContainsIgnored(modelFileFileName, checkedDirAndFile.IgnoredFiles
-                        , checkedDirAndFile.IgnoredFolder))
-                    {
-                        continue;
-                    }
-
-                    if (checkedDirAndFile.HashFiles.TryGetValue(modelFileFileName, out ModelFileInfo fileInfo))
-                    {
-                        allServerFiles.Remove(modelFileFileName); // 
-
-                        if (!ModelFileInfo.UnsafeByteArraysEquale(modelFile.Hash, fileInfo.Hash))
-                        {
-                            // read file for send to Client      
-                            // файл  найден, но хеши не совпадают, необходимо заменить файл
-                            if (packetSize < MaxPacketSize)
-                            {
-                                var addFile = GetFile(checkedDirAndFile.Settings.ServerPath, fileInfo.FileName, checkedDirAndFile.Settings.NeedReplace);
-                                result.Add(addFile);
-                                packetSize += addFile.Size;
-                                totalSize += addFile.Size;
-                                //Loger.Log($"packetSize={packetSize} totalSize={totalSize}");
-                            }
-                            else
-                            {
-                                var size = GetFileSize(checkedDirAndFile.Settings.ServerPath, fileInfo.FileName);
-                                totalSize += size;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // mark file for delete 
-                        // Если файл с таким именем не найден, помечаем файл на удаление
-                        modelFile.Hash = null;
-                        modelFile.NeedReplace = checkedDirAndFile.Settings.NeedReplace;
-                        result.Add(modelFile);
-                    }
+                    var modSummary = ServerManager.HashChecker.ModSummaries[todo.ModId];
+                    path = Path.Combine(modSummary.Item2, todo.RelativePath);
                 }
+                else
+                    throw new NotImplementedException();
 
-                lock (context.Player)
+                return Task.Factory.StartNew(() =>
                 {
-                    // проверяем в обратном порядке: что бы у клиенты были все файлы
-                    if (allServerFiles.Any())
+                    var dest = new MemoryStream();
+                    using (var f = File.OpenRead(path))
                     {
-                        foreach (var fileName in allServerFiles)
-                        {
-                            if (FileHashChecker.FileNameContainsIgnored(fileName, checkedDirAndFile.IgnoredFiles
-                                , checkedDirAndFile.IgnoredFolder))
-                            {
-                                continue;
-                            }
-
-                            context.Player.ApproveLoadWorldReason = false;
-
-                            if (packetSize < MaxPacketSize)
-                            {
-                                var addFile = GetFile(checkedDirAndFile.Settings.ServerPath
-                                    , checkedDirAndFile.HashFiles[fileName].FileName
-                                    , checkedDirAndFile.Settings.NeedReplace); //workDict[fileName].FileName вместо fileName для восстановления заглавных
-                                result.Add(addFile);
-                                packetSize += addFile.Size;
-                                totalSize += addFile.Size;
-                                //Loger.Log($"packetSize={packetSize} totalSize={totalSize}");
-                            }
-                            else
-                            {
-                                var size = GetFileSize(checkedDirAndFile.Settings.ServerPath, checkedDirAndFile.HashFiles[fileName].FileName);
-                                totalSize += size;
-                            }
-                        }
+                        var gzipper = new GZipStream(dest, CompressionLevel.Fastest);
+                        f.CopyTo(gzipper);
+                        gzipper.Close();
                     }
-
-                    // Если файлы не прошли проверку, помечаем флагом, запрет загрузки мира
-                    if (result.Any())
+                    var buffer = dest.ToArray();
+                    return new ModelModsFilesResponse.FileEntry()
                     {
-                        context.Player.ApproveLoadWorldReason = false;
-                    }
-                }
+                        GZippedData = buffer,
+                        ModId = todo.ModId,
+                        RelativePath = todo.RelativePath,
+                        SourceDirectory = todo.SourceFolder,
+                    };
+                }, TaskCreationOptions.LongRunning);
 
-                return new ModelModsFilesResponse()
-                {
-                    Folder = checkedDirAndFile.Settings,
-                    Files = result,
-                    // микроптимизация: если файлы не будут восстанавливаться, не отправляем обратно список папок
-                    // на восстановление ( десериализацию папок также тратится время)
-                    FoldersTree = result.Any() ? checkedDirAndFile.FolderTree : new FoldersTree(),
-                    TotalSize = totalSize,
-                };
-            }
-            else
-            {
-                var addFile = GetFile(checkedDirAndFile.Settings.ServerPath, checkedDirAndFile.Settings.XMLFileName, true);
-                addFile.NeedReplace = checkedDirAndFile.Settings.NeedReplace;
-                result.Add(addFile);
+            }).ToArray();
+            response.Contents.Entries = (await Task.WhenAll(reads)).ToList();
 
-                return new ModelModsFilesResponse()
-                {
-                    Folder = checkedDirAndFile.Settings,
-                    Files = result,
-                    FoldersTree = new FoldersTree(),
-                    TotalSize = 0,
-                    IgnoreTag = checkedDirAndFile.Settings.IgnoreTag
-                };
-            }
+            return response;
+
+            
         }
-
-        private ModelFileInfo GetFile(string rootDir, string fileName, bool needReplace)
-        {
-            var newFile = new ModelFileInfo() { FileName = fileName, NeedReplace = needReplace };
-            if (needReplace)
-            {
-                var fullname = Path.Combine(rootDir, fileName.Replace("\\", "" + Path.DirectorySeparatorChar));
-                newFile.Hash = File.ReadAllBytes(fullname);
-                newFile.Size = newFile.Hash.Length;
-            }
-            else
-            {
-                newFile.Size = GetFileSize(rootDir, fileName);
-            }
-            return newFile;
-        }
-
-        private long GetFileSize(string rootDir, string fileName)
-        {
-            var fullname = Path.Combine(rootDir, fileName);
-            return new FileInfo(fullname).Length;
-        }
+        
     }
 }
