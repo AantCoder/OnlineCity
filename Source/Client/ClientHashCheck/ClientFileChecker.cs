@@ -346,6 +346,18 @@ namespace RimWorldOnlineCity.ClientHashCheck
                 var dirtyMods = modAdditions.Select(h => h.ModId).Concat(modRemovals.Select(h => h.ModId)).ToHashSet();
                 foreach(var modId in dirtyMods)
                 {
+                    if (!modSummaries.ContainsKey(modId))
+                    {
+                        changes.Add(new ChangeSet(
+                             FolderType.ModsFolder,
+                             modId,
+                             Enumerable.Empty<string>(),
+                             remoteRemappedHashes.Where(h => h.ModId == modId).Select(h => new Tuple<string, string>(h.RemoteRelativePath, h.LocalRelativePath)),
+                             Path.Combine(GenFilePaths.ModsFolderPath, modId.ToString()),
+                             Path.Combine(GenFilePaths.ModsFolderPath, modId.ToString())
+                         ));
+                        continue;
+                    }
                     var modSummary = modSummaries[modId];
                     if (localMods.Contains(modId))
                     {
