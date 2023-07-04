@@ -42,11 +42,11 @@ namespace ServerOnlineCity.Services
 
                     case (long)ServerInfoType.SendSave:
                         {
-                            if (context.PossiblyIntruder)
-                            {
-                                context.Disconnect("Possibly intruder");
-                                return null;
-                            }
+                            //if (context.PossiblyIntruder)
+                            //{
+                            //    context.Disconnect("Possibly intruder");
+                            //    return null;
+                            //}
                             var result = new ModelInfo();
                             //передача файла игры, для загрузки WorldLoad();
                             // файл передать можно только в том случае если файлы прошли проверку

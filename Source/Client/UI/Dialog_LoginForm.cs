@@ -9,11 +9,18 @@ using Verse.Sound;
 using OCUnion;
 using HugsLib;
 using RimWorldOnlineCity.UI;
+using System.Threading.Tasks;
 using System.Threading;
 
 namespace RimWorldOnlineCity
 {
-    public class Dialog_LoginForm : Window
+    public struct LoginFormResult
+    {
+        public string hostname;
+        public string username;
+        public string password;
+    }
+    public class Dialog_LoginForm : AsyncDialog<LoginFormResult>
     {
         private string InputName = "";
         private string InputAddr = "";
@@ -30,67 +37,26 @@ namespace RimWorldOnlineCity
             get { return new Vector2(500f, 400f); }
         }
 
-        public Dialog_LoginForm(bool needApprove = false)
+        public static Task<LoginFormResult> GetAsync(string hostname = "", string username = "", string password = "")
         {
-            InputAddr = ModBaseData.GlobalData?.LastIP?.Value ?? "";
-            InputLogin = ModBaseData.GlobalData?.LastLoginName?.Value ?? "";
-            if (string.IsNullOrEmpty(InputAddr))
+            var completionSource = new TaskCompletionSource<LoginFormResult>();
+            ModBaseData.Scheduler.Schedule(() =>
             {
-                InputAddr = MainHelper.DefaultIP ?? "";
-            }
+                Find.WindowStack.Add(new Dialog_LoginForm(completionSource, hostname, username, password));
+            });
+            return completionSource.Task;
+        }
+        private Dialog_LoginForm(TaskCompletionSource<LoginFormResult> completionSource, string hostname = "", string username = "", string password = "") : base(completionSource)
+        {
+            InputAddr = hostname;
+            InputLogin = username;
+            InputPassword = password;
             InputName = MainHelper.ServerList.FirstOrDefault(p => p.Value == InputAddr).Key ?? "";
-            //Loger.Log("login/beg " + StorageData.GlobalData.LastIP.Value);
-            closeOnCancel = false;
-            closeOnAccept = false;
-            doCloseButton = false;
-            doCloseX = true;
-            resizeable = false;
-            draggable = true;
-            if (needApprove) SetNeedWaitApprove();
         }
 
-        public override void PreOpen()
-        {
-            base.PreOpen();
-        }
-
-        public override void PostClose()
-        {
-        }
-
-        //PanelText text = null;
         public override void DoWindowContents(Rect inRect)
         {
-            /*
-            if (text == null)
-            {
-                text = new PanelText()
-                {
-                    PrintText = @"OOOOOOOOOO
-OOOOOOOOOO
-<img ColonyOffExpanding7> OOOOOOOOOO OOOOOOOOOO<btn name=test arg=qwe312> OOOOOOOOOO<img name=ColonyOn height=50> OOOOOOOOOO </btn>OOOOOOOOOO"
-                };
-                text.Btns.Add("test", new TagBtn()
-                {         
-                    Name = "test",
-                    HighlightIsOver = true,
-                    Tooltip = "Test tooltip",
-                    ActionClick = (s) => Find.WindowStack.Add(new Dialog_Input("Test title", "Test text: " + s, true))
-                });
-            }
-            text.Drow(inRect);
-            return;
-            */
-
-            const float categoryPadding = 10f;
-            const float categoryInset = 30f;
-            const float radioLabelInset = 40f;
             const float mainListingSpacing = 6f;
-            const float subListingSpacing = 6f;
-            const float subListingLabelWidth = 100f;
-            const float subListingRowHeight = 30f;
-            const float checkboxListingWidth = 280f;
-            const float listingColumnSpacing = 17f;
 
             var btnSize = new Vector2(140f, 40f);
             var buttonYStart = inRect.height - btnSize.y;
@@ -101,38 +67,13 @@ OOOOOOOOOO
                 || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return
                 || NeedApprove && (DateTime.UtcNow - Refresh).TotalSeconds > RefreshSeconds)
             {
-                Refresh = DateTime.UtcNow;
-                var msgError = SessionClientController.Login(InputAddr, InputLogin, InputPassword
-                    , (bool needApprove) =>
-                    {
-                        SessionClientController.LoginInNewServerIP = ModBaseData.GlobalData?.LastIP?.Value != InputAddr;
-                        if (ModBaseData.GlobalData?.LastIP != null)
-                        {
-                            ModBaseData.GlobalData.LastIP.Value = InputAddr;
-                            ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
-                            HugsLibController.SettingsManager.SaveChanges();
-                        }
-
-                        if (needApprove) SetNeedWaitApprove();
-                        else NeedApprove = false;
-
-                        return true;
-                    });
-                if (msgError == null)
-                {
-                    //Loger.Log("login " + StorageData.GlobalData.LastIP.Value);
-                    Close();
-                }
-                if (string.IsNullOrEmpty(msgError))
-                {
-                    NeedApprove = false;
-                }
+                Accept(new LoginFormResult() { hostname = InputAddr, username = InputLogin, password = InputPassword });
             }
 
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 2, buttonYStart, btnSize.x, btnSize.y), "OCity_LoginForm_Register".Translate()))
             {
                 Close();
-                Find.WindowStack.Add(new Dialog_Registration());
+                _ = SessionClientController.DoUserRegistration();
             }
 
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x, buttonYStart, btnSize.x, btnSize.y), "OCity_LoginForm_Close".Translate()))

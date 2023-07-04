@@ -64,7 +64,7 @@ namespace ServerOnlineCity
                 || !key.Contains("@@@"))
             {
                 context.PossiblyIntruder = true;
-                Loger.Log($"Is possibly intruder or not update {login} (empty key)", Loger.LogLevel.WARNING);
+                Loger.Log($"Is possibly intruder or not update {login} (empty key) -- key null or does not contain @@@", Loger.LogLevel.WARNING);
                 return key;
             }
             else
@@ -90,7 +90,7 @@ namespace ServerOnlineCity
                 {
                     //копия блока выше
                     context.PossiblyIntruder = true;
-                    Loger.Log($"Is possibly intruder or not update {login} (empty keys)", Loger.LogLevel.WARNING);
+                    Loger.Log($"Is possibly intruder or not update {login} (empty keys) -- No keys retrieved from login attempt", Loger.LogLevel.WARNING);
                     return key;
                 }
 

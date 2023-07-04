@@ -47,7 +47,7 @@ namespace RimWorldOnlineCity
             var dir = Loger.PathLog.Substring(0, Loger.PathLog.Length - 1);
             var fileName = $"Log_{DateTime.Now.ToString("yyyy-MM-dd")}_*.txt";
             var list = Directory.GetFiles(dir, fileName, SearchOption.TopDirectoryOnly);
-            var dataToSave = GZip.ZipMoreByteByte(list, name => File.ReadAllBytes(name));
+            var dataToSave = GZip.ZipMoreByteByte(list, name => File.ReadAllBytes(name.Replace("\\", "" + Path.DirectorySeparatorChar)));
             var code = $"{DateTime.Now.ToString("yyyy-MM-dd")}_{MainHelper.LockCode}_{BugNum++}";
             var dataDir = Path.Combine(dir, "Log_" + code);
             Directory.CreateDirectory(dataDir);
@@ -1181,7 +1181,7 @@ namespace RimWorldOnlineCity
             foreach (ScenarioDef allDef in DefDatabase<ScenarioDef>.AllDefs)
             {
                 //Loger.Log($"AllowedScenarios {allDef.defName}={allDef.LabelCap}={allDef.fileName}=Name:{allDef.modContentPack.Name}=RootDir:{allDef.modContentPack.RootDir}");
-                if (allDef.modContentPack.Name != "OnlineCity") continue;
+                if (allDef.modContentPack.Name != "OnlineCity" && allDef.modContentPack.Name != "OnlineCity_Debug") continue;
                 //// старое перечисление всех ванильных
                 //if (allDef.defName == "Crashlanded"
                 //    || allDef.defName == "Tutorial"

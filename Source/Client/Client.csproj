@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -22,6 +22,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\BuildOutput\Client\Release</OutputPath>
@@ -74,10 +75,7 @@
       <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="com.rlabrecque.steamworks.net">
-      <HintPath>$(RimWorldFolder)RimWorldWin64_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="com.rlabrecque.steamworks.net, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="HugsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UnlimitedHugs.Rimworld.HugsLib.8.0.0\lib\net472\HugsLib.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -123,7 +121,6 @@
   <ItemGroup>
     <Compile Include="AncillaryUtil.cs" />
     <Compile Include="ChatController.cs" />
-    <Compile Include="ClientHashCheck\ClientFileCheckerFactory.cs" />
     <Compile Include="ClientHashCheck\ClientFileChecker.cs" />
     <Compile Include="CommunicationConsole.cs" />
     <Compile Include="GameClasses\DebugSettingsDefault.cs" />
@@ -163,15 +160,14 @@
     <Compile Include="GameClasses\TradeOrdersOnline.cs" />
     <Compile Include="GameClasses\TradeThingsOnline.cs" />
     <Compile Include="GameClasses\WorldObjectBaseOnline.cs" />
-        <Compile Include="MailController.cs" />
-    <Compile Include="Model\ClientHashCheckerResult.cs" />
+    <Compile Include="Lib\RenderMap.cs" />
+    <Compile Include="MailController.cs" />
     <Compile Include="Services\AnyLoad.cs" />
-    <Compile Include="Services\ClientHashChecker.cs" />
     <Compile Include="Services\IOnlineCityClientService.cs" />
     <Compile Include="Services\SetPlayerInfo.cs" />
     <Compile Include="SessionClient.cs" />
     <Compile Include="SnapshotColony.cs" />
-    <Compile Include="TestClass.cs" />
+    <Compile Include="UI\AsyncDialog.cs" />
     <Compile Include="UI\DevelopTest.cs" />
     <Compile Include="GameAttacker.cs" />
     <Compile Include="GameClasses\Harmony\GameAttackTrigger.cs" />
@@ -186,7 +182,9 @@
     <Compile Include="UI\Dialog_BaseOnlineButton.cs" />
     <Compile Include="UI\Dialog_Exchenge.cs" />
     <Compile Include="UI\Dialog_InfoPlayer.cs" />
+    <Compile Include="UI\AsyncDialog_Input.cs" />
     <Compile Include="UI\Dialog_InputImage.cs" />
+    <Compile Include="UI\Dialog_LoginForm.cs" />
     <Compile Include="UI\Dialog_Scenario.cs" />
     <Compile Include="UI\Dialog_TextOut.cs" />
     <Compile Include="UI\Dialog_SelectThingDef.cs" />
@@ -195,7 +193,6 @@
     <Compile Include="UI\DialogControlBase.cs" />
     <Compile Include="UI\Dialog_CreateWorld.cs" />
     <Compile Include="UI\Dialog_Input.cs" />
-    <Compile Include="UI\Dialog_LoginForm.cs" />
     <Compile Include="UI\Dialog_MainOnlineCity.cs" />
     <Compile Include="UI\Dialog_Registration.cs" />
     <Compile Include="UI\Dialog_ViewImage.cs" />
@@ -205,6 +202,7 @@
     <Compile Include="UI\PanelInfoPlayer.cs" />
     <Compile Include="UI\PanelProfilePlayer.cs" />
     <Compile Include="UI\PanelText.cs" />
+    <Compile Include="UI\StatusWindow.cs" />
     <Compile Include="UI\TagBtn.cs" />
     <Compile Include="UI\ScrollPanel.cs" />
     <Compile Include="UI\TextFieldNumericBox.cs" />

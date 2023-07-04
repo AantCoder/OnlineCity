@@ -21,7 +21,7 @@ namespace Transfer
             {
                 if (string.IsNullOrEmpty(hostname) || hostname == "*")
                 {
-                    ipAddress = IPAddress.Any;
+                    ipAddress = IPAddress.IPv6Any;
                 }
                 else
                 {
@@ -34,6 +34,7 @@ namespace Transfer
             }
 
             TcpListener srv = new TcpListener(ipAddress, port);
+            srv.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
             try
             {
                 srv.Start();

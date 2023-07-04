@@ -29,11 +29,11 @@ namespace ServerOnlineCity.Services
 
         public ModelStatus GetModelStatus(ModelPostingChat pc, ServiceContext context)
         {
-            if (context.PossiblyIntruder)
-            {
-                context.Disconnect("Possibly intruder");
-                return null;
-            }
+            //if (context.PossiblyIntruder)
+            //{
+            //    context.Disconnect("Possibly intruder");
+            //    return null;
+            //}
             var timeNow = DateTime.UtcNow;
             if (string.IsNullOrEmpty(pc.Message))
             {

@@ -33,11 +33,11 @@ namespace ServerOnlineCity.Services
                 context.Disconnect("New BanIP " + context.AddrIP);
                 return null;
             }
-            if (context.PossiblyIntruder)
-            {
-                context.Disconnect("Possibly intruder");
-                return null;
-            }
+            //if (context.PossiblyIntruder)
+            //{
+            //    context.Disconnect("Possibly intruder");
+            //    return null;
+            //}
             lock (context.Player)
             {
                 var data = Repository.GetData;
