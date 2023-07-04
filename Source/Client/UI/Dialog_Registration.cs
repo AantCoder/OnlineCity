@@ -41,11 +41,12 @@ namespace RimWorldOnlineCity
         private string InputPassword = "";
         private string InputPassword2 = "";
         private string InputEmail = "";
+        private string InputDiscord = "";
         private bool NeedFockus = true;
 
         public override Vector2 InitialSize
         {
-            get { return new Vector2(400f, 400f); }
+            get { return new Vector2(400f, 500f); }
         }
 
         private Dialog_Registration(TaskCompletionSource<RegistrationData> completionSource) : base(completionSource)
@@ -165,6 +166,12 @@ namespace RimWorldOnlineCity
                 (sub, rect) =>
                 {
                     InputEmail = GUI.TextField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputEmail, 100);
+                });
+
+            TextInput(mainListing, "OCity_LoginForm_Discord".Translate(),
+                (sub, rect) =>
+                {
+                    InputDiscord = GUI.TextField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputDiscord, 100);
                 });
 
             if (NeedFockus)

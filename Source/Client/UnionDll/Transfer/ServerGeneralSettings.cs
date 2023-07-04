@@ -105,6 +105,25 @@ namespace OCUnion
         public int ExchengeAddPrecentCostForFastCargoDelivery { get; set; }
 
         /// <summary>
+        /// Перечисленные через запятую defName вещей, которые запрещены к передаче.
+        /// </summary>
+        public string ExchengeForbiddenDefNames { get; set; }
+        [NonSerialized]
+        private HashSet<string> ExchengeForbiddenDefNamesListData;
+        public HashSet<string> ExchengeForbiddenDefNamesList
+        {
+            get
+            {
+                if (ExchengeForbiddenDefNamesListData == null)
+                    if (string.IsNullOrEmpty(ExchengeForbiddenDefNames))
+                        ExchengeForbiddenDefNamesListData = new HashSet<string>();
+                    else
+                        ExchengeForbiddenDefNamesListData = new HashSet<string>(ExchengeForbiddenDefNames.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()));
+                return ExchengeForbiddenDefNamesListData;
+            }
+        }
+
+        /// <summary>
         /// Назначит стартовый год в игре вместо 5500
         /// </summary>
         public int StartGameYear { get; set; }
@@ -118,6 +137,16 @@ namespace OCUnion
         /// Предупреждение при входе на сервер. На русском.
         /// </summary>
         public string EntranceWarningRussian { get; set; }
+
+        /// <summary>
+        /// Делать снимки колоний каждый полдень
+        /// </summary>
+        public bool ColonyScreenEnable { get; set; }
+
+        /// <summary>
+        /// Высокое качество снимков колоний
+        /// </summary>
+        public bool ColonyScreenHighQuality { get; set; }
 
         public ServerGeneralSettings SetDefault()
         {
@@ -160,6 +189,10 @@ namespace OCUnion
             ExchengeAddPrecentCostForFastCargoDelivery = 100;
 
             StartGameYear = -1;
+
+            ColonyScreenEnable = true;
+            
+            ColonyScreenHighQuality = true;
 
             return this;
         }

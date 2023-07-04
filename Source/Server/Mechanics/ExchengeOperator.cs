@@ -600,7 +600,7 @@ namespace ServerOnlineCity.Mechanics
             var orderPlayer = order.Owner.GetPlayerServer();
             SendToStorage(order.Tile, orderPlayer, thingsForOrder);
 
-            var msg1 = string.Format("OC_ExchengeOperator_tradeSold0 {0} OC_ExchengeOperator_tradeSold1 {1}. OC_ExchengeOperator_tradeSold2 {2}"
+            var msg1 = string.Format("OC_ExchengeOperator_tradeSold0 {0} OC_ExchengeOperator_tradeSold1 {1}. OC_ExchengeOperator_tradeSold2 {2}" // Ваша сделка сработала
                 , needRepeat
                 , order.CountReady == needRepeat ? "OC_ExchengeOperator_Closed" : "OC_ExchengeOperator_left" + (order.CountReady - needRepeat).ToString()
                 , thingsForOrder.ToStringLabel());
@@ -614,7 +614,7 @@ namespace ServerOnlineCity.Mechanics
 
             SendToStorage(order.Tile, player, thingsFromOrder);
 
-            var msg2 = string.Format("OC_ExchengeOperator_tradeBought0 {0} OC_ExchengeOperator_tradeBought1 {1}"
+            var msg2 = string.Format("OC_ExchengeOperator_tradeBought0 {0} OC_ExchengeOperator_tradeBought1 {1}" // Вы приобрели по сделке
                 , needRepeat
                 , thingsFromOrder.ToStringLabel());
 
@@ -630,8 +630,8 @@ namespace ServerOnlineCity.Mechanics
             HelperMailMessadge.Send(
                 Repository.GetData.PlayerSystem
                 , orderPlayer
-                , "OC_ExchengeOperator_YouBought"
-                , msg2
+                , "OC_ExchengeOperator_OrderDone" // Ваша сделка сработала
+                , msg1
                 , ModelMailMessadge.MessadgeTypes.GoldenLetter
                 , order.Tile
                 );
@@ -639,8 +639,8 @@ namespace ServerOnlineCity.Mechanics
             HelperMailMessadge.Send(
                 Repository.GetData.PlayerSystem
                 , player
-                , "OC_ExchengeOperator_OrderDone"
-                , msg1
+                , "OC_ExchengeOperator_YouBought" // Вы купили по сделке
+                , msg2
                 , ModelMailMessadge.MessadgeTypes.GoldenLetter
                 , order.Tile
                 );

@@ -15,6 +15,8 @@ namespace RimWorldOnlineCity
     [StaticConstructorOnStartup]
     public class GeneralTexture
     {
+        public const int UpdateSecondColonyScreen = 60;
+
         public static readonly Texture2D IconAddTex;
         public static readonly Texture2D IconDelTex;
         public static readonly Texture2D IconSubMenuTex;
@@ -65,6 +67,7 @@ namespace RimWorldOnlineCity
 
         private class TextureContainer
         {
+            public DateTime LoadTime;
             public string Hash;
             public byte[] Data;
             public Texture2D _Texture;
@@ -109,6 +112,10 @@ namespace RimWorldOnlineCity
         /// Тот же спиок Loading, но в виде очереди
         /// </summary>
         private Queue<string> LoadingQueue = new Queue<string>();
+        /// <summary>
+        /// Загружается непостредственно сейчас
+        /// </summary>
+        private HashSet<string> LoadingNow = new HashSet<string>();
 
         /// <summary>
         /// Кэш для GetDef и GetDefTextures
@@ -197,13 +204,53 @@ namespace RimWorldOnlineCity
             }).Texture;
 
         /// <summary>
+        /// Для изображений загруженных с сервера выдает время с момента загрузки, либо больше года, если нет данных (по разным причинам)
+        /// </summary>
+        public TimeSpan GetLoadTimeByName(string name) => LoadedTextures.TryGetValue(name, out var res)
+            ? DateTime.UtcNow - res.LoadTime
+            : LoadedOldTextures.TryGetValue(name, out res)
+            ? DateTime.UtcNow - res.LoadTime
+            : TimeSpan.MaxValue;
+
+        /// <summary>
+        /// Была попытка загрузки, но данных на сервере нет
+        /// </summary>
+        public bool IsNotDataByName(string name) => IsNotDataByLoadTime(GetLoadTimeByName(name));
+
+        /// <summary>
+        /// Была попытка загрузки, но данных на сервере нет
+        /// </summary>
+        public bool IsNotDataByLoadTime(TimeSpan time) => time < TimeSpan.MaxValue && time > new TimeSpan(1, 0, 0, 0);
+
+        /// <summary>
+        /// Не было завершенных попыток загрузить данные
+        /// </summary>
+        public bool IsNotCheckByName(string name) => IsNotCheckByLoadTime(GetLoadTimeByName(name));
+
+        /// <summary>
+        /// Не было завершенных попыток загрузить данные
+        /// </summary>
+        public bool IsNotCheckByLoadTime(TimeSpan time) => time == TimeSpan.MaxValue;
+
+        /// <summary>
+        /// Загрузка ещё не завершена, по ByName возвращается старое значение, если оно есть
+        /// </summary>
+        public bool IsLoadingByName(string name)
+        {
+            lock (LoadingNow) 
+            { 
+                if (LoadingQueue.Contains(name)) return true;
+                return LoadingNow.Contains(name);
+            } 
+        }
+
+        /// <summary>
         /// Событие обновления с сервера, должно вызываться значительно реже FPS
         /// </summary>
         /// <param name="connect"></param>
         public void Update(SessionClient connect)
         {
             int CountUpdateInRun = 1;
-            int UpdateSecondColonyScreen = 60;
 
             lock (Loading)
             {
@@ -232,51 +279,64 @@ namespace RimWorldOnlineCity
                     TextureContainer texture;
                     TextureContainer oldTexture;
 
-                    var name = LoadingQueue.Dequeue();
-                    Loading.Remove(name);
-                    if (!LoadedOldTextures.TryRemove(name, out oldTexture)) oldTexture = new TextureContainer(Null);
-
-                    if (name.Length < 4) continue;
-                    var sendName = name.Substring(3);
-
-                    FileSharingCategory category;
-                    if (name.StartsWith("pl_")) category = FileSharingCategory.PlayerIcon;
-                    else if (name.StartsWith("cs_")) category = FileSharingCategory.ColonyScreen;
-                    else continue;
-
-                    var packet = connect.FileSharingDownload(new ModelFileSharing()
+                    string name = null;
+                    try
                     {
-                        Category = category,
-                        Name = sendName,
-                        Hash = oldTexture.Hash
-                    });
-
-                    //если с сервера пришли данные, значит обновляем значения
-                    if (packet?.Data != null && packet.Data.Length > 0)
-                    {
-                        texture = new TextureContainer()
+                        lock (LoadingNow)
                         {
-                            Hash = packet.Hash, 
-                            Data = packet.Data
-                        };
-                    }
-                    else //иначе это признак, что данные не поменялись или что произошла ошибка, тогда восстанавливаем старые значения
-                    {
-                        if (packet?.Hash == null || oldTexture.Hash != packet?.Hash)
+                            name = LoadingQueue.Dequeue();
+                            LoadingNow.Add(name);
+                            Loading.Remove(name);
+                        }
+                        if (!LoadedOldTextures.TryRemove(name, out oldTexture)) oldTexture = new TextureContainer(Null);
+
+                        if (name.Length < 4) continue;
+                        var sendName = name.Substring(3);
+
+                        FileSharingCategory category;
+                        if (name.StartsWith("pl_")) category = FileSharingCategory.PlayerIcon;
+                        else if (name.StartsWith("cs_")) category = FileSharingCategory.ColonyScreen;
+                        else continue;
+
+                        var packet = connect.FileSharingDownload(new ModelFileSharing()
                         {
-                            Loger.Log("Client GeneralTexture Error load: " + name + " " + oldTexture.Hash + "!=" + packet?.Hash, Loger.LogLevel.ERROR);
+                            Category = category,
+                            Name = sendName,
+                            Hash = oldTexture.Hash
+                        });
+
+                        //если с сервера пришли данные, значит обновляем значения
+                        if (packet?.Data != null && packet.Data.Length > 0)
+                        {
+                            texture = new TextureContainer()
+                            {
+                                Hash = packet.Hash,
+                                Data = packet.Data,
+                            };
+                        }
+                        else //иначе это признак, что данные не поменялись или что произошла ошибка, тогда восстанавливаем старые значения
+                        {
+                            if (packet?.Hash == null || oldTexture.Hash != packet?.Hash)
+                            {
+                                Loger.Log("Client GeneralTexture Error load: " + name + " " + oldTexture.Hash + "!=" + packet?.Hash, Loger.LogLevel.ERROR);
+                            }
+
+                            texture = oldTexture;
+                        }
+                        texture.LoadTime = DateTime.UtcNow;
+
+                        //задаем время устаревания, для кого нужно
+                        if (name.StartsWith("cs_"))
+                        {
+                            LoadedAgings[name] = DateTime.UtcNow.AddSeconds(UpdateSecondColonyScreen);
                         }
 
-                        texture = oldTexture;
+                        LoadedTextures[name] = texture;
                     }
-
-                    //задаем время устаревания, для кого нужно
-                    if (name.StartsWith("cs_"))
+                    finally
                     {
-                        LoadedAgings[name] = DateTime.UtcNow.AddSeconds(UpdateSecondColonyScreen);
+                        if (name != null) LoadingNow.Remove(name);
                     }
-
-                    LoadedTextures[name] = texture;
                 }
             }
         }

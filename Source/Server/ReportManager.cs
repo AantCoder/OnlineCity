@@ -74,7 +74,7 @@ namespace ServerOnlineCity
                 $";KillsHumanlikes;KillsMechanoids;KillsBestPawnHN;KillsBestPawnH;KillsBestPawnMN;KillsBestPawnM" +
                 $";Grants;EnablePVP;EMail;DiscordUserName;IntruderKeys;StartMarketValue;StartMarketValuePawn" +
                 $";MarketValueBy15Day;MarketValuePawnBy15Day;MarketValueBalanceBy15Day;MarketValueStorageBy15Day;MarketValueTotalBy15Day;MarketValueByHour;MarketValuePawnByHour;MarketValueBalanceByHour;MarketValueStorageByHour;MarketValueTotalByHour;TicksByHour;HourInGame" + Environment.NewLine;
-            foreach (var player in Repository.GetData.PlayersAll)
+            foreach (var player in Repository.GetData.GetPlayersAll)
             {
                 var newLine = GetPlayerStatistic(player);
 
@@ -88,7 +88,7 @@ namespace ServerOnlineCity
         {
             var xml = new StringBuilder();
             xml.AppendLine("<Players>");
-            foreach (var player in Repository.GetData.PlayersAll)
+            foreach (var player in Repository.GetData.GetPlayersAll)
             {
                 var tradeThingStorages = new StringBuilder();
                 foreach (var storage in player.TradeThingStorages)

@@ -45,6 +45,13 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_ClientData_ChatDot>...</OCity_ClientData_ChatDot>
 	<OCity_ClientData_Chat>Chat </OCity_ClientData_Chat>
 	<OC_OK>ОК</OC_OK>
+	<OC_Loading>Loading</OC_Loading>
+	<OC_DataNotAvailable>Data not availabl</OC_DataNotAvailable>
+	<OC_Seconds>seconds</OC_Seconds>
+	<OC_ImageBase1>Open the image of the base of the player</OC_ImageBase1>
+	<OC_ImageBase2>Click to download image of player's base</OC_ImageBase2>
+	<OC_ImageBase4>And check for updates</OC_ImageBase4>
+	<OC_ImageBase6>Check for updates available in</OC_ImageBase6>
 
 	<!-- OnlineCity_Hash_Checker -->
 	<OC_Hash_CalculateLocalFiles>Calculate hash for local files</OC_Hash_CalculateLocalFiles>
@@ -129,6 +136,9 @@ Wealh of exchange: {4}</OCity_Caravan_Other>
 	<OCity_LoginForm_Err1>Password and confirmation are different</OCity_LoginForm_Err1>
 	<OCity_LoginForm_Err2>Address, login and password must be longer than two characters</OCity_LoginForm_Err2>
 	<OCity_LoginForm_Mail>EMail (optional)</OCity_LoginForm_Mail>
+	<OCity_LoginForm_NeedApproveText0>On this server, confirmation in the discord is required. Confirm registration in discord in response to a request from a bot.</OCity_LoginForm_NeedApproveText0>
+	<OC_LoginForm_NeedApproveText1>On this server, confirmation in the discord is required. Enter your discord name, register here, and then confirm your discord registration when prompted by the bot.</OC_LoginForm_NeedApproveText1>
+	<OCity_LoginForm_Discord>Discord login</OCity_LoginForm_Discord>
 
 	<!-- SessionClientController.cs -->
 	<OCity_SessionCC_ConnectionFailTitle>Keine Verbindung </OCity_SessionCC_ConnectionFailTitle>
@@ -257,6 +267,8 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_DialogExchenge_ToARemotePoint>To a remote point</OCity_DialogExchenge_ToARemotePoint>
 	<OCity_DialogExchenge_Destroy>Destroy</OCity_DialogExchenge_Destroy>
 	<OCity_DialogExchenge_ForTenPercentThePrice>(For 10% the price)</OCity_DialogExchenge_ForTenPercentThePrice>
+	<OCity_DialogExchenge_NegativeBalance>Impossible with negative balance</OCity_DialogExchenge_NegativeBalance>
+	<OCity_DialogExchenge_ToStorage>Items transferred to the trade warehouse</OCity_DialogExchenge_ToStorage>
 	
 	<!--ExchengeUtils-->
 	<OCity_ExchengeUtils_Distance>Distance</OCity_ExchengeUtils_Distance>
@@ -378,6 +390,7 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OC_Incidents_OCIncident_GoldPay>The required gold {0} has been paid to the mercenaries</OC_Incidents_OCIncident_GoldPay>
 	<OC_Incident_Atacker>The customer:</OC_Incident_Atacker>
 	<OCity_OCIncident_NotEnoughThingsOnMap>There are not enough things on the map. In stock</OCity_OCIncident_NotEnoughThingsOnMap>
+	<OCity_OCIncident_Required>Required</OCity_OCIncident_Required>
 
 	<OC_Incidents_Raid_Warning_label>Serious threat!</OC_Incidents_Raid_Warning_label>
 	<OC_Incidents_Raid_Warning_Text_human>Your colonists are thrilled! A huge number of armed men are seen approaching from another player! They will arrive in 10-14 hours. Perhaps you should ask your allies for help or prepare for settlement evacuation</OC_Incidents_Raid_Warning_Text_human>

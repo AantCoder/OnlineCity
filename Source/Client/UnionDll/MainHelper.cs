@@ -46,17 +46,17 @@ namespace OCUnion
 
         public static Dictionary<string, string> ServerList = new Dictionary<string, string> 
         {
-            { "Vanilla", "62.133.174.133:19042" },
-            { "Fantasy", "62.133.174.133:19022" },
+            { "Vanilla", "62.3.58.251:19042" },
+            { "Fantasy", "62.3.58.251:19022" },
             { "SkyNet CE+SRTS", "95.154.71.53:6666"},
-            { "BIOnline", "62.133.174.133:19024"},
-            { "Hi-Tech","62.133.174.133:19023"},
+            { "BIOnline", "62.3.58.251:19024"},
+            { "Hi-Tech","62.3.58.251:19023"},
 #if DEBUG
             { "localhost", "127.0.0.1" },
 #endif
         };
 
-        public static int MinCostForTrade = 25000;
+        public static int MinCostForTrade = 100000;
 
         public static string CashlessThingDefName = "Silver";
 

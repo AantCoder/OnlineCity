@@ -33,7 +33,7 @@ namespace ServerOnlineCity.Services
 
             if (packet.Login == "system") return null;
 
-            var player = Repository.GetPlayerByLogin(packet.Login);
+            var player = Repository.GetPlayerByLogin(packet.Login, true);
             
             if (player != null)
             {
@@ -57,6 +57,15 @@ namespace ServerOnlineCity.Services
                 {
                     Status = 1,
                     Message = "User or password incorrect"
+                };
+            }
+
+            if (ServerManager.ServerSettings.PlayerNeedApprove && !player.Approve)
+            {
+                return new ModelStatus()
+                {
+                    Status = 1,
+                    Message = "User not approve"
                 };
             }
 

@@ -29,6 +29,22 @@ namespace ServerCore.Model
         /// </summary>
         public bool DisableDevMode { get; set; }
 
+        /// <summary>
+        /// Authorization key for discord bot. 
+        /// Ключ авторизации для Дискорд бота
+        /// </summary>
+        public string SecretKey { get; set; }
+
+        /// <summary>
+        ///  При регистрации требуется подтверждение пользователя
+        /// </summary>
+        public bool PlayerNeedApprove { get; set; }
+
+        /// <summary>
+        ///  Включено подтверждение при помощит дискорда через API, должно быть включено PlayerNeedApprove
+        /// </summary>
+        public bool PlayerNeedApproveInDiscord { get; set; }
+
         public int MinutesIntervalBetweenPVP { get; set; }
 
         public ServerGeneralSettings GeneralSettings { get; set; }
@@ -87,7 +103,7 @@ namespace ServerCore.Model
         /// Максимальный размер папки со скриншотами колоний, которого нужно стараться придерживаться.
         /// Maximum folder size with screenshots of colonies.
         /// </summary>
-        public int ColonyScreenFolderMaxMb { get; set; }
+        public int ColonyScreenFolderMaxMb { get; set; } = 1024;
 
         ///// <summary>
         ///// Default Path to %AppData%\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios\Config, but copy only files that must be replaced OnClient

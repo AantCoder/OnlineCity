@@ -62,6 +62,16 @@ namespace ServerOnlineCity.Services
                 };
             }
 
+            if (ServerManager.ServerSettings.PlayerNeedApproveInDiscord && (packet.DiscordUserName ?? "").Length <= 2)
+            {
+                return new ModelStatus()
+                {
+                    Status = 1,
+                    Message = "OC_LoginForm_NeedApproveText1",
+                    // На данном сервере необходимо подтверждение в дискорде. Укажите своё имя в дискорде, зарегистрируйтесь здесь, а затем подтвердите регистрацию в дискорде в ответе на запрос от бота.
+                };
+            }
+
             packet.Login = packet.Login.Trim();
             context.Player = Repository.GetData.PlayersAll
                 .FirstOrDefault(p => Repository.NormalizeLogin(p.Public.Login) == Repository.NormalizeLogin(packet.Login));
@@ -81,9 +91,11 @@ namespace ServerOnlineCity.Services
             };
             context.Player.Public.EMail = packet.Email;
             context.Player.Public.Version = packet.Version;
+            context.Player.Public.DiscordUserName = packet.DiscordUserName;
+
             //Обязательно сообщаем версию при подключении
             //Todo? server additions
-            
+
             context.Player.Public.Grants = Grants.UsualUser;
             if (isAdmin)
             {
@@ -91,12 +103,30 @@ namespace ServerOnlineCity.Services
             }
 
             context.Logined();
-            
+
             ChatManager.Instance.PublicChat.LastChanged = System.DateTime.UtcNow;
             Repository.GetData.PlayersAll.Add(context.Player);
+            Repository.GetData.UpdatePlayersAllDic();
             Repository.Get.ChangeData = true;
             Loger.Log($"Player {packet.Login} version: {packet.Version.ToString()}");
             Loger.Log($"Player {packet.Login} successfully register on this server.", Loger.LogLevel.REGISTER);
+
+            if (!isAdmin && ServerManager.ServerSettings.PlayerNeedApprove && !context.Player.Approve)
+            {
+                Loger.Log($"Player {packet.Login} need approve.", Loger.LogLevel.REGISTER);
+                context.Player = null;
+                return new ModelStatus()
+                {
+                    Status = 2,
+                    Message = "User not approve"
+                };
+            }
+            else
+            {
+                context.Player.Approve = true;
+                Loger.Log("Server Auto Approve player " + context.Player.Public.Login);
+            }
+
             return new ModelStatus()
             {
                 Status = 0,

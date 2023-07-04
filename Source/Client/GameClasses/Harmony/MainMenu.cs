@@ -80,7 +80,23 @@ namespace RimWorldOnlineCity
                         item = new ListableOption("Test", delegate
                         {
                             Loger.Log("Client MainMenu Test");
-                            new SnapshotColony().Exec();
+                            Find.WindowStack.Add(new Dialog_ViewImage());
+                        }, null);
+                        optList.Add(item);
+                        // }}} */
+                        /* /t odo! test {{{
+                        item = new ListableOption("Test", delegate
+                        {
+                            Loger.Log("Client MainMenu Test");
+                            var image = new TestClass().Exec();
+                            var form = new Dialog_ViewImage();
+                            if (image != null)
+                            {
+                                var encodedImage = image.EncodeToJPG(95);
+                                File.WriteAllBytes("C:\\W\\test.jpg", encodedImage);
+                            }
+                            form.ImageShow = image;
+                            Find.WindowStack.Add(form);
                         }, null);
                         optList.Add(item);
                         // }}} */

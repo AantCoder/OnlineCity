@@ -28,6 +28,10 @@ namespace RimWorldOnlineCity
         private string InputPassword = "";
         private bool NeedFockus = true;
 
+        private DateTime Refresh;
+        private int RefreshSeconds = 15;
+        private bool NeedApprove = false;
+
         public override Vector2 InitialSize
         {
             get { return new Vector2(500f, 400f); }
@@ -57,11 +61,11 @@ namespace RimWorldOnlineCity
             var btnSize = new Vector2(140f, 40f);
             var buttonYStart = inRect.height - btnSize.y;
 
-
             //кнопки
             var ev = Event.current;
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 3, buttonYStart, btnSize.x, btnSize.y), "OCity_LoginForm_BtnEnter".Translate())
-                || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return)
+                || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return
+                || NeedApprove && (DateTime.UtcNow - Refresh).TotalSeconds > RefreshSeconds)
             {
                 Accept(new LoginFormResult() { hostname = InputAddr, username = InputLogin, password = InputPassword });
             }
@@ -84,6 +88,12 @@ namespace RimWorldOnlineCity
             Text.Font = GameFont.Medium;
             mainListing.Label("OCity_LoginForm_LabelEnter".Translate());
             mainListing.GapLine();
+            if (NeedApprove)
+            {
+                Text.Font = GameFont.Small;
+                mainListing.Label("OCity_LoginForm_NeedApproveText0".Translate());
+                mainListing.GapLine();
+            }
             mainListing.Gap();
             mainListing.End();
             
@@ -167,6 +177,26 @@ namespace RimWorldOnlineCity
 
             mainListing.End();
             //Text.Anchor = TextAnchor.UpperLeft;
+        }
+
+        private void SetNeedWaitApprove()
+        {
+            if (!NeedApprove)
+            {
+                var th = new Thread(() =>
+                {
+                    try
+                    {
+                        Thread.Sleep(500);
+                        Find.WindowStack.Add(new Dialog_MessageBox("OCity_LoginForm_NeedApproveText0".Translate()));
+                    }
+                    catch { }
+                });
+                th.IsBackground = true;
+                th.Start();
+            }
+            NeedApprove = true;
+            Refresh = DateTime.UtcNow;
         }
 
         private void TextInput(Listing_Standard mainListing, string label, Action<Listing_Standard, Rect> drawInput)

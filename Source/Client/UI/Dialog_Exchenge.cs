@@ -2475,7 +2475,7 @@ namespace RimWorldOnlineCity.UI
                 && SessionClientController.Data.CashlessBalance < 0)
             {
                 Loger.Log("Client MoveSelectThings cancel: Impossible with negative balance", Loger.LogLevel.ERROR);
-                Find.WindowStack.Add(new Dialog_Input("Impossible with negative balance".NeedTranslate(), "Impossible with negative balance".NeedTranslate() + " " + SessionClientController.Data.CashlessBalance, true));
+                Find.WindowStack.Add(new Dialog_Input("OCity_DialogExchenge_NegativeBalance".Translate(), "OCity_DialogExchenge_NegativeBalance".Translate() + " " + SessionClientController.Data.CashlessBalance, true));
                 return;
             }
 

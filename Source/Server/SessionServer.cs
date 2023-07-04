@@ -3,6 +3,7 @@ using OCUnion;
 using ServerOnlineCity.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -14,6 +15,7 @@ namespace ServerOnlineCity
 {
     public class SessionServer : IDisposable
     {
+        public bool IsAPI = false;
         public bool IsActive = true;
         private ConnectClient Client;
         private byte[] Key;
@@ -78,23 +80,99 @@ namespace ServerOnlineCity
             {
                 try
                 {
+                    Dictionary<string, byte[]> data = new Dictionary<string, byte[]>();
                     var request = JsonEncoding.GetString(requestRaw);
-                    //обрезаем и игнорируем весь заголовок
                     var ii = request.IndexOf("\r\n\r\n");
-                    if (ii > 0 && request.Length - ii > 5)
+                    var iiBoundary = request.IndexOf("boundary=");
+                    string isBoundary = null;
+                    if (iiBoundary > 0 && iiBoundary < ii)
                     {
-                        request = request.Substring(ii + 4).Trim();
+                        iiBoundary += "boundary=".Length;
+                        isBoundary = "\r\n--" + request.Substring(iiBoundary, request.IndexOf("\r\n", iiBoundary) - iiBoundary);
+                    }
+                    if (isBoundary != null)
+                    {
+                        var requestRawCode = Encoding.ASCII.GetString(requestRaw);
+                        var rawCodeIndex = 0;
+                        var listBoundary = request.Split(new string[] { isBoundary }, StringSplitOptions.RemoveEmptyEntries);
+                        request = null;
+                        for (var i = 1; i < listBoundary.Length; i++)
+                        {
+                            rawCodeIndex = requestRawCode.IndexOf(isBoundary, rawCodeIndex);
+                            /* Content-Disposition: form-data; name="avatar"; filename="XGQKemif8eU.jpg"
+                             * Content-Type: image/jpeg
+                             * 
+                             * ����
+                             */
+                            var item = listBoundary[i];
+                            var itemi = item.IndexOf("name=\"");
+                            if (itemi > 0)
+                            {
+                                itemi += "name=\"".Length;
+                                var name = item.Substring(itemi, item.IndexOf("\"", itemi) - itemi);
 
-                        var send = Service.GetPackageJson(request);
+                                rawCodeIndex = requestRawCode.IndexOf("\r\n\r\n", rawCodeIndex) + 4;
+                                if (rawCodeIndex >= 4)
+                                {
+                                    var rawCodeIndexNext = requestRawCode.IndexOf(isBoundary, rawCodeIndex);
+                                    if (rawCodeIndexNext < 0) rawCodeIndexNext = requestRaw.Length;
+                                    var content = new byte[rawCodeIndexNext - rawCodeIndex];
+                                    Array.Copy(requestRaw, rawCodeIndex, content, 0, rawCodeIndexNext - rawCodeIndex);
+                                    //File.WriteAllBytes("e:\\test.png", content);
+                                    if (request != null) request += ", ";
+                                    if (content.Length > 1000)
+                                    {
+                                        data[name] = content;
+                                    }
+                                    else
+                                    {
+                                        request += Environment.NewLine + $"\"{name}\":\"{JsonEncoding.GetString(content).Replace("\"", "'")}\"";
+                                    }
+                                }
+                            }
+                        }
+                        request = "{" + request + Environment.NewLine + "}";
+                    }
+                    else
+                    {
+                        //обрезаем и игнорируем весь заголовок
+                        if (ii > 0 && request.Length - ii > 5)
+                        {
+                            request = request.Substring(ii + 4).Trim();
+                        }
+                        else
+                            request = null;
+                    }
+                    if (request != null)
+                    {
+                        byte[] sendButes;
+                        var send = Service.GetPackageJson(request, data);
 
-                        var sendHTTP = "HTTP/1.0 200 OK\r\n"
-                            + "Content-Type: application/json; charset=utf-8\r\n"
-                            + "Connection: close\r\n\r\n"
-                            + send;
-                        var sendButes = JsonEncoding.GetBytes(sendHTTP);
-
+                        if (send is byte[]) 
+                        {
+                            var body = (byte[])send;
+                            var sendHTTP = "HTTP/1.0 200 OK\r\n"
+                                //+ "Accept-Ranges: bytes\r\n"
+                                //+ "Content-Length: " + body.Length + "\r\n"
+                                //+ "Content-Type: image/png\r\n"
+                                + "Connection: close\r\n\r\n";
+                            var header = JsonEncoding.GetBytes(sendHTTP);
+                            sendButes = new byte[header.Length + body.Length];
+                            Array.Copy(header, 0, sendButes, 0, header.Length);
+                            Array.Copy(body, 0, sendButes, header.Length, body.Length);
+                        }
+                        else
+                        { 
+                            var sendHTTP = "HTTP/1.0 200 OK\r\n"
+                                + "Content-Type: application/json; charset=utf-8\r\n"
+                                + "Connection: close\r\n\r\n"
+                                + send.ToString();
+                            sendButes = JsonEncoding.GetBytes(sendHTTP);
+                        }
                         client.SendAllByte(sendButes);
-                        Loger.Log("DoServiceJson Request: " + request + Environment.NewLine + send, Loger.LogLevel.INFO);
+                        //чтобы уменьшить спам отсекаем все запросы на статус 
+                        if (!request.ToLower().Replace(" ", "").Replace("\"q\"", "q").Contains("q:\"s\""))
+                            Loger.Log("DoServiceJson Request: " + request + Environment.NewLine + (send is byte[] ? sendButes.Length.ToString() : send.ToString()), Loger.LogLevel.INFO);
                     }
                 }
                 catch (Exception ext)
@@ -102,7 +180,7 @@ namespace ServerOnlineCity
                     Loger.Log("DoServiceJson Exception: " + ext.ToString(), Loger.LogLevel.ERROR);
                 }
                 receiveReady = true;
-            });
+            }, 1024 * 1024 * 2);
             var timeOut = DateTime.UtcNow.AddSeconds(2);
             while (!receiveReady && timeOut > DateTime.UtcNow)
                 Thread.Sleep(1);
@@ -123,6 +201,7 @@ namespace ServerOnlineCity
                     && firstByte[2] == 83
                     && firstByte[3] == 84) // 'POST'
                 {
+                    IsAPI = true;
                     DoServiceJson(client);
                     return;
                 }

@@ -57,7 +57,7 @@ namespace ServerOnlineCity.Services
 
                         if (order.PrivatPlayers == null) order.PrivatPlayers = new List<Player>();
                         order.PrivatPlayers = order.PrivatPlayers
-                            .Select(pp => data.PlayersAll.FirstOrDefault(p => p.Public.Login == pp.Login)?.Public)
+                            .Select(pp => data.GetPlayersAll.FirstOrDefault(p => p.Public.Login == pp.Login)?.Public)
                             .ToList();
                         if (order.PrivatPlayers.Any(pp => pp == null))
                         {
@@ -132,7 +132,7 @@ namespace ServerOnlineCity.Services
 
                                 if (order.PrivatPlayers == null) order.PrivatPlayers = new List<Player>();
                                 order.PrivatPlayers = order.PrivatPlayers
-                                    .Select(pp => data.PlayersAll.FirstOrDefault(p => p.Public.Login == pp.Login)?.Public)
+                                    .Select(pp => data.GetPlayersAll.FirstOrDefault(p => p.Public.Login == pp.Login)?.Public)
                                     .ToList();
                                 if (order.PrivatPlayers.Any(pp => pp == null))
                                 {

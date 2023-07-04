@@ -38,6 +38,7 @@ namespace Transfer
 
         public ConnectClient Client;
         private byte[] Key;
+        public int ErrorCode;
         public string ErrorMessage;
 
         public void Disconnect()
@@ -57,6 +58,7 @@ namespace Transfer
         public void Connect(string addr, int port)
         {
             ErrorMessage = null;
+
             try
             {
                 IsLogined = false;
@@ -105,6 +107,7 @@ namespace Transfer
             }
             catch (Exception e)
             {
+                ErrorCode = -1;
                 ErrorMessage = e.Message
                     + (e.InnerException == null ? "" : " -> " + e.InnerException.Message);
                 ExceptionUtil.ExceptionLog(e, "Client");
@@ -122,6 +125,7 @@ namespace Transfer
             {
                 lock (LockObj)
                 {
+                    ErrorCode = 0;
                     ErrorMessage = null;
                     Client.SendMessage(new byte[1] { 0x00 });
 
@@ -132,6 +136,7 @@ namespace Transfer
             }
             catch (Exception e)
             {
+                ErrorCode = -1;
                 ErrorMessage = e.Message
                     + (e.InnerException == null ? "" : " -> " + e.InnerException.Message);
                 ExceptionUtil.ExceptionLog(e, "Client ServicePing ");
@@ -149,6 +154,7 @@ namespace Transfer
             {
                 lock (LockObj)
                 {
+                    ErrorCode = 0;
                     ErrorMessage = null;
                     Client.SendMessage(new byte[1] { 0x01 });
 
@@ -159,6 +165,7 @@ namespace Transfer
             }
             catch (Exception e)
             {
+                ErrorCode = -1;
                 ErrorMessage = e.Message
                     + (e.InnerException == null ? "" : " -> " + e.InnerException.Message);
                 ExceptionUtil.ExceptionLog(e, "Client ServiceCheck ");
@@ -176,6 +183,7 @@ namespace Transfer
 
             lock (LockObj)
             {
+                ErrorCode = 0;
                 ErrorMessage = null;
 
                 var time1 = DateTime.UtcNow;
@@ -240,6 +248,7 @@ namespace Transfer
             }
             catch (Exception e)
             {
+                ErrorCode = -1;
                 ErrorMessage = e.Message
                     + (e.InnerException == null ? "" : " -> " + e.InnerException.Message);
                 ExceptionUtil.ExceptionLog(e, "Client");
@@ -269,6 +278,7 @@ namespace Transfer
 
             if (stat != null && stat.Status != 0)
             {
+                ErrorCode = stat.Status;
                 ErrorMessage = stat.Message;
                 return false;
             }
@@ -347,6 +357,7 @@ namespace Transfer
             var packet = new ModelPostingChat() { IdChat = chatId, Message = msg };
             var stat = TransObject<ModelStatus>(packet, (int)PackageType.Request19PostingChat, (int)PackageType.Response20PostingChat);
 
+            ErrorCode = stat?.Status ?? 0;
             ErrorMessage = stat?.Message;
 
             if (!raw && OnPostingChatAfter != null) OnPostingChatAfter(chatId, msg, stat);

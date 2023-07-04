@@ -20,6 +20,7 @@ namespace ServerOnlineCity.Model
 
         public List<PlayerServer> PlayersAll { get; set; }
         public PlayerServer PlayerSystem { get { return PlayersAll[0]; } }
+        public IEnumerable<PlayerServer> GetPlayersAll => PlayersAll.Where(p => p.Approve);
 
         [NonSerialized]
         public ConcurrentDictionary<string, PlayerServer> PlayersAllDic;
@@ -133,6 +134,14 @@ namespace ServerOnlineCity.Model
             }
 
             // }
+
+            if (!ServerManager.ServerSettings.PlayerNeedApprove)
+            {
+                foreach (var player in PlayersAll)
+                {
+                    player.Approve = true;
+                }
+            }
 
             _OrderOperator = new ExchengeOperator(this);
             if (WorldObjectsDeleted == null) WorldObjectsDeleted = new List<WorldObjectEntry>();

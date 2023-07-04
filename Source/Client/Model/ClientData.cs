@@ -13,7 +13,15 @@ namespace RimWorldOnlineCity
     {
         public ModelUpdateTime ChatsTime = new ModelUpdateTime() { Time = DateTime.MinValue };
 
+        /// <summary>
+        /// Время сервера последнего получения данных
+        /// </summary>
         public DateTime UpdateTime = DateTime.MinValue;
+
+        /// <summary>
+        /// Время клиента последнего получения данных
+        /// </summary>
+        public DateTime UpdateTimeLocalTime = DateTime.MinValue;
 
         public string KeyReconnect;
 

@@ -200,6 +200,7 @@ namespace RimWorldOnlineCity
 
                         //сохраняем время актуальности данных
                         Data.UpdateTime = fromServ.UpdateTime;
+                        Data.UpdateTimeLocalTime = DateTime.UtcNow;
 
                         if (!string.IsNullOrEmpty(fromServ.KeyReconnect)) Data.KeyReconnect = fromServ.KeyReconnect;
 
@@ -620,6 +621,7 @@ namespace RimWorldOnlineCity
                         }
                     }
                     //to do Сделать сброс крутяшки после обновления чата (см. Dialog_MainOnlineCity)
+                    UpdateColonyScreen();
                 }
                 catch (Exception ex)
                 {
@@ -1066,6 +1068,9 @@ namespace RimWorldOnlineCity
             return true;
         }
 
+        /// <summary>
+        /// Проверяет подключение и немедленно вызывает netAct
+        /// </summary>
         public static void Command(Action<SessionClient> netAct)
         {
             int time = 0;
@@ -1081,6 +1086,35 @@ namespace RimWorldOnlineCity
             }
             var connect = SessionClient.Get;
             netAct(connect);
+        }
+
+        private static Thread SingleCommandThread = null;
+
+        public static bool SingleCommandIsBusy => SingleCommandThread != null;
+        /// <summary>
+        /// Проверяет подключение и вызывает netAct в потоке, если оне не занят, иначе возвращает false
+        /// </summary>
+        public static bool SingleCommand(Action<SessionClient> netAct)
+        {
+            if (SingleCommandIsBusy) return false;
+            SingleCommandThread = new Thread(() =>
+            {
+                try
+                {
+                    Command(netAct);
+                }
+                catch (Exception ext)
+                {
+                    Loger.Log("Exception SingleCommand: " + ext.ToString());
+                }
+                finally
+                { 
+                    SingleCommandThread = null; 
+                }
+            });
+            SingleCommandThread.IsBackground = true;
+            SingleCommandThread.Start();
+            return true;
         }
 
         private static void TimersStop()
@@ -1599,6 +1633,8 @@ namespace RimWorldOnlineCity
                 Loger.Log("Client InitGame MainThread check end");
 
                 GeneralTexture.Init();
+
+                UpdateColonyScreenLastTickBySettlementID = new Dictionary<long, long>();
 
                 //сбрасываем с мышки выбранный инструмент DevMode
                 DebugTools.curTool = null;

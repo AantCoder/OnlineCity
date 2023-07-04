@@ -193,11 +193,11 @@ namespace Transfer
             return ReceiveBytes(4);
         }
 
-        public void ReceiveAllByte(Action<ConnectClient, byte[]> action)
+        public void ReceiveAllByte(Action<ConnectClient, byte[]> action, int maxSize = 1024 * 64)
         {
             try
             {
-                byte[] receiveBuffer = new byte[1024 * 64];
+                byte[] receiveBuffer = new byte[maxSize];
                 ClientStream.BeginRead(receiveBuffer, 0, receiveBuffer.Length
                     , (IAsyncResult ar) =>
                     {

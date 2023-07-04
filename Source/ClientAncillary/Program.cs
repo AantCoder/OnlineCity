@@ -46,6 +46,7 @@ namespace ClientAncillary
             });
 
             Console.WriteLine("ReceiveData " + rd.Length);
+
             Console.ReadKey();
 #else
             com.SendData(code, data);
