@@ -333,7 +333,36 @@
 	<OCity_PlayerClient_CanChange>(можно изменить {0})</OCity_PlayerClient_CanChange>
 	<OCity_PlayerClient_CanChangeNow>(можно изменить сейчас)</OCity_PlayerClient_CanChangeNow>
 	<OCity_PlayerClient_SaveInterval>Интервал сохранений в минутах (не меньше 5, по умолчанию 15):</OCity_PlayerClient_SaveInterval>
+	
+	<OC_PlayerClient_In>Состоит в</OC_PlayerClient_In>
+	<OC_PlayerClient_Position>на должности</OC_PlayerClient_Position>
+	<OC_PlayerClient_EnemiesOnMap>Игровые вещи не доступны, пока на карте враги!</OC_PlayerClient_EnemiesOnMap>
+	<OC_PlayerClient_RememberPassword>Запомнить пароль</OC_PlayerClient_RememberPassword>
+	<OC_PlayerClient_Rating>Рейтинг</OC_PlayerClient_Rating>
+	<OC_PlayerClient_NoRating>Нет рейтинга</OC_PlayerClient_NoRating>
+	<OC_PlayerClient_PastRating>Прошлое место</OC_PlayerClient_PastRating>
+	<OC_PlayerClient_BetterPlayers>Лучше {0}% игроков</OC_PlayerClient_BetterPlayers>
+	<OC_PlayerClient_TotalCost>Общая стоимость</OC_PlayerClient_TotalCost>
+	<OC_PlayerClient_Maximum>Максимальная</OC_PlayerClient_Maximum>
+	<OC_PlayerClient_TotalColonists>Всего колонистов</OC_PlayerClient_TotalColonists>
+	<OC_PlayerClient_ColonistsRequiringTreatment>Колонистов требующих лечения</OC_PlayerClient_ColonistsRequiringTreatment>
+	<OC_PlayerClient_ColonistsUnconscious>Колонистов без сознания</OC_PlayerClient_ColonistsUnconscious>
+	<OC_PlayerClient_TotalTrainedAnimals>Всего обучаемых животных</OC_PlayerClient_TotalTrainedAnimals>
+	<OC_PlayerClient_EnemieOnMap>На карте враги</OC_PlayerClient_EnemieOnMap>
 
+	<OC_Shooting>Дальний бой</OC_Shooting>
+	<OC_Melee>Ближний бой</OC_Melee>
+	<OC_Construction>Строительство</OC_Construction>
+	<OC_Mining>Горное дело</OC_Mining>
+	<OC_Cooking>Кулинария</OC_Cooking>
+	<OC_Plants>Растениеводство</OC_Plants>
+	<OC_Animals>Животноводство</OC_Animals>
+	<OC_Crafting>Ремесло</OC_Crafting>
+	<OC_Artistic>Искусство</OC_Artistic>
+	<OC_Medical>Медицина</OC_Medical>
+	<OC_Social>Общение</OC_Social>
+	<OC_Intellectual>Умственный труд</OC_Intellectual>
+	
 	<!-- GameUtils.cs -->
 	<OCity_GameUtils_From> из </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>

@@ -248,7 +248,7 @@ OOOOOOOOOO
             iresct = mainListing.GetRect(24f);
             iresct.xMin += 10f;
             iresct.width = 183f;
-            Widgets.CheckboxLabeled(iresct, "Remember password".NeedTranslate(), ref SavePassword, false, null, null, false); //чекбокс Запомнить пароль
+            Widgets.CheckboxLabeled(iresct, "OC_PlayerClient_RememberPassword".Translate(), ref SavePassword, false, null, null, false); //чекбокс Запомнить пароль
 
             if (NeedFockus)
             {

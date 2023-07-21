@@ -333,7 +333,36 @@ Decreasing the parameter - we return the resources, increasing - we reserve addi
 	<OCity_PlayerClient_CanChange>(peut changer {0})</OCity_PlayerClient_CanChange>
 	<OCity_PlayerClient_CanChangeNow>(peut changer maintenant)</OCity_PlayerClient_CanChangeNow>
 	<OCity_PlayerClient_SaveInterval>Intervalle de sauvegarde (au moins 5 minutes, par défaut 15 minutes):</OCity_PlayerClient_SaveInterval>
+	
+	<OC_PlayerClient_In>Is part of</OC_PlayerClient_In>
+	<OC_PlayerClient_Position>in position</OC_PlayerClient_Position>
+	<OC_PlayerClient_EnemiesOnMap>Game items are not available while there are enemies on the map!</OC_PlayerClient_EnemiesOnMap>
+	<OC_PlayerClient_RememberPassword>Remember password</OC_PlayerClient_RememberPassword>
+	<OC_PlayerClient_Rating>Rating</OC_PlayerClient_Rating>
+	<OC_PlayerClient_NoRating>No rating</OC_PlayerClient_NoRating>
+	<OC_PlayerClient_PastRating>Past place</OC_PlayerClient_PastRating>
+	<OC_PlayerClient_BetterPlayers>Better than {0}% of players</OC_PlayerClient_BetterPlayers>	
+	<OC_PlayerClient_TotalCost>Total cost</OC_PlayerClient_TotalCost>
+	<OC_PlayerClient_Maximum>Maximum</OC_PlayerClient_Maximum>
+	<OC_PlayerClient_TotalColonists>Total colonists</OC_PlayerClient_TotalColonists>
+	<OC_PlayerClient_ColonistsRequiringTreatment>Colonists requiring treatment</OC_PlayerClient_ColonistsRequiringTreatment>
+	<OC_PlayerClient_ColonistsUnconscious>Colonists unconscious</OC_PlayerClient_ColonistsUnconscious>
+	<OC_PlayerClient_TotalTrainedAnimals>Total trained animals</OC_PlayerClient_TotalTrainedAnimals>
+	<OC_PlayerClient_EnemieOnMap>Enemies on the map</OC_PlayerClient_EnemieOnMap>
 
+	<OC_Shooting>Shooting</OC_Shooting>
+	<OC_Melee>Melee</OC_Melee>
+	<OC_Construction>Construction</OC_Construction>
+	<OC_Mining>Mining</OC_Mining>
+	<OC_Cooking>Cooking</OC_Cooking>
+	<OC_Plants>Plants</OC_Plants>
+	<OC_Animals>Animals</OC_Animals>
+	<OC_Crafting>Crafting</OC_Crafting>
+	<OC_Artistic>Artistic</OC_Artistic>
+	<OC_Medical>Medical</OC_Medical>
+	<OC_Social>Social</OC_Social>
+	<OC_Intellectual>Intellectual</OC_Intellectual>
+	
 	<!-- GameUtils.cs -->
 	<OCity_GameUtils_From> de </OCity_GameUtils_From>
 	<OCity_GameUtils_Ok>OK</OCity_GameUtils_Ok>

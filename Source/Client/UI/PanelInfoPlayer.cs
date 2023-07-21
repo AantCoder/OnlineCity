@@ -242,15 +242,15 @@ namespace RimWorldOnlineCity
                     if (info.MarketValueRanking > 0)
                     {
                         barRect2.xMax -= 16f;
-                        Widgets.Label(barRect2, "Рейтинг".NeedTranslate() + " " + info.MarketValueRanking);
+                        Widgets.Label(barRect2, "OC_PlayerClient_Rating".Translate() + " " + info.MarketValueRanking);
                     }
                     else
-                        Widgets.Label(barRect2, "Нет рейтинга".NeedTranslate());
+                        Widgets.Label(barRect2, "OC_PlayerClient_NoRating".Translate());
                     Text.Font = GameFont.Small;
                     if (info.MarketValueRanking > 0)
                     {
                         barRect2 = new Rect(barRect.x + barRect.width - 16f, barRect.y + 16f, 16f, 16f);
-                        var tl = "Прошлое место".NeedTranslate() + " " + (info.MarketValueRankingLast == 0 ? "-" : info.MarketValueRankingLast.ToString());
+                        var tl = "OC_PlayerClient_PastRating".Translate() + " " + (info.MarketValueRankingLast == 0 ? "-" : info.MarketValueRankingLast.ToString());
                         if (info.MarketValueRankingLast == 0 || info.MarketValueRankingLast > info.MarketValueRanking)
                         {
                             GUI.DrawTexture(barRect2, GeneralTexture.RankingUp);
@@ -266,7 +266,7 @@ namespace RimWorldOnlineCity
 
                         barRect.y += 32f;
                         var precent = (info.RankingCount - 1) > 0 ? 100 * (info.RankingCount - info.MarketValueRanking) / (info.RankingCount - 1) : 100;
-                        Widgets.Label(barRect, String.Format("Лучше {0}% игроков".NeedTranslate(), precent));
+                        Widgets.Label(barRect, String.Format("OC_PlayerClient_BetterPlayers".Translate(), precent));
                     }
                     Text.Anchor = anchor;
 
@@ -304,42 +304,42 @@ namespace RimWorldOnlineCity
                     }
 
                     /// цифры: максимум стоимость, текущая стоимость, под атакой, пешек всего, больных, с кровотечением
-
+                    
                     var itemRect = new Rect(rect.x, rect.y, rect.width, rect.height / 4f);
 
                     GUI.DrawTexture(new Rect(itemRect.x, itemRect.y, 32f, 32f), GeneralTexture.ItemStash);
                     itemRect.xMin += 32f + 2f;
-                    Widgets.Label(itemRect, "Общая стоимость".NeedTranslate() + ": " + AllWorldObjects.MarketValueTotal.ToStringMoney());
+                    Widgets.Label(itemRect, "OC_PlayerClient_TotalCost".Translate().ToString() + ": " + AllWorldObjects.MarketValueTotal.ToStringMoney());
 
                     itemRect = new Rect(rect.x, rect.y + rect.height / 4f * 1f, rect.width, rect.height / 4f);
                     GUI.DrawTexture(new Rect(itemRect.x, itemRect.y, 32f, 32f), GeneralTexture.ItemStash);
                     itemRect.xMin += 32f + 2f;
-                    Widgets.Label(itemRect, "Максимальная: " + historyMax.ToStringMoney());
+                    Widgets.Label(itemRect, "OC_PlayerClient_Maximum".Translate().ToString() + ": " + historyMax.ToStringMoney());
 
                     itemRect = new Rect(rect.x, rect.y + rect.height / 4f * 2f, rect.width / 16f * 3.5f , rect.height / 4f);
                     if (Mouse.IsOver(itemRect)) Widgets.DrawHighlight(itemRect);
-                    TooltipHandler.TipRegion(itemRect, "Всего колонистов".NeedTranslate());
+                    TooltipHandler.TipRegion(itemRect, "OC_PlayerClient_TotalColonists".Translate());
                     GUI.DrawTexture(new Rect(itemRect.x, itemRect.y, 32f, 32f), GeneralTexture.Pawns);
                     itemRect.xMin += 32f + 2f;
                     Widgets.Label(itemRect, info.ColonistsCount.ToString());
 
                     itemRect = new Rect(rect.x + rect.width / 16f * 3.5f * 1f, rect.y + rect.height / 4f * 2f, rect.width / 16f * 3.5f, rect.height / 4f);
                     if (Mouse.IsOver(itemRect)) Widgets.DrawHighlight(itemRect);
-                    TooltipHandler.TipRegion(itemRect, "Колонистов требующих лечения".NeedTranslate());
+                    TooltipHandler.TipRegion(itemRect, "OC_PlayerClient_ColonistsRequiringTreatment".Translate());
                     GUI.DrawTexture(new Rect(itemRect.x, itemRect.y, 32f, 32f), GeneralTexture.PawnsNeedingTend);
                     itemRect.xMin += 32f + 2f;
                     Widgets.Label(itemRect, info.ColonistsNeedingTend.ToString());
 
                     itemRect = new Rect(rect.x + rect.width / 16f * 3.5f * 2f, rect.y + rect.height / 4f * 2f, rect.width / 16f * 3.5f, rect.height / 4f);
                     if (Mouse.IsOver(itemRect)) Widgets.DrawHighlight(itemRect);
-                    TooltipHandler.TipRegion(itemRect, "Колонистов без сознания".NeedTranslate());
+                    TooltipHandler.TipRegion(itemRect, "OC_PlayerClient_ColonistsUnconscious".Translate());
                     GUI.DrawTexture(new Rect(itemRect.x, itemRect.y, 32f, 32f), GeneralTexture.PawnsDown);
                     itemRect.xMin += 32f + 2f;
                     Widgets.Label(itemRect, info.ColonistsDownCount.ToString());
 
                     itemRect = new Rect(rect.x + rect.width / 16f * 3.5f * 3f, rect.y + rect.height / 4f * 2f, rect.width / 16f * 5.5f, rect.height / 4f);
                     if (Mouse.IsOver(itemRect)) Widgets.DrawHighlight(itemRect);
-                    TooltipHandler.TipRegion(itemRect, "Всего обучаемых животных".NeedTranslate());
+                    TooltipHandler.TipRegion(itemRect, "OC_PlayerClient_TotalTrainedAnimals".Translate());
                     GUI.DrawTexture(new Rect(itemRect.x, itemRect.y, 32f, 32f), GeneralTexture.PawnsAnimal);
                     itemRect.xMin += 32f + 2f;
                     Widgets.Label(itemRect, info.AnimalObedienceCount.ToString());
@@ -349,7 +349,7 @@ namespace RimWorldOnlineCity
                         itemRect = new Rect(rect.x, rect.y + rect.height / 4f * 3f, rect.width, rect.height / 4f);
                         GUI.DrawTexture(new Rect(itemRect.x, itemRect.y, 32f, 32f), GeneralTexture.AttackSettlement);
                         itemRect.xMin += 32f + 2f;
-                        Widgets.Label(itemRect, "На карте враги".NeedTranslate());
+                        Widgets.Label(itemRect, "OC_PlayerClient_EnemieOnMap".Translate());
                     }
                 },
                 });
@@ -369,7 +369,7 @@ namespace RimWorldOnlineCity
                 Widgets.Label(rect, skill.ToString());
                 Text.Anchor = anchor;
             };
-
+            
             if (info.MaxSkills?.Count == 12)
                 drawPanel(null, 120f, new List<Action<int, Rect>>() {
                     (num, rect) => //1
@@ -383,57 +383,57 @@ namespace RimWorldOnlineCity
                         Text.Font = GameFont.Small;
                         Text.Anchor = anchor;
 
-                        drawSkill(rect, "Дальний бой".NeedTranslate(), info.MaxSkills[0]);
+                        drawSkill(rect, "OC_Shooting".Translate(), info.MaxSkills[0]);
                     },
                     (num, rect) =>
                     {
-                        drawSkill(rect, "Ближний бой".NeedTranslate(), info.MaxSkills[1]);
+                        drawSkill(rect, "OC_Melee".Translate(), info.MaxSkills[1]);
                     },
                     (num, rect) =>
                     {
-                        drawSkill(rect, "Строительство".NeedTranslate(), info.MaxSkills[2]);
+                        drawSkill(rect, "OC_Construction".Translate(), info.MaxSkills[2]);
                     },
                     (num, rect) =>
                     {
-                        drawSkill(rect, "Горное дело".NeedTranslate(), info.MaxSkills[3]);
+                        drawSkill(rect, "OC_Mining".Translate(), info.MaxSkills[3]);
                     },
                     (num, rect) =>
                     {
-                        drawSkill(rect, "Кулинария".NeedTranslate(), info.MaxSkills[4]);
+                        drawSkill(rect, "OC_Cooking".Translate(), info.MaxSkills[4]);
                     },
                     (num, rect) =>
                     {
-                        drawSkill(rect, "Растеневодство".NeedTranslate(), info.MaxSkills[5]);
-                    },
-                    (num, rect) =>
-                    {
-                        rect.xMin += 16f;
-                        drawSkill(rect, "Животноводство".NeedTranslate(), info.MaxSkills[6]);
+                        drawSkill(rect, "OC_Plants".Translate(), info.MaxSkills[5]);
                     },
                     (num, rect) =>
                     {
                         rect.xMin += 16f;
-                        drawSkill(rect, "Ремесло".NeedTranslate(), info.MaxSkills[7]);
+                        drawSkill(rect, "OC_Animals".Translate(), info.MaxSkills[6]);
                     },
                     (num, rect) =>
                     {
                         rect.xMin += 16f;
-                        drawSkill(rect, "Искусство".NeedTranslate(), info.MaxSkills[8]);
+                        drawSkill(rect, "OC_Crafting".Translate(), info.MaxSkills[7]);
                     },
                     (num, rect) =>
                     {
                         rect.xMin += 16f;
-                        drawSkill(rect, "Медицина".NeedTranslate(), info.MaxSkills[9]);
+                        drawSkill(rect, "OC_Artistic".Translate(), info.MaxSkills[8]);
                     },
                     (num, rect) =>
                     {
                         rect.xMin += 16f;
-                        drawSkill(rect, "Общение".NeedTranslate(), info.MaxSkills[10]);
+                        drawSkill(rect, "OC_Medical".Translate(), info.MaxSkills[9]);
                     },
                     (num, rect) =>
                     {
                         rect.xMin += 16f;
-                        drawSkill(rect, "Умственный труд".NeedTranslate(), info.MaxSkills[11]);
+                        drawSkill(rect, "OC_Social".Translate(), info.MaxSkills[10]);
+                    },
+                    (num, rect) =>
+                    {
+                        rect.xMin += 16f;
+                        drawSkill(rect, "OC_Intellectual".Translate(), info.MaxSkills[11]);
                     },
                 });
 
@@ -526,7 +526,7 @@ namespace RimWorldOnlineCity
                         {
                             GUI.DrawTexture(new Rect(rect.x, rect.y, 32f, 32f), GeneralTexture.ItemStash);
                             rect.xMin += 32f + 2f;
-                            var txt = "Общая стоимость".NeedTranslate() + ": " + wo.OnlineWObject.MarketValueTotal.ToStringMoney();
+                            var txt = "OC_PlayerClient_TotalCost".Translate() + ": " + wo.OnlineWObject.MarketValueTotal.ToStringMoney();
                             Widgets.Label(rect, txt);
 
                         },

@@ -85,15 +85,15 @@ namespace RimWorldOnlineCity
             if (TextInfoTime >= DateTime.UtcNow.AddSeconds(-5)) return;
 
             var info1 = string.IsNullOrEmpty(Public.StateName) ? "" :
-                "Состоит в".NeedTranslate() + " " + Public.StateName
+                "OC_PlayerClient_In".Translate().ToString() + " " + Public.StateName
                 //todo Константой вывести статус главы
-                + (string.IsNullOrEmpty(Public.StatePositionName) ? "" : " " + "на должности".NeedTranslate() + " " + Public.StatePositionName)
+                + (string.IsNullOrEmpty(Public.StatePositionName) ? "" : " " + "OC_PlayerClient_Position".Translate().ToString() + " " + Public.StatePositionName)
                 + Environment.NewLine;
 
             var info1Extended = string.IsNullOrEmpty(Public.StateName) ? "" :
-                "<:world_map height=18:> Состоит в".NeedTranslate() + $" <@{Public.StateName}>" //ChatController.PrepareShortTag
+                "<:world_map height=18:> " + "OC_PlayerClient_In".Translate().ToString() + $" <@{Public.StateName}>" //ChatController.PrepareShortTag
                 //todo Константой вывести статус главы, вывести ссылку на государство
-                + (string.IsNullOrEmpty(Public.StatePositionName) ? "" : " " + "на должности".NeedTranslate() + " " + Public.StatePositionName)
+                + (string.IsNullOrEmpty(Public.StatePositionName) ? "" : " " + "OC_PlayerClient_Position".Translate().ToString() + " " + Public.StatePositionName)
                 + Environment.NewLine;
 
             var info2 = (SessionClientController.Data.GeneralSettings.EnablePVP 

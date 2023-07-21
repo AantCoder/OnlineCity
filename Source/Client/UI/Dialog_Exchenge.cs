@@ -222,7 +222,7 @@ namespace RimWorldOnlineCity.UI
                     try
                     {
                         Thread.Sleep(500);
-                        Find.WindowStack.Add(new Dialog_MessageBox("Игровые вещи не доступны, пока на карте враги!".NeedTranslate()));
+                        Find.WindowStack.Add(new Dialog_MessageBox("OC_PlayerClient_EnemiesOnMap".Translate()));
                     }
                     catch { }
                 });
