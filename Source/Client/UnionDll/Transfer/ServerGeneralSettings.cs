@@ -148,6 +148,11 @@ namespace OCUnion
         /// </summary>
         public bool ColonyScreenHighQuality { get; set; }
 
+        /// <summary>
+        /// Через сколько дней делать снимки колоний. От 1 до 60 (больше 59 снимок 1 раз в год)
+        /// </summary>
+        public int ColonyScreenDelayDays { get; set; }
+
         public ServerGeneralSettings SetDefault()
         {
             StorytellerDef = "";
@@ -193,6 +198,8 @@ namespace OCUnion
             ColonyScreenEnable = true;
             
             ColonyScreenHighQuality = true;
+
+            ColonyScreenDelayDays = 1;
 
             return this;
         }

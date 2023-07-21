@@ -7,6 +7,8 @@ using Transfer;
 using System.Linq;
 using ServerOnlineCity.Services;
 using ServerOnlineCity.Mechanics;
+using OCUnion.Transfer.Model;
+using Server.Mechanics;
 
 namespace ServerOnlineCity.Model
 {
@@ -20,14 +22,28 @@ namespace ServerOnlineCity.Model
 
         public List<PlayerServer> PlayersAll { get; set; }
         public PlayerServer PlayerSystem { get { return PlayersAll[0]; } }
-        public IEnumerable<PlayerServer> GetPlayersAll => PlayersAll.Where(p => p.Approve);
+        [NonSerialized]
+        public ICollection<string> GetPlayerLoginsAll;
 
         [NonSerialized]
+        public ICollection<PlayerServer> GetPlayersAll;
+        [NonSerialized]
         public ConcurrentDictionary<string, PlayerServer> PlayersAllDic;
+        [NonSerialized]
+        public ConcurrentDictionary<string, PlayerServer> PlayersAllDicWithNotApprove;
+
+        public DateTime RankingUpdate { get; set; }
+        public List<string> PlayersRanking { get; set; }
+        public List<string> StatesRanking { get; set; }
+        public List<string> PlayersRankingLast { get; set; }
+        public List<string> StatesRankingLast { get; set; }
 
         public void UpdatePlayersAllDic()
         {
-            PlayersAllDic = new ConcurrentDictionary<string, PlayerServer>(PlayersAll.ToDictionary(p => p.Public.Login));
+            PlayersAllDic = new ConcurrentDictionary<string, PlayerServer>(PlayersAll.Where(p => p.Approve).ToDictionary(p => p.Public.Login));
+            PlayersAllDicWithNotApprove = new ConcurrentDictionary<string, PlayerServer>(PlayersAll.ToDictionary(p => p.Public.Login));
+            GetPlayersAll = PlayersAllDic.Values.ToHashSet();
+            GetPlayerLoginsAll = GetPlayersAll.Select(p => p.Public.Login).ToHashSet();
         }
 
         public string WorldSeed { get; set; }
@@ -54,13 +70,6 @@ namespace ServerOnlineCity.Model
         [NonSerialized]
         private ExchengeOperator _OrderOperator;
 
-        //[NonSerialized]
-        //public List<TradeWorldObjectEntry> TradeWorldObjects; //calc from Orders
-        //[NonSerialized]
-        //public List<TradeWorldObjectEntry> TradeWorldObjectsDeleted;
-        //[NonSerialized]
-        //public ConcurrentDictionary<long, TradeOrder> OrdersById; //calc from Orders
-
         [NonSerialized]
         public Dictionary<long, string> UploadService; //не реализовано удаление (только перезагрузкой), если будет жрать память сделать отслеживания по кол-во добавлений
 
@@ -78,6 +87,43 @@ namespace ServerOnlineCity.Model
         [NonSerialized]
         public bool EverybodyLogoff;
 
+
+        public List<State> States { get; set; }
+
+        public List<StatePosition> StatePositions { get; set; }
+
+        public StateOperator StateOperator => _StateOperator;
+
+        [NonSerialized]
+        private StateOperator _StateOperator;
+
+        [NonSerialized]
+        public ICollection<State> GetStates;
+        [NonSerialized]
+        public ConcurrentDictionary<string, State> StatesDic;
+        [NonSerialized]
+        public ConcurrentDictionary<string, ConcurrentDictionary<string, StatePosition>> StatePositionsDic;
+        [NonSerialized]
+        private ConcurrentDictionary<string, HashSet<PlayerServer>> StatePlayersDic;
+        [NonSerialized]
+        public DateTime StateUpdateTime;
+
+        public void UpdateStatesDic()
+        {
+            StatesDic = new ConcurrentDictionary<string, State>(States.ToDictionary(p => p.Name));
+            GetStates = StatesDic.Values.ToHashSet();
+            var pd = States.ToDictionary(p => p.Name, p => new ConcurrentDictionary<string, StatePosition>(StatePositions.Where(sp => sp.StateName == p.Name).ToDictionary(sp => sp.Name)));
+            StatePositionsDic = new ConcurrentDictionary<string, ConcurrentDictionary<string, StatePosition>>(pd);
+            StatePlayersDic = new ConcurrentDictionary<string, HashSet<PlayerServer>>();
+            StateUpdateTime = DateTime.UtcNow;
+        }
+        public HashSet<PlayerServer> GetStatePlayers(string StateName) => string.IsNullOrEmpty(StateName) ? new HashSet<PlayerServer>()
+            : StatePlayersDic.GetOrAdd(StateName, GetPlayersAll.Where(p => p.Public.StateName == StateName).ToHashSet());
+
+        public NameValidator NameValidator => _NameValidator;
+
+        [NonSerialized]
+        private NameValidator _NameValidator;
 
 
         public BaseContainer()
@@ -100,6 +146,9 @@ namespace ServerOnlineCity.Model
             {
                 new PlayerServer("system")               
             };
+
+            States = new List<State>();
+            StatePositions = new List<StatePosition>();
            
             WorldObjects = new List<WorldObjectEntry>();
             WorldObjectsDeleted = new List<WorldObjectEntry>();
@@ -117,21 +166,27 @@ namespace ServerOnlineCity.Model
             if (Orders == null) Orders = new List<TradeOrder>();
             if (OrdersPlaceServerIdByTile == null) OrdersPlaceServerIdByTile = new Dictionary<int, long>();
             if (UploadService == null) UploadService = new Dictionary<long, string>();
+            if (States == null) States = new List<State>();
+            if (StatePositions == null) StatePositions = new List<StatePosition>();
+            if (PlayersRanking == null) PlayersRanking = new List<string>();
+            if (StatesRanking == null) StatesRanking = new List<string>();
+            if (PlayersRankingLast == null) PlayersRankingLast = new List<string>();
+            if (StatesRankingLast == null) StatesRankingLast = new List<string>();
 
             // Преобразования при обновлениях {
 
-            //Переход на 0.4.75
-            foreach (var order in Orders)
-            {
-                foreach (var item in order.BuyThings) if (item.PawnParam != null) item.PawnParam = item.PawnParam.Replace("Tribesperson", "Colonist");
-                foreach (var item in order.SellThings) if (item.PawnParam != null) item.PawnParam = item.PawnParam.Replace("Tribesperson", "Colonist");
-            }
-            foreach (var player in PlayersAll)
-            {
-                foreach(var tt in player.TradeThingStorages)
-                    foreach (var item in tt.Things)
-                        if (item.PawnParam != null) item.PawnParam = item.PawnParam.Replace("Tribesperson", "Colonist");
-            }
+            ////Переход на 0.4.75
+            //foreach (var order in Orders)
+            //{
+            //    foreach (var item in order.BuyThings) if (item.PawnParam != null) item.PawnParam = item.PawnParam.Replace("Tribesperson", "Colonist");
+            //    foreach (var item in order.SellThings) if (item.PawnParam != null) item.PawnParam = item.PawnParam.Replace("Tribesperson", "Colonist");
+            //}
+            //foreach (var player in PlayersAll)
+            //{
+            //    foreach(var tt in player.TradeThingStorages)
+            //        foreach (var item in tt.Things)
+            //            if (item.PawnParam != null) item.PawnParam = item.PawnParam.Replace("Tribesperson", "Colonist");
+            //}
 
             // }
 
@@ -144,8 +199,11 @@ namespace ServerOnlineCity.Model
             }
 
             _OrderOperator = new ExchengeOperator(this);
+            _StateOperator = new StateOperator(this);
+            _NameValidator = new NameValidator(this);
             if (WorldObjectsDeleted == null) WorldObjectsDeleted = new List<WorldObjectEntry>();
             UpdatePlayersAllDic();
+            UpdateStatesDic();
 
             //Если PVP выключили, то выключаем его в настройках всех игроков
             if (!ServerManager.ServerSettings.GeneralSettings.EnablePVP)

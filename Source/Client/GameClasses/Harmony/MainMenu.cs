@@ -24,8 +24,16 @@ namespace RimWorldOnlineCity
         public static void OnMainMenuNetClick()
         {
             HasClickMainMenuNetClick = true;
+            //Find.WindowStack.Add(new Dialog_LoginForm()); return;
+            if (SessionClientController.ClientFileCheckers == null || SessionClientController.ClientFileCheckers.Any(x => x == null || !x.Complete))
+            //if (!SessionClientController.ClientFileCheckersComplete)
+            {
+                Loger.Log("Message wait UpdateModsWindow");
+                Find.WindowStack.Add(new UpdateModsWindow());
+                return; 
+            }
 
-            _ = SessionClientController.DoUserLogin();
+            Find.WindowStack.Add(new Dialog_LoginForm());
         }
     }
 
@@ -36,6 +44,7 @@ namespace RimWorldOnlineCity
     internal class MainMenuDrawer_DoMainMenuControls_Patch
     {
         public static bool Inited = false;
+        public static DateTime DontDisconnectTime;
 
         //Инициализация игры
         [HarmonyPrefix]
@@ -45,6 +54,15 @@ namespace RimWorldOnlineCity
             {
                 if (Current.ProgramState == ProgramState.Entry)
                 {
+                    //если мы в главном меню, но почему-то активно подключение - разрываем его
+                    if ((GameStarter.AfterStart != null
+                        || SessionClient.Get.IsLogined)
+                        && (DateTime.UtcNow - DontDisconnectTime).TotalSeconds >= 2d)
+                    {
+                        Loger.Log("Client MainMenu Disconnecting" + (GameStarter.AfterStart != null ? "." : ""));
+                        GameStarter.AfterStart = null;
+                        SessionClientController.Disconnected(null);
+                    }
                     //рисуем кнопку Сетевая игра
                     var item = new ListableOption("OCity_LAN_btn".Translate(), delegate
                     {

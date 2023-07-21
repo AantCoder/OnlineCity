@@ -85,6 +85,34 @@ namespace RimWorldOnlineCity
             }
         }
 
+        public virtual string GetInspectExtendedString()
+        {
+            if (OnlineWObject == null)
+                return "OCity_Caravan_Player".Translate(OnlineName, OnlinePlayerLogin) + Environment.NewLine;
+            else
+            {
+                var s = "OCity_Caravan_Player".Translate() + Environment.NewLine
+                    //+ "OCity_Caravan_PriceThing".Translate() + Environment.NewLine
+                    //+ "OCity_Caravan_PriceAnimalsPeople".Translate()
+                    + "OCity_Caravan_Other".Translate();
+                var s1 = string.Format(s,
+                        $"<&{OnlineWObject.PlaceServerId}> " /*+ OnlineName*/
+                        , /*OnlinePlayerLogin +*/ (IsOnline ? $"<:check_mark_button height=16:> Online!" : "<:zzz height=16:> ") + " (sId:" + OnlineWObject.PlaceServerId + ")"
+                        , "<:money_bag height=16:> " + OnlineWObject.MarketValue.ToStringMoney()
+                        , "<:busts_in_silhouette height=16:> " + OnlineWObject.MarketValuePawn.ToStringMoney()
+                        , "<:chart_increasing height=16:> " + (OnlineWObject.MarketValueBalance + OnlineWObject.MarketValueStorage).ToStringMoney()
+                        )
+                    + ((this is BaseOnline) && SessionClientController.My.EnablePVP
+                        ? Environment.NewLine + "OCity_Caravan_PlayerAttackCost".Translate(
+                            AttackUtils.MaxCostAttackerCaravan(OnlineWObject.MarketValueTotal, this is BaseOnline).ToStringMoney()).ToString()
+                        : "")
+                    + (OnlineWObject.FreeWeight > 0 && OnlineWObject.FreeWeight < 999999
+                        ? Environment.NewLine + "OCity_Caravan_FreeWeight".Translate().ToString() + " <:handbag height=16:> " + OnlineWObject.FreeWeight.ToStringMass()
+                        : "");
+                return s1;
+            }
+        }
+        
         public override string GetDescription()
         {
             var res = base.GetDescription();

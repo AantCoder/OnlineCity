@@ -48,6 +48,7 @@ namespace RimWorldOnlineCity.UI
 
         public void Drow(Rect inRect)
         {
+            var leftPanelWidth = 200f;
             var iconWidth = 25f;
             var iconWidthSpase = 30f;
 
@@ -66,7 +67,7 @@ namespace RimWorldOnlineCity.UI
                         var textHeight = new DialogControlBase().TextHeight;
                         lbCannalsHeight = (float)Math.Round((decimal)(inRect.height / 2f / textHeight)) * textHeight;
                     }
-                    Widgets.Label(new Rect(inRect.x, inRect.y + iconWidthSpase + lbCannalsHeight, 100f, 22f), "OCity_Dialog_Players".Translate());
+                    Widgets.Label(new Rect(inRect.x, inRect.y + iconWidthSpase + lbCannalsHeight, leftPanelWidth, 22f), "OCity_Dialog_Players".Translate());
 
                     if (lbCannals == null)
                     {
@@ -74,7 +75,7 @@ namespace RimWorldOnlineCity.UI
                         lbCannals = new ListBox<string>();
                         lbCannals.Area = new Rect(inRect.x
                             , inRect.y + iconWidthSpase
-                            , 100f
+                            , leftPanelWidth
                             , lbCannalsHeight);
                         lbCannals.OnClick += (index, text) => DataLastChatsTime = DateTime.MinValue; //StatusTemp = text;
                         lbCannals.SelectedIndex = 0;
@@ -84,6 +85,7 @@ namespace RimWorldOnlineCity.UI
                     {
                         //первый запуск
                         lbPlayers = new ListBox<ListBoxPlayerItem>();
+                        lbPlayers.UsePanelText = true;
                         lbPlayers.OnClick += (index, item) =>
                         {
                         //убираем выделение
@@ -100,7 +102,7 @@ namespace RimWorldOnlineCity.UI
                         PanelLastHeight = inRect.height;
                         lbPlayers.Area = new Rect(inRect.x
                             , inRect.y + iconWidthSpase + lbCannalsHeight + 22f
-                            , 100f
+                            , leftPanelWidth
                             , inRect.height - (iconWidthSpase + lbCannalsHeight + 22f));
                     }
 
@@ -168,7 +170,7 @@ namespace RimWorldOnlineCity.UI
                         Action<string> addTit = (text) =>
                         {
                             if (lbPlayers.DataSource.Count > 0) addPl(null, " ").GroupTitle = true;
-                            addPl(null, " <i>– " + text + " –</i> ").GroupTitle = true;
+                            addPl(null, " <i>– " + text + " –</i>  ").GroupTitle = true;
                         };
 
                         Func<string, bool> isOnline = (login) => login == SessionClientController.My.Login
@@ -185,20 +187,21 @@ namespace RimWorldOnlineCity.UI
                             // в чате создатель
                             addTit("OCity_Dialog_Exchenge_Chat".Translate());
                             var n = addPl(selectCannal.OwnerLogin
-                                , frameOnline(isOnline(selectCannal.OwnerLogin), "★ " + selectCannal.OwnerLogin));
+                                , $"<img pl_{selectCannal.OwnerLogin}>" + frameOnline(isOnline(selectCannal.OwnerLogin), "★ " + selectCannal.OwnerLogin));
                             n.Tooltip += "OCity_Dialog_ChennelOwn".Translate();
                             n.InChat = true;
 
                             // в чате
                             var offlinePartyLogin = new List<string>();
-                            for (int i = 0; i < selectCannal.PartyLogin.Count; i++)
+                            var selectCannalPartyLogin = selectCannal.PartyLogin.OrderBy(x => x).ToList();
+                            for (int i = 0; i < selectCannalPartyLogin.Count; i++)
                             {
-                                var lo = selectCannal.PartyLogin[i];
+                                var lo = selectCannalPartyLogin[i];
                                 if (lo != "system" && lo != selectCannal.OwnerLogin)
                                 {
                                     if (isOnline(lo))
                                     {
-                                        n = addPl(lo, frameOnline(true, lo));
+                                        n = addPl(lo, $"<img pl_{lo}>" + frameOnline(true, lo));
                                         n.Tooltip += "OCity_Dialog_ChennelUser".Translate();
                                         n.InChat = true;
                                     }
@@ -212,7 +215,7 @@ namespace RimWorldOnlineCity.UI
                             for (int i = 0; i < offlinePartyLogin.Count; i++)
                             {
                                 var lo = offlinePartyLogin[i];
-                                n = addPl(lo, frameOnline(false, lo));
+                                n = addPl(lo, $"<img pl_{lo}>" + frameOnline(false, lo));
                                 n.Tooltip += "OCity_Dialog_ChennelUser".Translate();
                                 n.InChat = true;
                             }
@@ -222,6 +225,7 @@ namespace RimWorldOnlineCity.UI
                             ? new List<string>()
                             : SessionClientController.Data.Chats[0].PartyLogin
                             .Where(p => p != "" && p != "system" && !allreadyLogin.Any(al => al == p))
+                            .OrderBy(p => p)
                             .ToList();
                         if (other.Count > 0)
                         {
@@ -233,7 +237,7 @@ namespace RimWorldOnlineCity.UI
                                 var lo = other[i];
                                 if (isOnline(lo))
                                 {
-                                    var n = addPl(lo, frameOnline(true, lo));
+                                    var n = addPl(lo, $"<img pl_{lo}>" + frameOnline(true, lo));
                                     //n.Tooltip += "OCity_Dialog_ChennelUser".Translate();
                                 }
                                 else
@@ -245,7 +249,7 @@ namespace RimWorldOnlineCity.UI
                             for (int i = 0; i < offlinePartyLogin.Count; i++)
                             {
                                 var lo = offlinePartyLogin[i];
-                                var n = addPl(lo, frameOnline(false, lo));
+                                var n = addPl(lo, $"<img pl_{lo}>" + frameOnline(false, lo));
                                 //n.Tooltip += "OCity_Dialog_ChennelUser".Translate();
                             }
 
@@ -298,7 +302,7 @@ namespace RimWorldOnlineCity.UI
                                 if (ChatLastPostTime != chatLastPostTime)
                                 {
                                     ChatLastPostTime = chatLastPostTime;
-                                    Func<ChatPost, string> getPost = (cp) => "[" + cp.Time.ToGoodUtcString("dd HH:mm ") + cp.OwnerLogin + "]: " + cp.Message;
+                                    Func<ChatPost, string> getPost = (cp) => "[" + cp.Time.ToGoodUtcString("HH:mm ") + ChatController.PrepareShortTag($"<@{cp.OwnerLogin}>") + "]: "+ cp.Message;
 
                                     var totalLength = 0;
                                     ChatBox.Text = selectCannal.Posts
@@ -318,7 +322,8 @@ namespace RimWorldOnlineCity.UI
                     if (lbCannals.SelectedIndex >= 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)
                     {
                         var selectCannal = SessionClientController.Data.Chats[lbCannals.SelectedIndex];
-                        var chatAreaOuter = new Rect(inRect.x + 110f, inRect.y, inRect.width - 110f, inRect.height - 30f);
+                        var chatAreaOuter = new Rect(inRect.x + leftPanelWidth + 10f, inRect.y, inRect.width - leftPanelWidth - 10f, inRect.height - 30f);
+                        Text.Font = GameFont.Small;
                         ChatBox.Drow(chatAreaOuter, ChatScrollToDown);
                         ChatScrollToDown = false;
 
@@ -354,7 +359,7 @@ namespace RimWorldOnlineCity.UI
                         }
 
                         GUI.SetNextControlName("StartTextField");
-                        ChatInputText = GUI.TextField(new Rect(inRect.x + 110f, inRect.y + inRect.height - 25f, inRect.width - 110f - 30f, 25f)
+                        ChatInputText = GUI.TextField(new Rect(inRect.x + leftPanelWidth + 10f, inRect.y + inRect.height - 25f, inRect.width - leftPanelWidth - 10f - 30f, 25f)
                             , ChatInputText, 10000);
 
                         if (NeedFockus)
@@ -445,6 +450,13 @@ namespace RimWorldOnlineCity.UI
 
             var listMenu = new List<FloatMenuOption>();
             var myLogin = SessionClientController.My.Login;
+
+            if (SessionClientController.Data.Players.ContainsKey(item.Login))
+                listMenu.Add(new FloatMenuOption("OCity_Dialog_ChennelPlayerInfo".Translate(), () =>
+                {
+                    Dialog_InfoPlayer.ShowInfo(item.Login);
+                }));
+
             ///Личное сообщение
             if (item.Login != myLogin)
             {
@@ -486,12 +498,6 @@ namespace RimWorldOnlineCity.UI
                     }));
                 }
             }
-
-            if (SessionClientController.Data.Players.ContainsKey(item.Login))
-                listMenu.Add(new FloatMenuOption("OCity_Dialog_ChennelPlayerInfo".Translate(), () =>
-                {
-                    Dialog_InfoPlayer.ShowInfoPlayer(item.Login);
-                }));
 
             if (listMenu.Count == 0) return;
             var menu = new FloatMenu(listMenu);

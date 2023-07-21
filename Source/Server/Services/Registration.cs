@@ -25,31 +25,13 @@ namespace ServerOnlineCity.Services
             packet.Email = Repository.CheckIsIntruder(context, packet.Email, packet.Login);
             Loger.Log($"Player {packet.Login} attempt to register on the server.", Loger.LogLevel.REGISTER);
 
-            if (packet.Login.Contains("\r")
-                || packet.Login.Contains("\n")
-                || packet.Login.Contains("\t")
-                || packet.Login.Contains(" ")
-                || packet.Login.Contains("*")
-                || packet.Login.Contains("@")
-                || packet.Login.Contains("/")
-                || packet.Login.Contains("\\")
-                || packet.Login.Contains("\"")
-                || packet.Login.Contains("<")
-                || packet.Login.Contains(">"))
-            {
+            var errorValid = Repository.GetData.NameValidator.TextValidator(packet.Login);
+            if (errorValid != null)
+            { 
                 return new ModelStatus()
                 {
                     Status = 1,
-                    Message = "Login cannot contain characters: space * @ / \\ \" < > "
-                };
-            }
-
-            if (packet.Login.Trim().Length <= 2)
-            {
-                return new ModelStatus()
-                {
-                    Status = 1,
-                    Message = "Login must be longer than 3 characters"
+                    Message = "Login " + errorValid,
                 };
             }
 
@@ -73,9 +55,7 @@ namespace ServerOnlineCity.Services
             }
 
             packet.Login = packet.Login.Trim();
-            context.Player = Repository.GetData.PlayersAll
-                .FirstOrDefault(p => Repository.NormalizeLogin(p.Public.Login) == Repository.NormalizeLogin(packet.Login));
-            if (context.Player != null)
+            if (!Repository.GetData.NameValidator.CheckFree(packet.Login))
             {
                 return new ModelStatus()
                 {

@@ -37,21 +37,21 @@ namespace ServerOnlineCity
         {
             if (numberSave < 1 || numberSave > CountSaveDataPlayer) return null;
 
-            var fileName = GetFileNameBase(login) + numberSave.ToString();
+            var fileName = GetFileNameBase(login) + numberSave.ToString().NormalizePath();
 
-            var info = new FileInfo(fileName.Replace("\\", "" + Path.DirectorySeparatorChar));
+            var info = new FileInfo(fileName);
             if (!info.Exists || info.Length < 10) return null;
 
             //читаем содержимое
             bool readAsXml;
-            using (var file = File.OpenRead(fileName.Replace("\\", "" + Path.DirectorySeparatorChar)))
+            using (var file = File.OpenRead(fileName))
             {
                 var buff = new byte[10];
                 file.Read(buff, 0, 10);
                 readAsXml = Encoding.ASCII.GetString(buff, 0, 10).Contains("<?xml");
             }
             //считываем текст как xml сейва или как сжатого zip'а
-            var saveFileData = File.ReadAllBytes(fileName.Replace("\\", "" + Path.DirectorySeparatorChar));
+            var saveFileData = File.ReadAllBytes(fileName);
             if (readAsXml)
             {
                 return saveFileData;
@@ -78,17 +78,18 @@ namespace ServerOnlineCity
             {
                 if (pFiles.Count > 0)
                 {
-                    if (File.Exists(pFiles[0] + ".bak")) File.Delete(pFiles[0] + ".bak");
-                    File.Move(pFiles[0], pFiles[0] + ".bak");
+                    var bakupFileName = Path.Combine(Path.GetDirectoryName(pFiles[0]), Path.GetFileNameWithoutExtension(pFiles[0])) + ".bak";
+                    if (File.Exists(bakupFileName)) DeleteFileAndBackup(bakupFileName);
+                    File.Move(pFiles[0], bakupFileName);
                 }
-                for (int i = 1; i < pFiles.Count; i++) File.Delete(pFiles[i]);
+                for (int i = 1; i < pFiles.Count; i++) DeleteFileAndBackup(pFiles[i]);
             }
             else
             {
                 //Делаем так, чтобы в pFiles[pFiles.Count - 1] было имя файла которого нет
                 if (pFiles.Count == CountSaveDataPlayer)
                 {
-                    File.Delete(pFiles[pFiles.Count - 1]);
+                    DeleteFileAndBackup(pFiles[pFiles.Count - 1]);
                 }
                 else
                 {
@@ -103,17 +104,54 @@ namespace ServerOnlineCity
             var fileName = fileNameBase + "1";
 
             byte[] dataToSave;
-            if (true)
-            {
-                dataToSave = GZip.ZipByteByte(data);
-            }
-            else
-            {
-                dataToSave = data;
-            }
+            dataToSave = GZip.ZipByteByte(data);
 
             File.WriteAllBytes(fileName, dataToSave);
             Loger.Log("Server User " + Path.GetFileNameWithoutExtension(fileName) + " saved.");
+        }
+        /// <summary>
+        /// Удаляем файл, но перед этим сохраняем его копию так, чтобы былка копия более 12 часов назад
+        /// </summary>
+        /// <param name="fileName"></param>
+        private void DeleteFileAndBackup(string fileName)
+        {
+            var fi = new FileInfo(fileName);
+            if (!fi.Exists) return;
+            if ((DateTime.UtcNow - fi.LastWriteTimeUtc).TotalHours < 12)
+            {
+                fi.Delete();
+                return;
+            }
+            var bakupFileName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName));
+            var d1 = new FileInfo(bakupFileName + ".day1");
+            var d2 = new FileInfo(bakupFileName + ".day2");
+            if (!d1.Exists || (fi.LastWriteTimeUtc - d1.LastWriteTimeUtc).TotalHours > 12)
+            {
+                //нужно записать файл fileName в fileName.day1
+                if (d1.Exists)
+                {
+                    //разбираемся с существующим fileName.day1
+                    if (!d2.Exists || (d1.LastWriteTimeUtc - d2.LastWriteTimeUtc).TotalHours > 12)
+                    {
+                        //нужно записать файл fileName.day1 в fileName.day2
+                        if (d2.Exists)
+                        {
+                            //не разбираемся с существующим fileName.day2
+                            d2.Delete();
+                        }
+                        File.Move(d1.FullName, d2.FullName);
+                    }
+                    else
+                    {
+                        d1.Delete();
+                    }
+                }
+                File.Move(fi.FullName, d1.FullName);
+            }
+            else
+            {
+                fi.Delete();
+            }
         }
 
         public void DeletePlayerData(string login)
@@ -122,8 +160,9 @@ namespace ServerOnlineCity
 
             if (pFiles.Count > 0)
             {
-                if (File.Exists(pFiles[0] + ".bak")) File.Delete(pFiles[0] + ".bak");
-                File.Move(pFiles[0], pFiles[0] + ".bak");
+                var bakupFileName = Path.Combine(Path.GetDirectoryName(pFiles[0]), Path.GetFileNameWithoutExtension(pFiles[0])) + ".bak";
+                if (File.Exists(bakupFileName)) File.Delete(bakupFileName);
+                File.Move(pFiles[0], bakupFileName);
             }
             for (int i = 1; i < pFiles.Count; i++) File.Delete(pFiles[i]);
         }

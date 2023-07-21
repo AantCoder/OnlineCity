@@ -1,5 +1,6 @@
 ﻿using Model;
 using OCUnion;
+using OCUnion.Transfer.Model;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,8 @@ namespace RimWorldOnlineCity
         public int ChatNotReadPost;
 
         public Dictionary<string, PlayerClient> Players = new Dictionary<string, PlayerClient>();
+
+        public Dictionary<string, StateInfo> States { get; set; }
 
         private PlayerClient MyEx_p = null;
 

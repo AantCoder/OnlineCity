@@ -1,6 +1,7 @@
-﻿using Model;
+using Model;
 using OCUnion;
 using OCUnion.Transfer;
+using OCUnion.Transfer.Model;
 using OCUnion.Transfer.Types;
 using ServerOnlineCity.Services;
 using System;
@@ -88,6 +89,7 @@ namespace ServerOnlineCity.Model
         /// </summary>
         [XmlIgnore]
         public List<TradeThingStorage> TradeThingStorages = new List<TradeThingStorage>();
+
 
         [NonSerialized]
         [XmlIgnore]
@@ -222,6 +224,15 @@ namespace ServerOnlineCity.Model
         [NonSerialized]
         public long WLastTick;
 
+        [NonSerialized]
+        public StatePosition StatePosition;
+
+        public List<float> MarketValueHistory;
+
+        public int MarketValueRanking;
+
+        public int MarketValueRankingLast;
+
         private PlayerServer()
         {
             ExitReason = DisconnectReason.AllGood;
@@ -237,6 +248,13 @@ namespace ServerOnlineCity.Model
 
             Chats = new Dictionary<Chat, ModelUpdateTime>(1);
             Chats.Add(ChatManager.Instance.PublicChat, new ModelUpdateTime() { Value = -1 });
+        }
+
+        public void MarketValueHistoryAdd(float value)
+        {
+            if (MarketValueHistory == null) MarketValueHistory = new List<float>();
+            MarketValueHistory.Add(value);
+            if (MarketValueHistory.Count > 60) MarketValueHistory.RemoveAt(0);
         }
 
         public WorldObjectsValues CostWorldObjects(long serverId = 0)
@@ -352,4 +370,23 @@ namespace ServerOnlineCity.Model
             Repository.Get.ChangeData = true;
         }
     }
+
+
+    [Flags]
+    public enum PossiblyIntruderType : int
+    {
+        /// <summary>
+        /// Всё ОК
+        /// </summary>
+        LevelNone = 0,
+
+
+        /// <summary>
+        /// Больше этого уровня считается не подозрительным, а определенным нарушением
+        /// </summary>
+        LevelSuspicious = 0xFFFF,
+
+
+    }
+
 }

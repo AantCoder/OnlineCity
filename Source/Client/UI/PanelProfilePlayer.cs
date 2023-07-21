@@ -109,14 +109,18 @@ namespace RimWorldOnlineCity
             topOffset += 30f;
 
             ///Аватарка
-            var avWidth = inRect.width - 30f - 270f;
-            if (avWidth > 256) avWidth = 256;
-            rect = new Rect(inRect.x + 30f + 270f, inRect.y + topOffset, avWidth, avWidth);
+            //var avWidth = inRect.width - 30f - 270f;
+            //if (avWidth > 256) avWidth = 256;
+            //rect = new Rect(inRect.x + 30f + 270f, inRect.y + topOffset, avWidth, avWidth);
+            var avWidth = 256;
+            rect = new Rect(inRect.x + inRect.width - avWidth - 5, inRect.y + 5, avWidth, avWidth);
 
             var iconImage = GeneralTexture.Get.ByName("pl_" + SessionClientController.My.Login);
             GUI.DrawTexture(rect, iconImage);
 
-            rect = new Rect(inRect.x + 30f + 270f, inRect.y + topOffset + avWidth + 10f, 200f, 30f);
+            rect.y += rect.height + 5f;
+            rect.height = 30f;
+            rect.width = 200f;
             rect.x += (avWidth - rect.width) / 2f; //центруем
             if (Widgets.ButtonText(rect, "OCity_SetAvatar".Translate()))
             {
@@ -138,6 +142,43 @@ namespace RimWorldOnlineCity
                     }
                 });
             }
+
+            /*
+            ///Аватарка клана
+            //var avWidth = inRect.width - 30f - 270f;
+            //if (avWidth > 256) avWidth = 256;
+            //rect = new Rect(inRect.x + 30f + 270f, inRect.y + topOffset, avWidth, avWidth);
+            avWidth = 256;
+            rect = new Rect(inRect.x + inRect.width - avWidth - 5, inRect.y + 5 + 256f + 15f + 30f, avWidth, avWidth);
+
+            iconImage = GeneralTexture.Get.ByName("pl_" + SessionClientController.My.Login);
+            GUI.DrawTexture(rect, iconImage);
+
+            rect.y += rect.height + 5f;
+            rect.height = 30f;
+            rect.width = 200f;
+            rect.x += (avWidth - rect.width) / 2f; //центруем
+            if (Widgets.ButtonText(rect, "OCity_SetAvatar".Translate()))
+            {
+                Find.WindowStack.Add(new Dialog_InputImage()
+                {
+                    SelectImageAction = (img, data) =>
+                    {
+                        SessionClientController.Command((connect) =>
+                        {
+                            connect.FileSharingUpload(FileSharingCategory.PlayerIcon, SessionClientController.My.Login, data);
+                            var p = connect.FileSharingDownload(FileSharingCategory.PlayerIcon, SessionClientController.My.Login);
+
+                            GeneralTexture.Clear();
+
+                            var msg = data?.Length > 0 && p?.Data?.Length > 0
+                                ? "OCity_Successfully".Translate() : "OCity_Error".Translate();
+                            Find.WindowStack.Add(new Dialog_MessageBox(msg));
+                        });
+                    }
+                });
+            }
+            */
 
             /// Интервал сохранений в минутах
             //rect = new Rect(inRect.x + 30f, inRect.y + topOffset, inRect.width - 30f, 25f);

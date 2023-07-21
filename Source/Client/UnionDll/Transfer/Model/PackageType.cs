@@ -202,5 +202,13 @@ namespace OCUnion.Transfer.Model
         /// Получить информацию по бирже
         /// </summary>
         Response54ExchengeInfo,
+        /// <summary>
+        /// Получить расширенную информацию об игроке
+        /// </summary>
+        Request55PlayerInfoExtended,
+        /// <summary>
+        /// Получить расширенную информацию об игроке
+        /// </summary>
+        Response56PlayerInfoExtended,
     }
 }

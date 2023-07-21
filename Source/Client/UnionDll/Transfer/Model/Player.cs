@@ -39,6 +39,18 @@ namespace Model
 
         public Grants Grants { get; set; }
 
+        public bool ExistsEnemyPawns { get; set; }
+
+        /// <summary>
+        /// Государство. Reference by State.Name
+        /// </summary>
+        public string StateName { get; set; }
+
+        /// <summary>
+        /// Должность в государстве. Reference by StatePosition.Name
+        /// </summary>
+        public string StatePositionName { get; set; }
+
     }
 
     [Serializable]
@@ -47,6 +59,8 @@ namespace Model
         public int ColonistsCount { get; set; }
         public int ColonistsDownCount { get; set; }
         public int ColonistsBleedCount { get; set; }
+        public int ColonistsNeedingTend { get; set; }
+        public int AnimalObedienceCount { get; set; }
         /// <summary>
         /// Сколько пешек имеют 8 из 12 навыков 20 уровня. Предположительно всегда должно быть = 0. Если оно равно ColonistsCount, значит это чит
         /// </summary>
@@ -59,35 +73,7 @@ namespace Model
         public int KillsBestMechanoids { get; set; }
         public List<PawnStat> Pawns { get; set; }
         public string TransLog { get; set; }
-    }
-
-    [Flags]
-    public enum PossiblyIntruderType : int
-    {
-        /// <summary>
-        /// Всё ОК
-        /// </summary>
-        LevelNone = 0,
-
-        /// <summary>
-        /// Подозрительно
-        /// </summary>
-        AllSkillIn20More2 = 1,
-
-        /// <summary>
-        /// Больше этого уровня считается не подозрительным, а определенным нарушением
-        /// </summary>
-        LevelSuspicious = 1,
-
-        /// <summary>
-        /// Нарушитель
-        /// </summary>
-        AllSkillIn20More8 = 2,
-
-        /// <summary>
-        /// Нарушитель
-        /// </summary>
-        AddSkillMore8More2 = 4,
+        public bool ExistsEnemyPawns { get; set; }
     }
 
 }

@@ -21,6 +21,7 @@ namespace RimWorldOnlineCity
 
         private PanelChat panelChat;
         private PanelProfilePlayer panelProfilePlayer;
+        private PanelViewInfo panelViewStates;
 
 
         public static string AboutGeneralText = MainHelper.VersionInfo + " "
@@ -39,7 +40,7 @@ namespace RimWorldOnlineCity
         }
 
         static Dialog_MainOnlineCity IsShow = null;
-        static Vector2 LastInitialSize = new Vector2(700f, 650f);
+        static Vector2 LastInitialSize = new Vector2(750f, 682f);
         static Vector2 LastInitialPos = new Vector2(0f, 0f);
 
 
@@ -53,6 +54,7 @@ namespace RimWorldOnlineCity
             draggable = true;
             panelChat = new PanelChat();
             panelProfilePlayer = new PanelProfilePlayer();
+            panelViewStates = new PanelViewInfo();
 
             ChatController.MainPanelChat = panelChat;
         }
@@ -116,7 +118,7 @@ namespace RimWorldOnlineCity
                 //Rect r1 = new Rect(inRect.x - 5f, inRect.y, 180f, 40f); // inRect.width, inRect.height);
                 //Widgets.DrawBoxSolid(r1, new Color(0, 1, 1));
 
-                var screenRect = new Rect(inRect.x, inRect.y + 31f, 400f, 0);
+                var screenRect = new Rect(inRect.x, inRect.y + 31f, 500f, 0);
                 var tabRect = new Rect(inRect.x, inRect.y + 31f, inRect.width, inRect.height - 31f);
 
                 List<TabRecord> list = new List<TabRecord>();
@@ -126,7 +128,7 @@ namespace RimWorldOnlineCity
                 list.Add(new TabRecord("OCity_Dialog_ListAbout".Translate(), () => { TabIndex = 3; }, TabIndex == 3));
                 TabDrawer.DrawTabs(screenRect, list);
                 if (TabIndex == 0) DoTab0Contents(tabRect);
-                //else if (TabIndex == 1) DoTab1Contents(tabRect);
+                else if (TabIndex == 1) DoTab1Contents(tabRect);
                 else if (TabIndex == 2) DoTab2Contents(tabRect);
                 else if (TabIndex == 3) DoTab3Contents(tabRect);
 
@@ -151,6 +153,7 @@ namespace RimWorldOnlineCity
 
         public void DoTab1Contents(Rect inRect)
         {
+            panelViewStates.Drow(inRect);
         }
 
         public void DoTab2Contents(Rect inRect)

@@ -58,6 +58,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Client\UnionDll\UnionDll.csproj" />
+    <ProjectReference Include="..\GuideTestGUI\GuideTestGUI.csproj" />
   </ItemGroup>
   <!--
   <Target Name="BeforeBuild">

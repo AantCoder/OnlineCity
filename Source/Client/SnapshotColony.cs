@@ -43,27 +43,38 @@ namespace RimWorldOnlineCity
             renderMap.Render();
         }
 
-        private static void SendToServer(byte[] data, long serverId, bool background)
+        private static void SendToServer(Func<byte[]> getImage, long serverId, bool background)
         {
-            Loger.Log($"SnapshotColony Send serverId={serverId} data.Len=" + (data?.Length ?? 0));
-            SessionClientController.Command((connect) =>
+            Task.Run(() =>
             {
                 try
                 {
-                    connect.FileSharingUpload(FileSharingCategory.ColonyScreen, SessionClientController.My.Login + "@" + serverId, data);
-                    if (!background)
+                    Loger.Log($"SnapshotColony EncodeToJPG");
+                    var data = getImage();
+                    Loger.Log($"SnapshotColony Send serverId={serverId} data.Len=" + (data?.Length ?? 0));
+                    SessionClientController.Command((connect) =>
                     {
-                        var p = connect.FileSharingDownload(FileSharingCategory.ColonyScreen, SessionClientController.My.Login + "@" + serverId);
+                        try
+                        {
+                            connect.FileSharingUpload(FileSharingCategory.ColonyScreen, SessionClientController.My.Login + "@" + serverId, data);
+                            if (!background)
+                            {
+                                var p = connect.FileSharingDownload(FileSharingCategory.ColonyScreen, SessionClientController.My.Login + "@" + serverId);
 
-                        GeneralTexture.Clear();
+                                GeneralTexture.Clear();
 
-                        var msg = data?.Length > 0 && p?.Data?.Length > 0
-                            ? "OCity_Successfully".Translate() : "OCity_Error".Translate();
-                        Find.WindowStack.Add(new Dialog_MessageBox(msg));
-                    }
+                                var msg = data?.Length > 0 && p?.Data?.Length > 0
+                                    ? "OCity_Successfully".Translate() : "OCity_Error".Translate();
+                                Find.WindowStack.Add(new Dialog_MessageBox(msg));
+                            }
+                        }
+                        catch
+                        { }
+                    });
                 }
                 catch
                 { }
+                Loger.Log($"SnapshotColony Send end");
             });
         }
     }

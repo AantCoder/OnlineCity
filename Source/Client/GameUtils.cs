@@ -17,6 +17,7 @@ using RimWorldOnlineCity.GameClasses.Harmony;
 using Util;
 using System.IO;
 using System.Diagnostics;
+using RimWorldOnlineCity.UI;
 
 namespace RimWorldOnlineCity
 {
@@ -47,7 +48,7 @@ namespace RimWorldOnlineCity
             var dir = Loger.PathLog.Substring(0, Loger.PathLog.Length - 1);
             var fileName = $"Log_{DateTime.Now.ToString("yyyy-MM-dd")}_*.txt";
             var list = Directory.GetFiles(dir, fileName, SearchOption.TopDirectoryOnly);
-            var dataToSave = GZip.ZipMoreByteByte(list, name => File.ReadAllBytes(name.Replace("\\", "" + Path.DirectorySeparatorChar)));
+            var dataToSave = GZip.ZipMoreByteByte(list, name => File.ReadAllBytes(name.NormalizePath()));
             var code = $"{DateTime.Now.ToString("yyyy-MM-dd")}_{MainHelper.LockCode}_{BugNum++}";
             var dataDir = Path.Combine(dir, "Log_" + code);
             Directory.CreateDirectory(dataDir);
@@ -537,6 +538,8 @@ namespace RimWorldOnlineCity
 
         internal static IEnumerable<Thing> FilterBeforeSendServer(this IEnumerable<Thing> list)
         {
+            if (UpdateWorldController.ExistsEnemyPawns) return new List<Thing>();
+
             //для идеалогии запрещаем передачу пешек, которые имеют идеологическую роль лидер или проповедника
             var rolesListForReading = Find.FactionManager.OfPlayer.ideos.PrimaryIdeo.RolesListForReading
                 .Where(r => r.def.defName == "IdeoRole_Leader" || r.def.defName == "IdeoRole_Moralist")
@@ -550,7 +553,8 @@ namespace RimWorldOnlineCity
                 .Where(thing => thing.def.defName != "Wastepack")
                 //Запрещенные настройкой
                 .Where(thing => !SessionClientController.Data.GeneralSettings.ExchengeForbiddenDefNamesList.Contains(thing.def.defName));
-            
+
+            //Loger.Log($"Debug IsProtectingNovice={IsProtectingNovice()} " + Environment.NewLine + res.Select(t => ThingTrade.CreateEntry(t, t.stackCount)).ToStringThing());
             if (IsProtectingNovice()) res = res.Where(thing => thing.def.stackLimit > 1);
             return res;
         }
@@ -584,6 +588,7 @@ namespace RimWorldOnlineCity
             {
                 goods = goods.Concat(GetThingOnPawn(pawns));
             }
+            if (withTransferFilter) goods = goods.FilterBeforeSendServer();
             return goods.ToList();
         }
 
@@ -1181,7 +1186,7 @@ namespace RimWorldOnlineCity
             foreach (ScenarioDef allDef in DefDatabase<ScenarioDef>.AllDefs)
             {
                 //Loger.Log($"AllowedScenarios {allDef.defName}={allDef.LabelCap}={allDef.fileName}=Name:{allDef.modContentPack.Name}=RootDir:{allDef.modContentPack.RootDir}");
-                if (allDef.modContentPack.Name != "OnlineCity" && allDef.modContentPack.Name != "OnlineCity_Debug") continue;
+                if (allDef.modContentPack.Name != "OnlineCity") continue;
                 //// старое перечисление всех ванильных
                 //if (allDef.defName == "Crashlanded"
                 //    || allDef.defName == "Tutorial"
@@ -1200,6 +1205,104 @@ namespace RimWorldOnlineCity
 
             return res;
         }
+
+        public static Command_Action CommandShowMap(BaseOnline that)
+        {
+            //Кнопка открытия изображения базы
+            if (SessionClientController.Data.GeneralSettings.ColonyScreenEnable)
+            {
+                var command_Action = new Command_Action();
+                command_Action.defaultLabel = "CommandShowMap".Translate();
+                command_Action.defaultDesc = "CommandShowMapDesc".Translate();
+                command_Action.icon = GeneralTexture.BaseOnlineButtonShowMap;
+
+                var keyColonyScreen = "cs_" + that.OnlineWObject.LoginOwner + "@" + that.OnlineWObject.PlaceServerId;
+
+                var time = GeneralTexture.Get.GetLoadTimeByName(keyColonyScreen);
+                //с сервера не пробовали скачивать
+                bool isNotCheck = GeneralTexture.Get.IsNotCheckByLoadTime(time);
+                //делали запрос на сервер - нет данных
+                bool isNotData = GeneralTexture.Get.IsNotDataByLoadTime(time);
+
+                if (!that.IsOnline && that.ImageBaseWhenOwnerOffline != null)
+                {
+                    command_Action.defaultDesc = "OC_ImageBase1".Translate() + " " + that.OnlineWObject.LoginOwner; //Откройте изображение базы игрока
+                }
+                else if (isNotData)
+                {
+                    command_Action.defaultDesc = "OC_DataNotAvailable".Translate(); //Данные не доступны 
+                    command_Action.disabled = true;
+                }
+                else if (isNotCheck)
+                {
+                    command_Action.defaultDesc = "OC_ImageBase2".Translate() + " " + that.OnlineWObject.LoginOwner; //Нажмите для загрузки изображения базы игрока
+                }
+                else if (GeneralTexture.UpdateSecondColonyScreen - (int)time.TotalSeconds < 0)
+                {
+                    command_Action.defaultDesc = "OC_ImageBase1".Translate() + " " + that.OnlineWObject.LoginOwner //Откройте изображение базы игрока
+                        + " " + Environment.NewLine + "OC_ImageBase4".Translate(); //И проверить наличие обновлений
+                }
+                else
+                {
+                    var showSec = GeneralTexture.UpdateSecondColonyScreen - (int)time.TotalSeconds;
+                    showSec -= showSec % 5 + 5; //иначе подсказка мерцает каждую секунду
+                    command_Action.defaultDesc = "OC_ImageBase1".Translate() + " " + that.OnlineWObject.LoginOwner // Откройте изображение базы игрока
+                        + ". " + Environment.NewLine + "OC_ImageBase6".Translate() + " " + showSec + " " + "OC_Seconds".Translate(); // Проверка обновлений доступна через 5 секунд
+                }
+                //command_Action.defaultDesc = command_Action.defaultDesc + Environment.NewLine + (int)time.TotalSeconds;
+
+                command_Action.action = delegate
+                {
+                    var formView = new Dialog_ViewImage();
+                    formView.BeforeDrow = () =>
+                    {
+                        if (!that.IsOnline && that.ImageBaseWhenOwnerOffline != null)
+                        {
+                            formView.BeforeDrow = null;
+                            formView.ImageShow = that.ImageBaseWhenOwnerOffline;
+                        }
+                        else
+                        {
+                            var iconImage = GeneralTexture.Get.ByName(keyColonyScreen);
+                            var isLoading = GeneralTexture.Get.IsLoadingByName(keyColonyScreen);
+                            if (iconImage != GeneralTexture.Null)
+                            {
+                                formView.ImageShow = iconImage;
+                                that.ImageBaseWhenOwnerOffline = iconImage;
+                                if (!isLoading)
+                                {
+                                    formView.TextShowOnUp = false;
+                                    formView.BeforeDrow = null;
+                                }
+                                else
+                                {
+                                    formView.TextShowOnUp = true;
+                                }
+                            }
+                            else
+                            {
+                                //проверяем, что запрос завершился и картинки нет, т.к. нет результата
+                                if (!isLoading)
+                                {
+                                    formView.TextShowOnUp = false;
+                                    formView.BeforeDrow = null;
+                                    formView.TextShow = "OC_DataNotAvailable".Translate();
+                                }
+                                else
+                                {
+                                    formView.TextShowOnUp = true;
+                                }
+                            }
+                        }
+                    };
+                    Find.WindowStack.Add(formView);
+                };
+                return command_Action;
+            }
+            return null;
+        }
+
+
 
         public static int DistanceBetweenTile(int start, int end)
         {

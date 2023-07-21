@@ -30,7 +30,7 @@ namespace ServerOnlineCity
         public readonly WorkTimer Timer;
 
         public string SaveFileName;
-        public string SaveFolderDataPlayers => Path.Combine(Path.GetDirectoryName(SaveFileName), "DataPlayers");
+        public string SaveFolderDataPlayers => Path.Combine(Path.GetDirectoryName(SaveFileName.NormalizePath()), "DataPlayers");
 
 
         private RepositorySaveData RepSaveData;
@@ -44,9 +44,40 @@ namespace ServerOnlineCity
                 return null;
             }
 
-            Repository.GetData.PlayersAllDic.TryGetValue(login, out var res);
-            if (!withNotApprove && !res.Approve) return null;
+            PlayerServer res;
+            if (withNotApprove) Repository.GetData.PlayersAllDicWithNotApprove.TryGetValue(login, out res);
+            else Repository.GetData.PlayersAllDic.TryGetValue(login, out res);
+
             return res;
+        }
+
+        public static State GetStateByName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
+            Repository.GetData.StatesDic.TryGetValue(name, out var res);
+            return res;
+        }
+        public static StatePosition GetStatePosition(Player player) => GetStatePositionByName(player.StateName, player.StatePositionName);
+        public static StatePosition GetStatePositionByName(string nameState, string namePosition)
+        {
+            if (string.IsNullOrEmpty(nameState) || string.IsNullOrEmpty(namePosition))
+            {
+                return null;
+            }
+
+            if (Repository.GetData.StatePositionsDic.TryGetValue(nameState, out var resState)
+                && resState.TryGetValue(namePosition, out var res))
+            {
+                return res;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -64,7 +95,7 @@ namespace ServerOnlineCity
                 || !key.Contains("@@@"))
             {
                 context.PossiblyIntruder = true;
-                Loger.Log($"Is possibly intruder or not update {login} (empty key) -- key null or does not contain @@@", Loger.LogLevel.WARNING);
+                Loger.Log($"Is possibly intruder or not update {login} (empty key)", Loger.LogLevel.WARNING);
                 return key;
             }
             else
@@ -90,7 +121,7 @@ namespace ServerOnlineCity
                 {
                     //копия блока выше
                     context.PossiblyIntruder = true;
-                    Loger.Log($"Is possibly intruder or not update {login} (empty keys) -- No keys retrieved from login attempt", Loger.LogLevel.WARNING);
+                    Loger.Log($"Is possibly intruder or not update {login} (empty keys)", Loger.LogLevel.WARNING);
                     return key;
                 }
 
@@ -336,8 +367,8 @@ namespace ServerOnlineCity
 
                     Data.PostLoad();
 
-                    Loger.Log("Server Load done. Users " + Data.GetPlayersAll.Count().ToString() + ": "
-                        + Data.GetPlayersAll.Select(p => p.Public.Login).Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
+                    Loger.Log("Server Load done. Users " + Data.GetPlayersAll.Count.ToString() + ": "
+                        + Data.GetPlayerLoginsAll.Aggregate((string)null, (r, i) => (r == null ? "" : r + ", ") + i)
                         );
 
                     ChatManager.Instance.NewChatManager(Data.MaxIdChat, Data.PlayerSystem.Chats.Keys.First());

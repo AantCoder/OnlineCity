@@ -45,7 +45,7 @@ namespace ServerOnlineCity
             var worker = GetWorker(fileSharing.Category);
             var fileName = worker.CheckAndGetFileNameUpload(player, fileSharing);
             if (string.IsNullOrEmpty(fileName)) return false;
-            fileName = Path.Combine(GetFolderName(fileSharing.Category), fileName);
+            fileName = Path.Combine(GetFolderName(fileSharing.Category), fileName).NormalizePath();
             if (!CheckFileName(fileName)) return false;
 
             //записываем файл на диск и заполняем в fileSharing хеш файла
@@ -132,7 +132,7 @@ namespace ServerOnlineCity
             {
                 if (!File.Exists(fileName)) return null;
 
-                var data = File.ReadAllBytes(fileName.Replace("\\", "" + Path.DirectorySeparatorChar));
+                var data = File.ReadAllBytes(fileName);
 
                 return new ModelFileSharing()
                 {
@@ -331,7 +331,7 @@ namespace ServerOnlineCity
                 {
                     Loger.Log($"Server FileSharing Save ColonyScreen {player.Public.Login} size={info.Data?.Length}b name={info.Name}");
                     //больше 2 мб исходник не пропускаем
-                    if (info.Data == null || info.Data.Length == 0 || info.Data.Length > 15 * 1024 * 1024) return null; 
+                    if (info.Data == null || info.Data.Length == 0 || info.Data.Length > 35 * 1024 * 1024) return null; 
 
                     string name = info.Name;
                     var namePart = name.Split('@');
@@ -358,7 +358,16 @@ namespace ServerOnlineCity
             {
                 if (ServerManager.ServerSettings.ColonyScreenFolderMaxMb == 0) return;
 
-                var fileNames = Directory.GetFiles(FileSharing.GetFolderName(Category), "*_*_*.png");
+                string[] fileNames;
+                try
+                {
+                    fileNames = Directory.GetFiles(FileSharing.GetFolderName(Category), "*_*_*.png");
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    if (!Directory.Exists(FileSharing.GetFolderName(Category))) Directory.CreateDirectory(FileSharing.GetFolderName(Category));
+                    return;
+                }
                 if (fileNames.Length < 2) return;
 
                 var files = fileNames.Select(fn => new FileInfo(fn)).ToList();

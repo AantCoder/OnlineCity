@@ -27,6 +27,7 @@ namespace Model
         public int BaseCount = 0;
         public int CaravanCount = 0;
         public string Details;
+        public string DetailsExtended;
         public string BaseServerIds;
     }
 }

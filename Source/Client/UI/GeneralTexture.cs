@@ -1,6 +1,7 @@
 ﻿using OCUnion;
 using OCUnion.Transfer.Model;
 using RimWorld;
+using RimWorldOnlineCity.UI;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -37,6 +38,20 @@ namespace RimWorldOnlineCity
         public static readonly Texture2D OCE_Trans;
         public static readonly Texture2D OCE_Swap;
         public static readonly Texture2D OCE_Add;
+        public static readonly Texture2D Pawns;
+        public static readonly Texture2D PawnsDown;
+        public static readonly Texture2D PawnsBleed;
+        public static readonly Texture2D PawnsNeedingTend;
+        public static readonly Texture2D PawnsAnimal;
+        public static readonly Texture2D ItemStash;
+        public static readonly Texture2D AttackSettlement;
+        public static readonly Texture2D OpenBox;
+        public static readonly Texture2D Caravan;
+        public static readonly Texture2D HomeAreaOn;
+        public static readonly Texture2D RankingUp;
+        public static readonly Texture2D RankingDown;
+        public static readonly Texture2D BaseOnlineButtonShowMap;
+        public static readonly Texture2D IncidentViewIcon;
 
         static GeneralTexture()
         {
@@ -60,6 +75,20 @@ namespace RimWorldOnlineCity
             OCE_Trans = ContentFinder<Texture2D>.Get("OCE_Trans");
             OCE_Swap = ContentFinder<Texture2D>.Get("OCE_Swap");
             OCE_Add = ContentFinder<Texture2D>.Get("OCE_Add");
+            Pawns = ContentFinder<Texture2D>.Get("Pawns");
+            PawnsDown = ContentFinder<Texture2D>.Get("PawnsDown");
+            PawnsBleed = ContentFinder<Texture2D>.Get("PawnsBleed");
+            PawnsNeedingTend = ContentFinder<Texture2D>.Get("PawnsNeedingTend");
+            PawnsAnimal = ContentFinder<Texture2D>.Get("PawnsAnimal");
+            ItemStash = ContentFinder<Texture2D>.Get("ItemStash");
+            AttackSettlement = ContentFinder<Texture2D>.Get("AttackSettlement");
+            OpenBox = ContentFinder<Texture2D>.Get("OpenBox");
+            Caravan = ContentFinder<Texture2D>.Get("Caravan");
+            HomeAreaOn = ContentFinder<Texture2D>.Get("HomeAreaOn");
+            RankingUp = ContentFinder<Texture2D>.Get("RankingUp");
+            RankingDown = ContentFinder<Texture2D>.Get("RankingDown");
+            BaseOnlineButtonShowMap = ContentFinder<Texture2D>.Get("ShowMap");
+            IncidentViewIcon = ContentFinder<Texture2D>.Get("IncidentViewIcon");
 
             Clear();
         }
@@ -149,6 +178,29 @@ namespace RimWorldOnlineCity
                 }
             });
             */
+        }
+
+        public Texture2D GetEmoji(string name)
+        {
+            name = name.Trim();
+            if (name.StartsWith(":")) name = name.Substring(1, name.Length - 1);
+            if (name.EndsWith(":")) name = name.Substring(0, name.Length - 1);
+            name = $"Emoji/Emoji_" + name;
+
+            Texture2D icon;
+            if (!PanelText.GlobalImgs.TryGetValue(name, out icon))
+            {
+                try
+                {
+                    icon = ContentFinder<Texture2D>.Get(name, false);
+                }
+                catch
+                {
+                    icon = null;
+                }
+                if (icon != null) PanelText.GlobalImgs.Add(name, icon);
+            }
+            return icon;
         }
 
         public Def GetDef(string defName) => defName == null ? null :

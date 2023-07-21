@@ -36,11 +36,18 @@ namespace RimWorldOnlineCity
 
         private static Dictionary<int, WorldObjectBaseOnline> LastCatchAllWorldObjectsByID;
 
+        public static bool ExistsEnemyPawns => gameProgress?.ExistsEnemyPawns == true;
+
         #region PrepareInMainThread
 
         public static List<WorldObject> allWorldObjects;
         public static List<WorldObjectEntry> WObjects;
         public static PlayerGameProgress gameProgress;
+        private class CacheMap
+        {
+            public List<Pawn> Colonists;
+            public bool ExistsEnemyPawns;
+        }
         public static void PrepareInMainThread()
         {
             try
@@ -49,7 +56,7 @@ namespace RimWorldOnlineCity
                 gameProgress = new PlayerGameProgress() { Pawns = new List<PawnStat>() };
 
                 allWorldObjects = GameUtils.GetAllWorldObjects();
-                Dictionary<Map, List<Pawn>> cacheColonists = new Dictionary<Map, List<Pawn>>();
+                Dictionary<Map, CacheMap> cacheColonists = new Dictionary<Map, CacheMap>();
                 Dictionary<WorldObjectEntry, Map> tmpMap = new Dictionary<WorldObjectEntry, Map>();
                 WObjects = allWorldObjects
                         .Where(o => (o.Faction?.IsPlayer ?? false) //o.Faction != null && o.Faction.IsPlayer
@@ -465,6 +472,8 @@ namespace RimWorldOnlineCity
                 if (pawn.health.hediffSet.BleedRateTotal > 0) gameProgress.ColonistsBleedCount++;
                 //pawn.health.hediffset.pain_total    // уровень боли
 
+                if (pawn.health.HasHediffsNeedingTend()) gameProgress.ColonistsNeedingTend++; //Нуждается в лечении
+
                 int maxSkill = 0;
                 for (int i = 0; i < pawn.skills.skills.Count; i++)
                 {
@@ -490,15 +499,31 @@ namespace RimWorldOnlineCity
                     gameProgress.KillsBestMechanoids = km;
                 }
             }
+            else if (pawn.RaceProps.Animal && pawn.training?.HasLearned(TrainableDefOf.Obedience) == true)
+            {
+                gameProgress.AnimalObedienceCount++;
+                //Loger.Log(pawn.Label + " pawn.playerSettings.followDrafted = " + pawn.playerSettings.followDrafted.ToString());
+                //Loger.Log(pawn.Label + " pawn.playerSettings.followFieldwork = " + pawn.playerSettings.followFieldwork.ToString());
+                //Loger.Log(pawn.Label + " pawn.playerSettings.animalsReleased = " + pawn.playerSettings.animalsReleased.ToString());
+                //Loger.Log(pawn.Label + " pawn.playerSettings.medCare = " + pawn.playerSettings.medCare.ToString());
+                //Loger.Log(pawn.Label + " pawn.playerSettings.hostilityResponse = " + pawn.playerSettings.hostilityResponse.ToString());
+                //Loger.Log(pawn.Label + " HasLearned Tameness = " + pawn.training.HasLearned(TrainableDefOf.Tameness).ToString());
+                //Loger.Log(pawn.Label + " HasLearned Obedience = " + pawn.training.HasLearned(TrainableDefOf.Obedience).ToString());
+                //Loger.Log(pawn.Label + " HasLearned Release = " + pawn.training.HasLearned(TrainableDefOf.Release).ToString());
+                //Loger.Log(pawn.Label + " CanAssignToTrain Tameness = " + pawn.training.HasLearned(TrainableDefOf.Tameness).ToString());
+                //Loger.Log(pawn.Label + " CanAssignToTrain Obedience = " + pawn.training.HasLearned(TrainableDefOf.Obedience).ToString());
+                //Loger.Log(pawn.Label + " CanAssignToTrain Release = " + pawn.training.HasLearned(TrainableDefOf.Release).ToString());
+            }
+
         }
 
         public static Dictionary<int, DateTime> LastForceRecount = new Dictionary<int, DateTime>();
         /// <summary>
         /// Только для своих объетков
         /// </summary>
-        public static WorldObjectEntry GetWorldObjectEntry(WorldObject worldObject
+        private static WorldObjectEntry GetWorldObjectEntry(WorldObject worldObject
             , PlayerGameProgress gameProgress
-            , Dictionary<Map, List<Pawn>> cacheColonists)
+            , Dictionary<Map, CacheMap> cacheColonists)
         {
             var worldObjectEntry = new WorldObjectEntry();
             worldObjectEntry.Type = worldObject is Caravan ? WorldObjectEntryType.Caravan : WorldObjectEntryType.Base;
@@ -595,23 +620,30 @@ namespace RimWorldOnlineCity
                     worldObjectEntry.MarketValuePawn = 0;
 
                     //Loger.Log("Client TestBagSD 015");
-                    List<Pawn> ps;
+                    CacheMap ps;
                     if (!cacheColonists.TryGetValue(map, out ps))
                     {
                         var mapPawnsA = new Pawn[map.mapPawns.AllPawnsSpawned.Count];
                         map.mapPawns.AllPawnsSpawned.CopyTo(mapPawnsA);
 
-                        ps = mapPawnsA.Where(p => p.Faction == Faction.OfPlayer && p.RaceProps.Humanlike).ToList();
+                        ps = new CacheMap();
+                        ps.Colonists = mapPawnsA.Where(p => p.Faction == Faction.OfPlayer /*&& p.RaceProps.Humanlike*/).ToList();
+                        ps.ExistsEnemyPawns = mapPawnsA.Where(p => !p.Dead && !p.Downed && !p.IsPrisoner && p.Faction?.HostileTo(Faction.OfPlayer) == true).Any();
+
+                        //foreach (var p in mapPawnsA) Loger.Log(p.Label + " " + p.IsPrisoner + " " + p.Faction?.HostileTo(Faction.OfPlayer));                        
                         cacheColonists[map] = ps;
                     }
 
                     //Loger.Log("Client TestBagSD 016");
-                    foreach (Pawn current in ps)
+                    foreach (Pawn current in ps.Colonists)
                     {
-                        worldObjectEntry.MarketValuePawn += current.MarketValue;
+                        if (current.RaceProps.Humanlike) worldObjectEntry.MarketValuePawn += current.MarketValue;
 
                         GameProgressAdd(gameProgress, current);
                     }
+                    //Loger.Log(ps.ExistsEnemyPawns.ToString());
+                    gameProgress.ExistsEnemyPawns |= ps.ExistsEnemyPawns;
+
                     //Loger.Log("Client TestBagSD 017");
                     //Loger.Log("Map things "+ worldObjectEntry.MarketValue + " pawns " + worldObjectEntry.MarketValuePawn);
                 }

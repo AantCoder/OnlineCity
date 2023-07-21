@@ -52,6 +52,9 @@ namespace RimWorldOnlineCity.UI
         private static ConcurrentDictionary<string, Tuple<ActionTree, float>> Optimization = new ConcurrentDictionary<string, Tuple<ActionTree, float>>();
         private static DateTime OptimizationTime;
 
+        private DateTime FirstCalcDrow = DateTime.MinValue;
+        private int FirstReady = 0;
+
         /// <summary>
         /// Отрисовка компонента
         /// </summary>
@@ -67,13 +70,28 @@ namespace RimWorldOnlineCity.UI
 
             var key = inRect.ToString() + dynamicHeight.ToString() + PrintText.GetHashCode();
 
-            if ((DateTime.UtcNow - OptimizationTime).TotalSeconds > 60
-                || Optimization.Count > 100)
+            Tuple<ActionTree, float> res;
+
+            //if (FirstReady < 2 && FirstCalcDrow > DateTime.MinValue && FirstCalcDrow.AddSeconds(2) < DateTime.UtcNow)
+            //{
+            //    Log.Message("Recalc " + FirstReady);
+            //    //принудительно обновляем через 2 и через 6 секунд после первого отображения, для ожидания загрузки возможных картинок
+            //    FirstReady++; 
+            //    FirstCalcDrow = FirstCalcDrow.AddSeconds(6 - 2);
+
+            //    res = CalcDrow(inRect, dynamicHeight);
+            //    Optimization[key] = res;
+            //}
+            //else
             {
-                OptimizationTime = DateTime.UtcNow;
-                Optimization = new ConcurrentDictionary<string, Tuple<ActionTree, float>>();
+                if ((DateTime.UtcNow - OptimizationTime).TotalSeconds > 60
+                    || Optimization.Count > 100)
+                {
+                    OptimizationTime = DateTime.UtcNow;
+                    Optimization = new ConcurrentDictionary<string, Tuple<ActionTree, float>>();
+                }
+                res = Optimization.GetOrAdd(key, k => CalcDrow(inRect, dynamicHeight));
             }
-            var res = Optimization.GetOrAdd(key, k => CalcDrow(inRect, dynamicHeight));
 
             var act = res.Item1 as ActionTree;
             do act.Act();
@@ -84,6 +102,8 @@ namespace RimWorldOnlineCity.UI
 
         private Tuple<ActionTree, float> CalcDrow(Rect inRect, float dynamicHeight = 0)
         {
+            if (FirstCalcDrow == DateTime.MinValue) FirstCalcDrow = DateTime.UtcNow;
+
             //Text.Font = GameFont.Small;
             //GUI.skin.textField.wordWrap = false;
             ActionTree startAction = new ATStart();
@@ -135,7 +155,7 @@ namespace RimWorldOnlineCity.UI
                 if (tagBtnAct != null && tagBtnStartX != curX && curHeight > 0)
                 {
                     log += $" btn({tagBtnStartX}-{curX}, {tagBtnArg})";
-                    var tagRect = new Rect(tagBtnStartX, curY, curX - tagBtnStartX, curHeight);
+                    var tagRect = new Rect(inRect.x + tagBtnStartX, inRect.y + curY, curX - tagBtnStartX, curHeight);
                     //if (Mouse.IsOver(tagRect))
                     //{
                     //    if (tagBtnAct.HighlightIsOver) Widgets.DrawHighlight(tagRect);
@@ -272,6 +292,7 @@ namespace RimWorldOnlineCity.UI
                         {
                             printCurrent();
 
+                            Func<Texture2D> getIcon = null;
                             Texture2D icon = null;
                             var name = "";
                             var h = 0;
@@ -306,7 +327,8 @@ namespace RimWorldOnlineCity.UI
                                 if (string.IsNullOrWhiteSpace(name)) continue;
                                 if (name.StartsWith("pl_") && name.Length > 4)
                                 {
-                                    icon = GeneralTexture.Get.ByName(name);
+                                    getIcon = () => GeneralTexture.Get.ByName(name);
+                                    icon = getIcon();
                                 }
                                 else if (!Imgs.TryGetValue(name, out icon))
                                 {
@@ -314,7 +336,7 @@ namespace RimWorldOnlineCity.UI
                                     {
                                         try
                                         {
-                                            icon = ContentFinder<Texture2D>.Get(name);
+                                            icon = ContentFinder<Texture2D>.Get(name, false);
                                         }
                                         catch
                                         {
@@ -353,7 +375,7 @@ namespace RimWorldOnlineCity.UI
                             currentAction.Next = new ATDrawTexture()
                             {
                                 position = new Rect(inRect.x + curX, inRect.y + curY, iconWidth, iconHeight),
-                                image = icon,
+                                image = getIcon ?? (() => icon),
                             };
                             currentAction = currentAction.Next;
 
@@ -468,8 +490,6 @@ namespace RimWorldOnlineCity.UI
         }
         private class ATStart : ActionTree
         {
-            public Rect position;
-            public Texture image;
             public override void Act()
             {
                 Text.Font = GameFont.Small;
@@ -509,10 +529,10 @@ namespace RimWorldOnlineCity.UI
         private class ATDrawTexture : ActionTree
         {
             public Rect position;
-            public Texture image;
+            public Func<Texture2D> image;
             public override void Act()
             {
-                GUI.DrawTexture(position, image);
+                GUI.DrawTexture(position, image());
             }
         }
         private class ATFinish : ActionTree

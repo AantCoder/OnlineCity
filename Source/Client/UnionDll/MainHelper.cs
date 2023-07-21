@@ -147,6 +147,9 @@ namespace OCUnion
             return fileName;
         }
 
+        public static string NormalizePath(this string fileName) => fileName.Replace("\\", "" + Path.DirectorySeparatorChar);
+        public static List<string> NormalizePath(this List<string> fileNames) => fileNames.Select(fn => fn.Replace("\\", "" + Path.DirectorySeparatorChar)).ToList();
+        public static IEnumerable<string> NormalizePath(this IEnumerable<string> fileNames) => fileNames.Select(fn => fn.Replace("\\", "" + Path.DirectorySeparatorChar));
     }
 }
 

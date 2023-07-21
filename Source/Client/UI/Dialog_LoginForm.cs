@@ -9,23 +9,17 @@ using Verse.Sound;
 using OCUnion;
 using HugsLib;
 using RimWorldOnlineCity.UI;
-using System.Threading.Tasks;
 using System.Threading;
 
 namespace RimWorldOnlineCity
 {
-    public struct LoginFormResult
-    {
-        public string hostname;
-        public string username;
-        public string password;
-    }
-    public class Dialog_LoginForm : AsyncDialog<LoginFormResult>
+    public class Dialog_LoginForm : Window
     {
         private string InputName = "";
         private string InputAddr = "";
         private string InputLogin = "";
         private string InputPassword = "";
+        private bool SavePassword = false;
         private bool NeedFockus = true;
 
         private DateTime Refresh;
@@ -34,29 +28,74 @@ namespace RimWorldOnlineCity
 
         public override Vector2 InitialSize
         {
-            get { return new Vector2(500f, 400f); }
+            get { return new Vector2(530f, 400f); }
         }
 
-        public static Task<LoginFormResult> GetAsync(string hostname = "", string username = "", string password = "")
+        public Dialog_LoginForm(bool needApprove = false)
         {
-            var completionSource = new TaskCompletionSource<LoginFormResult>();
-            ModBaseData.Scheduler.Schedule(() =>
+            InputAddr = ModBaseData.GlobalData?.LastIP?.Value ?? "";
+            InputLogin = ModBaseData.GlobalData?.LastLoginName?.Value ?? "";
+            if (!string.IsNullOrEmpty(InputAddr) && !string.IsNullOrEmpty(InputLogin))
+                InputPassword = ModBaseData.GlobalData?.LastPassword?.Value ?? "";
+            else InputPassword = "";
+            SavePassword = !string.IsNullOrEmpty(InputPassword);
+            if (string.IsNullOrEmpty(InputAddr))
             {
-                Find.WindowStack.Add(new Dialog_LoginForm(completionSource, hostname, username, password));
-            });
-            return completionSource.Task;
-        }
-        private Dialog_LoginForm(TaskCompletionSource<LoginFormResult> completionSource, string hostname = "", string username = "", string password = "") : base(completionSource)
-        {
-            InputAddr = hostname;
-            InputLogin = username;
-            InputPassword = password;
+                InputAddr = MainHelper.DefaultIP ?? "";
+            }
             InputName = MainHelper.ServerList.FirstOrDefault(p => p.Value == InputAddr).Key ?? "";
+            //Loger.Log("login/beg " + StorageData.GlobalData.LastIP.Value);
+            closeOnCancel = false;
+            closeOnAccept = false;
+            doCloseButton = false;
+            doCloseX = true;
+            resizeable = false;
+            draggable = true;
+            if (needApprove) SetNeedWaitApprove();
         }
 
+        public override void PreOpen()
+        {
+            base.PreOpen();
+        }
+
+        public override void PostClose()
+        {
+        }
+
+        //PanelText text = null;
         public override void DoWindowContents(Rect inRect)
         {
+            /*
+            if (text == null)
+            {
+                text = new PanelText()
+                {
+                    PrintText = @"OOOOOOOOOO
+OOOOOOOOOO
+<img ColonyOffExpanding7> OOOOOOOOOO OOOOOOOOOO<btn name=test arg=qwe312> OOOOOOOOOO<img name=ColonyOn height=50> OOOOOOOOOO </btn>OOOOOOOOOO"
+                };
+                text.Btns.Add("test", new TagBtn()
+                {         
+                    Name = "test",
+                    HighlightIsOver = true,
+                    Tooltip = "Test tooltip",
+                    ActionClick = (s) => Find.WindowStack.Add(new Dialog_Input("Test title", "Test text: " + s, true))
+                });
+            }
+            text.Drow(inRect);
+            return;
+            */
+
+            const float categoryPadding = 10f;
+            const float categoryInset = 30f;
+            const float radioLabelInset = 40f;
             const float mainListingSpacing = 6f;
+            const float subListingSpacing = 6f;
+            const float subListingLabelWidth = 100f;
+            const float subListingRowHeight = 30f;
+            const float checkboxListingWidth = 280f;
+            const float listingColumnSpacing = 17f;
 
             var btnSize = new Vector2(140f, 40f);
             var buttonYStart = inRect.height - btnSize.y;
@@ -67,13 +106,49 @@ namespace RimWorldOnlineCity
                 || ev.isKey && ev.type == EventType.KeyDown && ev.keyCode == KeyCode.Return
                 || NeedApprove && (DateTime.UtcNow - Refresh).TotalSeconds > RefreshSeconds)
             {
-                Accept(new LoginFormResult() { hostname = InputAddr, username = InputLogin, password = InputPassword });
+                Refresh = DateTime.UtcNow;
+                var msgError = SessionClientController.Login(InputAddr, InputLogin, InputPassword
+                    , (bool needApprove) =>
+                    {
+                        SessionClientController.LoginInNewServerIP = ModBaseData.GlobalData?.LastIP?.Value != InputAddr;
+                        if (ModBaseData.GlobalData?.LastIP != null)
+                        {
+                            ModBaseData.GlobalData.LastIP.Value = InputAddr;
+                            ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
+                            ModBaseData.GlobalData.LastPassword.Value = SavePassword ? InputPassword : "";
+                            HugsLibController.SettingsManager.SaveChanges();
+                        }
+
+                        if (needApprove) SetNeedWaitApprove();
+                        else NeedApprove = false;
+
+                        return true;
+                    });
+                if (msgError == null)
+                {
+                    //Loger.Log("login " + StorageData.GlobalData.LastIP.Value);
+                    Close();
+                }
+                if (string.IsNullOrEmpty(msgError))
+                {
+                    NeedApprove = false;
+                }
+                else
+                {
+                    //был вывод сообщения об ошибке (не подтверждения регистрации)
+                    if (SavePassword)
+                    {
+                        SavePassword = false;
+                        ModBaseData.GlobalData.LastPassword.Value = "";
+                        HugsLibController.SettingsManager.SaveChanges();
+                    }
+                }
             }
 
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x * 2, buttonYStart, btnSize.x, btnSize.y), "OCity_LoginForm_Register".Translate()))
             {
                 Close();
-                _ = SessionClientController.DoUserRegistration();
+                Find.WindowStack.Add(new Dialog_Registration());
             }
 
             if (Widgets.ButtonText(new Rect(inRect.width - btnSize.x, buttonYStart, btnSize.x, btnSize.y), "OCity_LoginForm_Close".Translate()))
@@ -114,7 +189,7 @@ namespace RimWorldOnlineCity
             }, GeneralTexture.IconForums);
             item.DrawOption(new Vector2(iresct.x, iresct.y), 170f/*iresct.width*/);
 
-            item = new ListableOption_WebLink("Send bug data", () =>
+            item = new ListableOption_WebLink("Send bug data".NeedTranslate(), () =>
             {
                 GameUtils.GetBug();
                 Close();
@@ -168,6 +243,12 @@ namespace RimWorldOnlineCity
                     InputPassword = GUI.PasswordField(new Rect(rect.x, rect.y, textEditSize.x, textEditSize.y), InputPassword, "*"[0], 100);
 
                 });
+
+            mainListing.GetRect(8f);
+            iresct = mainListing.GetRect(24f);
+            iresct.xMin += 10f;
+            iresct.width = 183f;
+            Widgets.CheckboxLabeled(iresct, "Remember password".NeedTranslate(), ref SavePassword, false, null, null, false); //чекбокс Запомнить пароль
 
             if (NeedFockus)
             {

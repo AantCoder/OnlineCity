@@ -36,10 +36,10 @@ namespace OCUnion.Transfer
             foreach (var subFolder in folderTree.SubDirs)
             {
                 // создаем под директорию 
-                var fullNameSubDir = Path.Combine(rootFolder, subFolder.directoryName);
-                if (!Directory.Exists(fullNameSubDir.Replace("\\", "" + Path.DirectorySeparatorChar)))
+                var fullNameSubDir = Path.Combine(rootFolder, subFolder.directoryName).NormalizePath();
+                if (!Directory.Exists(fullNameSubDir))
                 {
-                    Directory.CreateDirectory(fullNameSubDir.Replace("\\", "" + Path.DirectorySeparatorChar));
+                    Directory.CreateDirectory(fullNameSubDir);
                 }
 
                 // для каждой созданной диретории создаем её поддиреторию 

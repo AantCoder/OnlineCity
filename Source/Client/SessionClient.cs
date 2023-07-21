@@ -19,8 +19,6 @@ namespace RimWorldOnlineCity
 
         public static void Recreate(SessionClient newClient)
         {
-            if (Single == newClient)
-                return;
             Single.Disconnect();
             Single = newClient;
         }

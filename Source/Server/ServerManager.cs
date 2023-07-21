@@ -20,8 +20,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
 
 namespace ServerOnlineCity
 {
@@ -30,7 +28,9 @@ namespace ServerOnlineCity
         public int MaxActiveClientCount = 10000;
         public static ServerSettings ServerSettings = new ServerSettings();
 
-        public static FileHashChecker HashChecker;
+        public static FileHashChecker FileHashChecker;
+
+        private static ServerManager That;
 
         private ConnectServer Connect = null;
         private int _ActiveClientCount;
@@ -108,7 +108,7 @@ namespace ServerOnlineCity
             return Path.Combine(path, "World.dat");
         }
 
-        public async Task<bool> StartPrepare(string path)
+        public bool StartPrepare(string path)
         {
             var jsonFile = GetSettingsFileName(path);
             if (!File.Exists(jsonFile))
@@ -169,7 +169,7 @@ namespace ServerOnlineCity
             rep.SaveFileName = GetWorldFileName(path);
             rep.Load();
             CheckDiscrordUser();
-            HashChecker = await FileHashChecker.FromServerSettings(ServerSettings);
+            FileHashChecker = new FileHashChecker(ServerSettings);
 
             return true;
         }
@@ -229,7 +229,7 @@ namespace ServerOnlineCity
         private long DoWorldCountRun = -1;
 
         /// <summary>
-        /// Общее обслуживание мира
+        /// Общее обслуживание мира раз в секунду
         /// </summary>
         private void DoWorld()
         {
@@ -244,7 +244,7 @@ namespace ServerOnlineCity
             foreach (var player in Repository.GetData.GetPlayersAll)
             {
                 var pl = ChatManager.Instance.PublicChat.PartyLogin;
-                if (pl.Count == Repository.GetData.GetPlayersAll.Count()) continue;
+                if (pl.Count == Repository.GetData.GetPlayersAll.Count) continue;
 
                 changeInPlayers = true;
 
@@ -252,7 +252,7 @@ namespace ServerOnlineCity
                     || true //to do переделать это на настройки сервера "в чате доступны все, без учета зон контакта"
                     )
                 {
-                    if (allLogins == null) allLogins = new HashSet<string>(Repository.GetData.GetPlayersAll.Select(p => p.Public.Login));
+                    if (allLogins == null) allLogins = new HashSet<string>(Repository.GetData.GetPlayerLoginsAll);
                     lock (player)
                     {
                         ///админы видят всех: добавляем кого не хватает
@@ -292,7 +292,7 @@ namespace ServerOnlineCity
 
             /// Удаляем колонии за которые давно не заходили, игровое время которых меньше полугода и ценность в них меньше второй иконки
 
-            if (DoWorldCountRun % 10 == 0)
+            if (DoWorldCountRun % 60 == 0)
             {
                 if (ServerManager.ServerSettings.DeleteAbandonedSettlements)
                 {
@@ -324,6 +324,47 @@ namespace ServerOnlineCity
                         player.AbandonSettlement();
                         Loger.Log("Server " + msg);
                     }
+                }
+            }
+
+            /// Обновление рейтинга игроков
+
+            //обнавляем в первые секунды каждого часа
+            if (Repository.GetData.RankingUpdate == DateTime.MinValue) Repository.GetData.RankingUpdate = DateTime.UtcNow.AddHours(-1);
+            
+            if (Repository.GetData.RankingUpdate.Hour != DateTime.UtcNow.Hour || Repository.GetData.RankingUpdate.Date != DateTime.UtcNow.Date)
+            {
+                Repository.GetData.RankingUpdate = DateTime.UtcNow;
+                Repository.GetData.PlayersRankingLast = Repository.GetData.PlayersRanking;
+                Repository.GetData.PlayersRanking = Repository.GetData.GetPlayersAll
+                    .Where(p => p.LastMarketValue > MainHelper.MinCostForTrade)
+                    .OrderByDescending(p => p.LastMarketValue)
+                    .Select(p => p.Public.Login)
+                    .ToList();
+
+                foreach (var player in Repository.GetData.GetPlayersAll)
+                {
+                    player.MarketValueRankingLast = player.MarketValueRanking;
+                    player.MarketValueRanking = Repository.GetData.PlayersRanking.IndexOf(player.Public.Login) + 1;
+                }
+
+                Repository.GetData.StatesRankingLast = Repository.GetData.StatesRanking;
+                Repository.GetData.StatesRanking = Repository.GetData.States
+                    .Select(s => new
+                    {
+                        Name = s.Name,
+                        MarketValue = Repository.GetData.GetStatePlayers(s.Name)
+                            .Where(p => p.LastMarketValue > MainHelper.MinCostForTrade)
+                            .Sum(p => p.LastMarketValue),
+                    })
+                    .OrderByDescending(a => a.MarketValue)
+                    .Select(a => a.Name)
+                    .ToList();
+
+                foreach (var states in Repository.GetData.States)
+                {
+                    states.MarketValueRankingLast = states.MarketValueRanking;
+                    states.MarketValueRanking = Repository.GetData.StatesRanking.IndexOf(states.Name) + 1;
                 }
             }
 

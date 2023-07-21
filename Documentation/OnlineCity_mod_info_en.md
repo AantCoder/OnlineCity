@@ -479,6 +479,21 @@ if the power, arrival method and fraction are not specified for the raid event, 
 /call raid {'player name'} 1 walk pirate
 
 
+/statecreate {Name} - create a new state with itself led by the given name
+
+/stateadd {UserLogin} - send an invitation to join a player in your state
+
+/stateexclude {UserLogin} - expel a player from your state
+
+/stateposition {PositionName} {1/0 RightAddPlayer} {1/0 RightExcludePlayer} {1/0 RightEditRights} - create a position in the state, if it already exists, then the existing one is changed.
+	The name is followed by a space-separated 1 or 0 for three rights: the right to invite new players, the right to exclude players, and the right to edit, issue or select positions.
+/stateposition {PositionName} del - remove a position in the state. If after the name of the position you specify not the three digits 0/1, but the word del, then the position will be deleted.
+
+/stateset {UserLogin} {PositionName/del} - set or remove the specified position in your state for the specified player
+
+
+
+
 # 9. Possible problems
 
 If the game crashes (the colony does not load or it is impossible to play due to errors), then you can contact the administrator and ask him to restore the game from the previous save. You can also restart the game under the same account.

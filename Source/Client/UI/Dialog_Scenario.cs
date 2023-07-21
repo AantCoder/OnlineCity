@@ -11,25 +11,19 @@ using RimWorld;
 
 namespace RimWorldOnlineCity.UI
 {
-    public class Dialog_Scenario : AsyncDialog<string>
+    public class Dialog_Scenario : Window
     {
         public override Vector2 InitialSize
         {
             get { return new Vector2(400f, 200f); }
         }
 
-        public static Task<string> GetAsync()
+        public override void PreOpen()
         {
-            var completionSource = new TaskCompletionSource<string>();
-            _ = ModBaseData.Scheduler.Schedule(() =>
-            {
-                Find.WindowStack.Add(new Dialog_Scenario(completionSource));
-            });
-            return completionSource.Task;
-
+            base.PreOpen();
         }
 
-        private Dialog_Scenario(TaskCompletionSource<string> completionSource) : base(completionSource)
+        public Dialog_Scenario()
         {
             closeOnCancel = false;
             closeOnAccept = false;
@@ -46,10 +40,18 @@ namespace RimWorldOnlineCity.UI
         private bool NeedFockus = true;
 
         public string InputText = "";
+        public bool ResultOK = false;
+        public Action PostCloseAction;
 
         public string InputScenario { get; private set; }
         public string InputScenarioKey { get; private set; }
 
+        public override void PostClose()
+        {
+            base.PostClose();
+            if (!ResultOK) InputText = null;
+            if (PostCloseAction != null) PostCloseAction();
+        }
 
         private Dictionary<string, Scenario> ScenarioList = null;
         public override void DoWindowContents(Rect inRect)
@@ -71,7 +73,8 @@ namespace RimWorldOnlineCity.UI
                 }
                 else
                 {
-                    Accept(InputScenario);
+                    ResultOK = true;
+                    Close();
                 }
             }
 

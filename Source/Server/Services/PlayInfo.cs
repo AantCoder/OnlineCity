@@ -33,11 +33,11 @@ namespace ServerOnlineCity.Services
                 context.Disconnect("New BanIP " + context.AddrIP);
                 return null;
             }
-            //if (context.PossiblyIntruder)
-            //{
-            //    context.Disconnect("Possibly intruder");
-            //    return null;
-            //}
+            if (context.PossiblyIntruder)
+            {
+                context.Disconnect("Possibly intruder");
+                return null;
+            }
             lock (context.Player)
             {
                 var data = Repository.GetData;
@@ -200,6 +200,26 @@ namespace ServerOnlineCity.Services
                             if (data.WorldObjectsDeleted[i].LoginOwner == pLogin) continue;
                             outWOD.Add(data.WorldObjectsDeleted[i]);
                         }
+                    }
+
+                    //передаем государства
+                    if (data.StateUpdateTime > packet.UpdateTime)
+                    {
+                        toClient.States = data.States
+                            .Select(state =>
+                            {
+                                var res = new StateInfo(state);
+                                foreach (var p in data.GetStatePlayers(state.Name))
+                                {
+                                    if (res.Head == null && Repository.GetStatePosition(p.Public)?.RightHead == true)
+                                    {
+                                        res.Head = p.Public.Login;
+                                    }
+                                    res.Players.Add(p.Public.Login);
+                                }
+                                return res;
+                            })
+                            .ToList();
                     }
 
                     #region Non-Player World Objects
@@ -406,15 +426,16 @@ namespace ServerOnlineCity.Services
                     context.Player.WLastTick = context.Player.Public.LastTick;
                     context.Player.LastUpdateTime = timeNow;
                     context.Player.Public.LastTick = packet.LastTick;
+                    context.Player.Public.ExistsEnemyPawns = context.Player.GameProgressLast?.ExistsEnemyPawns == true;
 
 
                     //Прошел игровой полдень
-                    if (context.Player.WLastTick / 60000 == context.Player.Public.LastTick / 60000
-                        && context.Player.WLastTick % 60000 < 60000 / 2
-                        && context.Player.Public.LastTick % 60000 >= 60000 / 2)
+                    if (CalcUtils.OnMidday(context.Player.WLastTick, context.Player.Public.LastTick))
                     {
                         //раз в день взымаем налоги на бирже
                         data.OrderOperator.DayPassed(context.Player);
+                        //записываем в историю
+                        context.Player.MarketValueHistoryAdd(context.Player.LastMarketValue);
                     }
                 }
 

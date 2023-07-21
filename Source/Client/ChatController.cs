@@ -85,6 +85,7 @@ namespace RimWorldOnlineCity
                 var content = textChat[posE - 1] != '/'  // 1<!2/>3 => 2
                     ? textChat.Substring(pos + 2, posE - pos - 2)
                     : textChat.Substring(pos + 2, posE - pos - 3);
+
                 //если это коментарий
                 if (textChat.Substring(pos + 1, 2) == "!-") continue;
                 //обработка в зависимости от первого кодового знака, если его нет, то на обычный тэг не реагируем
@@ -106,10 +107,9 @@ namespace RimWorldOnlineCity
         }
         private static string ShortTagEmoji(string content)
         {
-            if (content.EndsWith(":")) content = content.Substring(0, content.Length - 2);
+            if (content.EndsWith(":")) content = content.Substring(0, content.Length - 1);
             content = content.Trim();
-            //todo
-            return content;
+            return $"<img Emoji/Emoji_{content}>";
         }
         private static string ShortTagPlayer(string content)
         {

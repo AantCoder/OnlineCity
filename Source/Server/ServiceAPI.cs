@@ -112,7 +112,7 @@ namespace ServerOnlineCity
             var res = new APIResponseStatus()
             {
                 OnlineCount = onlines.Count,
-                PlayerCount = Repository.GetData.GetPlayersAll.Count() - 2,
+                PlayerCount = Repository.GetData.GetPlayersAll.Count - 2,
                 Onlines = onlines.Select(p => p.Public.Login).ToList(),
                 NeedApprove = key != null && CheckSecretKey(key) == null ? GetPlayersNeedApprove() : null,
             };
@@ -304,7 +304,7 @@ namespace ServerOnlineCity
             if (DateTime.UtcNow > OnlineCacheDate)
             {
                 var data = Repository.GetData;
-                OnlineCache = data.PlayersAllDic.Values.Where(p => p.Online && p.Approve).ToHashSet();
+                OnlineCache = data.PlayersAllDic.Values.Where(p => p.Online).ToHashSet();
                 OnlineCacheDate = DateTime.UtcNow.AddSeconds(10);
             }
             return OnlineCache;

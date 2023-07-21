@@ -41,7 +41,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
                 if (!SessionClient.Get.IsLogined) return;
                 try
                 {
-                    var key = PrepareKey(File.ReadAllBytes(absFilePath.Replace("\\", "" + Path.DirectorySeparatorChar)));
+                    var key = PrepareKey(File.ReadAllBytes(absFilePath.NormalizePath()));
                     Loger.Log("PresetSaveIdeo: " + absFilePath + " " + (ModBaseData.GlobalData?.LastIP?.Value ?? "##") + " " + key);
 
                     var list = ModBaseData.GlobalData?.LastCash?.Value ?? "";
@@ -71,7 +71,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
                 try
                 {
-                    var key = PrepareKey(File.ReadAllBytes(absPath.Replace("\\", "" + Path.DirectorySeparatorChar)));
+                    var key = PrepareKey(File.ReadAllBytes(absPath.NormalizePath()));
                     Loger.Log("PresetLoadIdeo: " + absPath + " " + (ModBaseData.GlobalData?.LastIP?.Value ?? "##") + " " + key);
 
                     var list = ModBaseData.GlobalData?.LastCash?.Value ?? "";
@@ -100,7 +100,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
                 if (!SessionClient.Get.IsLogined) return;
                 try
                 {
-                    var key = PrepareKey(File.ReadAllBytes(absFilePath.Replace("\\", "" + Path.DirectorySeparatorChar)));
+                    var key = PrepareKey(File.ReadAllBytes(absFilePath.NormalizePath()));
                     Loger.Log("PresetSaveXenotype: " + absFilePath + " " + (ModBaseData.GlobalData?.LastIP?.Value ?? "##") + " " + key);
 
                     var list = ModBaseData.GlobalData?.LastCash?.Value ?? "";
@@ -130,7 +130,7 @@ namespace RimWorldOnlineCity.GameClasses.Harmony
 
                 try
                 {
-                    var key = PrepareKey(File.ReadAllBytes(absPath.Replace("\\", "" + Path.DirectorySeparatorChar)));
+                    var key = PrepareKey(File.ReadAllBytes(absPath.NormalizePath()));
                     Loger.Log("PresetLoadXenotype: " + absPath + " " + (ModBaseData.GlobalData?.LastIP?.Value ?? "##") + " " + key);
 
                     var list = ModBaseData.GlobalData?.LastCash?.Value ?? "";

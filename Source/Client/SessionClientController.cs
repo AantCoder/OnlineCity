@@ -1,4 +1,3 @@
-using HugsLib;
 using Model;
 using OCUnion;
 using OCUnion.Common;
@@ -9,11 +8,12 @@ using RimWorld.Planet;
 using RimWorldOnlineCity.ClientHashCheck;
 using RimWorldOnlineCity.GameClasses;
 using RimWorldOnlineCity.GameClasses.Harmony;
+using RimWorldOnlineCity.Model;
+using RimWorldOnlineCity.Services;
 using RimWorldOnlineCity.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -52,7 +52,8 @@ namespace RimWorldOnlineCity
 
         public static bool LoginInNewServerIP { get; set; }
 
-        public static ClientFileChecker ClientFileChecker { get; private set; }
+        public static ClientFileChecker[] ClientFileCheckers { get; private set; }
+        public static bool ClientFileCheckersComplete { get; private set; }
 
         public static Action UpdateWorldSafelyRun { get; set; }
 
@@ -105,8 +106,43 @@ namespace RimWorldOnlineCity
 
             //Loger.Log("Client MainThreadNum=" + ModBaseData.GlobalData.MainThreadNum.ToString()); всегда строго = 1
 
+            Task.Factory.StartNew(() => SessionClientController.CalculateHash());
         }
-        
+
+        public static void CalculateHash()
+        {
+            try
+            {
+                Loger.Log("Client CalculateHash start");
+                UpdateModsWindow.Title = "OC_Hash_CalculateLocalFiles".Translate();
+                //Find.WindowStack.Add(new UpdateModsWindow());
+                var factory = new ClientFileCheckerFactory();
+
+                var folderTypeValues = Enum.GetValues(typeof(FolderType));
+                ClientFileCheckersComplete = false;
+                ClientFileCheckers = new ClientFileChecker[folderTypeValues.Length];
+                var filesCount = 0;
+                foreach (FolderType folderType in folderTypeValues)
+                {
+                    UpdateModsWindow.Title = "OC_Hash_CalculateFor".Translate() + folderType.ToString();
+                    ClientFileCheckers[(int)folderType] = factory.GetFileChecker(folderType);
+                    ClientFileCheckers[(int)folderType].CalculateHash();
+                    filesCount += ClientFileCheckers[(int)folderType].FilesHash.Count;
+                }
+
+                UpdateModsWindow.Title = "OC_Hash_CalculateComplete".Translate();
+                UpdateModsWindow.HashStatus = "OC_Hash_CalculateConfFile".Translate() + ClientFileCheckers[(int)FolderType.ModsConfigPath].FilesHash.Count.ToString() + "\n" +
+                "Mods files: " + ClientFileCheckers[(int)FolderType.ModsFolder].FilesHash.Count.ToString();
+                //Task.Run(() => ClientHashChecker.StartGenerateHashFiles());
+                Loger.Log("Client CalculateHash end");
+                ClientFileCheckersComplete = true;
+            }
+            catch(Exception exp)
+            {
+                Loger.Log("Client CalculateHash Exception " + exp.ToString());
+            }
+        }
+
 
         private static object UpdatingWorld = new object();
         private static int GetPlayersInfoCountRequest = 0;
@@ -192,6 +228,7 @@ namespace RimWorldOnlineCity
                             + (fromServ.AreAttacking ? " Attacking!" : "")
                             + (fromServ.NeedSaveAndExit ? " Disconnect command!" : "")
                             + (fromServ.PlayersInfo != null ? " Players<-" + fromServ.PlayersInfo.Count : "")
+                            + (fromServ.States != null ? " States<-" + fromServ.States.Count : "")
                             + ((fromServ.WObjects?.Count ?? 0) > 0 ? " WO<-" + fromServ.WObjects.Count : "")
                             + ((fromServ.WObjectsToDelete?.Count ?? 0) > 0 ? " WOToDelete<-" + fromServ.WObjectsToDelete.Count : "")
                             + ((fromServ.FactionOnlineList?.Count ?? 0) > 0 ? " Faction<-" + fromServ.FactionOnlineList.Count : "")
@@ -223,6 +260,9 @@ namespace RimWorldOnlineCity
                         //приватная информация про самого игрока
                         Data.CashlessBalance = fromServ.CashlessBalance;
                         Data.StorageBalance = fromServ.StorageBalance;
+
+                        //обновляем информацию о государствах
+                        if (fromServ.States != null) Data.States = fromServ.States.Where(s => s?.Name != null).ToDictionary(s => s.Name);
 
                         errorNum += "8 ";
                         //обновляем планету // updating the planet
@@ -350,7 +390,7 @@ namespace RimWorldOnlineCity
             {
                 ScribeSaver_InitSaving_Patch.Enable = true;
                 GameDataSaveLoader.SaveGame(SaveName);
-                //content = File.ReadAllBytes(SaveFullName.Replace("\\", "" + Path.DirectorySeparatorChar));
+                //content = File.ReadAllBytes(SaveFullName);
                 content = ScribeSaver_InitSaving_Patch.SaveData.ToArray();
             }
             finally
@@ -635,28 +675,96 @@ namespace RimWorldOnlineCity
             });
         }
 
-        public static async Task<SessionClient> Connect(string hostname)
+        private static Dictionary<long, long> UpdateColonyScreenLastTickBySettlementID;
+        private static void UpdateColonyScreen()
         {
-            await ModBaseData.Scheduler.Schedule(() => TimersStop());
+            if (!SessionClientController.Data.GeneralSettings.ColonyScreenEnable) return;
 
-            var uri = new Uri("tcp://" + hostname.Trim());
-            int port = SessionClient.DefaultPort;
-            if (!uri.IsDefaultPort)
-                port = uri.Port;
+            //обновляем только между запросами обновлений
+            if (Data.UpdateTimeLocalTime == DateTime.MinValue) return;
+            var msUpdate = (int)((DateTime.UtcNow - Data.UpdateTimeLocalTime).TotalMilliseconds);
+            if (msUpdate < 2000 || msUpdate > 3000) return;
 
-            var dnsName = uri.Host;
+            //делаем скрины колонии днем, учитывая их игровой часовои пояс
+            var ticksGame = GenTicks.TicksAbs;// особые тики, не общие (long)Find.TickManager.TicksGame;
+            var settlements = ExchengeUtils.WorldObjectsPlayer()
+                .Where(o => o is Settlement)
+                .ToList();
+            foreach (Settlement settlement in settlements)
+            {
+                var vector = Find.WorldGrid.LongLatOf(settlement.Tile);
+                var settlementTick = ticksGame + GenDate.LocalTicksOffsetFromLongitude(vector.x);
+                
+                long lastTick;
+                if (!UpdateColonyScreenLastTickBySettlementID.TryGetValue(settlement.ID, out lastTick)) lastTick = 0;
+                UpdateColonyScreenLastTickBySettlementID[settlement.ID] = settlementTick;
 
-            var logMsg = "Connecting to server. Addr: " + dnsName + ". Port: " + port.ToString();
+                if (lastTick == 0) continue;
+
+                //Loger.Log($"UpdateColonyScreen diff={GenDate.LocalTicksOffsetFromLongitude(vector.x)} last={lastTick} {lastTick / 60000} {lastTick % 60000} settlementTick={settlementTick} {settlementTick / 60000} {settlementTick % 60000} ");
+                if (CalcUtils.OnMidday(lastTick, settlementTick) //после полудня
+                    || lastTick / 60000 < settlementTick / 60000 //или как-то прошли уже сутки без скрина и сейчас светлое время суток после полудня
+                        && settlementTick % 60000 > 60000 / 2
+                        && settlementTick % 60000 < 60000 * 3 / 4)
+                {
+                    var dayByYear = (settlementTick / 60000) % 60;
+                    Loger.Log($"UpdateColonyScreen day={dayByYear} delayDays={SessionClientController.Data.GeneralSettings.ColonyScreenDelayDays}");
+                    if (SessionClientController.Data.GeneralSettings.ColonyScreenDelayDays > 1
+                        && dayByYear % SessionClientController.Data.GeneralSettings.ColonyScreenDelayDays != 0) continue;
+
+                    lock (UpdatingWorld)
+                    {
+                        //делаем скрин и отправляем
+                        try
+                        {
+                            Loger.Log($"UpdateColonyScreen Screen {settlement.Name} (localID={settlement.ID})");
+                            var sc = new SnapshotColony();
+                            sc.Background = true;
+                            sc.HighQuality = SessionClientController.Data.GeneralSettings.ColonyScreenHighQuality;
+                            sc.Exec(settlement);
+                            Loger.Log($"UpdateColonyScreen Screen OK");
+                        }
+                        catch (Exception ex)
+                        {
+                            Loger.Log(ex.ToString());
+                        }
+                    }
+                }
+            }
+        }
+
+        public static string Connect(string addr)
+        {
+            TimersStop();
+
+            int port = 0;
+            if (addr.Contains(":")
+                && int.TryParse(addr.Substring(addr.LastIndexOf(":") + 1), out port))
+            {
+                addr = addr.Substring(0, addr.LastIndexOf(":"));
+            }
+
+            var logMsg = "Connecting to server. Addr: " + addr + ". Port: " + (port == 0 ? SessionClient.DefaultPort : port).ToString();
             Loger.Log("Client " + logMsg);
             Log.Warning(logMsg);
-
             var connect = SessionClient.Get;
-            connect.Connect(dnsName, port);
-            logMsg = "Connection OK";
-            Loger.Log("Client " + logMsg);
-            Log.Warning(logMsg);
+            if (!connect.Connect(addr, port))
+            {
+                logMsg = "Connection fail: " + connect.ErrorMessage?.ServerTranslate();
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_ConnectionFailTitle".Translate(), connect.ErrorMessage?.ServerTranslate(), true));
+                //Close();
+                return connect.ErrorMessage?.ServerTranslate();
+            }
+            else
+            {
+                logMsg = "Connection OK";
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+            }
 
-            return connect;
+            return null;
         }
 
         private static string GetSaffix()
@@ -667,372 +775,104 @@ namespace RimWorldOnlineCity
                     ).Replace("==", "").Substring(4, 19);
         }
 
-        public static async Task DoUserRegistration()
+        /// <summary>
+        /// Подключаемся.
+        /// </summary>
+        /// <returns>null, или текст произошедшей ошибки</returns>
+        public static string Login(string addr, string login, string password, Func<bool, bool> LoginOK)
         {
-            try
-            {
-                // Get login credentials from user
-                var lastIp = ModBaseData.GlobalData?.LastIP?.Value ?? "";
-                var lastUsername = ModBaseData.GlobalData?.LastLoginName?.Value ?? "";
-                if (string.IsNullOrEmpty(lastIp))
-                {
-                    lastIp = MainHelper.DefaultIP ?? "";
-                }
+            var msgError = Connect(addr);
+            if (msgError != null) return msgError;
 
-                var registrationData = await Dialog_Registration.GetAsync();
-                var status = await StatusWindow.Create("Connecting", "Connecting to " + registrationData.addr, "");
-                var client = await Registration(registrationData.addr, registrationData.login, registrationData.password, registrationData.email);
-                status.Heading = "Creating account...";
-                await SetupAccount(client, registrationData.addr, registrationData.login);
-                await status.Close();
-            }
-            catch (OperationCanceledException)
-            {
-                // User canceled this
-            }
-            catch (Exception e)
-            {
-                Log.Message("An error occurred during registration. Please try again.\n" + e.Message + "\n\n" + e.StackTrace);
-                Loger.Log("An error occurred during registration. Please try again.\n" + e.Message + "\n\n" + e.StackTrace);
-                await ModBaseData.Scheduler.Schedule(() => Disconnected("An error occurred during registration. Please try again.\n" + e.Message + "\n\n" + e.StackTrace));
-            }
-        }
+            ConnectAddr = addr;
 
-        public static async Task DoUserLogin()
-        {
-            try
-            {
-                // Get login credentials from user
-                var lastIp = ModBaseData.GlobalData?.LastIP?.Value ?? "";
-                var lastUsername = ModBaseData.GlobalData?.LastLoginName?.Value ?? "";
-                if (string.IsNullOrEmpty(lastIp))
-                {
-                    lastIp = MainHelper.DefaultIP ?? "";
-                }
-
-                LoginFormResult credentials;
-                credentials.hostname = lastIp;
-                credentials.username = lastUsername;
-                credentials.password = "";
-                SessionClient client = null;
-                while (true)
-                {
-                    try
-                    {
-                        credentials = await Dialog_LoginForm.GetAsync(credentials.hostname, credentials.username, credentials.password);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        return;
-                    }
-
-                    var status = await StatusWindow.Create("Connecting", "Connecting to " + credentials.hostname, "");
-                    try
-                    {
-                        client = await Login(credentials.hostname, credentials.username, credentials.password);
-                        await status.Close();
-                        break;
-                    }
-                    catch (ApplicationException e)
-                    {
-                        await status.Close();
-                        await AsyncDialog_Input.GetAsync("OCity_SessionCC_LoginFailTitle".Translate(), e.Message, true);
-                    }
-                }
-                await SetupAccount(client, credentials.hostname, credentials.username);
-            } catch (OperationCanceledException)
-            {
-                // User canceled this
-            } catch (Exception e)
-            {
-                Log.Message("An error occurred during login. Please try again.\n" + e.Message + "\n\n" + e.StackTrace);
-                Loger.Log("An error occurred during login. Please try again.\n" + e.Message + "\n\n" + e.StackTrace);
-                await ModBaseData.Scheduler.Schedule(() => Disconnected("An error occurred during login. Please try again.\n" + e.Message + "\n\n" + e.StackTrace));
-            }
-        }
-
-        private static async Task SetupAccount(SessionClient client, string hostname, string username)
-        {
-            // Store login credentials for next time
-            bool isNewServer = ModBaseData.GlobalData?.LastIP?.Value != hostname;
-            if (ModBaseData.GlobalData?.LastIP != null)
-            {
-                ModBaseData.GlobalData.LastIP.Value = hostname;
-                ModBaseData.GlobalData.LastLoginName.Value = username;
-                HugsLibController.SettingsManager.SaveChanges();
-            }
-
-            if (isNewServer)
-            {
-                //Текстовое оповещение о возможном обновлении с сервера
-                try
-                {
-                    await AsyncDialog_Input.GetAsync("OCity_SessionCC_InitConnectedIntro_Title".Translate()
-                    , "OCity_SessionCC_InitConnectedIntro_Text".Translate());
-                }
-                catch (OperationCanceledException)
-                {
-                    await ModBaseData.Scheduler.Schedule(() => Disconnected("OCity_DialogInput_Cancele".Translate()));
-                    return;
-                }
-            }
-
-            // Model setup
-            ModelInfo serverInfo = null;
-            await ModBaseData.Scheduler.Schedule(() =>
-            {
-                Loger.Log("Client InitConnected()");
-                Data = new ClientData();
-                TimersStop();
-                Timers = new WorkTimer();
-                TimerReconnect = new WorkTimer();
-
-                var packet = new ModelInt() { Value = (int)ServerInfoType.Full };
-                serverInfo = client.TransObject2<ModelInfo>(packet, PackageType.Request5UserInfo, PackageType.Response6UserInfo);
-
-                ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
-                SetFullInfo(serverInfo);
-
-                Loger.Log($"Server time difference {ServerTimeDelta:hh\\:mm\\:ss\\.ffff}. Server UTC time: {serverInfo.ServerTime:yyyy-MM-dd HH:mm:ss.ffff}");
-                Loger.Log("Client ServerName=" + serverInfo.ServerName);
-                Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
-                Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin
-                    + " Seed=" + serverInfo.Seed
-                    + " Scenario=" + serverInfo.ScenarioName
-                    + " NeedCreateWorld=" + serverInfo.NeedCreateWorld
-                    + " DelaySaveGame=" + Data.DelaySaveGame
-                    + " DisableDevMode=" + Data.DisableDevMode);
-                Loger.Log("Client Grants=" + serverInfo.My.Grants.ToString());
-
-                if (SessionClientController.Data.DisableDevMode)
-                {
-                    if (Prefs.DevMode) Prefs.DevMode = false;
-                    if (IdeoUIUtility.devEditMode) IdeoUIUtility.devEditMode = false;
-                    DebugSettingsDefault.SetDefault();
-                    // также ещё можно подписаться в метод PrefsData.Apply() и следить за изменениями оттуда
-                }
-            });
-
-            if (serverInfo.IsModsWhitelisted)
-            {
-                if (!string.IsNullOrEmpty(Data.GeneralSettings.EntranceWarning))
-                {
-                    //определяем локализованные сообщения
-                    var entranceWarning = MainHelper.CultureFromGame.StartsWith("Russian")
-                        ? Data.GeneralSettings.EntranceWarningRussian
-                        : null;
-                    //если на нужном языке нет, то выводим по умолчанию
-                    if (string.IsNullOrEmpty(entranceWarning))
-                    {
-                        entranceWarning = Data.GeneralSettings.EntranceWarning;
-                    }
-
-                    try
-                    {
-                        await AsyncDialog_Input.GetAsync((string)serverInfo.ServerName + " (" + hostname + ")", entranceWarning, false);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        await ModBaseData.Scheduler.Schedule(() => Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate(), () => ModsConfig.RestartFromChangedMods()));
-                        return;
-                    }
-                }
-
-                var status = await StatusWindow.Create("Hashing files", "initializing", "");
-
-                var checker = await ClientFileChecker.FromServer(SessionClient.Get);
-                await checker.Initialize((s, i) =>
-                {
-                    status.Heading = s;
-                    status.Status = i.ToString();
-                });
-
-                // Confirm synchronization and sync
-                if (checker.ChangeSets.Any())
-                {
-                    var confirmation = await AsyncDialog_Input.GetAsync("Files differ between server and client. Do you want to sync?", string.Join("\n", checker.ChangeSets.Select(s => s.ToString())));
-
-                    status.Title = "Downloading files";
-                    status.Heading = "initializing";
-                    status.Status = "";
-
-                    int changeSetCounter = 0;
-                    foreach (var changeSet in checker.ChangeSets)
-                    {
-                        changeSetCounter += 1;
-                        status.Heading = string.Format("{0}, {1} / {2}", changeSet.SourceDescription, changeSetCounter, checker.ChangeSets.Count());
-                        int counter = 0;
-                        foreach (var deletion in changeSet.DeletePaths)
-                        {
-                            status.Status = string.Format("Removing {0} / {1}", counter, changeSet.DeletePaths.Count);
-                            Loger.Log("rm " + changeSet.SourceDescription + ": " + Path.Combine(changeSet.RemoveRoot, deletion));
-                            var path = Path.Combine(changeSet.RemoveRoot, deletion);
-                            if (File.Exists(path))
-                                File.Delete(path);
-                        }
-                        var pathsToDownload = changeSet.DownloadPaths.ToDictionary(t => t.Item1, t => t.Item2);
-                        while (pathsToDownload.Count > 0)
-                        {
-                            status.Status = string.Format("Downloading {0} / {1}", changeSet.DownloadPaths.Count - pathsToDownload.Count, changeSet.DownloadPaths.Count);
-                            int maxDownloads = 1024;
-
-                            var request = new ModelModsFilesRequest()
-                            {
-                                Type = ModelModsFilesRequest.RequestType.FileData,
-                                FileQueries = pathsToDownload.Keys.Take(maxDownloads).Select(p => new ModelModsFilesRequest.FileQuery() { ModId = changeSet.ModId, SourceDirectory = changeSet.FolderType, RelativePath = p }).ToList(),
-                            };
-                            var response = await SessionClient.Get.TransAsync<ModelModsFilesRequest, ModelModsFilesResponse>(request);
-                            if (response.Contents?.Entries == null)
-                            {
-                                status.Status = "Server did not send a valid response.";
-                                throw new Exception("Server did not send a valid response.");
-                            }
-                            List<string> pathsToRemove = new List<string>();
-                            foreach (var file in response.Contents.Entries)
-                            {
-                                if (file.ModId != changeSet.ModId || file.SourceDirectory != changeSet.FolderType || !pathsToDownload.ContainsKey(file.RelativePath))
-                                {
-                                    status.Status = "Server did not send a valid response.";
-                                    throw new Exception("Server did not send a valid response.");
-                                }
-                                pathsToRemove.Add(file.RelativePath);
-                            }
-
-                            status.Status = string.Format("Writing {0} / {1}", changeSet.DownloadPaths.Count - pathsToDownload.Count, changeSet.DownloadPaths.Count);
-                            var writes = response.Contents.Entries.Select((e) =>
-                            {
-                                var localPath = pathsToDownload[e.RelativePath];
-                                return Task.Factory.StartNew(() =>
-                                {
-                                    var stream = new MemoryStream(e.GZippedData);
-                                    var gzip = new GZipStream(stream, CompressionMode.Decompress);
-
-                                    var path = Path.Combine(changeSet.DownloadRoot, localPath);
-                                    var parentDirectory = Path.GetDirectoryName(path);
-                                    if (!Directory.Exists(parentDirectory))
-                                        Directory.CreateDirectory(parentDirectory);
-
-                                    using (var f = File.OpenWrite(path))
-                                    {
-                                        f.SetLength(0);
-                                        gzip.CopyTo(f);
-                                    }
-                                });
-                            });
-                            await Task.WhenAll(writes);
-                            foreach (var path in pathsToRemove)
-                                pathsToDownload.Remove(path);
-                        }
-                    }
-
-                    // Now restart
-                    await ModBaseData.Scheduler.Schedule(() => Disconnected("Mod files changed.", () => ModsConfig.RestartFromChangedMods()));
-                    return;
-                }
-                await status.Close();
-            }
-
-
-            if (MainHelper.VersionNum < serverInfo.VersionNum)
-            {
-                await ModBaseData.Scheduler.Schedule(() => Disconnected("OCity_SessionCC_Client_UpdateNeeded".Translate() + serverInfo.VersionInfo));
-                return;
-            }
-
-            //создаем мир, если мы админ
-            if (serverInfo.IsAdmin && serverInfo.Seed == "")
-            {
-                Loger.Log("Client InitConnected() IsAdmin");
-                await ModBaseData.Scheduler.Schedule(() =>
-                {
-                    var form = new Dialog_CreateWorld();
-                    form.PostCloseAction = () =>
-                    {
-                        if (!form.ResultOK)
-                        {
-                            GetScenarioByName(form.InputScenario);
-                            Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate());
-                            return;
-                        }
-
-                        GameStarter.SetMapSize = int.Parse(form.InputMapSize);
-                        GameStarter.SetPlanetCoverage = form.InputPlanetCoverage / 100f;
-                        GameStarter.SetSeed = form.InputSeed;
-                        GameStarter.SetDifficulty = form.InputDifficultyDefName;
-                        GameStarter.SetScenario = GetScenarioByName(form.InputScenario);
-                        GameStarter.SetScenarioName = form.InputScenarioKey;
-                        ChoosedTeller = form.InputStorytellerDef;
-
-                        GameStarter.AfterStart = CreatingServerWorld;
-                        GameStarter.GameGeneration();
-                    };
-
-                    Find.WindowStack.Add(form);
-                });
-                return;
-            }
-
-            if (serverInfo.NeedCreateWorld)
-            {
-                await CreatePlayerWorld(serverInfo);
-                return;
-            }
-
-            await ModBaseData.Scheduler.Schedule(() => LoadPlayerWorld(serverInfo));
-        }
-
-        public static async Task<SessionClient> Login(string hostname, string username, string password)
-        {
-            var client = await Connect(hostname);
-            ConnectAddr = hostname;
-
-            var saffix = GetSaffix();
-            var logMsg = "Registration. Login: " + username + ", Saffix: " + saffix;
-            Loger.Log("Client " + logMsg + ", Saffix: " + saffix);
+            var logMsg = "Login: " + login;
+            Loger.Log("Client " + logMsg);
             Log.Warning(logMsg);
             My = null;
             var pass = new CryptoProvider().GetHash(password);
 
-            await client.Login(username, pass, saffix);
+            var connect = SessionClient.Get;
+            if (!connect.Login(login, pass, GetSaffix()))
+            {
+                if (connect.ErrorMessage == "User not approve")
+                {
+                    Loger.Log("Client Login: User not approve");
+                    LoginOK(true);
+                    return "";
+                }
 
-            logMsg = "Login OK";
-            Loger.Log("Client " + logMsg);
-            Log.Warning(logMsg);
-            
-            return client;
+                logMsg = "Login fail: " + connect.ErrorMessage?.ServerTranslate();
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_LoginFailTitle".Translate(), connect.ErrorMessage?.ServerTranslate(), true));
+                return connect.ErrorMessage?.ServerTranslate();
+            }
+            else
+            {
+                logMsg = "Login OK";
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                if (LoginOK(false))
+                    InitConnectedIntro();
+                else
+                    return "";
+            }
+
+            return null;
         }
-
 
         /// <summary>
         /// Регистрация
         /// </summary>
         /// <returns>null, или текст произошедшей ошибки</returns>
-        public static async Task<SessionClient> Registration(string addr, string login, string password, string email)
+        public static string Registration(string addr, string login, string password, string email, string discord, Action LoginOK)
         {
-            var client = await Connect(addr);
+            var msgError = Connect(addr);
+            if (msgError != null) return msgError;
+
             ConnectAddr = addr;
 
-            var saffix = GetSaffix();
-            var logMsg = "Registration. Login: " + login + ", Saffix: " + saffix + ", Email: " + email;
-            Loger.Log("Client " + logMsg + ", Saffix: " + saffix);
+            var logMsg = "Registration. Login: " + login;
+            Loger.Log("Client " + logMsg);
             Log.Warning(logMsg);
             My = null;
             var pass = new CryptoProvider().GetHash(password);
 
-            await client.Registration(login, pass, email + saffix);
+            var connect = SessionClient.Get;
+            if (!connect.Registration(login, pass, email + GetSaffix(), discord))
+            {
+                if (connect.ErrorMessage == "User not approve")
+                {
+                    Loger.Log("Client Registration: User not approve");
+                    Find.WindowStack.Add(new Dialog_LoginForm(true));
+                    return null;
+                }
 
-            logMsg = "Registration OK";
-            Loger.Log("Client " + logMsg);
-            Log.Warning(logMsg);
+                logMsg = "Registration fail: " + connect.ErrorMessage?.ServerTranslate();
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_RegFailTitle".Translate(), connect.ErrorMessage?.ServerTranslate(), true));
+                return connect.ErrorMessage?.ServerTranslate();
+            }
+            else
+            {
+                MainMenuDrawer_DoMainMenuControls_Patch.DontDisconnectTime = DateTime.UtcNow;
+                logMsg = "Registration OK";
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                LoginOK();
+                InitConnectedIntro();
+            }
 
-            return client;
+            return null;
         }
 
         /// <summary>
         /// Отбрасывание старого подключения, создание нового и аутэнтификация. Перед вызовом убедиться, что поток таймера остановлен
         /// </summary>
         /// <returns></returns>
-        public static async Task<bool> Reconnect()
+        public static bool Reconnect()
         {
             if (string.IsNullOrEmpty(Data?.KeyReconnect))
             {
@@ -1050,22 +890,47 @@ namespace RimWorldOnlineCity
                 return false;
             }
 
-            var logMsg = "Reconnect to server. Addr: " + ConnectAddr;
+            //Connect {
+            var addr = ConnectAddr;
+            int port = 0;
+            if (addr.Contains(":")
+                && int.TryParse(addr.Substring(addr.LastIndexOf(":") + 1), out port))
+            {
+                addr = addr.Substring(0, addr.LastIndexOf(":"));
+            }
+            var logMsg = "Reconnect to server. Addr: " + addr + ". Port: " + (port == 0 ? SessionClient.DefaultPort : port).ToString();
             Loger.Log("Client " + logMsg);
             Log.Warning(logMsg);
-            var client = await Connect(ConnectAddr);
-
-            SessionClient.Recreate(client);
+            var connect = new SessionClient();
+            if (!connect.Connect(addr, port))
+            {
+                logMsg = "Reconnect net fail: " + connect.ErrorMessage?.ServerTranslate();
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                return false;
+            }
+            SessionClient.Recreate(connect);
+            // }
 
             logMsg = "Reconnect login: " + My.Login;
             Loger.Log("Client " + logMsg);
             Log.Warning(logMsg);
-            await client.Reconnect(My.Login, Data.KeyReconnect, GetSaffix());
-
-            logMsg = "Reconnect OK";
-            Loger.Log("Client " + logMsg);
-            Log.Warning(logMsg);
-            return true;
+            //var connect = SessionClient.Get;
+            if (!connect.Reconnect(My.Login, Data.KeyReconnect, GetSaffix()))
+            {
+                logMsg = "Reconnect login fail: " + connect.ErrorMessage?.ServerTranslate();
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                //Find.WindowStack.Add(new Dialog_Input("OCity_SessionCC_LoginFailTitle".Translate(), connect.ErrorMessage?.ServerTranslate(), true));
+                return false;
+            }
+            else
+            {
+                logMsg = "Reconnect OK";
+                Loger.Log("Client " + logMsg);
+                Log.Warning(logMsg);
+                return true;
+            }
         }
 
         /// <summary>
@@ -1141,6 +1006,23 @@ namespace RimWorldOnlineCity
             return scenario;
         }
 
+        public static string GetScenarioPlayer(Action<string> selected)
+        {
+            string scenario = null;
+            var form = new Dialog_Scenario();
+            form.PostCloseAction = () =>
+            {
+                if (form.ResultOK)
+                {
+                    scenario = form.InputScenario;
+                    selected(scenario);
+                }
+            };
+            Find.WindowStack.Add(form);
+            //Loger.Log("Client choosed scenario: " + scenario);
+            return scenario;
+        }
+
         public static Storyteller GetStoryteller(string difficultyName, StorytellerDef teller = null)
         {
             var list = DefDatabase<DifficultyDef>.AllDefs.ToList();
@@ -1154,6 +1036,33 @@ namespace RimWorldOnlineCity
 
             if (teller == null) teller = StorytellerDefOf.Cassandra;
             return new Storyteller(teller, difficulty);
+        }
+
+        public static void InitConnectedIntro()
+        {
+            MainMenuDrawer_DoMainMenuControls_Patch.DontDisconnectTime = DateTime.UtcNow;
+            if (SessionClientController.LoginInNewServerIP)
+            {
+                //Текстовое оповещение о возможном обновлении с сервера
+                var form = new Dialog_Input("OCity_SessionCC_InitConnectedIntro_Title".Translate()
+                    , "OCity_SessionCC_InitConnectedIntro_Text".Translate());
+                form.PostCloseAction = () =>
+                {
+                    if (form.ResultOK)
+                    {
+                        InitConnected();
+                    }
+                    else
+                    {
+                        Disconnected("OCity_DialogInput_Cancele".Translate());
+                    }
+                };
+                Find.WindowStack.Add(form);
+            }
+            else
+            {
+                InitConnected();
+            }
         }
 
         public static void SetFullInfo(ModelInfo serverInfo)
@@ -1170,6 +1079,151 @@ namespace RimWorldOnlineCity
             Data.GeneralSettings = serverInfo.GeneralSettings;
             Data.ProtectingNovice = serverInfo.ProtectingNovice;
             MainHelper.OffAllLog = serverInfo.EnableFileLog;
+        }
+
+        /// <summary>
+        /// После успешной регистрации или входа
+        /// </summary>
+        public static void InitConnected()
+        {
+            try
+            {
+                Loger.Log("Client InitConnected()");
+                Data = new ClientData();
+                TimersStop();
+                Timers = new WorkTimer();
+                TimerReconnect = new WorkTimer();
+
+                var connect = SessionClient.Get;
+                ModelInfo serverInfo = connect.GetInfo(ServerInfoType.Full);
+                ServerTimeDelta = serverInfo.ServerTime - DateTime.UtcNow;
+                SetFullInfo(serverInfo);
+
+                Loger.Log($"Server time difference {ServerTimeDelta:hh\\:mm\\:ss\\.ffff}. Server UTC time: {serverInfo.ServerTime:yyyy-MM-dd HH:mm:ss.ffff}");
+                Loger.Log("Client ServerName=" + serverInfo.ServerName);
+                Loger.Log("Client ServerVersion=" + serverInfo.VersionInfo + " (" + serverInfo.VersionNum + ")");
+                Loger.Log("Client IsAdmin=" + serverInfo.IsAdmin
+                    + " Seed=" + serverInfo.Seed
+                    + " Scenario=" + serverInfo.ScenarioName
+                    + " NeedCreateWorld=" + serverInfo.NeedCreateWorld
+                    + " DelaySaveGame=" + Data.DelaySaveGame
+                    + " DisableDevMode=" + Data.DisableDevMode);
+                Loger.Log("Client Grants=" + serverInfo.My.Grants.ToString());
+
+                if (SessionClientController.Data.DisableDevMode)
+                {
+                    if (Prefs.DevMode) Prefs.DevMode = false;
+                    if (IdeoUIUtility.devEditMode) IdeoUIUtility.devEditMode = false;
+                    DebugSettingsDefault.SetDefault();
+                    // также ещё можно подписаться в метод PrefsData.Apply() и следить за изменениями оттуда
+                }
+
+                if (!serverInfo.IsModsWhitelisted) 
+                {
+                    InitConnectedPart2(serverInfo, null);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(Data.GeneralSettings.EntranceWarning))
+                {
+                    //определяем локализованные сообщения
+                    var entranceWarning = MainHelper.CultureFromGame.StartsWith("Russian")
+                        ? Data.GeneralSettings.EntranceWarningRussian
+                        : null;
+                    //если на нужном языке нет, то выводим по умолчанию
+                    if (string.IsNullOrEmpty(entranceWarning))
+                    {
+                        entranceWarning = Data.GeneralSettings.EntranceWarning;
+                    }
+
+                    var form = new Dialog_Input(serverInfo.ServerName + " (" + (ModBaseData.GlobalData?.LastIP?.Value ?? "") + ")", entranceWarning, false);
+                    Find.WindowStack.Add(form);
+                    form.PostCloseAction = () =>
+                    {
+                        if (!form.ResultOK)
+                        {
+                            Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate(), () => ModsConfig.RestartFromChangedMods());
+                            return;
+                        }
+
+                        CheckFiles((resultCheckFiles) => InitConnectedPart2(serverInfo, resultCheckFiles));
+                    };
+                }
+                else
+                {
+                    CheckFiles((resultCheckFiles) => InitConnectedPart2(serverInfo, resultCheckFiles));
+                }
+            }
+            catch (Exception ext)
+            {
+                Loger.Log("Exception InitConnected: " + ext.ToString());
+            }
+        }
+
+        private static void InitConnectedPart2(ModelInfo serverInfo, string resultCheckFiles)
+        {
+            try
+            {
+                if (resultCheckFiles != null)
+                {
+                    //var msg = "OCity_SessionCC_FilesUpdated".Translate() + Environment.NewLine
+                    //     + (UpdateModsWindow.SummaryList == null ? ""
+                    //        : Environment.NewLine
+                    //            + "OC_Hash_Complete".Translate().ToString() + Environment.NewLine
+                    //            + string.Join(Environment.NewLine, UpdateModsWindow.SummaryList));
+                    //Не все файлы прошли проверку, надо инициировать перезагрузку всех модов
+                    Disconnected(resultCheckFiles, () => ModsConfig.RestartFromChangedMods());
+                    return;
+                }
+
+                if (MainHelper.VersionNum < serverInfo.VersionNum)
+                {
+                    Disconnected("OCity_SessionCC_Client_UpdateNeeded".Translate() + serverInfo.VersionInfo);
+                    return;
+                }
+
+                //создаем мир, если мы админ
+                if (serverInfo.IsAdmin && serverInfo.Seed == "")
+                {
+                    Loger.Log("Client InitConnected() IsAdmin");
+                    var form = new Dialog_CreateWorld();
+                    form.PostCloseAction = () =>
+                    {
+                        if (!form.ResultOK)
+                        {
+                            GetScenarioByName(form.InputScenario);
+                            Disconnected("OCity_SessionCC_MsgCanceledCreateW".Translate());
+                            return;
+                        }
+
+                        GameStarter.SetMapSize = int.Parse(form.InputMapSize);
+                        GameStarter.SetPlanetCoverage = form.InputPlanetCoverage / 100f;
+                        GameStarter.SetSeed = form.InputSeed;
+                        GameStarter.SetDifficulty = form.InputDifficultyDefName;
+                        GameStarter.SetScenario = GetScenarioByName(form.InputScenario);
+                        GameStarter.SetScenarioName = form.InputScenarioKey;
+                        ChoosedTeller = form.InputStorytellerDef;
+
+                        GameStarter.AfterStart = CreatingServerWorld;
+                        GameStarter.GameGeneration();
+                    };
+
+                    Find.WindowStack.Add(form);
+                    return;
+                }
+
+                if (serverInfo.NeedCreateWorld)
+                {
+                    CreatePlayerWorld(serverInfo);
+                    return;
+                }
+
+                LoadPlayerWorld(serverInfo);
+            }
+            catch (Exception ext)
+            {
+                Loger.Log("Exception InitConnectedPart2: " + ext.ToString());
+            }
         }
 
         private static void LoadPlayerWorld(ModelInfo serverInfo)
@@ -1231,19 +1285,17 @@ namespace RimWorldOnlineCity
 
         //Создание мира для обычного игрока
 
-        private static async Task CreatePlayerWorld(ModelInfo serverInfo)
+        private static void CreatePlayerWorld(ModelInfo serverInfo)
         {
             Loger.Log("Client InitConnected() ExistMap0");
-            string scenario = null;
             if (SessionClientController.Data.GeneralSettings.ScenarioAviable)
             {
-                scenario = await Dialog_Scenario.GetAsync();
-            } else
-            {
-                scenario = serverInfo.ScenarioName;
+                GetScenarioPlayer((sce) => CreatePlayerWorldPart1(serverInfo, sce));
             }
-
-            await ModBaseData.Scheduler.Schedule(() => CreatePlayerWorldPart1(serverInfo, scenario));
+            else
+            {
+                CreatePlayerWorldPart1(serverInfo, serverInfo.ScenarioName);
+            }
         }
         private static void CreatePlayerWorldPart1(ModelInfo serverInfo, string choosed_scenario)
         {
@@ -1269,6 +1321,8 @@ namespace RimWorldOnlineCity
             //выбор места на планете. Код из события завершения выбора параметров планеты Page_CreateWorldParams
             Loger.Log($"Client InitConnected() ExistMap1 Scenario={choosed_scenario ?? serverInfo.ScenarioName}({GameStarter.SetScenario.name}/{GameStarter.SetScenario.fileName})" +
                 $" Difficulty={GameStarter.SetDifficulty}" + $" Storyteller={serverInfo.Storyteller}");
+
+            MainMenuDrawer_DoMainMenuControls_Patch.DontDisconnectTime = DateTime.UtcNow;
 
             Current.Game = new Game();
             Current.Game.InitData = new GameInitData();
@@ -1318,6 +1372,41 @@ namespace RimWorldOnlineCity
             worldObject.Tile = obj.Tile;
             worldObject.FactionGroup = obj?.Faction?.def?.LabelCap;
             return worldObject;
+        }
+
+        public static void CheckFiles(Action<string> done)
+        {
+            if (ClientFileCheckers == null || ClientFileCheckers.Any(x => x == null))
+            {
+                done("Error not files");
+                return;
+            }
+
+            var form = new UpdateModsWindow()
+            {
+                doCloseX = false
+            };
+            Find.WindowStack.Add(form);
+            form.HideOK = true;
+
+            Task.Factory.StartNew(() =>
+            {
+                var fc = new ClientHashChecker(SessionClient.Get);
+                fc.Report = new ClientHashCheckerResult();
+                var approveModList = true;
+                foreach (var clientFileChecker in ClientFileCheckers)
+                {
+                    var res = fc.GenerateRequestAndDoJob(clientFileChecker);
+                    approveModList = approveModList && res;
+                }
+
+                UpdateModsWindow.CompletedAndClose = true;
+                form.OnCloseed = () =>
+                { 
+                    done(fc.Report.ReportComplete());
+                };
+            });
+
         }
 
         public static Page GetFirstConfigPage()
@@ -1498,9 +1587,7 @@ namespace RimWorldOnlineCity
                     Loger.Log("Client CheckReconnectTimer() " + (3 - repeat).ToString());
                     try
                     {
-                        var reconnectTask = Reconnect();
-                        reconnectTask.Wait();
-                        if (reconnectTask.Result)
+                        if (Reconnect())
                         {
                             Data.LastServerConnectFail = false;
                             Loger.Log($"Client CheckReconnectTimer() OK #{Data.CountReconnectBeforeUpdate}");

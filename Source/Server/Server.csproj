@@ -106,11 +106,18 @@
     <Compile Include="ChatService\RenameChatCmd.cs" />
     <Compile Include="ChatService\SayCmd.cs" />
     <Compile Include="ChatService\SetGrantsForUser.cs" />
+    <Compile Include="ChatService\StateAddCmd.cs" />
+    <Compile Include="ChatService\StateCreateCmd.cs" />
+    <Compile Include="ChatService\StateExcludeCmd.cs" />
+    <Compile Include="ChatService\StatePositionCmd.cs" />
+    <Compile Include="ChatService\StateSetCmd.cs" />
     <Compile Include="Common\HelperMailMessadge.cs" />
     <Compile Include="Common\StaticHelper.cs" />
     <Compile Include="FileHashChecker.cs" />
-    <Compile Include="Mechanics\CallIncident.cs" />
+        <Compile Include="Mechanics\CallIncident.cs" />
     <Compile Include="Mechanics\ExchengeOperator.cs" />
+    <Compile Include="Mechanics\NameValidator.cs" />
+    <Compile Include="Mechanics\StateOperator.cs" />
     <Compile Include="Model\AttackServer.cs" />
     <Compile Include="Model\BaseContainer.cs" />
     <Compile Include="Model\FMailIncident.cs" />
@@ -143,6 +150,7 @@
     <Compile Include="Services\ExchengeStorage.cs" />
     <Compile Include="Services\FileSharing.cs" />
     <Compile Include="Services\GetPlayerByToken.cs" />
+    <Compile Include="Services\GetPlayerInfoExtended.cs" />
     <Compile Include="Services\IGenerateResponseContainer.cs" />
     <Compile Include="Services\LoginByPassword.cs" />
     <Compile Include="Services\PlayInfo.cs" />

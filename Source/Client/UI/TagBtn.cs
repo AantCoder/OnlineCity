@@ -129,6 +129,12 @@ namespace RimWorldOnlineCity.UI
                         //вызов нового окна игрока
                         btn.ActionClick = TagBtnClassPlayer_ActionClick;
                     }
+                    else if (SessionClientController.Data.States.TryGetValue(arg, out var state))
+                    {
+                        btn.Tooltip = state.Name;
+                        //вызов нового окна игрока
+                        btn.ActionClick = TagBtnClassPlayer_ActionClick;
+                    }
                 }
                 else if (value == "thing")
                 {
@@ -177,7 +183,7 @@ namespace RimWorldOnlineCity.UI
 
         private static void TagBtnClassPlayer_ActionClick(string arg)
         {
-            Dialog_InfoPlayer.ShowInfoPlayer(arg);
+            Dialog_InfoPlayer.ShowInfo(arg);
         }
 
         #region Сократить громоздко выглядищие тэги для отображения исходного текста вне PanelText (например в строке ввода в чате)

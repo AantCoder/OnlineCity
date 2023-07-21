@@ -22,10 +22,10 @@ namespace RimWorldOnlineCity
             get { return LastInitialSize; }
         }
 
-        static Vector2 LastInitialSize = new Vector2(700f, 550f);
+        static Vector2 LastInitialSize = new Vector2(750f, 750f);
         static Vector2 LastInitialPos = new Vector2(-1f, -1f);
 
-        public Dialog_InfoPlayer(PlayerClient player)
+        private Dialog_InfoPlayer(PlayerClient player)
         {
             closeOnCancel = true;
             closeOnAccept = false;
@@ -37,10 +37,12 @@ namespace RimWorldOnlineCity
             info = new PanelInfoPlayer(player);
         }
 
-        static public void ShowInfoPlayer(string player)
+        static public void ShowInfo(string name)
         {
-            var pl = SessionClientController.Data.Players[player];
-            ShowInfoPlayer(pl);
+            if (SessionClientController.Data.Players.TryGetValue(name, out var pl))
+                ShowInfoPlayer(pl);
+            else
+                Dialog_InfoState.ShowInfoState(name);
         }
 
         static public void ShowInfoPlayer(PlayerClient player)

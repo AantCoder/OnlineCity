@@ -27,10 +27,8 @@ namespace ServerOnlineCity.Services
         {
             Loger.Log($"Player {packet.Login} start login on server.", Loger.LogLevel.LOGIN);
             Loger.Log($"Player {packet.Login} client version {packet.Version.ToString()}.", Loger.LogLevel.LOGIN);
-            Loger.Log("Email/saffix pre check: " + packet.Email);
             packet.Email = Repository.CheckIsIntruder(context, packet.Email, packet.Login);
-            Loger.Log("Email/saffix post check: " + packet.Email);
-
+            
             if (packet.Login == "system") return null;
 
             var player = Repository.GetPlayerByLogin(packet.Login, true);

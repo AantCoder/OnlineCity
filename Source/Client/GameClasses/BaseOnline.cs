@@ -154,14 +154,13 @@ namespace RimWorldOnlineCity
         #endregion
 
         public static readonly Texture2D BaseOnlineButtonIcon = ContentFinder<Texture2D>.Get("ShowLearningHelper");
-        public static readonly Texture2D BaseOnlineButtonShowMap = ContentFinder<Texture2D>.Get("ShowMap");
 
         //Install.png (стрелка вниз)   LaunchReport.png (лист с текстом)    OpenSpecificTab (лист с пунктами) 
         //SellableItems.png (тележка с вопросом)  ShowMap.png (лупа с деревьями)    ResourceReadoutCategorized.png (контекстное меню)
         //Trade.png (рукопожатие с $)   Trade.png (вопрос)  Tame.png (рука)
         //TradeMode.png ($)     ShowRoomStats.png (Графики)     Quest.png(воцклицательный знак)     UI/Commands/SelectAllTransporters (капсулы)
 
-        private Texture2D ImageBaseWhenOwnerOffline = null;
+        public Texture2D ImageBaseWhenOwnerOffline = null;
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
@@ -183,96 +182,8 @@ namespace RimWorldOnlineCity
             yield return command_Action;
 
             //Кнопка открытия изображения базы
-            if (SessionClientController.Data.GeneralSettings.ColonyScreenEnable)
-            {
-                command_Action = new Command_Action();
-                command_Action.defaultLabel = "CommandShowMap".Translate();
-                command_Action.defaultDesc = "CommandShowMapDesc".Translate();
-                command_Action.icon = BaseOnlineButtonShowMap;
-                
-                var keyColonyScreen = "cs_" + this.OnlineWObject.LoginOwner + "@" + this.OnlineWObject.PlaceServerId;
-                
-                var time = GeneralTexture.Get.GetLoadTimeByName(keyColonyScreen);
-                //с сервера не пробовали скачивать
-                bool isNotCheck = GeneralTexture.Get.IsNotCheckByLoadTime(time);
-                //делали запрос на сервер - нет данных
-                bool isNotData = GeneralTexture.Get.IsNotDataByLoadTime(time);
-
-                if (!this.IsOnline && this.ImageBaseWhenOwnerOffline != null)
-                {
-                    command_Action.defaultDesc = "OC_ImageBase1".Translate() + " " + this.OnlineWObject.LoginOwner; //Откройте изображение базы игрока
-                }
-                else if (isNotData)
-                {
-                    command_Action.defaultDesc = "OC_DataNotAvailable".Translate(); //Данные не доступны 
-                    command_Action.disabled = true;
-                }
-                else if (isNotCheck)
-                {
-                    command_Action.defaultDesc = "OC_ImageBase2".Translate() + " " + this.OnlineWObject.LoginOwner; //Нажмите для загрузки изображения базы игрока
-                }
-                else if (GeneralTexture.UpdateSecondColonyScreen - (int)time.TotalSeconds < 0)
-                {
-                    command_Action.defaultDesc = "OC_ImageBase1".Translate() + " " + this.OnlineWObject.LoginOwner //Откройте изображение базы игрока
-                        + " " + Environment.NewLine + "OC_ImageBase4".Translate(); //И проверить наличие обновлений
-                }
-                else
-                {
-                    var showSec = GeneralTexture.UpdateSecondColonyScreen - (int)time.TotalSeconds;
-                    showSec -= showSec % 5 + 5; //иначе подсказка мерцает каждую секунду
-                    command_Action.defaultDesc = "OC_ImageBase1".Translate() + " " + this.OnlineWObject.LoginOwner // Откройте изображение базы игрока
-                        + ". " + Environment.NewLine + "OC_ImageBase6".Translate() + " " + showSec + " " + "OC_Seconds".Translate(); // Проверка обновлений доступна через 5 секунд
-                }
-                //command_Action.defaultDesc = command_Action.defaultDesc + Environment.NewLine + (int)time.TotalSeconds;
-
-                command_Action.action = delegate
-                {
-                    var formView = new Dialog_ViewImage();
-                    formView.BeforeDrow = () =>
-                    {
-                        if (!this.IsOnline && this.ImageBaseWhenOwnerOffline != null)
-                        {
-                            formView.BeforeDrow = null;
-                            formView.ImageShow = this.ImageBaseWhenOwnerOffline;
-                        }
-                        else
-                        {
-                            var iconImage = GeneralTexture.Get.ByName(keyColonyScreen);
-                            var isLoading = GeneralTexture.Get.IsLoadingByName(keyColonyScreen);
-                            if (iconImage != GeneralTexture.Null)
-                            {
-                                formView.ImageShow = iconImage;
-                                this.ImageBaseWhenOwnerOffline = iconImage;
-                                if (!isLoading)
-                                {
-                                    formView.TextShowOnUp = false;
-                                    formView.BeforeDrow = null;
-                                }
-                                else
-                                { 
-                                    formView.TextShowOnUp = true;
-                                }
-                            }
-                            else
-                            {
-                                //проверяем, что запрос завершился и картинки нет, т.к. нет результата
-                                if (!isLoading)
-                                {
-                                    formView.TextShowOnUp = false;
-                                    formView.BeforeDrow = null;
-                                    formView.TextShow = "OC_DataNotAvailable".Translate();
-                                }
-                                else
-                                {
-                                    formView.TextShowOnUp = true;
-                                }
-                            }
-                        }
-                    };
-                    Find.WindowStack.Add(formView);
-                };
-                yield return command_Action;
-            }
+            command_Action = GameUtils.CommandShowMap(this);
+            if (command_Action != null) yield return command_Action;
         }
     }
 

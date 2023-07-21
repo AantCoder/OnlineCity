@@ -100,19 +100,23 @@
     <Compile Include="Transfer\ModelMails\ModelMailDeleteWO.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailMessadge.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailStartIncident.cs" />
+    <Compile Include="Transfer\ModelName.cs" />
     <Compile Include="Transfer\ModelOrderLoadRequest.cs" />
     <Compile Include="Transfer\Model\AttackCorpse.cs" />
     <Compile Include="Transfer\Model\FactionOnline.cs" />
     <Compile Include="Transfer\Model\IModelPlace.cs" />
     <Compile Include="Transfer\Model\IPlayerEx.cs" />
-    <Compile Include="Transfer\Model\ISendable.cs" />
     <Compile Include="Transfer\Model\ModelAnyLoad.cs" />
     <Compile Include="Transfer\Model\ModelExchengeInfo.cs" />
     <Compile Include="Transfer\Model\ModelExchengeStorage.cs" />
     <Compile Include="Transfer\Model\ModelFileInfo.cs" />
     <Compile Include="Transfer\Model\ModelFileSharing.cs" />
     <Compile Include="Transfer\Model\ModelPlayerInfo.cs" />
+    <Compile Include="Transfer\Model\ModelPlayerInfoExtended.cs" />
     <Compile Include="Transfer\Model\PawnStat.cs" />
+    <Compile Include="Transfer\Model\State.cs" />
+    <Compile Include="Transfer\Model\StateInfo.cs" />
+    <Compile Include="Transfer\Model\StatePosition.cs" />
     <Compile Include="Transfer\Model\TradeOrderShort.cs" />
     <Compile Include="Transfer\Model\TradeThingStorage.cs" />
     <Compile Include="Transfer\Model\TradeWorldObjectEntry.cs" />
@@ -167,7 +171,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Transfer\Incident\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

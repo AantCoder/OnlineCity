@@ -69,7 +69,7 @@ namespace ServerOnlineCity.Services
                     for (var i = (int)ix.Value + 1; i < countOfPosts; i++)
                     {
                         var post = ct.Posts[i];
-                        if (post.OnlyForPlayerLogin == null && ps.Any(pp => pp == post.OwnerLogin) || post.OnlyForPlayerLogin == myLogin)
+                        if (post.OnlyForPlayerLogin == null && ps.Contains(post.OwnerLogin) || post.OnlyForPlayerLogin == myLogin)
                         {
                             resChat.Posts.Add(post);
                         }

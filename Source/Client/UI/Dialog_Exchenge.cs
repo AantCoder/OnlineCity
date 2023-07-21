@@ -118,6 +118,8 @@ namespace RimWorldOnlineCity.UI
         /// </summary>
         //private int EditOrderCountMax;
 
+        private static bool ShowedMessageExistsEnemyPawns = false;
+
         private class OrderEditBuffer
         {
             private Dialog_Exchenge That;
@@ -210,6 +212,23 @@ namespace RimWorldOnlineCity.UI
             //SizeAddThingList_Width = (int)(InitialSize.x / 2f);
             closeOnCancel = false;
             closeOnAccept = false;
+            if (!ShowedMessageExistsEnemyPawns 
+                && UpdateWorldController.ExistsEnemyPawns)
+            {
+                ShowedMessageExistsEnemyPawns = true;
+
+                var th = new Thread(() =>
+                {
+                    try
+                    {
+                        Thread.Sleep(500);
+                        Find.WindowStack.Add(new Dialog_MessageBox("Игровые вещи не доступны, пока на карте враги!".NeedTranslate()));
+                    }
+                    catch { }
+                });
+                th.IsBackground = true;
+                th.Start();
+            }
         }
 
         /// <summary>
@@ -591,7 +610,7 @@ namespace RimWorldOnlineCity.UI
                         var rect2p = new Rect(rect2.x, 0f, 24f, 24f);
                         if (Widgets.ButtonImage(rect2p, GeneralTexture.Get.ByName("pl_" + item.Owner.Login)))
                         {
-                            Dialog_InfoPlayer.ShowInfoPlayer(item.Owner.Login);
+                            Dialog_InfoPlayer.ShowInfo(item.Owner.Login);
                         }
                         rect2p = new Rect(rect2.x + 24f, 0f, rect2.width - 24f, rect2.height);
                         TooltipHandler.TipRegion(rect2p, item.Owner.Login + Environment.NewLine + "OCity_Dialog_Exchenge_BeenOnline".TranslateCache() + item.Owner.LastSaveTime.ToGoodUtcString());

@@ -13,9 +13,6 @@ using HugsLib.Settings;
 using System.Threading;
 using OCUnion;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using RimWorld;
-using System.Runtime.CompilerServices;
 
 namespace RimWorldOnlineCity
 {
@@ -62,6 +59,7 @@ namespace RimWorldOnlineCity
         
         public SettingHandle<string> LastIP;
         public SettingHandle<string> LastLoginName;
+        public SettingHandle<string> LastPassword;
         public SettingHandle<string> LastCash;
         public override void DefsLoaded()
         {
@@ -78,6 +76,13 @@ namespace RimWorldOnlineCity
                , "");
             LastLoginName.NeverVisible = true;
             LastLoginName.Unsaved = false;
+
+            LastPassword = Settings.GetHandle<string>("ocLastPassword"
+               , "OCity_StorageTest_Password".Translate()
+               , null
+               , "");
+            LastPassword.NeverVisible = true;
+            LastPassword.Unsaved = false;
 
             LastCash = Settings.GetHandle<string>("ocLastCash"
                , "OCity_StorageTest_LastCash".Translate()
@@ -135,83 +140,6 @@ namespace RimWorldOnlineCity
                 return qa.Num;
             }
         }
-
-        public class MainThreadTaskScheduler : TaskScheduler
-        {
-            public override int MaximumConcurrencyLevel => 1;
-            private object _lock = new object();
-            private List<Task> _queuedTasks = new List<Task>();
-            private bool _isRunning = false;
-
-            protected override IEnumerable<Task> GetScheduledTasks()
-            {
-                lock (_lock)
-                    return _queuedTasks;
-            }
-
-            protected override void QueueTask(Task task)
-            {
-                lock (_lock)
-                {
-                    if (_isRunning)
-                    {
-                        // There is already a task running, append to queue
-                        _queuedTasks.Add(task);
-                        return;
-                    }
-                    _isRunning = true;
-                }
-                RunMainThread(() =>
-                {
-                    while (task != null)
-                    {
-                        TryExecuteTask(task);
-                        lock (_lock)
-                        {
-                            if (_queuedTasks.Any())
-                            {
-                                _isRunning = false;
-                                task = _queuedTasks[0];
-                                _queuedTasks.RemoveAt(0);
-                            }
-                            else
-                            {
-                                task = null;
-                                _isRunning = false;
-                                return;
-                            }
-                        }
-                    }
-                });
-            }
-
-            protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
-            {
-                lock (_lock)
-                {
-                    if (taskWasPreviouslyQueued)
-                        _queuedTasks.Remove(task);
-
-                    return TryExecuteTask(task);
-                }
-            }
-
-            protected override bool TryDequeue(Task task)
-            {
-                _queuedTasks.Remove(task);
-                return true;
-            }
-
-            public ConfiguredTaskAwaitable Schedule(Action a)
-            {
-                return Task.Factory.StartNew(a, new CancellationTokenSource().Token, TaskCreationOptions.None, this).ConfigureAwait(false);
-            }
-            public ConfiguredTaskAwaitable<T> Schedule<T>(Func<T> f)
-            {
-                return Task.Factory.StartNew(f, new CancellationTokenSource().Token, TaskCreationOptions.None, this).ConfigureAwait(false);
-            }
-        }
-        public static MainThreadTaskScheduler Scheduler { get; private set; } = new MainThreadTaskScheduler();
 
         private class QueueActionModel
         {

@@ -12,12 +12,12 @@ namespace ServerOnlineCity.Common
         /// Ники тех кого мы видим
         /// </summary>
         /// <returns></returns>
-        public static List<string> PartyLoginSee(PlayerServer player)
+        public static HashSet<string> PartyLoginSee(PlayerServer player)
         {
             var ps = player.IsAdmin
-                ? Repository.GetData.GetPlayersAll.Select(p => p.Public.Login)
+                ? Repository.GetData.GetPlayerLoginsAll
                 : ChatManager.Instance.PublicChat.PartyLogin;
-            return ps.ToList();
+            return ps.ToHashSet();
         }
 
         public static PlayerServer GetPlayerServer(this Player player)

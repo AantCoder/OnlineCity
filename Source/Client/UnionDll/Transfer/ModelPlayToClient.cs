@@ -1,5 +1,6 @@
 ﻿using Model;
 using OCUnion;
+using OCUnion.Transfer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,5 +32,6 @@ namespace Transfer
         public List<FactionOnline> FactionOnlineList { get; set; }
         public List<FactionOnline> FactionOnlineToAdd { get; set; }
         public List<FactionOnline> FactionOnlineToDelete { get; set; }
+        public List<StateInfo> States { get; set; }
     }
 }

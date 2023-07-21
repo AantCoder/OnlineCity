@@ -9,32 +9,11 @@ using Verse.Sound;
 using Transfer;
 using OCUnion;
 using HugsLib;
-using RimWorldOnlineCity.UI;
-using System.Threading.Tasks;
 
 namespace RimWorldOnlineCity
 {
-    public class Dialog_Registration : AsyncDialog<Dialog_Registration.RegistrationData>
+    public class Dialog_Registration : Window
     {
-        public static Task<RegistrationData> GetAsync()
-        {
-            var completionSource = new TaskCompletionSource<RegistrationData>();
-            ModBaseData.Scheduler.Schedule(() =>
-            {
-                Find.WindowStack.Add(new Dialog_Registration(completionSource));
-            });
-            return completionSource.Task;
-        }
-
-        public struct RegistrationData
-        {
-            public string name;
-            public string addr;
-            public string login;
-            public string password;
-            public string email;
-        }
-
         private string InputName = "";
         private string InputAddr = "";
         private string InputLogin = "";
@@ -49,7 +28,7 @@ namespace RimWorldOnlineCity
             get { return new Vector2(400f, 500f); }
         }
 
-        private Dialog_Registration(TaskCompletionSource<RegistrationData> completionSource) : base(completionSource)
+        public Dialog_Registration()
         {
             InputAddr = ModBaseData.GlobalData?.LastIP?.Value ?? "";
             if (string.IsNullOrEmpty(InputAddr))
@@ -63,6 +42,15 @@ namespace RimWorldOnlineCity
             doCloseX = true;
             resizeable = false;
             draggable = true;
+        }
+
+        public override void PreOpen()
+        {
+            base.PreOpen();
+        }
+
+        public override void PostClose()
+        {
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -99,13 +87,22 @@ namespace RimWorldOnlineCity
                 }
                 else
                 {
-                    Accept(new RegistrationData()
+                    var msgError = SessionClientController.Registration(InputAddr, InputLogin, InputPassword, InputEmail, InputDiscord
+                        , () => 
+                        { 
+                            SessionClientController.LoginInNewServerIP = ModBaseData.GlobalData?.LastIP?.Value != InputAddr;
+                            if (ModBaseData.GlobalData?.LastIP != null)
+                            {
+                                ModBaseData.GlobalData.LastIP.Value = InputAddr;
+                                ModBaseData.GlobalData.LastLoginName.Value = InputLogin;
+                                ModBaseData.GlobalData.LastPassword.Value = "";
+                                HugsLibController.SettingsManager.SaveChanges();
+                            }
+                        });
+                    if (msgError == null)
                     {
-                        addr = InputAddr,
-                        login = InputLogin,
-                        password = InputPassword,
-                        email = InputEmail,
-                    });
+                        Close();
+                    }
                 }
             }
 

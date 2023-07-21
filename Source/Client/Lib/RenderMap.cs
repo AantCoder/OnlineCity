@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using OCUnion;
 using RimWorld.Planet;
 using System;
 using System.Collections;
@@ -19,7 +20,7 @@ namespace MapRenderer
         public int SettingsPixelOnCell = defaultPixelOnCell;
         public int SettingsQuality = defaultQuality;
         public bool SettingsShowWeather = true;
-        public Action<byte[]> ImageReady;
+        public Action<Func<byte[]>> ImageReady;
 
         private static bool isRendering;
 
@@ -134,14 +135,22 @@ namespace MapRenderer
             }
             /// }
 
-            var encodedImage = tempTexture.EncodeToJPG(SettingsQuality);
+            Func<byte[]> getImage = () =>
+            {
+                var encodedImage = tempTexture.EncodeToJPG(SettingsQuality);
+                Destroy(this.tempTexture);
+                return encodedImage;
+            };
             if (ImageReady != null)
             {
-                ImageReady(encodedImage);
+                ImageReady(getImage);
+            }
+            else
+            {
+                Destroy(this.tempTexture);
             }
 
             Destroy(this.rt);
-            Destroy(this.tempTexture);
 
             IsRendering = false;
 

@@ -10,19 +10,18 @@ namespace OCUnion.Transfer.Model
     /// Содержит информацию по модам у меня в папке Mods ~15к файлов, даже если взять на каждый по 100 байт,
     /// </summary>
     [Serializable]
-    public class ModelFileInfo : IComparable<ModelFileInfo>
+    public class ModelFileInfo
     {
         /// <summary>
         /// Полный путь от папки Mods вида OnlineCity\Defs\WorldObjectDefs\WorldObjects.xml
         /// </summary>
-        public string RelativePath { get; set; }
-        public FolderType SourceFolder { get; set; }
-        public ulong ModId { get; set; }
+        public string FileName { get; set; }
         public byte[] Hash { get; set; }
         public long Size { get; set; }
         /// <summary>
         /// Можно ли заменить файл по содержимому с сервера
         /// </summary>
+        public bool NeedReplace { get; set; }
 
         public override int GetHashCode()
         {
@@ -53,7 +52,7 @@ namespace OCUnion.Transfer.Model
                 return false;
             }
 
-            return UnsafeByteArraysEquale(this.Hash, modFilesInfo.Hash) && this.RelativePath.Equals(modFilesInfo.RelativePath) && SourceFolder == modFilesInfo.SourceFolder;
+            return UnsafeByteArraysEquale(this.Hash, modFilesInfo.Hash) && this.FileName.Equals(modFilesInfo.FileName);
         }
 
 
@@ -90,18 +89,5 @@ namespace OCUnion.Transfer.Model
                 return true;
             }
         }
-
-        public int CompareTo(ModelFileInfo other)
-        {
-            if (SourceFolder != other.SourceFolder)
-                return SourceFolder.CompareTo(other.SourceFolder);
-
-            if (SourceFolder == FolderType.ModsFolder && ModId != other.ModId)
-                return ModId.CompareTo(other.ModId);
-            
-            return RelativePath.CompareTo(other.RelativePath);
-        }
-
-        
     }
 }

@@ -47,7 +47,7 @@ namespace ServerOnlineCity.Services
             //все доступные
             var orders = data.Orders
                         .Where(o => player.Public.Login == o.Owner.Login
-                            || ps.Any(p => p == o.Owner.Login)
+                            || ps.Contains(o.Owner.Login)
                                 && (o.PrivatPlayers == null || o.PrivatPlayers.Count == 0 || o.PrivatPlayers.Any(p => p.Login == player.Public.Login)));
             //фильтры запроса
             if (filters.Tiles != null /*&& filters.Tiles.Count > 0*/) //если массив задан, то фильтр выбран, просто могло не попать ни одной точки
