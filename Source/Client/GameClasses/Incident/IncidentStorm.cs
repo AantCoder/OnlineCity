@@ -13,6 +13,7 @@ namespace RimWorldOnlineCity
 {
     class IncidentStorm : OCIncident
     {
+        //todo Сделать выбор куда бить И проблемы просадки ТПС
         public override bool TryExecuteEvent()
         {
             Map map = GetTarget();

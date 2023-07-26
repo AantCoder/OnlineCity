@@ -7,6 +7,7 @@ using RimWorld;
 using UnityEngine;
 using Transfer;
 using Transfer.ModelMails;
+using OCUnion;
 
 namespace RimWorldOnlineCity
 {
@@ -24,7 +25,7 @@ namespace RimWorldOnlineCity
 
             if (Widgets.ButtonText(new Rect(0, 10, 250, 35), $"do_Test_raid"))
             {
-                var incident = new RimWorldOnlineCity.Incidents().GetIncident(IncidentTypes.Raid);
+                var incident = new OCIncidentFactory().GetIncident(IncidentTypes.Raid);
                 //incident.mult = ;
                 //incident.arrivalMode = ;
                 //incident.strategy = ;

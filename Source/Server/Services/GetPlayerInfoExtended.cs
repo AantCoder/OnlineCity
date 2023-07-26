@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Transfer;
+using Transfer.ModelMails;
 
 namespace ServerOnlineCity.Services
 {
@@ -58,9 +59,8 @@ namespace ServerOnlineCity.Services
                     .Select((m, index) => new { sort = m.NumberOrder * 1000000 + index, mi = m })
                     .OrderBy(a => a.sort)
                     .Select(a => a.mi)
-                    .Select(m => new ModelFunctionMailsView()
+                    .Select(m => new ModelMailStartIncident()
                     {
-                        NumberOrder = m.NumberOrder,
                         AlreadyStart = m.AlreadyStart,
                         IncidentType = m.Mail.IncidentType,
                         IncidentMult = m.Mail.IncidentMult,

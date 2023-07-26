@@ -74,6 +74,8 @@ namespace ServerOnlineCity
         /// </summary>
         public void LoadFileSharing(PlayerServer player, ModelFileSharing fileSharing)
         {
+            var fileSharingHash = fileSharing.Hash;
+            fileSharing.Hash = null;
             var worker = GetWorker(fileSharing.Category);
             var fileName = worker.CheckAndGetFileNameDownload(player, fileSharing);
             if (string.IsNullOrEmpty(fileName)) return;
@@ -105,10 +107,14 @@ namespace ServerOnlineCity
             });
             if (fileData == null) return;
 
-            if (!string.IsNullOrEmpty(fileSharing.Hash))
+            if (!string.IsNullOrEmpty(fileSharingHash))
             {
                 //сверяем хеш файла, если он такой же, то в пакете ничего не меняем, иначе продолжаем
-                if (fileSharing.Hash == fileData.Hash) return;
+                if (fileSharingHash == fileData.Hash)
+                {
+                    fileSharing.Hash = fileSharingHash;
+                    return;
+                }
             }
             //заполняем хеш и содержимое файла
             fileSharing.Hash = fileData.Hash;

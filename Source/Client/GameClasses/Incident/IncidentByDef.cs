@@ -15,7 +15,9 @@ namespace RimWorldOnlineCity
     {
         public override bool TryExecuteEvent()
         {
-            var incident = IncidentDef.Named(this.param);
+            var param = incidentParams != null && incidentParams.Count > 1 ? incidentParams[1] : null;
+
+            var incident = IncidentDef.Named(param);
 
             var target = GetTarget();
 
@@ -23,10 +25,10 @@ namespace RimWorldOnlineCity
             parms.forced = true;  //игнорировать все условия для события
             if (!incident.Worker.TryExecute(parms))
             {
-                Loger.Log("Error start IncidentDef: " + this.param);
+                Loger.Log("Error start IncidentDef: " + param);
                 return false;
             }
-            Loger.Log("Start IncidentDef: " + this.param);
+            Loger.Log("Start IncidentDef: " + param);
 
             return true;
         }

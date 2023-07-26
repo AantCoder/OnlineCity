@@ -177,7 +177,7 @@ namespace RimWorldOnlineCity.UI
                             || SessionClientController.Data.Players.ContainsKey(login) && SessionClientController.Data.Players[login].Online;
                         Func<bool, string, string> frameOnline = (online, txt) =>
                             online
-                            ? "<b>" + txt + "</b>"
+                            ? "<b>" + txt + " </b>"
                             : "<color=#888888ff>" + txt + "</color>";
 
                         if (lbCannals.SelectedIndex > 0 && SessionClientController.Data.Chats.Count > lbCannals.SelectedIndex)

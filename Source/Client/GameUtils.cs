@@ -41,6 +41,7 @@ namespace RimWorldOnlineCity
     public static class GameUtils
     {
         internal static readonly Texture2D CircleFill = ContentFinder<Texture2D>.Get("circle-fill");
+        private static HashSet<string> ExceptionDravLineThing = new HashSet<string>();
 
         private static int BugNum = 0;
         public static void GetBug()
@@ -76,30 +77,39 @@ namespace RimWorldOnlineCity
         /// </summary>
         public static void DravLineThing(Rect rect, ThingTrade thing, bool withInfo, Color labelColor, float xi = 24f, float yi = 0)
         {
-            if (/*thing.IsCorpse ||*/ (thing.Def?.race?.Humanlike ?? false))
+            if (ExceptionDravLineThing.Contains(thing.ToString())) return;
+            try
             {
-                var position = new Rect(rect.x, rect.y, 24f, 24f);
-                GUI.DrawTexture(position, GeneralTexture.IconHuman);
+                if (/*thing.IsCorpse ||*/ (thing.Def?.race?.Humanlike ?? false))
+                {
+                    var position = new Rect(rect.x, rect.y, 24f, 24f);
+                    GUI.DrawTexture(position, GeneralTexture.IconHuman);
+                }
+                else
+                {
+                    Widgets.ThingIcon(rect, thing.Def);
+                }
+                if (string.IsNullOrEmpty(thing.StuffName))
+                {
+                    TooltipHandler.TipRegion(rect, thing.Def.LabelCap);
+                    GUI.color = labelColor;
+                    if (withInfo) Widgets.InfoCardButton(rect.x + xi, rect.y + yi, thing.Def);
+                    GUI.color = Color.white;
+                }
+                else
+                {
+                    TooltipHandler.TipRegion(rect, thing.Def.LabelCap + "OCity_GameUtils_From".Translate() + thing.StuffDef.LabelAsStuff);
+                    GUI.color = labelColor;
+                    if (withInfo) Widgets.InfoCardButton(rect.x + xi, rect.y + yi, thing.Def, thing.StuffDef);
+                    GUI.color = Color.white;
+                }
+                // GenLabel.ThingLabel(this.Def, this.StuffDef, 1)
             }
-            else
+            catch
             {
-                Widgets.ThingIcon(rect, thing.Def);
+                ExceptionDravLineThing.Add(thing.ToString());
+                throw;
             }
-            if (string.IsNullOrEmpty(thing.StuffName))
-            {
-                TooltipHandler.TipRegion(rect, thing.Def.LabelCap);
-                GUI.color = labelColor;
-                if (withInfo) Widgets.InfoCardButton(rect.x + xi, rect.y + yi, thing.Def);
-                GUI.color = Color.white;
-            }
-            else
-            {
-                TooltipHandler.TipRegion(rect, thing.Def.LabelCap + "OCity_GameUtils_From".Translate() + thing.StuffDef.LabelAsStuff);
-                GUI.color = labelColor;
-                if (withInfo) Widgets.InfoCardButton(rect.x + xi, rect.y + yi, thing.Def, thing.StuffDef);
-                GUI.color = Color.white;
-            }
-            // GenLabel.ThingLabel(this.Def, this.StuffDef, 1)
         }
         public static void DravLineThing(Rect rect, Thing thing, bool withInfo, float xi = 24f, float yi = 0)
         {

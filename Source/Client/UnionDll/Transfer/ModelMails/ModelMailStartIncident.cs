@@ -1,4 +1,5 @@
 ﻿using Model;
+using OCUnion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,43 +17,16 @@ namespace Transfer.ModelMails
 
         public IncidentTypes IncidentType { get; set; }
         public int IncidentMult { get; set; }
-        public IncidentStrategys IncidentStrategy { get; set; }
-        public IncidentArrivalModes IncidentArrivalMode { get; set; }
-        public string IncidentFaction { get; set; }
-        public string IncidentParam { get; set; }
-
+        public List<string> IncidentParams { get; set; }
+        /// <summary>
+        /// Только для просмотра в интерфейсе тех, кто уже в очереди.
+        /// </summary>
+        public bool AlreadyStart { get; set; }
 
         public override string GetHash()
         {
-            return $"T{Tile}P{PlaceServerId} {(int)IncidentType} {IncidentMult} {(int)IncidentStrategy} {(int)IncidentArrivalMode} {IncidentFaction} {IncidentParam}";
+            return $"T{Tile}P{PlaceServerId} {(int)IncidentType} {IncidentMult} " 
+                + IncidentParams == null ? "" : string.Join(" ", IncidentParams);
         }
     }
-
-    public enum IncidentTypes
-    {
-        Raid,
-        Caravan,
-        ChunkDrop,
-        Infistation,
-        Quest,
-        Bombing,
-        Acid,
-        EMP,
-        Pack,
-        Eclipse,
-        Storm,
-        Plague,
-        Def,
-    }
-    public enum IncidentStrategys
-    {
-        ImmediateAttack
-    }
-    public enum IncidentArrivalModes
-    {
-        EdgeWalkIn,
-        RandomDrop,
-        CenterDrop,
-    }
-
 }

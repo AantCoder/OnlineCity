@@ -16,6 +16,10 @@ namespace ServerOnlineCity.Model
         /// </summary>
         public ModelMailStartIncident Mail { get; set; }
 
+        public IncidentMetadata Incident => _Incident ?? (_Incident = Incidents.AllIncidents.First(i => i.IncidentType == Mail.IncidentType));
+        [NonSerialized]
+        private IncidentMetadata _Incident;
+
         /// <summary>
         /// Номер очереди, зависит от типа события
         /// 0 - без очереди, без ожиданий
@@ -23,7 +27,7 @@ namespace ServerOnlineCity.Model
         /// 2 - природное бедствие
         /// 3 - агресивное, с предупреждением и ожиданием перед событием (если лвл>=5)
         /// </summary>
-        public int NumberOrder { get; set; }
+        public int NumberOrder => Incident.NumberOrder;
 
         /// <summary>
         /// Началто ли уже событие. На игроке на каждую очередь может быть только одно такое.
@@ -53,29 +57,6 @@ namespace ServerOnlineCity.Model
         public FMailIncident(ModelMailStartIncident mail)
         {
             Mail = mail;
-            switch (Mail.IncidentType)
-            {
-                case IncidentTypes.Caravan:
-                case IncidentTypes.ChunkDrop:
-                case IncidentTypes.Quest:
-                    NumberOrder = 1;
-                    break;
-                case IncidentTypes.Acid:
-                case IncidentTypes.EMP:
-                case IncidentTypes.Storm:
-                case IncidentTypes.Eclipse:
-                    NumberOrder = 2;
-                    break;
-                case IncidentTypes.Bombing:
-                case IncidentTypes.Infistation:
-                case IncidentTypes.Raid:
-                    NumberOrder = 3;
-                    break;
-                case IncidentTypes.Def:
-                default:
-                    NumberOrder = 0;
-                    break;
-            }
         }
 
         public bool Run(ServiceContext context)
@@ -97,7 +78,7 @@ namespace ServerOnlineCity.Model
 
                 ///Перед нами в очереди никого. Начинает операцию!
                 ///Проверяем нужно ли перед ивентом предупредить
-                var delay = (Mail.IncidentMult >= 5) && (NumberOrder == 3) ? CalcDelayStart() : 0;
+                var delay = Incident.DelayBeforeStart(Mail) ? CalcDelayStart() : 0;
                 SendTick = context.Player.Public.LastTick + delay;
                 if (delay > 0)
                 {
@@ -204,44 +185,13 @@ namespace ServerOnlineCity.Model
             {
                 From = Repository.GetData.PlayerSystem.Public,
                 To = context.Player.Public,
-                /*
-                Negative - это жёлтый промоугольник. 
-                Красный - treatsmall, красный со звуком - treatbig
-                Positive - синий со звуком. Visitor - просто синий
-                Death - серый со звуком, если не перепутал
-                Neutral - серый без звукового сигнала
-                */
-                type = NumberOrder == 1
-                    ? ModelMailMessadge.MessadgeTypes.Positive
-                    : ModelMailMessadge.MessadgeTypes.ThreatBig,
-                label = "OC_Incidents_Raid_Warning_label",
-                text = GetWarningText(),  //Кто-то же хотел вариативность сообщений?
+                type = Incident.DelayMessageType(Mail),
+                label = Incident.DelayMessageLabel(Mail),
+                text = Incident.DelayMessageText(Mail),
             };
         }
 
         //Для новых событий приемущественно полезно редактировать функции ниже:
-
-        private string GetWarningText()
-        {
-            string text = " ";
-            if(Mail.IncidentType == IncidentTypes.Raid)
-            {
-                switch (Mail.IncidentFaction.ToLower().Trim())
-                {
-                    case "mech":
-                        text = "OC_Incidents_Raid_Warning_Text_mech";
-                        break;
-                    default:
-                        text = "OC_Incidents_Raid_Warning_Text_human";
-                        break;
-                }
-            }
-            else if(Mail.IncidentType == IncidentTypes.Infistation)
-            {
-                text = "OC_Incidents_Inf_Warning_Text_inf";
-            }
-            return text;
-        }
 
         private long CalcDelayStart()
         {

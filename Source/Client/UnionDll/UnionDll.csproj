@@ -93,12 +93,13 @@
     <Compile Include="Loger.cs" />
     <Compile Include="Transfer\ConnectSaver.cs" />
     <Compile Include="Transfer\FolderTree.cs" />
+    <Compile Include="Transfer\Incident\Incidents.cs" />
     <Compile Include="Transfer\ModelGameServerInfo.cs" />
     <Compile Include="Transfer\ModelMails\ModelMail.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailAttackCancel.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailAttackTechnicalVictory.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailDeleteWO.cs" />
-    <Compile Include="Transfer\ModelMails\ModelMailMessadge.cs" />
+    <Compile Include="Transfer\ModelMails\ModelMailMessage.cs" />
     <Compile Include="Transfer\ModelMails\ModelMailStartIncident.cs" />
     <Compile Include="Transfer\ModelName.cs" />
     <Compile Include="Transfer\ModelOrderLoadRequest.cs" />
@@ -171,9 +172,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Transfer\Incident\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

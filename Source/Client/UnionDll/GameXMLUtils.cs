@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using Verse;
 
@@ -13,7 +14,7 @@ namespace OCUnion
         public static bool FromXmlIsActive = false;
         public StringBuilder OutXml;
         private string rootElementName = "data";
-        private object SuncObj = new Object();
+        private static object SuncObj = new Object();
 
         public GameXMLUtils()
         {
@@ -25,10 +26,37 @@ namespace OCUnion
         {
             lock (SuncObj)
             {
+                var dataXML = Scribe.saver.DebugOutputFor(t);
+                XmlDocument xmlDocument = new XmlDocument();
+                try
+                {
+                    xmlDocument.LoadXml(dataXML);
+                }
+                catch (Exception ex)
+                {
+                    var log = $"ExceptionXML ToXml<{t.GetType().Name}>: " + ex.Message + Environment.NewLine + "----------" + Environment.NewLine + dataXML + Environment.NewLine + "----------";
+                    Loger.Log(log);
+                    Loger.TransLog(log);
+
+                    Thread.Sleep(1);
+                    dataXML = Scribe.saver.DebugOutputFor(t);
+                    xmlDocument = new XmlDocument();
+                    try
+                    {
+                        xmlDocument.LoadXml(dataXML);
+                    }
+                    catch (Exception ex2)
+                    {
+                        log = $"ExceptionXML ToXml<{t.GetType().Name}>: " + ex2.Message + Environment.NewLine + "----------" + Environment.NewLine + dataXML + Environment.NewLine + "----------";
+                        Loger.Log(log);
+                        Loger.TransLog("ExceptionXML ToXml: " + ex2.Message);
+                    }
+                }
+
                 return @"<?xml version=""1.0"" encoding=""utf-8""?>
 <" + rootElementName + @"> 
 "
-                    + Scribe.saver.DebugOutputFor(t)
+                    + dataXML
                     + @"
 </" + rootElementName + ">";
             }
@@ -40,7 +68,21 @@ namespace OCUnion
             lock (SuncObj)
             {
                 XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.LoadXml(dataXML);
+                try
+                {
+                    xmlDocument.LoadXml(dataXML);
+                }
+                catch (Exception ex)
+                {
+                    var log = $"ExceptionXML FromXml<{typeof(T).Name}>: " + ex.Message + Environment.NewLine + "----------" + Environment.NewLine + dataXML + Environment.NewLine + "----------";
+                    Loger.Log(log);
+                    Loger.TransLog(log);
+                    //throw;
+
+                    xmlDocument.LoadXml(@"<?xml version=""1.0"" encoding=""utf-8""?>
+<data> 
+</data>");
+                }
                 Scribe.loader.curXmlParent = xmlDocument.DocumentElement;
                 Scribe.mode = LoadSaveMode.LoadingVars;
                 try

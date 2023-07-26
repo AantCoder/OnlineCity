@@ -55,14 +55,18 @@ namespace ServerOnlineCity.ChatService
                     "OC_Incidents_CallIncidents_Err1");
 
             //собираем данные
-            var type = CallIncident.ParseIncidentTypes(argsM[0]); 
-            if (type == null)
+            var incident = Incidents.ParseIncidentName(argsM[0]); 
+            if (incident == null)
             {
                 return chatManager?.PostCommandPrivatPostActivChat(ChatCmdResult.CommandNotFound, ownLogin, chat, "Command " + argsM[0] + " not found");
             }
-            if (type == IncidentTypes.Def && !player.IsAdmin)
+            if (incident.IncidentType == IncidentTypes.Def && !player.IsAdmin)
             {
                 return chatManager?.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, ownLogin, chat, "Command only for admin");
+            }
+            if (!incident.Enable && !player.IsAdmin)
+            {
+                return chatManager?.PostCommandPrivatPostActivChat(ChatCmdResult.AccessDeny, ownLogin, chat, "Incident disable");
             }
 
             bool online = false;
@@ -101,29 +105,37 @@ namespace ServerOnlineCity.ChatService
                 mult = Int32.Parse(argsM[3]);
             }
 
+            List<string> parameters = new List<string>();
+            for (int i = 4; i < argsM.Count; i++)
+            {
+                parameters.Add((argsM[i] ?? "").ToLower().Trim());
+            }
+
+            /*
             //  walk, random, air
-            IncidentArrivalModes? arrivalMode = null;
+            string arrivalMode = null;
             string defName = null;
             if (argsM.Count > 4)
             {
-                if (type == IncidentTypes.Def)
+                if (incident.IncidentType == IncidentTypes.Def)
                 {
                     defName = argsM[4];
                 }
                 else
-                    arrivalMode = CallIncident.ParseArrivalMode(argsM[4]);
+                    arrivalMode = Incidents.ParseArrivalMode(argsM[4]);
             }
 
             string faction = null;
             if (argsM.Count > 5)
             {
-                faction = CallIncident.ParseFaction(argsM[5]);
+                faction = Incidents.ParseFaction(argsM[5]);
             }
+            */
 
             Loger.Log("IncidentLod CallIncidentCmd Execute 2 " + argsM[1]);
             string error = null;
             if (targetPlayer != null)
-                error = CallIncident.CreateIncident(player, targetPlayer, serverId, type, mult, arrivalMode, faction, defName, true);
+                error = CallIncident.CreateIncident(player, targetPlayer, serverId, incident.IncidentType, mult, parameters, true);
 
             if (error != null)
             {
@@ -210,7 +222,7 @@ namespace ServerOnlineCity.ChatService
             if (targetPlayer != null)
             {
                 Loger.Log("IncidentLod CallIncidentCmd Execute 4 testMode=" + (!execute).ToString());
-                error = CallIncident.CreateIncident(player, targetPlayer, serverId, type, mult, arrivalMode, faction, defName, !execute);
+                error = CallIncident.CreateIncident(player, targetPlayer, serverId, incident.IncidentType, mult, parameters, !execute);
             }
             else
             {
@@ -223,7 +235,7 @@ namespace ServerOnlineCity.ChatService
                     bool allError = true;
                     if (all || pl.Online)
                     {
-                        err = CallIncident.CreateIncident(player, pl, serverId, type, mult, arrivalMode, faction, defName, false);
+                        err = CallIncident.CreateIncident(player, pl, serverId, incident.IncidentType, mult, parameters, false);
                         if (err == null) allError = false;
                     }
                     if (allError) error = err;

@@ -140,7 +140,7 @@ namespace RimWorldOnlineCity
         /// <summary>
         /// Тот же спиок Loading, но в виде очереди
         /// </summary>
-        private Queue<string> LoadingQueue = new Queue<string>();
+        private List<string> LoadingQueue = new List<string>();
         /// <summary>
         /// Загружается непостредственно сейчас
         /// </summary>
@@ -248,7 +248,7 @@ namespace RimWorldOnlineCity
                     if (!Loading.Contains(n))
                     {
                         Loading.Add(n);
-                        LoadingQueue.Enqueue(n);
+                        LoadingQueue.Add(n);
                     }
                 }
                 //пытаемся пока предоставить старое значение, либо прозарчную картинку
@@ -303,6 +303,7 @@ namespace RimWorldOnlineCity
         public void Update(SessionClient connect)
         {
             int CountUpdateInRun = 1;
+            int CountCheckInRun = 100;
 
             lock (Loading)
             {
@@ -323,7 +324,63 @@ namespace RimWorldOnlineCity
                     }
                 }
 
-                //загружаем
+                //предварительно проверяем хэш количеством по CountCheckInRun
+                if (LoadingQueue.Count > 3)
+                {
+                    //получаем данные из системы кэша файлового или LoadedOldTextures
+                    var loadingWork = new List<Tuple<string, ModelFileSharing>>(); //тут name и hash из кэша для проверки на сервере
+                    for (int i = 0; i < CountCheckInRun && i < LoadingQueue.Count; i++)
+                    {
+                        var name = LoadingQueue[i];
+
+                        LoadedOldTextures.TryGetValue(name, out var oldTexture);
+                        var hash = oldTexture?.Hash ?? CacheResource.GetHash(name);
+
+                        var mfs = GetModelFileSharing(name, hash);
+                        if (mfs == null) break;
+
+                        loadingWork.Add(new Tuple<string, ModelFileSharing>(name, mfs));
+                    }
+
+                    //делаем быстрый запрос на получених хеша
+                    var checkResult = connect.FileSharingDownloadOnlyCheck(loadingWork.Select(item => item.Item2).ToList());
+
+                    if (checkResult != null)
+                    {
+                        for (int i = loadingWork.Count - 1; i >= 0 ; i--)
+                        {
+                            var item = loadingWork[i];
+                            var name = item.Item1;
+                            var res = checkResult[i];
+
+                            if (res?.Hash == null  || item.Item2.Hash == res?.Hash)
+                            {
+                                //ответ пришел и на сервере нет данного файла, либо у нас ровно то же содержимое
+
+                                if (!LoadedOldTextures.TryGetValue(name, out var texture))
+                                {
+                                    if (res?.Hash == null) texture = new TextureContainer(Null);
+                                    else
+                                    {
+                                        texture = new TextureContainer()
+                                        {
+                                            Hash = item.Item2.Hash,
+                                            Data = CacheResource.GetData(name),
+                                        };
+                                    }
+                                }
+
+                                //применяем
+                                LoadingQueue.RemoveAt(i);
+                                Loading.Remove(name);
+
+                                SetLoadedTextures(name, texture);
+                            }
+                        }
+                    }
+                }
+
+                //загружаем количеством по CountUpdateInRun
                 for (int i = 0; i < CountUpdateInRun; i++)
                 {
                     if (LoadingQueue.Count == 0) return;
@@ -336,26 +393,17 @@ namespace RimWorldOnlineCity
                     {
                         lock (LoadingNow)
                         {
-                            name = LoadingQueue.Dequeue();
+                            name = LoadingQueue[0];
+                            LoadingQueue.RemoveAt(0);
                             LoadingNow.Add(name);
                             Loading.Remove(name);
                         }
                         if (!LoadedOldTextures.TryRemove(name, out oldTexture)) oldTexture = new TextureContainer(Null);
 
-                        if (name.Length < 4) continue;
-                        var sendName = name.Substring(3);
+                        var mfs = GetModelFileSharing(name, oldTexture.Hash);
+                        if (mfs == null) continue;
 
-                        FileSharingCategory category;
-                        if (name.StartsWith("pl_")) category = FileSharingCategory.PlayerIcon;
-                        else if (name.StartsWith("cs_")) category = FileSharingCategory.ColonyScreen;
-                        else continue;
-
-                        var packet = connect.FileSharingDownload(new ModelFileSharing()
-                        {
-                            Category = category,
-                            Name = sendName,
-                            Hash = oldTexture.Hash
-                        });
+                        var packet = connect.FileSharingDownload(mfs);
 
                         //если с сервера пришли данные, значит обновляем значения
                         if (packet?.Data != null && packet.Data.Length > 0)
@@ -375,15 +423,7 @@ namespace RimWorldOnlineCity
 
                             texture = oldTexture;
                         }
-                        texture.LoadTime = DateTime.UtcNow;
-
-                        //задаем время устаревания, для кого нужно
-                        if (name.StartsWith("cs_"))
-                        {
-                            LoadedAgings[name] = DateTime.UtcNow.AddSeconds(UpdateSecondColonyScreen);
-                        }
-
-                        LoadedTextures[name] = texture;
+                        SetLoadedTextures(name, texture);
                     }
                     finally
                     {
@@ -391,6 +431,39 @@ namespace RimWorldOnlineCity
                     }
                 }
             }
+        }
+
+        private void SetLoadedTextures(string name, TextureContainer texture)
+        { 
+            texture.LoadTime = DateTime.UtcNow;
+
+            //задаем время устаревания, для кого нужно
+            if (name.StartsWith("cs_"))
+            {
+                LoadedAgings[name] = DateTime.UtcNow.AddSeconds(UpdateSecondColonyScreen);
+            }
+
+            LoadedTextures[name] = texture;
+
+            if (texture.Data != null) CacheResource.SetData(name, texture.Data);
+        }
+
+        private ModelFileSharing GetModelFileSharing(string name, string hash)
+        {
+            if (name.Length < 4) return null;
+            var sendName = name.Substring(3);
+
+            FileSharingCategory category;
+            if (name.StartsWith("pl_")) category = FileSharingCategory.PlayerIcon;
+            else if (name.StartsWith("cs_")) category = FileSharingCategory.ColonyScreen;
+            else return null;
+
+            return new ModelFileSharing()
+            {
+                Category = category,
+                Name = sendName,
+                Hash = hash
+            };
         }
 
     }

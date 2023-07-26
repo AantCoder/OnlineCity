@@ -18,10 +18,11 @@ namespace RimWorldOnlineCity
     {
         public string attacker;
         public int mult = 1;
-        public IncidentStrategys strategy = IncidentStrategys.ImmediateAttack;
-        public IncidentArrivalModes arrivalMode = IncidentArrivalModes.EdgeWalkIn;
-        public string faction = null;
-        public string param = null;
+        //public string strategy = null;
+        //public string arrivalMode = "walk";
+        //public string faction = null;
+        //public string param = null;
+        public List<string> incidentParams;
         public IncidentParms parms;
         public WorldObject place;
 
@@ -35,30 +36,11 @@ namespace RimWorldOnlineCity
             return (place as Settlement)?.Map ?? Find.CurrentMap;
         }
 
-        public static RaidStrategyDef GetStrategy(IncidentStrategys strat)
-        {
-            return RaidStrategyDefOf.ImmediateAttack;
-        }
-
-        public static PawnsArrivalModeDef GetArrivalMode(IncidentArrivalModes arrive)
-        {
-            switch (arrive)
-            {
-                case IncidentArrivalModes.EdgeWalkIn:
-                    return PawnsArrivalModeDefOf.EdgeWalkIn;
-                case IncidentArrivalModes.RandomDrop:
-                    return PawnsArrivalModeDefOf.RandomDrop;
-                case IncidentArrivalModes.CenterDrop:
-                    return PawnsArrivalModeDefOf.CenterDrop;
-                default:
-                    return PawnsArrivalModeDefOf.EdgeWalkIn;
-            }
-        }
-        public Faction GetFaction()
+        public Faction GetFaction(string factionParam)
         {
             try
             {
-                switch (faction.ToLower().Trim())
+                switch (factionParam.ToLower().Trim())
                 {
                     case "mech":
                         return Find.FactionManager.OfMechanoids;
@@ -116,10 +98,14 @@ namespace RimWorldOnlineCity
             // /call raid '111' 1 10 air tribe
 
             //проверка, что денег хватает
+            List<string> parameters = new List<string>();
+            for (int i = 4; i < args.Count; i++)
+            {
+                parameters.Add((args[i] ?? "").ToLower().Trim());
+            }
             int cost = OCIncident.CalculateRaidCost(args[0].ToLower(), Int64.Parse(args[2])
                 , args.Count > 3 ? Int32.Parse(args[3]) : 1
-                , args.Count > 4 ? args[4].ToLower() : null
-                , args.Count > 5 ? args[5].ToLower() : null);
+                , parameters);
             int gold = -1;
             int goldClient = -1;
             int goldServer = -1;
@@ -252,11 +238,16 @@ namespace RimWorldOnlineCity
             return resultPoints;
         }
 
-        public static int CalculateRaidCost(string type, long serverId, int mult, string arrivalModes, string faction)
+        public static int CalculateRaidCost(string type, long serverId, int mult, List<string> incidentParams /*string arrivalModes, string faction*/)
         {
             Loger.Log("IncidentLod OCIncident.CalculateRaidCost 1");
 
-            if (type == "def") return 0;
+            var incident = Incidents.ParseIncidentName(type);
+
+            // модификаторы
+            var type_mult = incident.CalcCostMult(incidentParams);
+
+            if (type_mult == 0f) return 0;
 
             //var serverId = UpdateWorldController.GetServerInfo(wo).ServerId;
             var target = UpdateWorldController.GetOtherByServerId(serverId) as BaseOnline;
@@ -270,63 +261,6 @@ namespace RimWorldOnlineCity
             //Рейд от 1кк до 5кк = (цена поселения защитник/ 100 000)^(2, 2 / 5, 05) * 27.2864
 
             // * lvl ^ (9.42 / 8) * модификаторы 
-            float type_mult = 1f;
-            switch (type)
-            {
-                case "plague":
-                    type_mult = 3f;
-                    break;
-                case "inf":
-                    type_mult = 3f;
-                    break;
-                case "acid":
-                    type_mult = 2f;
-                    break;
-                case "eclipse":
-                    type_mult = 0.5f;
-                    break;
-                case "emp":
-                    type_mult = 1.2f;
-                    break;
-                case "raid":
-                    float arr_mult = 1f;
-                    float fac_mult = 1f;
-                    switch (arrivalModes)
-                    {
-                        case "random":
-                            arr_mult = 1.5f;
-                            break;
-                        case "air":
-                            arr_mult = 1.2f;
-                            break;
-                        default:
-                            arr_mult = 1f;
-                            break;
-                    }
-                    switch (faction)
-                    {
-                        case "mech":
-                            fac_mult = 3.5f;
-                            break;
-                        case "pirate":
-                            fac_mult = 2f;
-                            break;
-                        case "randy":
-                            fac_mult = 2.5f;
-                            break;
-                        default:
-                            fac_mult = 1f;
-                            break;
-                    }
-                    type_mult = fac_mult * arr_mult;
-                    break;
-                case "def":
-                    type_mult = 0f;
-                    break;
-                default:
-                    type_mult = 1f;
-                    break;
-            }
             var options_mult = (float)Math.Pow((float)mult, 9.42f / 8f) * SessionClientController.Data.GeneralSettings.IncidentCostPrecent / 100f * type_mult;
 
             float raidCost = cost <= 500000f ? (int)((float)Math.Pow(cost / 100000f, 1f / 2f) * 246f)

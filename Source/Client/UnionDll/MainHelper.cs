@@ -144,6 +144,14 @@ namespace OCUnion
         {
             char[] invalidFileChars = Path.GetInvalidFileNameChars();
             foreach (var c in invalidFileChars) if (fileName.Contains(c)) fileName = fileName.Replace(c, '_');
+            if (fileName.Contains('.')) fileName = fileName.Replace('.', '_');
+            return fileName;
+        }
+        public static string NormalizeUniqueFileNameChars(this string fileName)
+        {
+            char[] invalidFileChars = Path.GetInvalidFileNameChars();
+            if (fileName.Contains('.')) fileName = fileName.Replace('.', '_');
+            foreach (var c in invalidFileChars) if (fileName.Contains(c)) fileName = fileName.Replace(c.ToString(), ((byte)c).ToString());
             return fileName;
         }
 

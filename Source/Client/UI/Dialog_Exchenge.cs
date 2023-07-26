@@ -1547,6 +1547,7 @@ namespace RimWorldOnlineCity.UI
                     var editOrder = EditOrder;
                     var list = SessionClientController.Data.Players.Keys
                         .Where(p => !editOrder.PrivatPlayers.Any(pp => pp.Login == p) && p != "system")
+                        .OrderBy(p => p)
                         .Select(p => new FloatMenuOption(p,
                             () =>
                             {

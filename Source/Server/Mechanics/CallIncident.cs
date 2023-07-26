@@ -25,18 +25,19 @@ namespace ServerOnlineCity.Mechanics
         public static string CreateIncident(PlayerServer player
             , PlayerServer targetPlayer
             , long serverId
-            , IncidentTypes? type
+            , IncidentTypes type
             , int mult
-            , IncidentArrivalModes? arrivalMode
-            , string faction
-            , string param
+            , List<string> parameters
+            //, string arrivalMode
+            //, string faction
+            //, string param
             , bool checkMode)
         {
             Loger.Log("IncidentLod CallIncident.CreateIncident 1");
 
             if (!ServerManager.ServerSettings.GeneralSettings.IncidentEnable) return "OC_incidents_IncidentsTurnedOFF";
 
-            if (type == null) return "OC_Incidents_CallIncidents_TypeErr";
+            //if (type == null) return "OC_Incidents_CallIncidents_TypeErr";
 
             if (targetPlayer == player) return "OC_Incidents_CallIncidebts_selfErr";
 
@@ -55,8 +56,6 @@ namespace ServerOnlineCity.Mechanics
 
             mult = mult > ServerManager.ServerSettings.GeneralSettings.IncidentMaxMult ? ServerManager.ServerSettings.GeneralSettings.IncidentMaxMult : mult;
 
-            if (arrivalMode == null) arrivalMode = IncidentArrivalModes.EdgeWalkIn;
-
             //формируем пакет
             var packet = new ModelMailStartIncident()
             {
@@ -64,15 +63,16 @@ namespace ServerOnlineCity.Mechanics
                 To = targetPlayer.Public,
                 PlaceServerId = serverId,
                 NeedSaveGame = true,
-                IncidentType = type.Value,
-                IncidentArrivalMode = arrivalMode.Value,
+                IncidentType = type,
                 IncidentMult = mult,
-                IncidentFaction = faction,
-                IncidentParam = param,
+                //IncidentArrivalMode = arrivalMode,
+                //IncidentFaction = faction,
+                //IncidentParam = param,
+                IncidentParams = parameters,
             };
             var fPacket = new FMailIncident(packet);
 
-            Loger.Log("Server test call " + type.Value + " " + targetPlayer.Public.Login);
+            Loger.Log("Server test call " + type + " " + targetPlayer.Public.Login);
 
             //проверка на допустимость и добавление инциндента.
             var ownLogin = player.Public.Login;
@@ -130,9 +130,11 @@ namespace ServerOnlineCity.Mechanics
             if (fromWorth == 0) fromWorth = (int)Repository.GetPlayerByLogin(mail.From.Login).AllCostWorldObjects();
             if (toWorth == 0) toWorth = (int)Repository.GetPlayerByLogin(mail.To.Login).AllCostWorldObjects();
 
-            var param = $"{mail.IncidentType} lvl:{mail.IncidentMult} mode:{mail.IncidentArrivalMode} who:{mail.IncidentFaction}"
-                + (mail.IncidentParam != null ? " param:" + mail.IncidentParam : "");
-
+            var param = $"{mail.IncidentType} lvl:{mail.IncidentMult}" 
+                + $" mode:" + (mail.IncidentParams != null && mail.IncidentParams.Count > 0 ? mail.IncidentParams[0] : null)  //arrivalMode / anyParam
+                + $" who:" + (mail.IncidentParams != null && mail.IncidentParams.Count > 1 ? mail.IncidentParams[1] : null) //faction
+                + (mail.IncidentParams != null && mail.IncidentParams.Count > 2 ? $" alt:" + mail.IncidentParams[2] : null); //not use
+            
             var contentLog = dateTimeToStr(DateTime.Now) + ";" + record
                 + $";{mail.From.Login};{mail.To.Login};{mail.From.LastTick / 60000};{mail.To.LastTick / 60000};{fromWorth};{toWorth};{param};{mail.PlaceServerId}"
                 + ";" + data + Environment.NewLine;
@@ -156,63 +158,5 @@ namespace ServerOnlineCity.Mechanics
             }
         }
 
-        public static IncidentTypes? ParseIncidentTypes(string arg)
-        {
-            switch (arg.ToLower().Trim())
-            {
-                case "raid":
-                    return IncidentTypes.Raid;
-                case "inf":
-                    return IncidentTypes.Infistation;
-                //case "bomb":
-                //  return IncidentTypes.Bombing;
-                case "acid":
-                    return IncidentTypes.Acid;
-                case "storm":
-                    return IncidentTypes.Storm;
-                case "emp":
-                    return IncidentTypes.EMP;
-                case "eclipse":
-                    return IncidentTypes.Eclipse;
-                case "plague":
-                    return IncidentTypes.Plague;
-                case "def":
-                    return IncidentTypes.Def;
-                default:
-                    return null;
-            }
-        }
-
-        public static IncidentArrivalModes? ParseArrivalMode(string arg)
-        {
-            switch (arg.ToLower().Trim())
-            {
-                case "random":
-                    return IncidentArrivalModes.RandomDrop;
-                case "air":
-                    return IncidentArrivalModes.CenterDrop;
-                case "walk":
-                    return IncidentArrivalModes.EdgeWalkIn;
-                default:
-                    return IncidentArrivalModes.EdgeWalkIn;
-            }
-        }
-
-        public static string ParseFaction(string arg)
-        {
-            switch (arg.ToLower().Trim())
-            {
-                case "mech":
-                    return "mech";
-                case "pirate":
-                    return "pirate";
-                case "tribe":
-                    return "tribe";
-                case "randy":
-                    return "randy";
-                default:
-                    return "tribe";
-            }
-        }
     }
 }

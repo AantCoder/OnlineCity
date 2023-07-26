@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using OCUnion;
 using RimWorld;
 using Transfer;
 using Transfer.ModelMails;
@@ -9,7 +11,7 @@ using Verse;
 
 namespace RimWorldOnlineCity
 {
-    public class Incidents
+    public class OCIncidentFactory
     {
         /*
          * Для добавления нового инциндента создайте класс от родителя OCIncident

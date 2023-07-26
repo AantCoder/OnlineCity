@@ -400,6 +400,11 @@ namespace Transfer
             var stat = TransObject<ModelFileSharing>(packet, (int)PackageType.Request49FileSharing, (int)PackageType.Response50FileSharing);
             return (stat?.Data == null ? fileSharing : stat);
         }
+        public List<ModelFileSharing> FileSharingDownloadOnlyCheck(List<ModelFileSharing> fileSharing)
+        {
+            var stat = TransObject<List<ModelFileSharing>>(fileSharing, (int)PackageType.Request49FileSharing, (int)PackageType.Response50FileSharing);
+            return stat;
+        }
 
         public ModelFileSharing FileSharingUpload(FileSharingCategory category, string name, byte[] data)
         {

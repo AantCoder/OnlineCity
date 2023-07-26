@@ -98,6 +98,8 @@ namespace RimWorldOnlineCity
             }
             catch { }
 
+            CacheResource.Init();
+
             Loger.Log("Client Init " + MainHelper.VersionInfo);
             Loger.Log("Client Language: " + Prefs.LangFolderName);
 

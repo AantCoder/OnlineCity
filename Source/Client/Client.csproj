@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AncillaryUtil.cs" />
+    <Compile Include="CacheResource.cs" />
     <Compile Include="ChatController.cs" />
     <Compile Include="ClientHashCheck\ClientFileCheckerFactory.cs" />
     <Compile Include="ClientHashCheck\ClientFileChecker.cs" />
@@ -148,7 +149,7 @@
     <Compile Include="GameClasses\Incident\IncidentStorm.cs" />
     <Compile Include="GameClasses\Incident\OCIncident.cs" />
     <Compile Include="GameClasses\MainTabTestButton.cs" />
-    <Compile Include="GameClasses\Incident\Incidents.cs" />
+    <Compile Include="GameClasses\Incident\OCIncidentFactory.cs" />
     <Compile Include="ExchengeUtils.cs" />
     <Compile Include="GameAttackHost.cs" />
     <Compile Include="GameClasses\BaseOnline.cs" />

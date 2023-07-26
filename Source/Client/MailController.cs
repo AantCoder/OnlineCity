@@ -123,14 +123,14 @@ namespace RimWorldOnlineCity
 
             Find.TickManager.Pause();
             
-            var incident = new Incidents().GetIncident(mail.IncidentType);
+            var incident = new OCIncidentFactory().GetIncident(mail.IncidentType);
             incident.mult = mail.IncidentMult;
-            incident.arrivalMode = mail.IncidentArrivalMode;
-            incident.strategy = mail.IncidentStrategy;
-            incident.faction = mail.IncidentFaction;
+            //incident.arrivalMode = mail.IncidentArrivalMode;
+            //incident.strategy = mail.IncidentStrategy;
+            //incident.faction = mail.IncidentFaction;
+            incident.incidentParams = mail.IncidentParams;
             incident.attacker = mail.From.Login;
             incident.place = ExchengeUtils.GetPlace(mail);
-            incident.param = mail.IncidentParam;
             incident.TryExecuteEvent();
 
             if (!SessionClientController.Data.BackgroundSaveGameOff) SessionClientController.SaveGameNow(true);

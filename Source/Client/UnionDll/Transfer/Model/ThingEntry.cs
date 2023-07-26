@@ -154,6 +154,14 @@ namespace Model
             var gx = new GameXMLUtils();
             //Loger.Log($"CreateThing 2");
             Thing thing = gx.FromXml<Thing>(data);
+
+            if (thing == null)
+            {
+                Loger.TransLog("ExceptionXML ToXml thing is null");
+                var def = (ThingDef)GenDefDatabase.GetDef(typeof(ThingDef), "Wastepack");
+                thing = ThingMaker.MakeThing(def);
+            }
+
             //Loger.Log($"CreateThing 3");
             thing.stackCount = stackCount == 0 ? Count : stackCount;
             

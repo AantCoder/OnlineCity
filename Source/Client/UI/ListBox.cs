@@ -67,8 +67,13 @@ namespace RimWorldOnlineCity.UI
                 , new Rect(0, 0, Area.width - WidthScrollLine, DataSource.Count * LineHeight));
 
             var rect = new Rect(0, 0, Area.width - WidthScrollLine, LineHeight);
-            for (int i = 0; i < DataSource.Count; i++)
+            var iBeg = (int)(ScrollPosition.y / LineHeight - 1);
+            if (iBeg < 0) iBeg = 0;
+            var iEnd = iBeg + (int)(Area.height / LineHeight + 2);
+            for (int i = iBeg; i < DataSource.Count && i < iEnd; i++)
             {
+                rect.y = i * LineHeight;
+
                 //светлый фон каждой второй строки
                 if (OddLineHighlight && i % 2 == 1)
                 {
@@ -105,7 +110,6 @@ namespace RimWorldOnlineCity.UI
                     SelectedIndex = i;
                     if (OnClick != null) OnClick(i, DataSource[i]);
                 }
-                rect.y += LineHeight;
             }
 
             GUI.EndScrollView();
